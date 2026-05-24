@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorSurface">@color/colorSurfaceDark</color>
+    <color name="colorCard">@color/colorCardDark</color>
+    <color name="colorTextPrimary">@color/colorTextPrimaryDark</color>
+    <color name="colorTextSecondary">@color/colorTextSecondaryDark</color>
+    <color name="colorDivider">@color/colorDividerDark</color>
+    <color name="white">#E8E8F0</color>
+</resources>

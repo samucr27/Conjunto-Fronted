@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Modo claro -->
+    <color name="colorPrimary">#5E35B1</color>
+    <color name="colorPrimaryDark">#4527A0</color>
+    <color name="colorPrimaryLight">#7E57C2</color>
+    <color name="colorAccent">#7C4DFF</color>
+    <color name="colorSurface">#F4F6FB</color>
+    <color name="colorCard">#FFFFFF</color>
+    <color name="colorTextPrimary">#1A1A2E</color>
+    <color name="colorTextSecondary">#6B7280</color>
+    <color name="colorDivider">#E5E7EB</color>
+    <color name="colorError">#C62828</color>
+    <color name="green_pay">#2E7D32</color>
+    <color name="gray_disabled">#9E9E9E</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Modo oscuro -->
+    <color name="colorSurfaceDark">#121212</color>
+    <color name="colorCardDark">#1E1E2E</color>
+    <color name="colorTextPrimaryDark">#E8E8F0</color>
+    <color name="colorTextSecondaryDark">#9CA3AF</color>
+    <color name="colorDividerDark">#2D2D3F</color>
+</resources>

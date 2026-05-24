@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorSurface">
+
+        <TextView android:id="@+id/tvPersonalTitulo"
+            android:layout_width="0dp" android:layout_height="80dp"
+            android:text="Personal Autorizado" android:textSize="20sp"
+            android:textStyle="bold" android:textColor="@color/white"
+            android:background="@color/colorPrimary"
+            android:gravity="center_vertical" android:paddingStart="24dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPersonalObra"
+            android:layout_width="0dp" android:layout_height="0dp"
+            android:layout_margin="16dp"
+            app:layout_constraintTop_toBottomOf="@id/tvPersonalTitulo"
+            app:layout_constraintBottom_toTopOf="@id/btnRegistrarTrabajador"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRegistrarTrabajador"
+            android:layout_width="0dp" android:layout_height="56dp"
+            android:layout_margin="16dp" android:text="Registrar Operario"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

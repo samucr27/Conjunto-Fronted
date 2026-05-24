@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorSurface">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:background="@color/colorPrimary"
+            android:gravity="center_vertical"
+            android:paddingStart="24dp"
+            android:paddingEnd="16dp">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Panel Administrador"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"/>
+                <TextView
+                    android:id="@+id/tvBienvenidaAdmin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bienvenido, Administrador"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:alpha="0.8"/>
+            </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCerrarSesion"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Salir"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:strokeColor="@color/white"/>
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:padding="16dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardDirectorioAptos"
+                    android:layout_width="0dp" android:layout_height="140dp"
+                    android:layout_columnWeight="1" android:layout_margin="8dp"
+                    app:cardCornerRadius="16dp" app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/colorCard">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="52dp" android:layout_height="52dp"
+                            app:cardCornerRadius="14dp" app:cardElevation="0dp"
+                            app:cardBackgroundColor="#EDE7F6"
+                            android:layout_marginBottom="10dp">
+                            <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                                android:layout_gravity="center"
+                                android:src="@android:drawable/ic_menu_agenda"
+                                app:tint="@color/colorPrimary"/>
+                        </com.google.android.material.card.MaterialCardView>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Directorio" android:textStyle="bold" android:textSize="14sp"
+                            android:textColor="@color/colorTextPrimary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Apartamentos" android:textSize="11sp"
+                            android:textColor="@color/colorTextSecondary"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardControlObras"
+                    android:layout_width="0dp" android:layout_height="140dp"
+                    android:layout_columnWeight="1" android:layout_margin="8dp"
+                    app:cardCornerRadius="16dp" app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/colorCard">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="52dp" android:layout_height="52dp"
+                            app:cardCornerRadius="14dp" app:cardElevation="0dp"
+                            app:cardBackgroundColor="#EDE7F6"
+                            android:layout_marginBottom="10dp">
+                            <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                                android:layout_gravity="center"
+                                android:src="@android:drawable/ic_menu_manage"
+                                app:tint="@color/colorPrimary"/>
+                        </com.google.android.material.card.MaterialCardView>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Control" android:textStyle="bold" android:textSize="14sp"
+                            android:textColor="@color/colorTextPrimary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Obras" android:textSize="11sp"
+                            android:textColor="@color/colorTextSecondary"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardHistorialReservas"
+                    android:layout_width="0dp" android:layout_height="140dp"
+                    android:layout_columnWeight="1" android:layout_margin="8dp"
+                    app:cardCornerRadius="16dp" app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/colorCard">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="52dp" android:layout_height="52dp"
+                            app:cardCornerRadius="14dp" app:cardElevation="0dp"
+                            app:cardBackgroundColor="#EDE7F6"
+                            android:layout_marginBottom="10dp">
+                            <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                                android:layout_gravity="center"
+                                android:src="@android:drawable/ic_menu_recent_history"
+                                app:tint="@color/colorPrimary"/>
+                        </com.google.android.material.card.MaterialCardView>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Historial" android:textStyle="bold" android:textSize="14sp"
+                            android:textColor="@color/colorTextPrimary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Reservas" android:textSize="11sp"
+                            android:textColor="@color/colorTextSecondary"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardZonasAdmin"
+                    android:layout_width="0dp" android:layout_height="140dp"
+                    android:layout_columnWeight="1" android:layout_margin="8dp"
+                    app:cardCornerRadius="16dp" app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/colorCard">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="52dp" android:layout_height="52dp"
+                            app:cardCornerRadius="14dp" app:cardElevation="0dp"
+                            app:cardBackgroundColor="#EDE7F6"
+                            android:layout_marginBottom="10dp">
+                            <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                                android:layout_gravity="center"
+                                android:src="@android:drawable/ic_menu_mapmode"
+                                app:tint="@color/colorPrimary"/>
+                        </com.google.android.material.card.MaterialCardView>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Zonas" android:textStyle="bold" android:textSize="14sp"
+                            android:textColor="@color/colorTextPrimary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Comunes" android:textSize="11sp"
+                            android:textColor="@color/colorTextSecondary"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </GridLayout>
+        </ScrollView>
+    </LinearLayout>
+</layout>

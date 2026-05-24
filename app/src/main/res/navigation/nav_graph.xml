@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginSelectorFragment">
+
+    <fragment
+        android:id="@+id/loginSelectorFragment"
+        android:name="com.example.conjuntoresidencial.ui.auth.LoginSelectorFragment"
+        tools:layout="@layout/fragment_login_selector">
+        <action android:id="@+id/action_loginSelectorFragment_to_loginAdminFragment"
+            app:destination="@id/loginAdminFragment" />
+        <action android:id="@+id/action_loginSelectorFragment_to_loginApartamentoFragment"
+            app:destination="@id/loginApartamentoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginAdminFragment"
+        android:name="com.example.conjuntoresidencial.ui.auth.LoginAdminFragment"
+        tools:layout="@layout/fragment_login_admin">
+        <action android:id="@+id/action_loginAdminFragment_to_adminDashboardFragment"
+            app:destination="@id/adminDashboardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginApartamentoFragment"
+        android:name="com.example.conjuntoresidencial.ui.auth.LoginApartamentoFragment"
+        tools:layout="@layout/fragment_login_apartamento">
+        <action android:id="@+id/action_loginApartamentoFragment_to_propietarioDashboardFragment"
+            app:destination="@id/propietarioDashboardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/adminDashboardFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.AdminDashboardFragment"
+        tools:layout="@layout/fragment_admin_dashboard">
+        <action android:id="@+id/action_adminDashboardFragment_to_directorioApartamentosFragment"
+            app:destination="@id/directorioApartamentosFragment" />
+        <action android:id="@+id/action_adminDashboardFragment_to_controlObrasFragment"
+            app:destination="@id/controlObrasFragment" />
+        <action android:id="@+id/action_adminDashboardFragment_to_reservasAdminFragment"
+            app:destination="@id/reservasAdminFragment" />
+        <action android:id="@+id/action_adminDashboardFragment_to_zonasComunesAdminFragment"
+            app:destination="@id/zonasComunesAdminFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/directorioApartamentosFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.DirectorioApartamentosFragment"
+        tools:layout="@layout/fragment_directorio_apartamentos">
+        <action android:id="@+id/action_directorioApartamentosFragment_to_detalleApartamentoFragment"
+            app:destination="@id/detalleApartamentoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detalleApartamentoFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.DetalleApartamentoFragment"
+        tools:layout="@layout/fragment_detalle_apartamento" />
+
+    <fragment
+        android:id="@+id/controlObrasFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.ControlObrasFragment"
+        tools:layout="@layout/fragment_control_obras" />
+
+    <fragment
+        android:id="@+id/reservasAdminFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.ReservasAdminFragment"
+        tools:layout="@layout/fragment_reservas_admin" />
+
+    <fragment
+        android:id="@+id/zonasComunesAdminFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.ZonasComunesAdminFragment"
+        tools:layout="@layout/fragment_zonas_comunes_admin" />
+
+    <fragment
+        android:id="@+id/propietarioDashboardFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.PropietarioDashboardFragment"
+        tools:layout="@layout/fragment_propietario_dashboard">
+        <action android:id="@+id/action_propietarioDashboardFragment_to_misVehiculosFragment"
+            app:destination="@id/misVehiculosFragment" />
+        <action android:id="@+id/action_propietarioDashboardFragment_to_zonasComunesPropietarioFragment"
+            app:destination="@id/zonasComunesPropietarioFragment" />
+        <action android:id="@+id/action_propietarioDashboardFragment_to_misReservasFragment"
+            app:destination="@id/misReservasFragment" />
+        <action android:id="@+id/action_propietarioDashboardFragment_to_miCarteraFragment"
+            app:destination="@id/miCarteraFragment" />
+        <action android:id="@+id/action_propietarioDashboardFragment_to_registrarObraFragment"
+            app:destination="@id/registrarObraFragment" />
+        <action android:id="@+id/action_propietarioDashboardFragment_to_misObrasFragment"
+            app:destination="@id/misObrasFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/misVehiculosFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.MisVehiculosFragment"
+        tools:layout="@layout/fragment_mis_vehiculos" />
+
+    <fragment
+        android:id="@+id/zonasComunesPropietarioFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.ZonasComunesPropietarioFragment"
+        tools:layout="@layout/fragment_zonas_comunes_propietario" />
+
+    <fragment
+        android:id="@+id/misReservasFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.MisReservasFragment"
+        tools:layout="@layout/fragment_mis_reservas" />
+
+    <fragment
+        android:id="@+id/miCarteraFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.MiCarteraFragment"
+        tools:layout="@layout/fragment_mi_cartera" />
+
+    <fragment
+        android:id="@+id/registrarObraFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.RegistrarObraFragment"
+        tools:layout="@layout/fragment_registrar_obra" />
+
+    <fragment
+        android:id="@+id/misObrasFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.MisObrasFragment"
+        tools:layout="@layout/fragment_mis_obras" />
+
+</navigation>

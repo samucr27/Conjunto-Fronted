@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ConjuntoResidencial</string>
+    <string name="btn_simular_pago">Simular Pago</string>
+    <string name="btn_sin_deuda">Sin deuda pendiente</string>
+    <string name="saldo_pendiente_format">$%s</string>
+    <string name="simulacion_exitosa">Simulación exitosa</string>
+</resources>

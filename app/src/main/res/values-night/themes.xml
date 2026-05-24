@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.ConjuntoResidencial" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimaryLight</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/colorSurfaceDark</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
+
+        <item name="textAppearanceHeadline5">@style/TextAppearance.App.Headline.Night</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.App.Body.Night</item>
+        <item name="textAppearanceButton">@style/TextAppearance.App.Button</item>
+
+        <item name="materialCardViewStyle">@style/Widget.App.CardView.Night</item>
+        <item name="materialButtonStyle">@style/Widget.App.Button</item>
+        <item name="textInputStyle">@style/Widget.App.TextInput.Night</item>
+    </style>
+
+    <style name="TextAppearance.App.Headline.Night" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="fontFamily">@font/poppins_bold</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textColor">@color/colorTextPrimaryDark</item>
+    </style>
+
+    <style name="TextAppearance.App.Body.Night" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textColor">@color/colorTextPrimaryDark</item>
+    </style>
+
+    <style name="Widget.App.CardView.Night" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="cardBackgroundColor">@color/colorCardDark</item>
+    </style>
+
+    <style name="Widget.App.TextInput.Night" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+        <item name="boxStrokeColor">@color/colorPrimaryLight</item>
+    </style>
+</resources>
