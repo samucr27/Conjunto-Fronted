@@ -5,14 +5,12 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiService {
-    // AUTH
     @POST("api/auth/admin/login")
     suspend fun loginAdmin(@Body request: LoginAdminRequest): Response<Void>
 
     @POST("api/auth/apartamento/login")
     suspend fun loginApartamento(@Body request: LoginApartamentoRequest): Response<Apartamento>
 
-    // APARTAMENTOS
     @GET("api/apartamentos")
     suspend fun getApartamentos(): Response<List<Apartamento>>
 
@@ -25,7 +23,6 @@ interface ApiService {
     @PUT("api/apartamentos/{id}")
     suspend fun updateApartamento(@Path("id") id: Long, @Body apartamento: Apartamento): Response<Apartamento>
 
-    // RESIDENTES
     @GET("api/residentes/apartamento/{id}")
     suspend fun getResidentesPorApartamento(@Path("id") id: Long): Response<List<ResidenteDTO>>
 
@@ -38,7 +35,6 @@ interface ApiService {
     @DELETE("api/residentes/{id}")
     suspend fun deleteResidente(@Path("id") id: Long): Response<Void>
 
-    // VEHÍCULOS
     @GET("api/vehiculos/apartamento/{id}")
     suspend fun getVehiculosPorApartamento(@Path("id") id: Long): Response<List<VehiculoDTO>>
 
@@ -48,7 +44,6 @@ interface ApiService {
     @DELETE("api/vehiculos/{id}")
     suspend fun deleteVehiculo(@Path("id") id: Long): Response<Void>
 
-    // OBRAS
     @GET("api/obras/apartamento/{id}")
     suspend fun getObrasPorApartamento(@Path("id") id: Long): Response<List<ObraDTO>>
 
@@ -64,7 +59,9 @@ interface ApiService {
     @DELETE("api/obras/{id}")
     suspend fun deleteObra(@Path("id") id: Long): Response<Void>
 
-    // PERSONAL DE OBRA
+    @GET("api/personal-obra")
+    suspend fun getTodoElPersonal(): Response<List<PersonalObraDTO>>
+
     @GET("api/personal-obra/obra/{id}")
     suspend fun getPersonalPorObra(@Path("id") id: Long): Response<List<PersonalObraDTO>>
 
@@ -74,7 +71,6 @@ interface ApiService {
     @DELETE("api/personal-obra/{id}")
     suspend fun deletePersonalObra(@Path("id") id: Long): Response<Void>
 
-    // ZONAS COMUNES
     @GET("api/zonas")
     suspend fun getZonasComunes(): Response<List<ZonaComunDTO>>
 
@@ -87,7 +83,6 @@ interface ApiService {
     @PUT("api/zonas/{id}")
     suspend fun updateZonaComun(@Path("id") id: Long, @Body zona: ZonaComunDTO): Response<ZonaComunDTO>
 
-    // RESERVAS
     @GET("api/reservas")
     suspend fun getReservas(): Response<List<ReservaDTO>>
 
@@ -100,9 +95,8 @@ interface ApiService {
     @PUT("api/reservas/{id}/estado")
     suspend fun updateEstadoReserva(@Path("id") id: Long, @Body estado: EstadoRequest): Response<ReservaDTO>
 
-    // PAGOS
     @GET("api/pagos/apartamento/{id}")
-    suspend fun getPagosPorApartamento(@Path("id") id: Long): Response<PagoDTO>  // era List<PagoDTO>
+    suspend fun getPagosPorApartamento(@Path("id") id: Long): Response<PagoDTO>
 
     @PUT("api/pagos/apartamento/{id}/simular")
     suspend fun simularPagoApartamento(@Path("id") id: Long): Response<Void>

@@ -24,6 +24,7 @@ class ControlObrasFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.rvObrasEnProceso.layoutManager = LinearLayoutManager(requireContext())
         viewModel.fetchObras()
+
         viewModel.obras.observe(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Loading -> {
@@ -40,7 +41,7 @@ class ControlObrasFragment : Fragment() {
                     } else {
                         binding.tvNoObrasProceso.visibility = View.GONE
                         binding.rvObrasEnProceso.visibility = View.VISIBLE
-                        binding.rvObrasEnProceso.adapter = ObraAdapter(lista)
+                        binding.rvObrasEnProceso.adapter = ObraConPersonalAdapter(lista)
                     }
                 }
                 is Resource.Error -> {

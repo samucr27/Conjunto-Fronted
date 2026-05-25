@@ -43,6 +43,8 @@
             app:destination="@id/reservasAdminFragment" />
         <action android:id="@+id/action_adminDashboardFragment_to_zonasComunesAdminFragment"
             app:destination="@id/zonasComunesAdminFragment" />
+        <action android:id="@+id/action_adminDashboardFragment_to_personalObraFragment"
+            app:destination="@id/personalObraFragment" />
     </fragment>
 
     <fragment
@@ -72,6 +74,12 @@
         android:id="@+id/zonasComunesAdminFragment"
         android:name="com.example.conjuntoresidencial.ui.admin.ZonasComunesAdminFragment"
         tools:layout="@layout/fragment_zonas_comunes_admin" />
+
+    <!-- PERSONAL DE OBRA -->
+    <fragment
+        android:id="@+id/personalObraFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.PersonalObraFragment"
+        tools:layout="@layout/fragment_personal_obra" />
 
     <fragment
         android:id="@+id/propietarioDashboardFragment"

@@ -47,31 +47,18 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <LinearLayout
-            android:id="@+id/layoutEmpty"
+        <TextView
+            android:id="@+id/tvNoVehiculos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:visibility="visible"
+            android:text="No tienes vehículos registrados"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextSecondary"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/header"
             app:layout_constraintBottom_toTopOf="@id/btnAgregarVehiculo"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@android:drawable/ic_menu_directions"
-                android:alpha="0.3"
-                android:layout_marginBottom="12dp"/>
-            <TextView
-                android:id="@+id/tvNoVehiculos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="No tienes vehículos registrados"
-                android:textSize="15sp"
-                android:textColor="@color/colorTextSecondary"/>
-        </LinearLayout>
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <ProgressBar
             android:id="@+id/progressVehiculos"

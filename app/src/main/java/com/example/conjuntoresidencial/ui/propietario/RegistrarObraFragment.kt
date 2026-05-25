@@ -6,13 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.CheckBox
+import android.widget.LinearLayout
+import android.widget.ScrollView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentRegistrarObraBinding
+import com.example.conjuntoresidencial.model.PersonalObraDTO
 import com.example.conjuntoresidencial.util.Resource
 import com.example.conjuntoresidencial.util.SessionManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
+import com.example.conjuntoresidencial.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -71,8 +83,13 @@ class RegistrarObraFragment : Fragment() {
                 }
                 is Resource.Success -> {
                     binding.progressRegistrarObra.visibility = View.GONE
-                    Snackbar.make(binding.root, "Obra registrada exitosamente", Snackbar.LENGTH_SHORT).show()
-                    findNavController().popBackStack()
+                    val obraId = resource.data?.id
+                    if (obraId != null) {
+                        mostrarDialogAgregarPersonal(obraId)
+                    } else {
+                        Snackbar.make(binding.root, "Obra registrada exitosamente", Snackbar.LENGTH_SHORT).show()
+                        findNavController().popBackStack()
+                    }
                 }
                 is Resource.Error -> {
                     binding.progressRegistrarObra.visibility = View.GONE
@@ -81,6 +98,40 @@ class RegistrarObraFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun mostrarDialogAgregarPersonal(obraId: Long) {
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_agregar_personal_obra, null)
+        AlertDialog.Builder(requireContext())
+            .setTitle("Agregar Personal (opcional)")
+            .setView(dialogView)
+            .setPositiveButton("Guardar") { _, _ ->
+                val nombre = dialogView.findViewById<TextInputEditText>(R.id.etNombrePersonal).text.toString().trim()
+                val cedula = dialogView.findViewById<TextInputEditText>(R.id.etCedulaPersonal).text.toString().trim()
+                val arl = dialogView.findViewById<CheckBox>(R.id.cbArlPersonal).isChecked
+                if (nombre.isNotBlank() && cedula.isNotBlank()) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            RetrofitClient.instance.createPersonalObra(
+                                PersonalObraDTO(null, nombre, cedula, arl, obraId)
+                            )
+                        } catch (_: Exception) {}
+                        withContext(Dispatchers.Main) {
+                            Snackbar.make(binding.root, "Obra y personal registrados", Snackbar.LENGTH_SHORT).show()
+                            findNavController().popBackStack()
+                        }
+                    }
+                } else {
+                    Snackbar.make(binding.root, "Obra registrada exitosamente", Snackbar.LENGTH_SHORT).show()
+                    findNavController().popBackStack()
+                }
+            }
+            .setNegativeButton("Omitir") { _, _ ->
+                Snackbar.make(binding.root, "Obra registrada exitosamente", Snackbar.LENGTH_SHORT).show()
+                findNavController().popBackStack()
+            }
+            .show()
     }
 
     private fun showDatePicker(onDate: (String) -> Unit) {

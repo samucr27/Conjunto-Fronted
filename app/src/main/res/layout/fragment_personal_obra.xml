@@ -6,29 +6,58 @@
         android:layout_height="match_parent"
         android:background="@color/colorSurface">
 
-        <TextView android:id="@+id/tvPersonalTitulo"
-            android:layout_width="0dp" android:layout_height="80dp"
-            android:text="Personal Autorizado" android:textSize="20sp"
-            android:textStyle="bold" android:textColor="@color/white"
+        <LinearLayout
+            android:id="@+id/header"
+            android:layout_width="0dp"
+            android:layout_height="90dp"
             android:background="@color/colorPrimary"
-            android:gravity="center_vertical" android:paddingStart="24dp"
+            android:gravity="center_vertical"
+            android:paddingStart="24dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Personal de Obra" android:textSize="22sp"
+                    android:textStyle="bold" android:textColor="@color/white"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Directorio de toderos registrados"
+                    android:textSize="12sp" android:textColor="@color/white" android:alpha="0.8"/>
+            </LinearLayout>
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPersonalObra"
-            android:layout_width="0dp" android:layout_height="0dp"
-            android:layout_margin="16dp"
-            app:layout_constraintTop_toBottomOf="@id/tvPersonalTitulo"
-            app:layout_constraintBottom_toTopOf="@id/btnRegistrarTrabajador"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="8dp"
+            android:clipToPadding="false"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/header"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnRegistrarTrabajador"
-            android:layout_width="0dp" android:layout_height="56dp"
-            android:layout_margin="16dp" android:text="Registrar Operario"
+        <TextView
+            android:id="@+id/tvNoPersonal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No hay personal registrado"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextSecondary"
+            android:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/header"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ProgressBar
+            android:id="@+id/progressPersonal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/header"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>

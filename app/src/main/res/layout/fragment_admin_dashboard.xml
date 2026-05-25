@@ -163,6 +163,34 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- CARD PERSONAL DE OBRA -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardPersonalObra"
+                    android:layout_width="0dp" android:layout_height="140dp"
+                    android:layout_columnWeight="1" android:layout_margin="8dp"
+                    app:cardCornerRadius="16dp" app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/colorCard">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="52dp" android:layout_height="52dp"
+                            app:cardCornerRadius="14dp" app:cardElevation="0dp"
+                            app:cardBackgroundColor="#EDE7F6"
+                            android:layout_marginBottom="10dp">
+                            <ImageView android:layout_width="28dp" android:layout_height="28dp"
+                                android:layout_gravity="center"
+                                android:src="@android:drawable/ic_menu_my_calendar"
+                                app:tint="@color/colorPrimary"/>
+                        </com.google.android.material.card.MaterialCardView>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Personal" android:textStyle="bold" android:textSize="14sp"
+                            android:textColor="@color/colorTextPrimary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="de Obra" android:textSize="11sp"
+                            android:textColor="@color/colorTextSecondary"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
             </GridLayout>
         </ScrollView>
     </LinearLayout>

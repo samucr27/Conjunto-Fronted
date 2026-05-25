@@ -54,6 +54,9 @@ class AdminDashboardFragment : Fragment() {
         binding.cardZonasAdmin.setOnClickListener {
             findNavController().navigate(R.id.action_adminDashboardFragment_to_zonasComunesAdminFragment)
         }
+        binding.cardPersonalObra.setOnClickListener {
+            findNavController().navigate(R.id.action_adminDashboardFragment_to_personalObraFragment)
+        }
         binding.btnCerrarSesion.setOnClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle("Cerrar sesión")
