@@ -38,65 +38,105 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <!-- Card info apartamento -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="3dp"
-                app:cardBackgroundColor="@color/colorCard">
+                app:cardBackgroundColor="@color/colorPrimary">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="20dp">
+
+                    <TextView
+                        android:id="@+id/tvInfoTorre"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/white"
+                        android:alpha="0.3"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            app:cardCornerRadius="10dp"
-                            app:cardElevation="0dp"
-                            app:cardBackgroundColor="#EDE7F6"
-                            android:layout_marginEnd="12dp">
-                            <ImageView
-                                android:layout_width="22dp"
-                                android:layout_height="22dp"
-                                android:layout_gravity="center"
-                                android:src="@android:drawable/ic_menu_agenda"
-                                app:tint="@color/colorPrimary"/>
-                        </com.google.android.material.card.MaterialCardView>
-                        <TextView
+                        android:orientation="horizontal">
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Residentes"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/colorTextPrimary"/>
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnAgregarResidente"
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:text="+ Añadir"
-                            android:textSize="12sp"
-                            app:cornerRadius="10dp"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Torre"
+                                android:textSize="11sp"
+                                android:textColor="@color/white"
+                                android:alpha="0.7"/>
+                            <TextView
+                                android:id="@+id/tvInfoTorreNum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Apartamento"
+                                android:textSize="11sp"
+                                android:textColor="@color/white"
+                                android:alpha="0.7"/>
+                            <TextView
+                                android:id="@+id/tvInfoAptoNum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Clave"
+                                android:textSize="11sp"
+                                android:textColor="@color/white"
+                                android:alpha="0.7"/>
+                            <TextView
+                                android:id="@+id/tvInfoClave"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"/>
+                        </LinearLayout>
                     </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvResidentesApto"
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"/>
-
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Card residentes -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -119,33 +159,75 @@
                         android:gravity="center_vertical"
                         android:layout_marginBottom="12dp">
                         <com.google.android.material.card.MaterialCardView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            app:cardCornerRadius="10dp"
-                            app:cardElevation="0dp"
-                            app:cardBackgroundColor="#EDE7F6"
-                            android:layout_marginEnd="12dp">
-                            <ImageView
-                                android:layout_width="22dp"
-                                android:layout_height="22dp"
+                            android:layout_width="40dp" android:layout_height="40dp"
+                            app:cardCornerRadius="10dp" app:cardElevation="0dp"
+                            app:cardBackgroundColor="#EDE7F6" android:layout_marginEnd="12dp">
+                            <ImageView android:layout_width="22dp" android:layout_height="22dp"
+                                android:layout_gravity="center"
+                                android:src="@android:drawable/ic_menu_agenda"
+                                app:tint="@color/colorPrimary"/>
+                        </com.google.android.material.card.MaterialCardView>
+                        <TextView
+                            android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="Residentes"
+                            android:textSize="16sp" android:textStyle="bold"
+                            android:textColor="@color/colorTextPrimary"/>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnAgregarResidente"
+                            android:layout_width="wrap_content" android:layout_height="40dp"
+                            android:text="+ Añadir" android:textSize="12sp"
+                            app:cornerRadius="10dp"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvResidentesApto"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card vehículos -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="@color/colorCard">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="40dp" android:layout_height="40dp"
+                            app:cardCornerRadius="10dp" app:cardElevation="0dp"
+                            app:cardBackgroundColor="#EDE7F6" android:layout_marginEnd="12dp">
+                            <ImageView android:layout_width="22dp" android:layout_height="22dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_directions"
                                 app:tint="@color/colorPrimary"/>
                         </com.google.android.material.card.MaterialCardView>
                         <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Vehículos Autorizados"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
+                            android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:text="Vehículos Autorizados"
+                            android:textSize="16sp" android:textStyle="bold"
                             android:textColor="@color/colorTextPrimary"/>
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnAgregarVehiculoAdmin"
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:text="+ Añadir"
-                            android:textSize="12sp"
+                            android:layout_width="wrap_content" android:layout_height="40dp"
+                            android:text="+ Añadir" android:textSize="12sp"
                             app:cornerRadius="10dp"
                             style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
                     </LinearLayout>

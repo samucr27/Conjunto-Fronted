@@ -6,14 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentDetalleApartamentoBinding
 import com.example.conjuntoresidencial.model.ResidenteDTO
 import com.example.conjuntoresidencial.model.VehiculoDTO
-import com.google.android.material.textfield.TextInputEditText
 import com.example.conjuntoresidencial.R
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,6 +36,7 @@ class DetalleApartamentoFragment : Fragment() {
         binding.rvResidentesApto.layoutManager = LinearLayoutManager(requireContext())
         binding.rvVehiculosApto.layoutManager = LinearLayoutManager(requireContext())
 
+        cargarInfoApartamento()
         cargarResidentes()
         cargarVehiculos()
 
@@ -44,15 +44,30 @@ class DetalleApartamentoFragment : Fragment() {
         binding.btnAgregarVehiculoAdmin.setOnClickListener { mostrarDialogVehiculo() }
     }
 
+    private fun cargarInfoApartamento() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = RetrofitClient.instance.getApartamentoById(aptoId)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful && response.body() != null) {
+                        val apto = response.body()!!
+                        binding.tvInfoTorre.text = "Torre ${apto.torre} — Apto ${apto.apto}"
+                        binding.tvInfoTorreNum.text = apto.torre
+                        binding.tvInfoAptoNum.text = apto.apto
+                        binding.tvInfoClave.text = apto.contrasena
+                    }
+                }
+            } catch (_: Exception) {}
+        }
+    }
+
     private fun cargarResidentes() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = RetrofitClient.instance.getResidentesPorApartamento(aptoId)
                 withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        binding.rvResidentesApto.adapter =
-                            ResidenteAdapter(response.body() ?: emptyList())
-                    }
+                    if (response.isSuccessful)
+                        binding.rvResidentesApto.adapter = ResidenteAdapter(response.body() ?: emptyList())
                 }
             } catch (_: Exception) {}
         }
@@ -63,10 +78,8 @@ class DetalleApartamentoFragment : Fragment() {
             try {
                 val response = RetrofitClient.instance.getVehiculosPorApartamento(aptoId)
                 withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        binding.rvVehiculosApto.adapter =
-                            VehiculoAdminAdapter(response.body() ?: emptyList())
-                    }
+                    if (response.isSuccessful)
+                        binding.rvVehiculosApto.adapter = VehiculoAdminAdapter(response.body() ?: emptyList())
                 }
             } catch (_: Exception) {}
         }
