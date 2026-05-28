@@ -45,6 +45,9 @@
             app:destination="@id/zonasComunesAdminFragment" />
         <action android:id="@+id/action_adminDashboardFragment_to_personalObraFragment"
             app:destination="@id/personalObraFragment" />
+        <!-- NUEVA ACCIÓN REGISTRADA -->
+        <action android:id="@+id/action_adminDashboardFragment_to_carteraAdminFragment"
+            app:destination="@id/carteraAdminFragment" />
     </fragment>
 
     <fragment
@@ -81,6 +84,14 @@
         android:name="com.example.conjuntoresidencial.ui.admin.PersonalObraFragment"
         tools:layout="@layout/fragment_personal_obra" />
 
+    <!-- NUEVO DESTINO: CARTERA DE ADMINISTRACIÓN -->
+    <fragment
+        android:id="@+id/carteraAdminFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.CarteraAdminFragment"
+        tools:layout="@layout/fragment_cartera_admin"
+        tools:label="CarteraAdminFragment" />
+
+    <!-- SECCIÓN PROPIETARIOS -->
     <fragment
         android:id="@+id/propietarioDashboardFragment"
         android:name="com.example.conjuntoresidencial.ui.propietario.PropietarioDashboardFragment"

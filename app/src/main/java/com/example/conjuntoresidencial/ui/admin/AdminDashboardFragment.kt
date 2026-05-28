@@ -35,6 +35,7 @@ class AdminDashboardFragment : Fragment() {
             }
         )
 
+        // Enlaces de Navegación del Dashboard
         binding.cardDirectorioAptos.setOnClickListener {
             findNavController().navigate(R.id.action_adminDashboardFragment_to_directorioApartamentosFragment)
         }
@@ -50,11 +51,16 @@ class AdminDashboardFragment : Fragment() {
         binding.cardPersonalObra.setOnClickListener {
             findNavController().navigate(R.id.action_adminDashboardFragment_to_personalObraFragment)
         }
+
+        // CORRECCIÓN: Evento de la nueva pantalla de Cartera General
+        binding.cardCarteraAdmin.setOnClickListener {
+            findNavController().navigate(R.id.action_adminDashboardFragment_to_carteraAdminFragment)
+        }
+
         binding.btnCerrarSesion.setOnClickListener {
             mostrarDialogSalir()
         }
 
-        // Badge de notificaciones — click abre el dialog de alertas
         binding.btnNotificaciones.setOnClickListener {
             mostrarDialogNotificaciones()
         }
@@ -62,7 +68,6 @@ class AdminDashboardFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // Actualizar badge cada vez que el admin regresa al dashboard
         actualizarBadge()
     }
 
@@ -111,7 +116,6 @@ class AdminDashboardFragment : Fragment() {
             .setNegativeButton("Cerrar", null)
             .show()
 
-        // Marcar como leídas al abrir
         AdminNotificacionManager.marcarTodasLeidas(requireContext())
         actualizarBadge()
     }
