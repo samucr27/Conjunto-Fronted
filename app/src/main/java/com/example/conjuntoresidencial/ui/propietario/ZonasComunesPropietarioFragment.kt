@@ -31,12 +31,12 @@ class ZonasComunesPropietarioFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rvZonasPropietario.layoutManager = LinearLayoutManager(requireContext())
-        val aptoId = SessionManager(requireContext()).getApartamentoId()
+        val session = SessionManager(requireContext())
+        val aptoId = session.getApartamentoId()
+        val torreApto = session.getTorreApto()
         viewModel.fetchZonas()
 
-        binding.swipeRefreshZonas.setOnRefreshListener {
-            viewModel.fetchZonas()
-        }
+        binding.swipeRefreshZonas.setOnRefreshListener { viewModel.fetchZonas() }
 
         viewModel.zonas.observe(viewLifecycleOwner) { resource ->
             when (resource) {
@@ -53,7 +53,7 @@ class ZonasComunesPropietarioFragment : Fragment() {
                     } else {
                         binding.tvNoZonasProp.visibility = View.GONE
                         binding.rvZonasPropietario.adapter = ZonaAdapter(lista) { zona ->
-                            mostrarDialogReserva(zona, aptoId)
+                            mostrarDialogReserva(zona, aptoId, torreApto)
                         }
                     }
                 }
@@ -75,10 +75,10 @@ class ZonasComunesPropietarioFragment : Fragment() {
         }
     }
 
-    private fun mostrarDialogReserva(zona: ZonaComunDTO, aptoId: Long) {
+    private fun mostrarDialogReserva(zona: ZonaComunDTO, aptoId: Long, torreApto: String) {
         var fechaSeleccionada = ""
         var horaSeleccionada = ""
-        val cal = Calendar.getInstance()
+        var calFecha = Calendar.getInstance()
 
         val fechaText = android.widget.TextView(requireContext()).apply {
             text = "Fecha: No seleccionada"
@@ -88,22 +88,42 @@ class ZonasComunesPropietarioFragment : Fragment() {
             text = "Hora: No seleccionada"
             setPadding(16, 8, 16, 8)
         }
+
         val btnFecha = com.google.android.material.button.MaterialButton(requireContext()).apply {
             text = "Seleccionar Fecha"
             setOnClickListener {
-                DatePickerDialog(requireContext(), { _, y, m, d ->
+                val hoy = Calendar.getInstance()
+                val picker = DatePickerDialog(requireContext(), { _, y, m, d ->
+                    calFecha = Calendar.getInstance().apply { set(y, m, d) }
                     fechaSeleccionada = String.format("%04d-%02d-%02d", y, m + 1, d)
                     fechaText.text = "Fecha: $fechaSeleccionada"
-                }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
+                    horaSeleccionada = ""
+                    horaText.text = "Hora: No seleccionada"
+                }, hoy.get(Calendar.YEAR), hoy.get(Calendar.MONTH), hoy.get(Calendar.DAY_OF_MONTH))
+                picker.datePicker.minDate = hoy.timeInMillis
+                picker.show()
             }
         }
+
         val btnHora = com.google.android.material.button.MaterialButton(requireContext()).apply {
             text = "Seleccionar Hora"
             setOnClickListener {
+                if (fechaSeleccionada.isEmpty()) {
+                    Snackbar.make(binding.root, "Primero selecciona una fecha", Snackbar.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                val ahora = Calendar.getInstance()
                 TimePickerDialog(requireContext(), { _, h, min ->
-                    horaSeleccionada = String.format("%02d:%02d", h, min)
-                    horaText.text = "Hora: $horaSeleccionada"
-                }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
+                    val esHoy = calFecha.get(Calendar.YEAR) == ahora.get(Calendar.YEAR) &&
+                            calFecha.get(Calendar.DAY_OF_YEAR) == ahora.get(Calendar.DAY_OF_YEAR)
+                    if (esHoy && (h < ahora.get(Calendar.HOUR_OF_DAY) ||
+                                (h == ahora.get(Calendar.HOUR_OF_DAY) && min <= ahora.get(Calendar.MINUTE)))) {
+                        Snackbar.make(binding.root, "No puedes reservar en una hora pasada", Snackbar.LENGTH_SHORT).show()
+                    } else {
+                        horaSeleccionada = String.format("%02d:%02d", h, min)
+                        horaText.text = "Hora: $horaSeleccionada"
+                    }
+                }, ahora.get(Calendar.HOUR_OF_DAY), ahora.get(Calendar.MINUTE), true).show()
             }
         }
 
@@ -123,7 +143,14 @@ class ZonasComunesPropietarioFragment : Fragment() {
                 if (fechaSeleccionada.isEmpty() || horaSeleccionada.isEmpty()) {
                     Snackbar.make(binding.root, "Selecciona fecha y hora", Snackbar.LENGTH_SHORT).show()
                 } else {
-                    viewModel.crearReserva(fechaSeleccionada, horaSeleccionada, zona.id!!, aptoId)
+                    viewModel.crearReserva(
+                        fecha = fechaSeleccionada,
+                        hora = horaSeleccionada,
+                        zonaComunId = zona.id!!,
+                        apartamentoId = aptoId,
+                        nombreZona = zona.nombre,
+                        torreApto = torreApto
+                    )
                 }
             }
             .setNegativeButton("Cancelar", null)

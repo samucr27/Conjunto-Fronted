@@ -106,4 +106,10 @@ interface ApiService {
 
     @PUT("api/pagos/{id}")
     suspend fun updatePago(@Path("id") id: Long, @Body pago: PagoDTO): Response<PagoDTO>
+
+    @GET("api/obras")
+    suspend fun getAllObras(): Response<List<ObraDTO>>
+
+    @PUT("api/obras/{id}/estado")
+    suspend fun cambiarEstadoObra(@Path("id") id: Long, @Body estado: EstadoRequest): Response<ObraDTO>
 }

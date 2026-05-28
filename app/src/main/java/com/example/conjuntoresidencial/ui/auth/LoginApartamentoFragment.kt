@@ -45,6 +45,8 @@ class LoginApartamentoFragment : Fragment() {
                     binding.progressApto.visibility = View.GONE
                     resource.data?.let {
                         sessionManager.saveApartamentoId(it.id)
+                        sessionManager.saveTorre(it.torre)
+                        sessionManager.saveApto(it.apto)
                         sessionManager.saveRol("PROPIETARIO")
                         findNavController().navigate(R.id.action_loginApartamentoFragment_to_propietarioDashboardFragment)
                     }

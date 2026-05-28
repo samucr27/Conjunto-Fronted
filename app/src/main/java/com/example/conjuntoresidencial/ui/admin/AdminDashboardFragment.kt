@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentAdminDashboardBinding
+import com.example.conjuntoresidencial.util.AdminNotificacionManager
 import com.example.conjuntoresidencial.util.SessionManager
 
 class AdminDashboardFragment : Fragment() {
@@ -29,15 +30,7 @@ class AdminDashboardFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle("Cerrar sesión")
-                        .setMessage("¿Deseas salir?")
-                        .setPositiveButton("Sí") { _, _ ->
-                            SessionManager(requireContext()).clearSession()
-                            findNavController().navigate(R.id.loginSelectorFragment)
-                        }
-                        .setNegativeButton("Cancelar", null)
-                        .show()
+                    mostrarDialogSalir()
                 }
             }
         )
@@ -58,17 +51,85 @@ class AdminDashboardFragment : Fragment() {
             findNavController().navigate(R.id.action_adminDashboardFragment_to_personalObraFragment)
         }
         binding.btnCerrarSesion.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle("Cerrar sesión")
-                .setMessage("¿Deseas salir?")
-                .setPositiveButton("Sí") { _, _ ->
-                    SessionManager(requireContext()).clearSession()
-                    findNavController().navigate(R.id.loginSelectorFragment)
-                }
-                .setNegativeButton("Cancelar", null)
-                .show()
+            mostrarDialogSalir()
+        }
+
+        // Badge de notificaciones — click abre el dialog de alertas
+        binding.btnNotificaciones.setOnClickListener {
+            mostrarDialogNotificaciones()
         }
     }
 
-    override fun onDestroyView() { super.onDestroyView(); _binding = null }
+    override fun onResume() {
+        super.onResume()
+        // Actualizar badge cada vez que el admin regresa al dashboard
+        actualizarBadge()
+    }
+
+    private fun actualizarBadge() {
+        val noLeidas = AdminNotificacionManager.contarNoLeidas(requireContext())
+        if (noLeidas > 0) {
+            binding.tvBadgeNotificaciones.visibility = View.VISIBLE
+            binding.tvBadgeNotificaciones.text = if (noLeidas > 9) "9+" else noLeidas.toString()
+        } else {
+            binding.tvBadgeNotificaciones.visibility = View.GONE
+        }
+    }
+
+    private fun mostrarDialogNotificaciones() {
+        val notificaciones = AdminNotificacionManager.getNotificaciones(requireContext())
+
+        if (notificaciones.isEmpty()) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Actividad reciente")
+                .setMessage("No hay notificaciones nuevas.")
+                .setPositiveButton("Cerrar", null)
+                .show()
+            return
+        }
+
+        val mensaje = buildString {
+            notificaciones.forEach { n ->
+                val icono = if (n.tipo == "VEHICULO") "🚗" else "📅"
+                appendLine("$icono ${n.mensaje}")
+                appendLine("   ${n.fecha}")
+                appendLine()
+            }
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Actividad reciente (${notificaciones.size})")
+            .setMessage(mensaje.trim())
+            .setPositiveButton("Marcar todas como leídas") { _, _ ->
+                AdminNotificacionManager.marcarTodasLeidas(requireContext())
+                actualizarBadge()
+            }
+            .setNeutralButton("Limpiar todo") { _, _ ->
+                AdminNotificacionManager.limpiarTodas(requireContext())
+                actualizarBadge()
+            }
+            .setNegativeButton("Cerrar", null)
+            .show()
+
+        // Marcar como leídas al abrir
+        AdminNotificacionManager.marcarTodasLeidas(requireContext())
+        actualizarBadge()
+    }
+
+    private fun mostrarDialogSalir() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Cerrar sesión")
+            .setMessage("¿Deseas salir?")
+            .setPositiveButton("Sí") { _, _ ->
+                SessionManager(requireContext()).clearSession()
+                findNavController().navigate(R.id.loginSelectorFragment)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

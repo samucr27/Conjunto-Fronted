@@ -1,15 +1,17 @@
 package com.example.conjuntoresidencial.ui.propietario
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.model.VehiculoDTO
+import com.example.conjuntoresidencial.util.AdminNotificacionManager
 import com.example.conjuntoresidencial.util.Resource
 import kotlinx.coroutines.launch
 
-class MisVehiculosViewModel : ViewModel() {
+class MisVehiculosViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _vehiculos = MutableLiveData<Resource<List<VehiculoDTO>>>()
     val vehiculos: LiveData<Resource<List<VehiculoDTO>>> get() = _vehiculos
@@ -30,11 +32,19 @@ class MisVehiculosViewModel : ViewModel() {
         }
     }
 
-    fun agregarVehiculo(vehiculo: VehiculoDTO) {
+    fun agregarVehiculo(vehiculo: VehiculoDTO, torreApto: String) {
         viewModelScope.launch {
             try {
-                RetrofitClient.instance.createVehiculo(vehiculo)
-                fetchVehiculos(vehiculo.apartamentoId)
+                val response = RetrofitClient.instance.createVehiculo(vehiculo)
+                if (response.isSuccessful) {
+                    // Guardar notificación local para el admin
+                    AdminNotificacionManager.agregarNotificacion(
+                        context = getApplication(),
+                        tipo = "VEHICULO",
+                        mensaje = "Nuevo vehículo registrado — ${vehiculo.placa} (${vehiculo.marca} ${vehiculo.color}) · $torreApto"
+                    )
+                    fetchVehiculos(vehiculo.apartamentoId)
+                }
             } catch (_: Exception) {}
         }
     }

@@ -19,6 +19,12 @@ class PersonalAdapter(private val lista: List<PersonalObraDTO>) :
         h.binding.tvNombrePersonal.text = p.nombreTrabajador
         h.binding.tvCedulaPersonal.text = "CC: ${p.cedula}"
         h.binding.tvArlPersonal.text = if (p.arlEstado) "✓ ARL vigente" else "✗ ARL no vigente"
+        if (!p.torrePiso.isNullOrBlank() && !p.aptoNum.isNullOrBlank()) {
+            h.binding.tvUbicacionPersonal.text = "Personal externo — Torre ${p.torrePiso} Apto ${p.aptoNum}"
+            h.binding.tvUbicacionPersonal.visibility = android.view.View.VISIBLE
+        } else {
+            h.binding.tvUbicacionPersonal.visibility = android.view.View.GONE
+        }
     }
 
     override fun getItemCount() = lista.size

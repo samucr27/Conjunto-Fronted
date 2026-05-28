@@ -7,6 +7,7 @@
         android:orientation="vertical"
         android:background="@color/colorSurface">
 
+        <!-- HEADER con badge de notificaciones -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="90dp"
@@ -14,6 +15,7 @@
             android:gravity="center_vertical"
             android:paddingStart="24dp"
             android:paddingEnd="16dp">
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -35,6 +37,46 @@
                     android:textColor="@color/white"
                     android:alpha="0.8"/>
             </LinearLayout>
+
+            <!-- Botón de notificaciones con badge -->
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNotificaciones"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:padding="0dp"
+                    app:icon="@android:drawable/ic_popup_reminder"
+                    app:iconSize="20dp"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    app:strokeColor="@color/white"
+                    app:iconTint="@color/white"
+                    app:cornerRadius="20dp"/>
+
+                <!-- Badge rojo -->
+                <TextView
+                    android:id="@+id/tvBadgeNotificaciones"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="-2dp"
+                    android:layout_marginEnd="-2dp"
+                    android:background="@drawable/badge_background"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:text="0"
+                    android:visibility="gone"/>
+            </FrameLayout>
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCerrarSesion"
                 android:layout_width="wrap_content"
@@ -163,7 +205,6 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- CARD PERSONAL DE OBRA -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardPersonalObra"
                     android:layout_width="0dp" android:layout_height="140dp"

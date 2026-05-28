@@ -1,16 +1,18 @@
 package com.example.conjuntoresidencial.ui.propietario
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.model.ReservaDTO
 import com.example.conjuntoresidencial.model.ZonaComunDTO
+import com.example.conjuntoresidencial.util.AdminNotificacionManager
 import com.example.conjuntoresidencial.util.Resource
 import kotlinx.coroutines.launch
 
-class ZonasPropietarioViewModel : ViewModel() {
+class ZonasPropietarioViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _zonas = MutableLiveData<Resource<List<ZonaComunDTO>>>()
     val zonas: LiveData<Resource<List<ZonaComunDTO>>> get() = _zonas
@@ -32,13 +34,26 @@ class ZonasPropietarioViewModel : ViewModel() {
         }
     }
 
-    fun crearReserva(fecha: String, hora: String, zonaComunId: Long, apartamentoId: Long) {
+    fun crearReserva(
+        fecha: String,
+        hora: String,
+        zonaComunId: Long,
+        apartamentoId: Long,
+        nombreZona: String,
+        torreApto: String
+    ) {
         _reservaState.value = Resource.Loading
         viewModelScope.launch {
             try {
                 val reserva = ReservaDTO(null, fecha, hora, "PENDIENTE", zonaComunId, apartamentoId)
                 val response = RetrofitClient.instance.createReserva(reserva)
                 if (response.isSuccessful && response.body() != null) {
+                    // Guardar notificación local para el admin
+                    AdminNotificacionManager.agregarNotificacion(
+                        context = getApplication(),
+                        tipo = "RESERVA",
+                        mensaje = "Nueva reserva — $nombreZona el $fecha a las $hora · $torreApto"
+                    )
                     _reservaState.value = Resource.Success(response.body())
                 } else {
                     _reservaState.value = Resource.Error("Error al crear reserva")

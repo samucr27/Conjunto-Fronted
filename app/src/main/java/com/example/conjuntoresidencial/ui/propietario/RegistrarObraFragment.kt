@@ -6,11 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentRegistrarObraBinding
 import com.example.conjuntoresidencial.model.PersonalObraDTO
@@ -30,6 +28,7 @@ class RegistrarObraFragment : Fragment() {
     private var _binding: FragmentRegistrarObraBinding? = null
     private val binding get() = _binding!!
     private val viewModel: RegistrarObraViewModel by viewModels()
+    private val personalList = mutableListOf<PersonalObraDTO>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRegistrarObraBinding.inflate(inflater, container, false)
@@ -46,8 +45,15 @@ class RegistrarObraFragment : Fragment() {
         binding.spinnerEstadoObra.setAdapter(adapter)
         binding.spinnerEstadoObra.setText(estados[0], false)
 
-        binding.etFechaInicioObra.setOnClickListener { showDatePicker { binding.etFechaInicioObra.setText(it) } }
-        binding.etFechaFinObra.setOnClickListener { showDatePicker { binding.etFechaFinObra.setText(it) } }
+        // Date pickers bloqueando fechas anteriores a hoy
+        binding.etFechaInicioObra.setOnClickListener {
+            showDatePicker { binding.etFechaInicioObra.setText(it) }
+        }
+        binding.etFechaFinObra.setOnClickListener {
+            showDatePicker { binding.etFechaFinObra.setText(it) }
+        }
+
+        binding.btnAgregarPersonal.setOnClickListener { agregarPersonalDesdeCampos() }
 
         binding.btnGuardarObra.setOnClickListener {
             val descripcion = binding.etDescripcionObra.text.toString().trim()
@@ -56,7 +62,7 @@ class RegistrarObraFragment : Fragment() {
             val estado = binding.spinnerEstadoObra.text.toString()
 
             if (descripcion.isEmpty() || fechaInicio.isEmpty() || fechaFin.isEmpty()) {
-                Snackbar.make(binding.root, "Complete todos los campos", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Complete todos los campos de la obra", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -80,8 +86,8 @@ class RegistrarObraFragment : Fragment() {
                 is Resource.Success -> {
                     binding.progressRegistrarObra.visibility = View.GONE
                     val obraId = resource.data?.id
-                    if (obraId != null) {
-                        cargarYMostrarPersonal(obraId)
+                    if (obraId != null && personalList.isNotEmpty()) {
+                        guardarPersonalYSalir(obraId)
                     } else {
                         Snackbar.make(binding.root, "Obra registrada exitosamente", Snackbar.LENGTH_SHORT).show()
                         findNavController().popBackStack()
@@ -96,91 +102,53 @@ class RegistrarObraFragment : Fragment() {
         }
     }
 
-    private fun cargarYMostrarPersonal(obraId: Long) {
-        binding.progressRegistrarObra.visibility = View.VISIBLE
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = RetrofitClient.instance.getTodoElPersonal()
-                withContext(Dispatchers.Main) {
-                    binding.progressRegistrarObra.visibility = View.GONE
-                    if (response.isSuccessful && !response.body().isNullOrEmpty()) {
-                        mostrarDialogSeleccionarPersonal(obraId, response.body()!!)
-                    } else {
-                        // No hay personal registrado, terminar directamente
-                        Snackbar.make(binding.root, "Obra registrada. No hay personal disponible.", Snackbar.LENGTH_SHORT).show()
-                        findNavController().popBackStack()
-                    }
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    binding.progressRegistrarObra.visibility = View.GONE
-                    Snackbar.make(binding.root, "Obra registrada exitosamente", Snackbar.LENGTH_SHORT).show()
-                    findNavController().popBackStack()
-                }
-            }
+    private fun agregarPersonalDesdeCampos() {
+        val nombre = binding.etNombrePersonalExterno.text.toString().trim()
+        val cc = binding.etCcPersonalExterno.text.toString().trim()
+        val arl = binding.switchArlPersonalExterno.isChecked
+
+        if (nombre.isEmpty() || cc.isEmpty()) {
+            Snackbar.make(binding.root, "Ingresa nombre y cédula del trabajador", Snackbar.LENGTH_SHORT).show()
+            return
         }
+
+        personalList.add(PersonalObraDTO(null, nombre, cc, arl, 0L))
+        binding.etNombrePersonalExterno.text?.clear()
+        binding.etCcPersonalExterno.text?.clear()
+        binding.switchArlPersonalExterno.isChecked = false
+
+        val count = personalList.size
+        binding.tvContadorPersonal.text = "$count trabajador${if (count != 1) "es" else ""} agregado${if (count != 1) "s" else ""}"
+        binding.tvContadorPersonal.visibility = View.VISIBLE
+        Snackbar.make(binding.root, "Trabajador agregado a la lista", Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun mostrarDialogSeleccionarPersonal(obraId: Long, listaPersonal: List<PersonalObraDTO>) {
-        val nombres = listaPersonal.map { it.nombreTrabajador }.toTypedArray()
-        val seleccionados = BooleanArray(listaPersonal.size) { false }
-
-        AlertDialog.Builder(requireContext())
-            .setTitle("Seleccionar Personal de Obra")
-            .setMultiChoiceItems(nombres, seleccionados) { _, index, isChecked ->
-                seleccionados[index] = isChecked
-            }
-            .setPositiveButton("Asignar") { _, _ ->
-                val personalElegido = listaPersonal.filterIndexed { index, _ -> seleccionados[index] }
-                if (personalElegido.isEmpty()) {
-                    Snackbar.make(binding.root, "Obra registrada. Sin personal asignado.", Snackbar.LENGTH_SHORT).show()
-                    findNavController().popBackStack()
-                } else {
-                    asignarPersonalAObra(obraId, personalElegido)
-                }
-            }
-            .setNegativeButton("Omitir") { _, _ ->
-                Snackbar.make(binding.root, "Obra registrada exitosamente", Snackbar.LENGTH_SHORT).show()
-                findNavController().popBackStack()
-            }
-            .show()
-    }
-
-    private fun asignarPersonalAObra(obraId: Long, personalElegido: List<PersonalObraDTO>) {
+    private fun guardarPersonalYSalir(obraId: Long) {
         binding.progressRegistrarObra.visibility = View.VISIBLE
         CoroutineScope(Dispatchers.IO).launch {
-            var exito = true
-            for (persona in personalElegido) {
-                try {
-                    // Se crea una copia vinculada a esta obra
-                    RetrofitClient.instance.createPersonalObra(
-                        PersonalObraDTO(
-                            id = null,
-                            nombreTrabajador = persona.nombreTrabajador,
-                            cedula = persona.cedula,
-                            arlEstado = persona.arlEstado,
-                            obraId = obraId
-                        )
-                    )
-                } catch (e: Exception) {
-                    exito = false
-                }
+            personalList.forEach { dto ->
+                try { RetrofitClient.instance.createPersonalObra(dto.copy(obraId = obraId)) }
+                catch (_: Exception) {}
             }
             withContext(Dispatchers.Main) {
                 binding.progressRegistrarObra.visibility = View.GONE
-                val msg = if (exito) "Obra y personal asignados correctamente"
-                else "Obra registrada, algunos errores al asignar personal"
-                Snackbar.make(binding.root, msg, Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Obra y personal registrados exitosamente", Snackbar.LENGTH_SHORT).show()
                 findNavController().popBackStack()
             }
         }
     }
 
+    // Bloquea fechas anteriores a hoy
     private fun showDatePicker(onDate: (String) -> Unit) {
-        val cal = Calendar.getInstance()
-        DatePickerDialog(requireContext(), { _, y, m, d ->
-            onDate(String.format("%04d-%02d-%02d", y, m + 1, d))
-        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
+        val hoy = Calendar.getInstance()
+        val picker = DatePickerDialog(
+            requireContext(), { _, y, m, d ->
+                onDate(String.format("%04d-%02d-%02d", y, m + 1, d))
+            },
+            hoy.get(Calendar.YEAR), hoy.get(Calendar.MONTH), hoy.get(Calendar.DAY_OF_MONTH)
+        )
+        picker.datePicker.minDate = hoy.timeInMillis
+        picker.show()
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }

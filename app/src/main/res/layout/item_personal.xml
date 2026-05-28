@@ -58,6 +58,14 @@
                 android:textSize="12sp"
                 android:textColor="@color/colorPrimary"
                 android:layout_marginTop="2dp"/>
+            <TextView
+                android:id="@+id/tvUbicacionPersonal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textColor="@color/colorTextSecondary"
+                android:layout_marginTop="2dp"
+                android:visibility="gone"/>
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

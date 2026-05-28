@@ -34,8 +34,9 @@
         </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
             <TextView
                 android:id="@+id/tvDescripcionObra"
@@ -55,6 +56,17 @@
                 android:textStyle="bold"
                 android:layout_marginTop="4dp"/>
         </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCambiarEstadoObra"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Finalizar"
+            android:textSize="11sp"
+            android:visibility="gone"
+            app:cornerRadius="10dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:strokeColor="@color/colorPrimary"/>
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

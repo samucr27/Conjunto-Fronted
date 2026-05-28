@@ -41,7 +41,19 @@ class ControlObrasFragment : Fragment() {
                     } else {
                         binding.tvNoObrasProceso.visibility = View.GONE
                         binding.rvObrasEnProceso.visibility = View.VISIBLE
-                        binding.rvObrasEnProceso.adapter = ObraConPersonalAdapter(lista)
+
+                        // Guardar posición del scroll antes de actualizar
+                        val scrollState = binding.rvObrasEnProceso.layoutManager?.onSaveInstanceState()
+
+                        binding.rvObrasEnProceso.adapter = ObraConPersonalAdapter(
+                            lista = lista,
+                            onCambiarEstado = { obraId, nuevoEstado ->
+                                viewModel.cambiarEstado(obraId, nuevoEstado)
+                            }
+                        )
+
+                        // Restaurar posición del scroll
+                        binding.rvObrasEnProceso.layoutManager?.onRestoreInstanceState(scrollState)
                     }
                 }
                 is Resource.Error -> {
