@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.model.EstadoRequest
 import com.example.conjuntoresidencial.model.ReservaDTO
+import com.example.conjuntoresidencial.util.Evento
 import com.example.conjuntoresidencial.util.Resource
 import kotlinx.coroutines.launch
 
@@ -14,6 +15,10 @@ class ReservasAdminViewModel : ViewModel() {
 
     private val _reservas = MutableLiveData<Resource<List<ReservaDTO>>>()
     val reservas: LiveData<Resource<List<ReservaDTO>>> get() = _reservas
+
+    // Mensajes de una sola vez (por ejemplo, "no se pudo aprobar: choca con otra reserva")
+    private val _mensaje = MutableLiveData<Evento<String>>()
+    val mensaje: LiveData<Evento<String>> get() = _mensaje
 
     fun fetchReservas() {
         _reservas.value = Resource.Loading
@@ -33,8 +38,17 @@ class ReservasAdminViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = RetrofitClient.instance.updateEstadoReserva(reservaId, EstadoRequest(estado))
-                if (response.isSuccessful) fetchReservas()
-            } catch (_: Exception) {}
+                if (response.isSuccessful) {
+                    fetchReservas()
+                } else {
+                    // 409 si al aprobar choca con otra reserva ya aprobada
+                    _mensaje.value = Evento(
+                        RetrofitClient.mensajeDeError(response, "No se pudo actualizar la reserva")
+                    )
+                }
+            } catch (e: Exception) {
+                _mensaje.value = Evento("Error de red: ${e.localizedMessage}")
+            }
         }
     }
 }

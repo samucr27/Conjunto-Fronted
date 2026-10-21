@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.databinding.FragmentReservasAdminBinding
 import com.example.conjuntoresidencial.util.Resource
+import com.google.android.material.snackbar.Snackbar
 
 class ReservasAdminFragment : Fragment() {
     private var _binding: FragmentReservasAdminBinding? = null
@@ -63,6 +64,12 @@ class ReservasAdminFragment : Fragment() {
                     binding.tvNoReservasGlobal.visibility = View.VISIBLE
                     binding.tvNoReservasGlobal.text = resource.message
                 }
+            }
+        }
+
+        viewModel.mensaje.observe(viewLifecycleOwner) { evento ->
+            evento.obtenerSiNoManejado()?.let {
+                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
             }
         }
     }

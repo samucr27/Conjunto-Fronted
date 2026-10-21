@@ -56,7 +56,10 @@ class ZonasPropietarioViewModel(application: Application) : AndroidViewModel(app
                     )
                     _reservaState.value = Resource.Success(response.body())
                 } else {
-                    _reservaState.value = Resource.Error("Error al crear reserva")
+                    // 409 choque de horario, 400 fecha pasada o zona no reservable: el backend explica cuál
+                    _reservaState.value = Resource.Error(
+                        RetrofitClient.mensajeDeError(response, "Error al crear reserva")
+                    )
                 }
             } catch (e: Exception) {
                 _reservaState.value = Resource.Error("Error de red: ${e.localizedMessage}")
