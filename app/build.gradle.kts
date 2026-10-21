@@ -18,7 +18,14 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Backend local (perfil "demo") visto desde el emulador. Para otro servidor:
+            //   ./gradlew installDebug -PapiUrl=https://mi-servidor/
+            val apiUrl = (project.findProperty("apiUrl") as String?) ?: "http://10.0.2.2:8080/"
+            buildConfigField("String", "API_URL", "\"$apiUrl\"")
+        }
         release {
+            buildConfigField("String", "API_URL", "\"https://conjunto-backend-1.onrender.com/\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -33,8 +40,8 @@ android {
 
     buildFeatures {
         viewBinding = true
-        dataBinding = true   // ← agrega esta línea
-
+        dataBinding = true
+        buildConfig = true // BuildConfig.API_URL
     }
 }
 

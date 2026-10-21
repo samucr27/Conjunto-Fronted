@@ -1,6 +1,7 @@
 package com.example.conjuntoresidencial.api
 
 import android.content.Context
+import com.example.conjuntoresidencial.BuildConfig
 import com.example.conjuntoresidencial.model.MensajeError
 import com.example.conjuntoresidencial.util.SessionManager
 import com.google.gson.Gson
@@ -11,7 +12,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    private const val BASE_URL = "https://conjunto-backend-1.onrender.com/"
+    // debug: backend local (10.0.2.2); release: Render. Ver app/build.gradle.kts
+    private val BASE_URL = BuildConfig.API_URL
 
     private lateinit var appContext: Context
 
