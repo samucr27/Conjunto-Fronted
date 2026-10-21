@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.conjuntoresidencial.databinding.ItemCarteraAdminBinding
 import com.example.conjuntoresidencial.model.Apartamento
 import com.example.conjuntoresidencial.model.PagoDTO
+import java.text.Normalizer
 
 class CarteraAdminAdapter(private val listaCartera: List<Pair<Apartamento, PagoDTO?>>) :
     RecyclerView.Adapter<CarteraAdminAdapter.ViewHolder>() {
@@ -33,8 +34,8 @@ class CarteraAdminAdapter(private val listaCartera: List<Pair<Apartamento, PagoD
 
         // Si no se encuentra registro de pago, asumimos por seguridad que está AL DÍA (saldo 0)
         val saldo = pago?.saldoPendiente ?: 0.0
-        val estado = pago?.estadoCuenta ?: "AL DIA"
-        val estaAlDia = saldo <= 0.0 || estado.equals("AL DIA", ignoreCase = true)
+        val estado = pago?.estadoCuenta ?: "Al Día"
+        val estaAlDia = saldo <= 0.0 || esAlDia(estado)
 
         if (estaAlDia) {
             holder.binding.tvEstadoPago.text = "AL DÍA"
@@ -48,4 +49,10 @@ class CarteraAdminAdapter(private val listaCartera: List<Pair<Apartamento, PagoD
     }
 
     override fun getItemCount(): Int = listaCartera.size
+
+    // El backend guarda "Al Día" (con tilde); se compara sin tildes ni mayúsculas
+    private fun esAlDia(estado: String): Boolean {
+        val sinTildes = Normalizer.normalize(estado.trim(), Normalizer.Form.NFD).replace(Regex("\\p{M}"), "")
+        return sinTildes.equals("Al Dia", ignoreCase = true)
+    }
 }
