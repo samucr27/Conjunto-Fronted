@@ -30,7 +30,6 @@ class MisVehiculosFragment : Fragment() {
         binding.rvVehiculos.layoutManager = LinearLayoutManager(requireContext())
         val session = SessionManager(requireContext())
         val aptoId = session.getApartamentoId()
-        val torreApto = session.getTorreApto()
         viewModel.fetchVehiculos(aptoId)
 
         binding.swipeRefreshVehiculos.setOnRefreshListener {
@@ -80,10 +79,7 @@ class MisVehiculosFragment : Fragment() {
                     val color = dialogView.findViewById<TextInputEditText>(R.id.etColor).text.toString().trim()
                     val tipo = dialogView.findViewById<TextInputEditText>(R.id.etTipo).text.toString().trim()
                     if (placa.isNotBlank()) {
-                        viewModel.agregarVehiculo(
-                            VehiculoDTO(null, placa, marca, color, tipo, aptoId),
-                            torreApto
-                        )
+                        viewModel.agregarVehiculo(VehiculoDTO(null, placa, marca, color, tipo, aptoId))
                     }
                 }
                 .setNegativeButton("Cancelar", null)
