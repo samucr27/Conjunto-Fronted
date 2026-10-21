@@ -17,15 +17,20 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // URL del backend en Render. Va como recurso (R.string.api_url) y no en BuildConfig:
+    // Kotlin copia las constantes de BuildConfig dentro de cada clase al compilar, y la
+    // compilación incremental podía dejar en el APK la URL anterior.
+    val urlRender = "https://conjunto-backend-uq7y.onrender.com/"
+
     buildTypes {
         debug {
-            // Backend local (perfil "demo") visto desde el emulador. Para otro servidor:
-            //   ./gradlew installDebug -PapiUrl=https://mi-servidor/
-            val apiUrl = (project.findProperty("apiUrl") as String?) ?: "http://10.0.2.2:8080/"
-            buildConfigField("String", "API_URL", "\"$apiUrl\"")
+            // Por defecto, Render. Para el backend local (perfil "demo") desde el emulador:
+            //   ./gradlew installDebug -PapiUrl=http://10.0.2.2:8080/
+            val apiUrl = (project.findProperty("apiUrl") as String?) ?: urlRender
+            resValue("string", "api_url", apiUrl)
         }
         release {
-            buildConfigField("String", "API_URL", "\"https://conjunto-backend-1.onrender.com/\"")
+            resValue("string", "api_url", urlRender)
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -41,7 +46,7 @@ android {
     buildFeatures {
         viewBinding = true
         dataBinding = true
-        buildConfig = true // BuildConfig.API_URL
+        buildConfig = true // BuildConfig.VERSION_NAME
     }
 }
 
