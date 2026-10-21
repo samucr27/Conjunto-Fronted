@@ -24,6 +24,11 @@ class ReservasAdminFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rvReservas.layoutManager = LinearLayoutManager(requireContext())
+        val adaptador = ReservaAdapter(
+            onAprobar = { reserva -> viewModel.actualizarEstado(reserva.id!!, "APROBADA") },
+            onRechazar = { reserva -> viewModel.actualizarEstado(reserva.id!!, "RECHAZADA") }
+        )
+        binding.rvReservas.adapter = adaptador
         viewModel.fetchReservas()
 
         binding.swipeRefreshReservasAdmin.setOnRefreshListener {
@@ -47,16 +52,7 @@ class ReservasAdminFragment : Fragment() {
                     } else {
                         binding.tvNoReservasGlobal.visibility = View.GONE
                         binding.rvReservas.visibility = View.VISIBLE
-                        binding.rvReservas.adapter = ReservaAdapter(
-                            lista,
-                            nombresZonas = viewModel.nombresZonas,
-                            onAprobar = { reserva ->
-                                viewModel.actualizarEstado(reserva.id!!, "APROBADA")
-                            },
-                            onRechazar = { reserva ->
-                                viewModel.actualizarEstado(reserva.id!!, "RECHAZADA")
-                            }
-                        )
+                        adaptador.submitList(ReservaConZona.de(lista, viewModel.nombresZonas))
                     }
                 }
                 is Resource.Error -> {

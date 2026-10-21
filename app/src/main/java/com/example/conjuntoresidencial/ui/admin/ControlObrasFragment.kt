@@ -24,6 +24,9 @@ class ControlObrasFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rvObrasEnProceso.layoutManager = LinearLayoutManager(requireContext())
+        // Un solo adaptador: submitList conserva el scroll y solo redibuja lo que cambió
+        val adaptador = ObraConPersonalAdapter { obraId, nuevoEstado -> viewModel.cambiarEstado(obraId, nuevoEstado) }
+        binding.rvObrasEnProceso.adapter = adaptador
         viewModel.fetchObras()
 
         viewModel.obras.observe(viewLifecycleOwner) { resource ->
@@ -42,20 +45,9 @@ class ControlObrasFragment : Fragment() {
                     } else {
                         binding.tvNoObrasProceso.visibility = View.GONE
                         binding.rvObrasEnProceso.visibility = View.VISIBLE
-
-                        // Guardar posición del scroll antes de actualizar
-                        val scrollState = binding.rvObrasEnProceso.layoutManager?.onSaveInstanceState()
-
-                        binding.rvObrasEnProceso.adapter = ObraConPersonalAdapter(
-                            lista = lista,
-                            personalPorObra = viewModel.personalPorObra,
-                            onCambiarEstado = { obraId, nuevoEstado ->
-                                viewModel.cambiarEstado(obraId, nuevoEstado)
-                            }
-                        )
-
-                        // Restaurar posición del scroll
-                        binding.rvObrasEnProceso.layoutManager?.onRestoreInstanceState(scrollState)
+                        adaptador.submitList(lista.map { obra ->
+                            ObraConPersonal(obra, obra.id?.let { viewModel.personalPorObra[it] }.orEmpty())
+                        })
                     }
                 }
                 is Resource.Error -> {

@@ -1,13 +1,17 @@
 package com.example.conjuntoresidencial.ui.admin
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.conjuntoresidencial.databinding.ItemPersonalBinding
 import com.example.conjuntoresidencial.model.PersonalObraDTO
+import com.example.conjuntoresidencial.ui.comun.DiffPorId
+import com.example.conjuntoresidencial.ui.comun.Estados
+import com.example.conjuntoresidencial.ui.comun.mostrarEstado
 
-class PersonalAdapter(private val lista: List<PersonalObraDTO>) :
-    RecyclerView.Adapter<PersonalAdapter.VH>() {
+class PersonalAdapter : ListAdapter<PersonalObraDTO, PersonalAdapter.VH>(DiffPorId { it.id }) {
 
     class VH(val binding: ItemPersonalBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -15,17 +19,15 @@ class PersonalAdapter(private val lista: List<PersonalObraDTO>) :
         VH(ItemPersonalBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(h: VH, pos: Int) {
-        val p = lista[pos]
+        val p = getItem(pos)
         h.binding.tvNombrePersonal.text = p.nombreTrabajador
         h.binding.tvCedulaPersonal.text = "CC: ${p.cedula}"
-        h.binding.tvArlPersonal.text = if (p.arlEstado) "✓ ARL vigente" else "✗ ARL no vigente"
+        h.binding.tvArlPersonal.mostrarEstado(Estados.arl(p.arlEstado))
         if (!p.torrePiso.isNullOrBlank() && !p.aptoNum.isNullOrBlank()) {
             h.binding.tvUbicacionPersonal.text = "Personal externo — Torre ${p.torrePiso} Apto ${p.aptoNum}"
-            h.binding.tvUbicacionPersonal.visibility = android.view.View.VISIBLE
+            h.binding.tvUbicacionPersonal.visibility = View.VISIBLE
         } else {
-            h.binding.tvUbicacionPersonal.visibility = android.view.View.GONE
+            h.binding.tvUbicacionPersonal.visibility = View.GONE
         }
     }
-
-    override fun getItemCount() = lista.size
 }

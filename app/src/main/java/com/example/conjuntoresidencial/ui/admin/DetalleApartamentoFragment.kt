@@ -1,5 +1,6 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,8 @@ class DetalleApartamentoFragment : Fragment() {
     private var _binding: FragmentDetalleApartamentoBinding? = null
     private val binding get() = _binding!!
     private var aptoId: Long = -1L
+    private val residentesAdapter = ResidenteAdapter()
+    private val vehiculosAdapter = VehiculoAdminAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDetalleApartamentoBinding.inflate(inflater, container, false)
@@ -40,6 +43,8 @@ class DetalleApartamentoFragment : Fragment() {
 
         binding.rvResidentesApto.layoutManager = LinearLayoutManager(requireContext())
         binding.rvVehiculosApto.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvResidentesApto.adapter = residentesAdapter
+        binding.rvVehiculosApto.adapter = vehiculosAdapter
 
         cargarInfoApartamento()
         cargarResidentes()
@@ -56,7 +61,7 @@ class DetalleApartamentoFragment : Fragment() {
         val til = dialogView.findViewById<TextInputLayout>(R.id.tilNuevaContrasena)
         val et = dialogView.findViewById<TextInputEditText>(R.id.etNuevaContrasena)
 
-        val dialog = AlertDialog.Builder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.titulo_restablecer_contrasena)
             .setView(dialogView)
             .setPositiveButton(R.string.btn_guardar, null)
@@ -112,7 +117,7 @@ class DetalleApartamentoFragment : Fragment() {
             try {
                 val response = RetrofitClient.instance.getResidentesPorApartamento(aptoId)
                 if (response.isSuccessful)
-                    binding.rvResidentesApto.adapter = ResidenteAdapter(response.body() ?: emptyList())
+                    residentesAdapter.submitList(response.body() ?: emptyList())
                 else avisar(RetrofitClient.mensajeDeError(response, "No se pudieron cargar los residentes"))
             } catch (_: Exception) {
                 avisar(getString(R.string.error_red))
@@ -125,7 +130,7 @@ class DetalleApartamentoFragment : Fragment() {
             try {
                 val response = RetrofitClient.instance.getVehiculosPorApartamento(aptoId)
                 if (response.isSuccessful)
-                    binding.rvVehiculosApto.adapter = VehiculoAdminAdapter(response.body() ?: emptyList())
+                    vehiculosAdapter.submitList(response.body() ?: emptyList())
                 else avisar(RetrofitClient.mensajeDeError(response, "No se pudieron cargar los vehículos"))
             } catch (_: Exception) {
                 avisar(getString(R.string.error_red))
@@ -138,7 +143,7 @@ class DetalleApartamentoFragment : Fragment() {
             .inflate(R.layout.dialog_agregar_residente, null)
         val tipoView = dialogView.findViewById<AutoCompleteTextView>(R.id.etTipoResidente)
         tipoView.comoLista(Opciones.TIPOS_HABITANTE)
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Agregar Residente")
             .setView(dialogView)
             .setPositiveButton("Guardar") { _, _ ->
@@ -171,7 +176,7 @@ class DetalleApartamentoFragment : Fragment() {
             .inflate(R.layout.dialog_agregar_vehiculo, null)
         val tipoView = dialogView.findViewById<AutoCompleteTextView>(R.id.etTipo)
         tipoView.comoLista(Opciones.TIPOS_VEHICULO)
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Agregar Vehículo")
             .setView(dialogView)
             .setPositiveButton("Guardar") { _, _ ->

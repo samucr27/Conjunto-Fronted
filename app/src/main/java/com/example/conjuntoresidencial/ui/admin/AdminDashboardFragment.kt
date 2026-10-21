@@ -1,11 +1,11 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -116,7 +116,7 @@ class AdminDashboardFragment : Fragment() {
 
     private fun mostrarDialogNotificaciones(notificaciones: List<NotificacionDTO>) {
         if (notificaciones.isEmpty()) {
-            AlertDialog.Builder(requireContext())
+            MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Actividad reciente")
                 .setMessage("No hay notificaciones nuevas.")
                 .setPositiveButton("Cerrar", null)
@@ -133,7 +133,7 @@ class AdminDashboardFragment : Fragment() {
             }
         }
 
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Actividad reciente (${notificaciones.size})")
             .setMessage(mensaje.trim())
             .setPositiveButton("Marcar todas como leídas", null) // ya se marcan al abrir
@@ -167,7 +167,7 @@ class AdminDashboardFragment : Fragment() {
     }
 
     private fun mostrarDialogSalir() {
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Cerrar sesión")
             .setMessage("¿Deseas salir?")
             .setPositiveButton("Sí") { _, _ ->

@@ -66,4 +66,6 @@
     <color name="gray_disabled">@color/md_outline</color>
     <!-- Texto sobre los encabezados morados -->
     <color name="white">#FFFFFF</color>
+    <!-- Subtítulo de la barra superior: lavanda claro (contraste 6,0:1 sobre #5E35B1) -->
+    <color name="barra_subtitulo">#E9DDFF</color>
 </resources>

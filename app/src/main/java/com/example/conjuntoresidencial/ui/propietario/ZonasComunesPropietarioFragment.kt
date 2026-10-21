@@ -1,12 +1,12 @@
 package com.example.conjuntoresidencial.ui.propietario
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,6 +33,8 @@ class ZonasComunesPropietarioFragment : Fragment() {
         binding.rvZonasPropietario.layoutManager = LinearLayoutManager(requireContext())
         val session = SessionManager(requireContext())
         val aptoId = session.getApartamentoId()
+        val adaptador = ZonaAdapter { zona -> mostrarDialogReserva(zona, aptoId) }
+        binding.rvZonasPropietario.adapter = adaptador
         viewModel.fetchZonas()
 
         binding.swipeRefreshZonas.setOnRefreshListener { viewModel.fetchZonas() }
@@ -51,9 +53,7 @@ class ZonasComunesPropietarioFragment : Fragment() {
                         binding.tvNoZonasProp.visibility = View.VISIBLE
                     } else {
                         binding.tvNoZonasProp.visibility = View.GONE
-                        binding.rvZonasPropietario.adapter = ZonaAdapter(lista) { zona ->
-                            mostrarDialogReserva(zona, aptoId)
-                        }
+                        adaptador.submitList(lista)
                     }
                 }
                 is Resource.Error -> {
@@ -135,7 +135,7 @@ class ZonasComunesPropietarioFragment : Fragment() {
             addView(horaText)
         }
 
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Reservar ${zona.nombre}")
             .setView(layout)
             .setPositiveButton("Confirmar") { _, _ ->

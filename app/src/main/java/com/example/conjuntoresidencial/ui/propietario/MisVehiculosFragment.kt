@@ -1,11 +1,11 @@
 package com.example.conjuntoresidencial.ui.propietario
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +34,8 @@ class MisVehiculosFragment : Fragment() {
         binding.rvVehiculos.layoutManager = LinearLayoutManager(requireContext())
         val session = SessionManager(requireContext())
         val aptoId = session.getApartamentoId()
+        val adaptador = VehiculoAdapter { vehiculo -> confirmarEliminar(vehiculo, aptoId) }
+        binding.rvVehiculos.adapter = adaptador
         viewModel.fetchVehiculos(aptoId)
 
         binding.swipeRefreshVehiculos.setOnRefreshListener {
@@ -57,9 +59,7 @@ class MisVehiculosFragment : Fragment() {
                     } else {
                         binding.tvNoVehiculos.visibility = View.GONE
                         binding.rvVehiculos.visibility = View.VISIBLE
-                        binding.rvVehiculos.adapter = VehiculoAdapter(lista) { vehiculo ->
-                            confirmarEliminar(vehiculo, aptoId)
-                        }
+                        adaptador.submitList(lista)
                     }
                 }
                 is Resource.Error -> {
@@ -82,7 +82,7 @@ class MisVehiculosFragment : Fragment() {
                 .inflate(R.layout.dialog_agregar_vehiculo, null)
             val tipoView = dialogView.findViewById<AutoCompleteTextView>(R.id.etTipo)
             tipoView.comoLista(Opciones.TIPOS_VEHICULO)
-            AlertDialog.Builder(requireContext())
+            MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Agregar Vehículo")
                 .setView(dialogView)
                 .setPositiveButton("Guardar") { _, _ ->
@@ -102,7 +102,7 @@ class MisVehiculosFragment : Fragment() {
     }
 
     private fun confirmarEliminar(vehiculo: VehiculoDTO, aptoId: Long) {
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Eliminar vehículo")
             .setMessage("¿Eliminar ${vehiculo.placa}?")
             .setPositiveButton("Eliminar") { _, _ ->

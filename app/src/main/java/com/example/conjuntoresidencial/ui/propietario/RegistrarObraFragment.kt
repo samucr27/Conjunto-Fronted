@@ -1,5 +1,6 @@
 package com.example.conjuntoresidencial.ui.propietario
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -144,7 +144,7 @@ class RegistrarObraFragment : Fragment() {
                 Toast.makeText(requireContext(), "Obra y personal registrados exitosamente", Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()
             } else {
-                AlertDialog.Builder(requireContext())
+                MaterialAlertDialogBuilder(requireContext())
                     .setTitle("Obra registrada con avisos")
                     .setMessage("La obra se guardó, pero estos trabajadores no:\n\n" + fallidos.joinToString("\n"))
                     .setPositiveButton("Entendido") { _, _ -> findNavController().popBackStack() }

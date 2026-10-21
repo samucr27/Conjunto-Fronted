@@ -9,6 +9,7 @@ import com.example.conjuntoresidencial.model.Apartamento
 import com.example.conjuntoresidencial.model.PagoDTO
 import com.example.conjuntoresidencial.util.Resource
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class CarteraAdminViewModel : ViewModel() {
@@ -24,10 +25,13 @@ class CarteraAdminViewModel : ViewModel() {
         _cartera.value = Resource.Loading
         viewModelScope.launch {
             try {
-                val aptosAsync = async { RetrofitClient.instance.getApartamentos() }
-                val pagosAsync = async { RetrofitClient.instance.getPagos() }
-                val aptos = aptosAsync.await()
-                val pagos = pagosAsync.await()
+                // coroutineScope: si una petición falla (sin red), el error llega al catch
+                // en vez de cerrar la app (un async suelto cancelaría toda la corrutina)
+                val (aptos, pagos) = coroutineScope {
+                    val aptosAsync = async { RetrofitClient.instance.getApartamentos() }
+                    val pagosAsync = async { RetrofitClient.instance.getPagos() }
+                    aptosAsync.await() to pagosAsync.await()
+                }
 
                 if (aptos.isSuccessful && pagos.isSuccessful) {
                     val pagoPorApto = pagos.body().orEmpty().associateBy { it.apartamentoId }

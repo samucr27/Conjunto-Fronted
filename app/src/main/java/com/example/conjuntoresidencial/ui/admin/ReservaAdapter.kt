@@ -3,20 +3,28 @@ package com.example.conjuntoresidencial.ui.admin
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.conjuntoresidencial.databinding.ItemReservaBinding
 import com.example.conjuntoresidencial.model.ReservaDTO
+import com.example.conjuntoresidencial.ui.comun.DiffPorId
+import com.example.conjuntoresidencial.ui.comun.Estados
+import com.example.conjuntoresidencial.ui.comun.mostrarEstado
+import com.example.conjuntoresidencial.util.Formatos
 
-/**
- * [nombresZonas] lo carga el ViewModel una sola vez (zonaId -> nombre);
- * el adaptador no hace peticiones por fila.
- */
+/** Una reserva con el nombre de su zona (el ViewModel carga las zonas una sola vez). */
+data class ReservaConZona(val reserva: ReservaDTO, val nombreZona: String) {
+    companion object {
+        fun de(reservas: List<ReservaDTO>, nombres: Map<Long, String>) =
+            reservas.map { ReservaConZona(it, nombres[it.zonaComunId] ?: "Zona ${it.zonaComunId}") }
+    }
+}
+
+/** Sin callbacks (vista del propietario) no se muestran los botones de aprobar/rechazar. */
 class ReservaAdapter(
-    private val lista: List<ReservaDTO>,
-    private val nombresZonas: Map<Long, String> = emptyMap(),
     private val onAprobar: ((ReservaDTO) -> Unit)? = null,
     private val onRechazar: ((ReservaDTO) -> Unit)? = null
-) : RecyclerView.Adapter<ReservaAdapter.ViewHolder>() {
+) : ListAdapter<ReservaConZona, ReservaAdapter.ViewHolder>(DiffPorId { it.reserva.id }) {
 
     class ViewHolder(val binding: ItemReservaBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -24,12 +32,11 @@ class ReservaAdapter(
         ViewHolder(ItemReservaBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val reserva = lista[position]
-        holder.binding.tvFechaReserva.text = "${reserva.fecha} ${reserva.hora}"
-        holder.binding.tvEstadoReserva.text = reserva.estado
-        holder.binding.tvZonaReserva.text = nombresZonas[reserva.zonaComunId] ?: "Zona ${reserva.zonaComunId}"
+        val (reserva, nombreZona) = getItem(position)
+        holder.binding.tvZonaReserva.text = nombreZona
+        holder.binding.tvFechaReserva.text = Formatos.fechaHora(reserva.fecha, reserva.hora)
+        holder.binding.tvEstadoReserva.mostrarEstado(Estados.reserva(reserva.estado))
 
-        // Mostrar botones solo si está PENDIENTE y hay callbacks
         if (reserva.estado == "PENDIENTE" && onAprobar != null && onRechazar != null) {
             holder.binding.layoutBotonesReserva.visibility = View.VISIBLE
             holder.binding.btnAprobarReserva.setOnClickListener { onAprobar.invoke(reserva) }
@@ -38,6 +45,4 @@ class ReservaAdapter(
             holder.binding.layoutBotonesReserva.visibility = View.GONE
         }
     }
-
-    override fun getItemCount() = lista.size
 }

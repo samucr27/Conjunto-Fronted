@@ -1,58 +1,51 @@
 package com.example.conjuntoresidencial.ui.admin
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.conjuntoresidencial.databinding.ItemObraConPersonalBinding
 import com.example.conjuntoresidencial.model.ObraDTO
 import com.example.conjuntoresidencial.model.PersonalObraDTO
+import com.example.conjuntoresidencial.ui.comun.DiffPorId
+import com.example.conjuntoresidencial.ui.comun.Estados
+import com.example.conjuntoresidencial.ui.comun.mostrarEstado
+import com.example.conjuntoresidencial.util.Formatos
 
-/**
- * [personalPorObra] lo carga el ViewModel una sola vez (obraId -> personal);
- * el adaptador no hace peticiones por fila.
- */
+/** Una obra con su personal (el ViewModel carga todo el personal una sola vez). */
+data class ObraConPersonal(val obra: ObraDTO, val personal: List<PersonalObraDTO>)
+
 class ObraConPersonalAdapter(
-    private val lista: List<ObraDTO>,
-    private val personalPorObra: Map<Long, List<PersonalObraDTO>>,
     private val onCambiarEstado: (obraId: Long, nuevoEstado: String) -> Unit
-) : RecyclerView.Adapter<ObraConPersonalAdapter.VH>() {
+) : ListAdapter<ObraConPersonal, ObraConPersonalAdapter.VH>(DiffPorId { it.obra.id }) {
 
-    class VH(val binding: ItemObraConPersonalBinding) : RecyclerView.ViewHolder(binding.root)
+    class VH(val binding: ItemObraConPersonalBinding) : RecyclerView.ViewHolder(binding.root) {
+        val personalAdapter = PersonalAdapter().also {
+            binding.rvPersonalObra.layoutManager = LinearLayoutManager(binding.root.context)
+            binding.rvPersonalObra.adapter = it
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         VH(ItemObraConPersonalBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(h: VH, pos: Int) {
-        val obra = lista[pos]
+        val (obra, personal) = getItem(pos)
         h.binding.tvDescripcionObraAdmin.text = obra.descripcionAdecuacion
-        h.binding.tvFechasObra.text = "${obra.fechaInicio} → ${obra.fechaFinEstimada}"
-
-        // Estado con color según valor
-        val esFinalizada = obra.estadoObra == "FINALIZADA"
-        h.binding.tvEstadoObraAdmin.text = if (esFinalizada) "✓ Finalizada" else "⏳ En proceso"
-        h.binding.tvEstadoObraAdmin.setTextColor(
-            if (esFinalizada)
-                h.binding.root.context.getColor(android.R.color.holo_green_dark)
-            else
-                h.binding.root.context.getColor(android.R.color.holo_orange_dark)
-        )
+        h.binding.tvFechasObra.text = Formatos.rango(obra.fechaInicio, obra.fechaFinEstimada)
+        h.binding.tvEstadoObraAdmin.mostrarEstado(Estados.obra(obra.estadoObra))
 
         // Botón cambiar estado — solo visible si está EN_PROCESO
-        if (!esFinalizada) {
-            h.binding.btnCambiarEstadoObra.visibility = android.view.View.VISIBLE
+        if (obra.estadoObra == "EN_PROCESO") {
+            h.binding.btnCambiarEstadoObra.visibility = View.VISIBLE
             h.binding.btnCambiarEstadoObra.text = "Finalizar"
-            h.binding.btnCambiarEstadoObra.setOnClickListener {
-                onCambiarEstado(obra.id!!, "FINALIZADA")
-            }
+            h.binding.btnCambiarEstadoObra.setOnClickListener { onCambiarEstado(obra.id!!, "FINALIZADA") }
         } else {
-            h.binding.btnCambiarEstadoObra.visibility = android.view.View.GONE
+            h.binding.btnCambiarEstadoObra.visibility = View.GONE
         }
 
-        // Personal de la obra
-        h.binding.rvPersonalObra.layoutManager = LinearLayoutManager(h.binding.root.context)
-        h.binding.rvPersonalObra.adapter = PersonalAdapter(obra.id?.let { personalPorObra[it] }.orEmpty())
+        h.personalAdapter.submitList(personal)
     }
-
-    override fun getItemCount() = lista.size
 }

@@ -9,6 +9,7 @@ import com.example.conjuntoresidencial.model.ReservaDTO
 import com.example.conjuntoresidencial.util.Resource
 import com.example.conjuntoresidencial.util.nombresDeZonas
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class MisReservasViewModel : ViewModel() {
@@ -23,9 +24,13 @@ class MisReservasViewModel : ViewModel() {
         _reservas.value = Resource.Loading
         viewModelScope.launch {
             try {
-                val zonasAsync = async { RetrofitClient.instance.getZonasComunes() }
-                val response = RetrofitClient.instance.getReservasPorApartamento(aptoId)
-                nombresZonas = nombresDeZonas(zonasAsync.await())
+                // coroutineScope: si una petición falla, el error llega al catch en vez de cerrar la app
+                val response = coroutineScope {
+                    val zonasAsync = async { RetrofitClient.instance.getZonasComunes() }
+                    val reservas = RetrofitClient.instance.getReservasPorApartamento(aptoId)
+                    nombresZonas = nombresDeZonas(zonasAsync.await())
+                    reservas
+                }
                 if (response.isSuccessful && response.body() != null)
                     _reservas.value = Resource.Success(response.body()!!)
                 else _reservas.value = Resource.Error("Error al cargar reservas")

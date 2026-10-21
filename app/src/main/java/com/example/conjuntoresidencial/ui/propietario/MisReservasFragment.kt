@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.databinding.FragmentMisReservasBinding
 import com.example.conjuntoresidencial.ui.admin.ReservaAdapter
+import com.example.conjuntoresidencial.ui.admin.ReservaConZona
 import com.example.conjuntoresidencial.util.Resource
 import com.example.conjuntoresidencial.util.SessionManager
 
@@ -25,6 +26,8 @@ class MisReservasFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rvReservasPropietario.layoutManager = LinearLayoutManager(requireContext())
+        val adaptador = ReservaAdapter()
+        binding.rvReservasPropietario.adapter = adaptador
         val aptoId = SessionManager(requireContext()).getApartamentoId()
         viewModel.fetchReservas(aptoId)
 
@@ -49,7 +52,7 @@ class MisReservasFragment : Fragment() {
                     } else {
                         binding.tvNoReservasProp.visibility = View.GONE
                         binding.rvReservasPropietario.visibility = View.VISIBLE
-                        binding.rvReservasPropietario.adapter = ReservaAdapter(lista, nombresZonas = viewModel.nombresZonas)
+                        adaptador.submitList(ReservaConZona.de(lista, viewModel.nombresZonas))
                     }
                 }
                 is Resource.Error -> {
