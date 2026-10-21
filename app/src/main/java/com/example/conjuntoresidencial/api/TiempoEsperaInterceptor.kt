@@ -9,7 +9,7 @@ import java.net.UnknownHostException
 /**
  * Cambia los mensajes técnicos de red ("timeout", "Failed to connect to /10.0.2.2:8080",
  * "Unable to resolve host") por mensajes que el usuario entienda. Las pantallas muestran
- * e.localizedMessage, así que basta con hacerlo aquí, en un solo lugar.
+ * RetrofitClient.mensajeDeExcepcion(e), así que basta con hacerlo aquí, en un solo lugar.
  *
  * No reintenta: repetir un POST podría duplicar una reserva o un vehículo.
  */
@@ -31,5 +31,6 @@ class TiempoEsperaInterceptor : Interceptor {
     companion object {
         const val MENSAJE = "El servidor está iniciando, intenta de nuevo en unos segundos"
         const val MENSAJE_SIN_CONEXION = "No se pudo conectar con el servidor. Revisa tu conexión a internet"
+        val MENSAJES = setOf(MENSAJE, MENSAJE_SIN_CONEXION)
     }
 }

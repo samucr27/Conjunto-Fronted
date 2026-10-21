@@ -31,7 +31,7 @@ class MiCarteraViewModel : ViewModel() {
                     else -> Resource.Error(RetrofitClient.mensajeDeError(response, errorPorDefecto))
                 }
             } catch (e: Exception) {
-                _pagoState.value = Resource.Error("Error de red: ${e.localizedMessage}")
+                _pagoState.value = Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }
@@ -47,7 +47,7 @@ class MiCarteraViewModel : ViewModel() {
                     _simulacion.value = Evento(RetrofitClient.mensajeDeError(response, errorPorDefecto))
                 }
             } catch (e: Exception) {
-                _simulacion.value = Evento("Error de red: ${e.localizedMessage}")
+                _simulacion.value = Evento(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }

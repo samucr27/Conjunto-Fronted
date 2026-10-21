@@ -27,7 +27,7 @@ class ZonasAdminViewModel : ViewModel() {
                     _zonas.value = Resource.Success(response.body()!!)
                 else _zonas.value = Resource.Error(RetrofitClient.mensajeDeError(response, "Error al cargar zonas"))
             } catch (e: Exception) {
-                _zonas.value = Resource.Error("Error de red: ${e.localizedMessage}")
+                _zonas.value = Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }
@@ -45,7 +45,7 @@ class ZonasAdminViewModel : ViewModel() {
                     _registro.value = Evento(RetrofitClient.mensajeDeError(response, errorPorDefecto))
                 }
             } catch (e: Exception) {
-                _registro.value = Evento("Error de red: ${e.localizedMessage}")
+                _registro.value = Evento(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }

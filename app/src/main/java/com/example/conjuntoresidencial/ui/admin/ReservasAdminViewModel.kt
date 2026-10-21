@@ -42,7 +42,7 @@ class ReservasAdminViewModel : ViewModel() {
                     _reservas.value = Resource.Success(response.body()!!)
                 else _reservas.value = Resource.Error("Error al cargar reservas")
             } catch (e: Exception) {
-                _reservas.value = Resource.Error("Error de red: ${e.localizedMessage}")
+                _reservas.value = Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }
@@ -60,7 +60,7 @@ class ReservasAdminViewModel : ViewModel() {
                     )
                 }
             } catch (e: Exception) {
-                _mensaje.value = Evento("Error de red: ${e.localizedMessage}")
+                _mensaje.value = Evento(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }

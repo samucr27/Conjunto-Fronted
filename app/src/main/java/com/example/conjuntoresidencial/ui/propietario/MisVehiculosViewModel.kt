@@ -29,7 +29,7 @@ class MisVehiculosViewModel : ViewModel() {
                     _vehiculos.value = Resource.Error("Error al cargar vehículos")
                 }
             } catch (e: Exception) {
-                _vehiculos.value = Resource.Error("Error de red: ${e.localizedMessage}")
+                _vehiculos.value = Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }
@@ -45,7 +45,7 @@ class MisVehiculosViewModel : ViewModel() {
                     _mensaje.value = Evento(RetrofitClient.mensajeDeError(response, errorPorDefecto))
                 }
             } catch (e: Exception) {
-                _mensaje.value = Evento("Error de red: ${e.localizedMessage}")
+                _mensaje.value = Evento(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }
@@ -57,7 +57,7 @@ class MisVehiculosViewModel : ViewModel() {
                 if (response.isSuccessful) fetchVehiculos(aptoId)
                 else _mensaje.value = Evento(RetrofitClient.mensajeDeError(response, errorPorDefecto))
             } catch (e: Exception) {
-                _mensaje.value = Evento("Error de red: ${e.localizedMessage}")
+                _mensaje.value = Evento(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }

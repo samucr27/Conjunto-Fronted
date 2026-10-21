@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Acciones de la barra superior del panel del administrador -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="AlwaysShowAction"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/accion_notificaciones"

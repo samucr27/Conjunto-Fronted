@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">MiConjunto</string>
     <string name="app_lema">Administración de tu conjunto residencial</string>
     <string name="version">Versión %1$s</string>
@@ -24,14 +24,13 @@
     <string name="panel_residente_subtitulo">Panel del residente</string>
     <string name="panel_residente_titulo">Torre %1$s · Apto %2$s</string>
     <string name="notificaciones">Notificaciones</string>
-    <string name="notificaciones_no_leidas">Notificaciones, %1$d sin leer</string>
+    <string name="notificaciones_no_leidas" tools:ignore="PluralsCandidate">Notificaciones, %1$d sin leer</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
     <string name="cerrar_sesion_pregunta">¿Deseas salir de tu cuenta?</string>
     <string name="cerrar_sesion_confirmar">Salir</string>
     <string name="actividad_reciente">Actividad reciente</string>
     <string name="actividad_reciente_n">Actividad reciente (%1$d)</string>
     <string name="actividad_vacia">No hay notificaciones nuevas.</string>
-    <string name="actividad_marcar_leidas">Marcar como leídas</string>
     <string name="actividad_limpiar">Limpiar todo</string>
     <string name="actividad_error_cargar">No se pudieron cargar las notificaciones</string>
     <string name="actividad_error_limpiar">No se pudieron limpiar las notificaciones</string>
@@ -128,6 +127,8 @@
     <string name="vehiculo_placa_obligatoria">La placa es obligatoria</string>
     <string name="vehiculo_error_guardar">No se pudo guardar el vehículo</string>
     <string name="vehiculo_eliminar">Eliminar</string>
+    <!-- Dos datos en una línea: "Mazda · Carro" -->
+    <string name="dos_datos">%1$s · %2$s</string>
 
     <!-- Descripciones para TalkBack: dicen sobre qué elemento actúa cada botón -->
     <string name="desc_aprobar_reserva">Aprobar reserva: %1$s, %2$s</string>
@@ -217,6 +218,13 @@
     <string name="obra_finalizar_si">Sí, finalizar</string>
     <string name="obra_error_finalizar">No se pudo finalizar la obra</string>
     <string name="btn_cerrar">Cerrar</string>
+    <!-- Íconos de Material dentro de los campos: por defecto vienen en el idioma del teléfono -->
+    <string name="mostrar_contrasena">Mostrar contraseña</string>
+    <string name="mostrar_opciones">Mostrar opciones</string>
+    <string name="login_falta_usuario">Escribe tu usuario</string>
+    <string name="login_falta_contrasena">Escribe la contraseña</string>
+    <string name="login_falta_torre">Escribe la torre</string>
+    <string name="login_falta_apartamento">Escribe el apartamento</string>
 
     <string name="mi_cartera_titulo">Mi cartera</string>
     <string name="mi_cartera_subtitulo">Saldo y estado de cuenta</string>
@@ -248,7 +256,6 @@
     <string name="registrar_obra_guardar">Registrar obra</string>
     <string name="registrar_obra_descripcion_obligatoria">Describe la obra</string>
     <string name="registrar_obra_fecha_obligatoria">Elige la fecha</string>
-    <string name="registrar_obra_fin_antes">No puede ser anterior al inicio</string>
     <string name="registrar_obra_nombre_obligatorio">Escribe el nombre</string>
     <string name="registrar_obra_cedula_obligatoria">Escribe la cédula</string>
     <string name="registrar_obra_error">No se pudo registrar la obra</string>

@@ -29,7 +29,7 @@ class ZonasPropietarioViewModel : ViewModel() {
                     _zonas.value = Resource.Success(response.body()!!)
                 } else _zonas.value = Resource.Error("Error al cargar zonas")
             } catch (e: Exception) {
-                _zonas.value = Resource.Error("Error de red: ${e.localizedMessage}")
+                _zonas.value = Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }
@@ -45,7 +45,7 @@ class ZonasPropietarioViewModel : ViewModel() {
                     if (response.isSuccessful) null else RetrofitClient.mensajeDeError(response, errorPorDefecto)
                 )
             } catch (e: Exception) {
-                _reserva.value = Evento("Error de red: ${e.localizedMessage}")
+                _reserva.value = Evento(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }

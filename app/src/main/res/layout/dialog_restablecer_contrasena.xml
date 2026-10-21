@@ -11,6 +11,7 @@
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:hint="@string/hint_nueva_contrasena"
         app:helperText="@string/ayuda_nueva_contrasena"
+        app:endIconContentDescription="@string/mostrar_contrasena"
         app:endIconMode="password_toggle"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
         <com.google.android.material.textfield.TextInputEditText

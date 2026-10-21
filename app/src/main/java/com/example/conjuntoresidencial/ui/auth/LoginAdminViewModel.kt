@@ -34,7 +34,7 @@ class LoginAdminViewModel : ViewModel() {
                     )
                 }
             } catch (e: Exception) {
-                _loginState.value = Resource.Error("Error en conexión: ${e.localizedMessage}")
+                _loginState.value = Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }

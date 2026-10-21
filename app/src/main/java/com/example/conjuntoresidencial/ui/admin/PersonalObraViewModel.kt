@@ -22,7 +22,7 @@ class PersonalObraViewModel : ViewModel() {
                     _personal.value = Resource.Success(response.body()!!)
                 else _personal.value = Resource.Error("Error al cargar personal")
             } catch (e: Exception) {
-                _personal.value = Resource.Error("Error de red: ${e.localizedMessage}")
+                _personal.value = Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }

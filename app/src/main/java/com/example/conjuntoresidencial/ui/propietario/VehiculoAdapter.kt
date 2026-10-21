@@ -20,10 +20,10 @@ class VehiculoAdapter(
 
     override fun onBindViewHolder(h: VH, pos: Int) {
         val v = getItem(pos)
-        h.binding.tvMarcaVehiculo.text = "${v.marca} · ${v.tipo}"
-        h.binding.tvPlacaVehiculo.text = "${v.placa} · ${v.color}"
-        h.binding.btnEliminarVehiculo.contentDescription =
-            h.binding.root.context.getString(R.string.desc_eliminar_vehiculo, v.placa)
+        val ctx = h.binding.root.context
+        h.binding.tvMarcaVehiculo.text = ctx.getString(R.string.dos_datos, v.marca, v.tipo)
+        h.binding.tvPlacaVehiculo.text = ctx.getString(R.string.dos_datos, v.placa, v.color)
+        h.binding.btnEliminarVehiculo.contentDescription = ctx.getString(R.string.desc_eliminar_vehiculo, v.placa)
         h.binding.btnEliminarVehiculo.setOnClickListener { onEliminar(v) }
     }
 }
