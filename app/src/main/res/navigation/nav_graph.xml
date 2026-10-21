@@ -19,8 +19,11 @@
         android:id="@+id/loginAdminFragment"
         android:name="com.example.conjuntoresidencial.ui.auth.LoginAdminFragment"
         tools:layout="@layout/fragment_login_admin">
+        <!-- Al entrar se vacía el historial: "atrás" desde el panel no vuelve al login -->
         <action android:id="@+id/action_loginAdminFragment_to_adminDashboardFragment"
-            app:destination="@id/adminDashboardFragment" />
+            app:destination="@id/adminDashboardFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -28,7 +31,9 @@
         android:name="com.example.conjuntoresidencial.ui.auth.LoginApartamentoFragment"
         tools:layout="@layout/fragment_login_apartamento">
         <action android:id="@+id/action_loginApartamentoFragment_to_propietarioDashboardFragment"
-            app:destination="@id/propietarioDashboardFragment" />
+            app:destination="@id/propietarioDashboardFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment

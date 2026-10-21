@@ -1,198 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Panel: barra superior (título y acciones) + tarjetas (layout/item_tarjeta_menu.xml).
+         Textos, íconos y acciones de cada tarjeta se asignan en el fragment. -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/colorSurface">
+        android:background="?attr/colorSurface"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:background="@color/colorPrimary"
-            android:gravity="center_vertical"
-            android:paddingStart="24dp"
-            android:paddingEnd="16dp">
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Mi Panel"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"/>
-                <TextView
-                    android:id="@+id/tvBienvenidaPropietario"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cargando..."
-                    android:textSize="12sp"
-                    android:textColor="@color/white"
-                    android:alpha="0.8"/>
-            </LinearLayout>
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCerrarSesion"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="Salir"
-                android:textSize="12sp"
-                android:textColor="@color/white"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                app:strokeColor="@color/white"/>
-        </LinearLayout>
+        <include
+            android:id="@+id/barra"
+            layout="@layout/barra_superior" />
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:columnCount="2"
-                android:padding="16dp">
+                android:padding="12dp"
+                android:useDefaultMargins="false">
 
-                <com.google.android.material.card.MaterialCardView
+                <include
                     android:id="@+id/cardMisVehiculos"
-                    android:layout_width="0dp" android:layout_height="140dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="16dp" app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/colorCard">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="52dp" android:layout_height="52dp"
-                            app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="@color/md_primary_container" android:layout_marginBottom="10dp">
-                            <ImageView android:layout_width="28dp" android:layout_height="28dp"
-                                android:layout_gravity="center"
-                                android:src="@android:drawable/ic_menu_directions"
-                                app:tint="@color/md_primary"/>
-                        </com.google.android.material.card.MaterialCardView>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Mis Vehículos" android:textStyle="bold" android:textSize="14sp"
-                            android:textColor="@color/colorTextPrimary"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
+                    layout="@layout/item_tarjeta_menu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp" />
+                <include
                     android:id="@+id/cardZonasPropietario"
-                    android:layout_width="0dp" android:layout_height="140dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="16dp" app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/colorCard">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="52dp" android:layout_height="52dp"
-                            app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="@color/md_primary_container" android:layout_marginBottom="10dp">
-                            <ImageView android:layout_width="28dp" android:layout_height="28dp"
-                                android:layout_gravity="center"
-                                android:src="@android:drawable/ic_menu_mapmode"
-                                app:tint="@color/md_primary"/>
-                        </com.google.android.material.card.MaterialCardView>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Zonas Comunes" android:textStyle="bold" android:textSize="14sp"
-                            android:textColor="@color/colorTextPrimary"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
+                    layout="@layout/item_tarjeta_menu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp" />
+                <include
                     android:id="@+id/cardMisReservas"
-                    android:layout_width="0dp" android:layout_height="140dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="16dp" app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/colorCard">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="52dp" android:layout_height="52dp"
-                            app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="@color/md_primary_container" android:layout_marginBottom="10dp">
-                            <ImageView android:layout_width="28dp" android:layout_height="28dp"
-                                android:layout_gravity="center"
-                                android:src="@android:drawable/ic_menu_recent_history"
-                                app:tint="@color/md_primary"/>
-                        </com.google.android.material.card.MaterialCardView>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Mis Reservas" android:textStyle="bold" android:textSize="14sp"
-                            android:textColor="@color/colorTextPrimary"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
+                    layout="@layout/item_tarjeta_menu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp" />
+                <include
                     android:id="@+id/cardMiCartera"
-                    android:layout_width="0dp" android:layout_height="140dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="16dp" app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/colorCard">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="52dp" android:layout_height="52dp"
-                            app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="@color/md_primary_container" android:layout_marginBottom="10dp">
-                            <ImageView android:layout_width="28dp" android:layout_height="28dp"
-                                android:layout_gravity="center"
-                                android:src="@android:drawable/ic_menu_my_calendar"
-                                app:tint="@color/md_primary"/>
-                        </com.google.android.material.card.MaterialCardView>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Mi Cartera" android:textStyle="bold" android:textSize="14sp"
-                            android:textColor="@color/colorTextPrimary"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
+                    layout="@layout/item_tarjeta_menu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp" />
+                <include
                     android:id="@+id/cardRegistrarObra"
-                    android:layout_width="0dp" android:layout_height="140dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="16dp" app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/colorCard">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="52dp" android:layout_height="52dp"
-                            app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="@color/md_primary_container" android:layout_marginBottom="10dp">
-                            <ImageView android:layout_width="28dp" android:layout_height="28dp"
-                                android:layout_gravity="center"
-                                android:src="@android:drawable/ic_input_add"
-                                app:tint="@color/md_primary"/>
-                        </com.google.android.material.card.MaterialCardView>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Registrar Obra" android:textStyle="bold" android:textSize="14sp"
-                            android:textColor="@color/colorTextPrimary"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
+                    layout="@layout/item_tarjeta_menu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp" />
+                <include
                     android:id="@+id/cardMisObras"
-                    android:layout_width="0dp" android:layout_height="140dp"
-                    android:layout_columnWeight="1" android:layout_margin="8dp"
-                    app:cardCornerRadius="16dp" app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/colorCard">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:orientation="vertical" android:gravity="center" android:padding="12dp">
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="52dp" android:layout_height="52dp"
-                            app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="@color/md_primary_container" android:layout_marginBottom="10dp">
-                            <ImageView android:layout_width="28dp" android:layout_height="28dp"
-                                android:layout_gravity="center"
-                                android:src="@android:drawable/ic_menu_manage"
-                                app:tint="@color/md_primary"/>
-                        </com.google.android.material.card.MaterialCardView>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Mis Obras" android:textStyle="bold" android:textSize="14sp"
-                            android:textColor="@color/colorTextPrimary"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
+                    layout="@layout/item_tarjeta_menu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp" />
             </GridLayout>
         </ScrollView>
     </LinearLayout>

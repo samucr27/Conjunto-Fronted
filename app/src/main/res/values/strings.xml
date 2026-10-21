@@ -1,5 +1,66 @@
 <resources>
-    <string name="app_name">ResidencialApp</string>
+    <string name="app_name">MiConjunto</string>
+    <string name="app_lema">Administración de tu conjunto residencial</string>
+    <string name="version">Versión %1$s</string>
+
+    <!-- Acceso -->
+    <string name="selector_pregunta">¿Cómo deseas ingresar?</string>
+    <string name="selector_admin">Soy administrador</string>
+    <string name="selector_residente">Soy residente</string>
+    <string name="login_admin_titulo">Acceso administrador</string>
+    <string name="login_residente_titulo">Acceso residente</string>
+    <string name="login_iniciar_sesion">Iniciar sesión</string>
+    <string name="login_admin_ayuda">Ingresa con tu usuario de administrador.</string>
+    <string name="login_residente_ayuda">Ingresa con los datos de tu apartamento.</string>
+    <string name="login_usuario">Usuario</string>
+    <string name="login_contrasena">Contraseña</string>
+    <string name="login_torre">Torre</string>
+    <string name="login_apartamento">Apartamento</string>
+    <string name="login_ingresar">Ingresar</string>
+
+    <!-- Paneles -->
+    <string name="panel_admin_titulo">Panel del administrador</string>
+    <string name="panel_admin_subtitulo">Bienvenido</string>
+    <string name="panel_residente_subtitulo">Panel del residente</string>
+    <string name="panel_residente_titulo">Torre %1$s · Apto %2$s</string>
+    <string name="notificaciones">Notificaciones</string>
+    <string name="notificaciones_no_leidas">Notificaciones, %1$d sin leer</string>
+    <string name="cerrar_sesion">Cerrar sesión</string>
+    <string name="cerrar_sesion_pregunta">¿Deseas salir de tu cuenta?</string>
+    <string name="cerrar_sesion_confirmar">Salir</string>
+    <string name="actividad_reciente">Actividad reciente</string>
+    <string name="actividad_reciente_n">Actividad reciente (%1$d)</string>
+    <string name="actividad_vacia">No hay notificaciones nuevas.</string>
+    <string name="actividad_marcar_leidas">Marcar como leídas</string>
+    <string name="actividad_limpiar">Limpiar todo</string>
+    <string name="actividad_error_cargar">No se pudieron cargar las notificaciones</string>
+    <string name="actividad_error_limpiar">No se pudieron limpiar las notificaciones</string>
+    <string name="cerrar">Cerrar</string>
+
+    <!-- Tarjetas de los paneles -->
+    <string name="menu_directorio">Directorio</string>
+    <string name="menu_directorio_sub">Apartamentos</string>
+    <string name="menu_obras">Obras</string>
+    <string name="menu_obras_sub">Control y personal</string>
+    <string name="menu_reservas">Reservas</string>
+    <string name="menu_reservas_sub">Aprobar o rechazar</string>
+    <string name="menu_zonas">Zonas comunes</string>
+    <string name="menu_zonas_sub">Estado y reservas</string>
+    <string name="menu_personal">Personal de obra</string>
+    <string name="menu_personal_sub">ARL y ubicación</string>
+    <string name="menu_cartera">Cartera</string>
+    <string name="menu_cartera_sub">Estado de cuenta</string>
+    <string name="menu_mis_vehiculos">Mis vehículos</string>
+    <string name="menu_mis_vehiculos_sub">Placas registradas</string>
+    <string name="menu_zonas_res_sub">Reservar</string>
+    <string name="menu_mis_reservas">Mis reservas</string>
+    <string name="menu_mis_reservas_sub">Estado de tus solicitudes</string>
+    <string name="menu_mi_cartera">Mi cartera</string>
+    <string name="menu_mi_cartera_sub">Saldo y pagos</string>
+    <string name="menu_registrar_obra">Registrar obra</string>
+    <string name="menu_registrar_obra_sub">Nueva adecuación</string>
+    <string name="menu_mis_obras">Mis obras</string>
+    <string name="menu_mis_obras_sub">Seguimiento</string>
     <string name="btn_simular_pago">Simular Pago</string>
     <string name="btn_sin_deuda">Sin deuda pendiente</string>
     <string name="saldo_pendiente_format">$%s</string>
