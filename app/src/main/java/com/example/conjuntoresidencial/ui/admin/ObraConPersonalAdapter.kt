@@ -4,16 +4,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.ItemObraConPersonalBinding
 import com.example.conjuntoresidencial.model.ObraDTO
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.conjuntoresidencial.model.PersonalObraDTO
 
+/**
+ * [personalPorObra] lo carga el ViewModel una sola vez (obraId -> personal);
+ * el adaptador no hace peticiones por fila.
+ */
 class ObraConPersonalAdapter(
     private val lista: List<ObraDTO>,
+    private val personalPorObra: Map<Long, List<PersonalObraDTO>>,
     private val onCambiarEstado: (obraId: Long, nuevoEstado: String) -> Unit
 ) : RecyclerView.Adapter<ObraConPersonalAdapter.VH>() {
 
@@ -50,17 +51,7 @@ class ObraConPersonalAdapter(
 
         // Personal de la obra
         h.binding.rvPersonalObra.layoutManager = LinearLayoutManager(h.binding.root.context)
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = RetrofitClient.instance.getPersonalPorObra(obra.id!!)
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        h.binding.rvPersonalObra.adapter =
-                            PersonalAdapter(response.body() ?: emptyList())
-                    }
-                }
-            } catch (_: Exception) {}
-        }
+        h.binding.rvPersonalObra.adapter = PersonalAdapter(obra.id?.let { personalPorObra[it] }.orEmpty())
     }
 
     override fun getItemCount() = lista.size

@@ -7,16 +7,15 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentMisObrasBinding
 import com.example.conjuntoresidencial.model.ObraDTO
 import com.example.conjuntoresidencial.util.Resource
 import com.example.conjuntoresidencial.util.SessionManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MisObrasFragment : Fragment() {
     private var _binding: FragmentMisObrasBinding? = null
@@ -71,49 +70,42 @@ class MisObrasFragment : Fragment() {
                 }
             }
         }
+
+        viewModel.mensaje.observe(viewLifecycleOwner) { evento ->
+            evento.obtenerSiNoManejado()?.let {
+                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun mostrarDetalleObra(obra: ObraDTO) {
-        // Cargar personal de esa obra desde el backend
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
+        // Cargar personal de esa obra desde el backend; se cancela si el usuario sale de la pantalla
+        viewLifecycleOwner.lifecycleScope.launch {
+            val personalTexto = try {
                 val response = RetrofitClient.instance.getPersonalPorObra(obra.id!!)
-                withContext(Dispatchers.Main) {
-                    val personal = if (response.isSuccessful) response.body() ?: emptyList() else emptyList()
-
-                    val personalTexto = if (personal.isEmpty()) {
-                        "Sin personal registrado"
-                    } else {
-                        personal.joinToString("\n") { p ->
-                            val arl = if (p.arlEstado) "✓ ARL" else "✗ Sin ARL"
-                            "• ${p.nombreTrabajador} — CC ${p.cedula} — $arl"
-                        }
+                val personal = if (response.isSuccessful) response.body() ?: emptyList() else null
+                when {
+                    personal == null -> "No se pudo cargar el personal"
+                    personal.isEmpty() -> "Sin personal registrado"
+                    else -> personal.joinToString("\n") { p ->
+                        val arl = if (p.arlEstado) "✓ ARL" else "✗ Sin ARL"
+                        "• ${p.nombreTrabajador} — CC ${p.cedula} — $arl"
                     }
-
-                    AlertDialog.Builder(requireContext())
-                        .setTitle(obra.descripcionAdecuacion)
-                        .setMessage(
-                            "Estado: ${obra.estadoObra}\n" +
-                                    "Inicio: ${obra.fechaInicio}\n" +
-                                    "Fin estimado: ${obra.fechaFinEstimada}\n\n" +
-                                    "Personal externo:\n$personalTexto"
-                        )
-                        .setPositiveButton("Cerrar", null)
-                        .show()
                 }
             } catch (_: Exception) {
-                withContext(Dispatchers.Main) {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle(obra.descripcionAdecuacion)
-                        .setMessage(
-                            "Estado: ${obra.estadoObra}\n" +
-                                    "Inicio: ${obra.fechaInicio}\n" +
-                                    "Fin estimado: ${obra.fechaFinEstimada}"
-                        )
-                        .setPositiveButton("Cerrar", null)
-                        .show()
-                }
+                "No se pudo cargar el personal (sin conexión)"
             }
+
+            AlertDialog.Builder(requireContext())
+                .setTitle(obra.descripcionAdecuacion)
+                .setMessage(
+                    "Estado: ${obra.estadoObra}\n" +
+                            "Inicio: ${obra.fechaInicio}\n" +
+                            "Fin estimado: ${obra.fechaFinEstimada}\n\n" +
+                            "Personal externo:\n$personalTexto"
+                )
+                .setPositiveButton("Cerrar", null)
+                .show()
         }
     }
 

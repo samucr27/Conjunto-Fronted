@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,7 +13,10 @@ import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentMisVehiculosBinding
 import com.example.conjuntoresidencial.model.VehiculoDTO
 import com.example.conjuntoresidencial.util.Resource
+import com.example.conjuntoresidencial.util.Opciones
 import com.example.conjuntoresidencial.util.SessionManager
+import com.example.conjuntoresidencial.util.comoLista
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 
 class MisVehiculosFragment : Fragment() {
@@ -67,9 +71,17 @@ class MisVehiculosFragment : Fragment() {
             }
         }
 
+        viewModel.mensaje.observe(viewLifecycleOwner) { evento ->
+            evento.obtenerSiNoManejado()?.let {
+                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+            }
+        }
+
         binding.btnAgregarVehiculo.setOnClickListener {
             val dialogView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.dialog_agregar_vehiculo, null)
+            val tipoView = dialogView.findViewById<AutoCompleteTextView>(R.id.etTipo)
+            tipoView.comoLista(Opciones.TIPOS_VEHICULO)
             AlertDialog.Builder(requireContext())
                 .setTitle("Agregar Vehículo")
                 .setView(dialogView)
@@ -77,9 +89,11 @@ class MisVehiculosFragment : Fragment() {
                     val placa = dialogView.findViewById<TextInputEditText>(R.id.etPlaca).text.toString().trim()
                     val marca = dialogView.findViewById<TextInputEditText>(R.id.etMarca).text.toString().trim()
                     val color = dialogView.findViewById<TextInputEditText>(R.id.etColor).text.toString().trim()
-                    val tipo = dialogView.findViewById<TextInputEditText>(R.id.etTipo).text.toString().trim()
+                    val tipo = tipoView.text.toString()
                     if (placa.isNotBlank()) {
                         viewModel.agregarVehiculo(VehiculoDTO(null, placa, marca, color, tipo, aptoId))
+                    } else {
+                        Snackbar.make(binding.root, "La placa es obligatoria", Snackbar.LENGTH_SHORT).show()
                     }
                 }
                 .setNegativeButton("Cancelar", null)

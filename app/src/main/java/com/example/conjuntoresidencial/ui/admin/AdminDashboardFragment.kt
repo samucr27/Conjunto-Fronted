@@ -138,7 +138,8 @@ class AdminDashboardFragment : Fragment() {
             .setPositiveButton("Marcar todas como leídas", null) // ya se marcan al abrir
             .setNeutralButton("Limpiar todo") { _, _ ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    try { RetrofitClient.instance.eliminarNotificaciones() } catch (_: Exception) {}
+                    val ok = try { RetrofitClient.instance.eliminarNotificaciones().isSuccessful } catch (_: Exception) { false }
+                    if (!ok) Snackbar.make(binding.root, "No se pudieron limpiar las notificaciones", Snackbar.LENGTH_LONG).show()
                     actualizarBadge()
                 }
             }
@@ -148,6 +149,7 @@ class AdminDashboardFragment : Fragment() {
         // Abrir la lista cuenta como leerla
         if (notificaciones.any { !it.leida }) {
             viewLifecycleOwner.lifecycleScope.launch {
+                // Si falla no se avisa: el contador se recarga abajo y sigue mostrando las no leídas
                 try { RetrofitClient.instance.marcarNotificacionesLeidas() } catch (_: Exception) {}
                 actualizarBadge()
             }
