@@ -98,6 +98,10 @@ interface ApiService {
     @PUT("api/reservas/{id}/estado")
     suspend fun updateEstadoReserva(@Path("id") id: Long, @Body estado: EstadoRequest): Response<ReservaDTO>
 
+    // Cartera completa (solo admin): una petición en vez de una por apartamento
+    @GET("api/pagos")
+    suspend fun getPagos(): Response<List<PagoDTO>>
+
     @GET("api/pagos/apartamento/{id}")
     suspend fun getPagosPorApartamento(@Path("id") id: Long): Response<PagoDTO>
 
@@ -119,6 +123,10 @@ interface ApiService {
     // Notificaciones del administrador
     @GET("api/notificaciones")
     suspend fun getNotificaciones(): Response<List<NotificacionDTO>>
+
+    // Solo el número, para el contador del panel
+    @GET("api/notificaciones/no-leidas")
+    suspend fun getNotificacionesNoLeidas(): Response<ConteoDTO>
 
     @PUT("api/notificaciones/leidas")
     suspend fun marcarNotificacionesLeidas(): Response<Void>

@@ -78,8 +78,9 @@ class AdminDashboardFragment : Fragment() {
     private fun actualizarBadge() {
         viewLifecycleOwner.lifecycleScope.launch {
             val noLeidas = try {
-                val response = RetrofitClient.instance.getNotificaciones()
-                if (response.isSuccessful) response.body().orEmpty().count { !it.leida } else 0
+                // Solo el número: no hace falta descargar la lista cada vez que se vuelve al panel
+                val response = RetrofitClient.instance.getNotificacionesNoLeidas()
+                if (response.isSuccessful) response.body()?.total?.toInt() ?: 0 else 0
             } catch (_: Exception) {
                 0 // sin conexión: no se muestra el contador
             }

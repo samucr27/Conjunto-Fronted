@@ -22,9 +22,11 @@ object RetrofitClient {
 
     private val okHttpClient by lazy {
         OkHttpClient.Builder()
+            .addInterceptor(TiempoEsperaInterceptor())
             .addInterceptor(AuthInterceptor(SessionManager(appContext)))
             .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
+            // 30 s: el plan gratuito de Render tarda en responder tras un arranque en frío
+            .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
             .build()
     }
