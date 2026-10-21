@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Acciones de la barra superior del panel del residente -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/accion_cerrar_sesion"
+        android:icon="@drawable/ic_logout"
+        android:title="@string/cerrar_sesion"
+        app:showAsAction="always" />
+</menu>

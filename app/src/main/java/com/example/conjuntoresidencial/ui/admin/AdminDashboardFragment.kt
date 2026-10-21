@@ -1,11 +1,11 @@
 package com.example.conjuntoresidencial.ui.admin
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.MenuItemCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -13,7 +13,14 @@ import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentAdminDashboardBinding
 import com.example.conjuntoresidencial.model.NotificacionDTO
-import com.example.conjuntoresidencial.util.SessionManager
+import com.example.conjuntoresidencial.ui.comun.configurar
+import com.example.conjuntoresidencial.util.Formatos
+import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.util.confirmarCerrarSesion
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
+import com.google.android.material.badge.ExperimentalBadgeUtils
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -21,6 +28,7 @@ class AdminDashboardFragment : Fragment() {
 
     private var _binding: FragmentAdminDashboardBinding? = null
     private val binding get() = _binding!!
+    private var insignia: BadgeDrawable? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAdminDashboardBinding.inflate(inflater, container, false)
@@ -30,52 +38,62 @@ class AdminDashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    mostrarDialogSalir()
-                }
+        configurarBarra(
+            binding.barra.toolbar, R.string.panel_admin_titulo, R.string.panel_admin_subtitulo,
+            atras = false, menu = R.menu.menu_panel_admin
+        ) { item ->
+            when (item) {
+                R.id.accion_notificaciones -> { mostrarDialogNotificaciones(); true }
+                R.id.accion_cerrar_sesion -> { confirmarCerrarSesion(); true }
+                else -> false
             }
-        )
+        }
+        crearInsignia()
 
-        // Enlaces de Navegación del Dashboard
-        binding.cardDirectorioAptos.setOnClickListener {
-            findNavController().navigate(R.id.action_adminDashboardFragment_to_directorioApartamentosFragment)
-        }
-        binding.cardControlObras.setOnClickListener {
-            findNavController().navigate(R.id.action_adminDashboardFragment_to_controlObrasFragment)
-        }
-        binding.cardHistorialReservas.setOnClickListener {
-            findNavController().navigate(R.id.action_adminDashboardFragment_to_reservasAdminFragment)
-        }
-        binding.cardZonasAdmin.setOnClickListener {
-            findNavController().navigate(R.id.action_adminDashboardFragment_to_zonasComunesAdminFragment)
-        }
-        binding.cardPersonalObra.setOnClickListener {
-            findNavController().navigate(R.id.action_adminDashboardFragment_to_personalObraFragment)
-        }
+        // "Atrás" en el panel pregunta si se quiere cerrar sesión
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() = confirmarCerrarSesion()
+            })
 
-        // CORRECCIÓN: Evento de la nueva pantalla de Cartera General
-        binding.cardCarteraAdmin.setOnClickListener {
-            findNavController().navigate(R.id.action_adminDashboardFragment_to_carteraAdminFragment)
+        val nav = findNavController()
+        binding.cardDirectorioAptos.configurar(R.drawable.ic_apartment, R.string.menu_directorio, R.string.menu_directorio_sub) {
+            nav.navigate(R.id.action_adminDashboardFragment_to_directorioApartamentosFragment)
         }
-
-        binding.btnCerrarSesion.setOnClickListener {
-            mostrarDialogSalir()
+        binding.cardControlObras.configurar(R.drawable.ic_build, R.string.menu_obras, R.string.menu_obras_sub) {
+            nav.navigate(R.id.action_adminDashboardFragment_to_controlObrasFragment)
         }
-
-        binding.btnNotificaciones.setOnClickListener {
-            mostrarDialogNotificaciones()
+        binding.cardHistorialReservas.configurar(R.drawable.ic_event, R.string.menu_reservas, R.string.menu_reservas_sub) {
+            nav.navigate(R.id.action_adminDashboardFragment_to_reservasAdminFragment)
+        }
+        binding.cardZonasAdmin.configurar(R.drawable.ic_place, R.string.menu_zonas, R.string.menu_zonas_sub) {
+            nav.navigate(R.id.action_adminDashboardFragment_to_zonasComunesAdminFragment)
+        }
+        binding.cardPersonalObra.configurar(R.drawable.ic_people, R.string.menu_personal, R.string.menu_personal_sub) {
+            nav.navigate(R.id.action_adminDashboardFragment_to_personalObraFragment)
+        }
+        binding.cardCarteraAdmin.configurar(R.drawable.ic_wallet, R.string.menu_cartera, R.string.menu_cartera_sub) {
+            nav.navigate(R.id.action_adminDashboardFragment_to_carteraAdminFragment)
         }
     }
 
     override fun onResume() {
         super.onResume()
-        actualizarBadge()
+        actualizarInsignia()
     }
 
-    private fun actualizarBadge() {
+    /** Insignia de Material sobre la campana de la barra superior. */
+    @androidx.annotation.OptIn(ExperimentalBadgeUtils::class)
+    private fun crearInsignia() {
+        val nueva = BadgeDrawable.create(requireContext()).apply {
+            isVisible = false
+            maxCharacterCount = 2 // "9+"
+        }
+        BadgeUtils.attachBadgeDrawable(nueva, binding.barra.toolbar, R.id.accion_notificaciones)
+        insignia = nueva
+    }
+
+    private fun actualizarInsignia() {
         viewLifecycleOwner.lifecycleScope.launch {
             val noLeidas = try {
                 // Solo el número: no hace falta descargar la lista cada vez que se vuelve al panel
@@ -84,16 +102,21 @@ class AdminDashboardFragment : Fragment() {
             } catch (_: Exception) {
                 0 // sin conexión: no se muestra el contador
             }
-            mostrarBadge(noLeidas)
+            mostrarInsignia(noLeidas)
         }
     }
 
-    private fun mostrarBadge(noLeidas: Int) {
-        if (noLeidas > 0) {
-            binding.tvBadgeNotificaciones.visibility = View.VISIBLE
-            binding.tvBadgeNotificaciones.text = if (noLeidas > 9) "9+" else noLeidas.toString()
-        } else {
-            binding.tvBadgeNotificaciones.visibility = View.GONE
+    private fun mostrarInsignia(noLeidas: Int) {
+        val badge = insignia ?: return
+        badge.number = noLeidas
+        badge.isVisible = noLeidas > 0
+        // TalkBack lee "Notificaciones, 2 sin leer"
+        binding.barra.toolbar.menu.findItem(R.id.accion_notificaciones)?.let { item ->
+            MenuItemCompat.setContentDescription(
+                item,
+                if (noLeidas > 0) getString(R.string.notificaciones_no_leidas, noLeidas)
+                else getString(R.string.notificaciones)
+            )
         }
     }
 
@@ -105,7 +128,7 @@ class AdminDashboardFragment : Fragment() {
                     mostrarDialogNotificaciones(response.body().orEmpty())
                 } else {
                     Snackbar.make(binding.root,
-                        RetrofitClient.mensajeDeError(response, "No se pudieron cargar las notificaciones"),
+                        RetrofitClient.mensajeDeError(response, getString(R.string.actividad_error_cargar)),
                         Snackbar.LENGTH_LONG).show()
                 }
             } catch (_: Exception) {
@@ -117,9 +140,9 @@ class AdminDashboardFragment : Fragment() {
     private fun mostrarDialogNotificaciones(notificaciones: List<NotificacionDTO>) {
         if (notificaciones.isEmpty()) {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Actividad reciente")
-                .setMessage("No hay notificaciones nuevas.")
-                .setPositiveButton("Cerrar", null)
+                .setTitle(R.string.actividad_reciente)
+                .setMessage(R.string.actividad_vacia)
+                .setPositiveButton(R.string.cerrar, null)
                 .show()
             return
         }
@@ -128,23 +151,23 @@ class AdminDashboardFragment : Fragment() {
             notificaciones.forEach { n ->
                 val icono = if (n.tipo == "VEHICULO") "🚗" else "📅"
                 appendLine("$icono ${n.mensaje}")
-                appendLine("   ${formatearFecha(n.fecha)}")
+                // "2026-10-21T00:37:12" -> "21/10/2026 · 12:37 a. m."
+                appendLine("   ${Formatos.fechaHora(n.fecha.take(10), n.fecha.drop(11))}")
                 appendLine()
             }
         }
 
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Actividad reciente (${notificaciones.size})")
+            .setTitle(getString(R.string.actividad_reciente_n, notificaciones.size))
             .setMessage(mensaje.trim())
-            .setPositiveButton("Marcar todas como leídas", null) // ya se marcan al abrir
-            .setNeutralButton("Limpiar todo") { _, _ ->
+            .setPositiveButton(R.string.cerrar, null)
+            .setNeutralButton(R.string.actividad_limpiar) { _, _ ->
                 viewLifecycleOwner.lifecycleScope.launch {
                     val ok = try { RetrofitClient.instance.eliminarNotificaciones().isSuccessful } catch (_: Exception) { false }
-                    if (!ok) Snackbar.make(binding.root, "No se pudieron limpiar las notificaciones", Snackbar.LENGTH_LONG).show()
-                    actualizarBadge()
+                    if (!ok) Snackbar.make(binding.root, R.string.actividad_error_limpiar, Snackbar.LENGTH_LONG).show()
+                    actualizarInsignia()
                 }
             }
-            .setNegativeButton("Cerrar", null)
             .show()
 
         // Abrir la lista cuenta como leerla
@@ -152,34 +175,14 @@ class AdminDashboardFragment : Fragment() {
             viewLifecycleOwner.lifecycleScope.launch {
                 // Si falla no se avisa: el contador se recarga abajo y sigue mostrando las no leídas
                 try { RetrofitClient.instance.marcarNotificacionesLeidas() } catch (_: Exception) {}
-                actualizarBadge()
+                actualizarInsignia()
             }
         }
     }
 
-    // "2026-10-20T20:15:00" -> "20/10/2026 20:15" (sin java.time: minSdk 24)
-    private fun formatearFecha(iso: String): String = try {
-        val (fecha, hora) = iso.split("T")
-        val (anio, mes, dia) = fecha.split("-")
-        "$dia/$mes/$anio ${hora.take(5)}"
-    } catch (_: Exception) {
-        iso
-    }
-
-    private fun mostrarDialogSalir() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Cerrar sesión")
-            .setMessage("¿Deseas salir?")
-            .setPositiveButton("Sí") { _, _ ->
-                SessionManager(requireContext()).clearSession()
-                findNavController().navigate(R.id.loginSelectorFragment)
-            }
-            .setNegativeButton("Cancelar", null)
-            .show()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
+        insignia = null
         _binding = null
     }
 }

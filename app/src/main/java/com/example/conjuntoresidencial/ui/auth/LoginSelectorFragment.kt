@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.conjuntoresidencial.BuildConfig
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentLoginSelectorBinding
 
@@ -23,6 +24,7 @@ class LoginSelectorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.tvVersion.text = getString(R.string.version, BuildConfig.VERSION_NAME)
 
         binding.btnSoyAdmin.setOnClickListener {
             findNavController().navigate(R.id.action_loginSelectorFragment_to_loginAdminFragment)
