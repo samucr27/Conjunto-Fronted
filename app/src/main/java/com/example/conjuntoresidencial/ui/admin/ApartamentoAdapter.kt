@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.ItemApartamentoBinding
 import com.example.conjuntoresidencial.model.Apartamento
 import com.example.conjuntoresidencial.ui.comun.DiffPorId
@@ -19,7 +20,8 @@ class ApartamentoAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val apto = getItem(position)
-        holder.binding.tvTorreApto.text = "Torre ${apto.torre} - Apto ${apto.apto}"
+        holder.binding.tvTorreApto.text =
+            holder.binding.root.context.getString(R.string.apto_item_titulo, apto.torre, apto.apto)
         holder.binding.root.setOnClickListener { onClick(apto) }
     }
 }

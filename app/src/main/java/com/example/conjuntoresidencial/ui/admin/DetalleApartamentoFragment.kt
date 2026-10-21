@@ -1,6 +1,5 @@
 package com.example.conjuntoresidencial.ui.admin
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,17 +10,21 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentDetalleApartamentoBinding
 import com.example.conjuntoresidencial.model.CambioContrasenaRequest
 import com.example.conjuntoresidencial.model.ResidenteDTO
 import com.example.conjuntoresidencial.model.VehiculoDTO
-import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.util.Opciones
 import com.example.conjuntoresidencial.util.comoLista
+import com.example.conjuntoresidencial.util.configurarBarra
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class DetalleApartamentoFragment : Fragment() {
@@ -40,19 +43,85 @@ class DetalleApartamentoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         aptoId = arguments?.getLong("aptoId") ?: -1L
+        configurarBarra(binding.barra.toolbar, R.string.detalle_titulo, R.string.detalle_subtitulo)
 
         binding.rvResidentesApto.layoutManager = LinearLayoutManager(requireContext())
         binding.rvVehiculosApto.layoutManager = LinearLayoutManager(requireContext())
         binding.rvResidentesApto.adapter = residentesAdapter
         binding.rvVehiculosApto.adapter = vehiculosAdapter
-
-        cargarInfoApartamento()
-        cargarResidentes()
-        cargarVehiculos()
+        binding.estado.vincular(binding.contenido)
 
         binding.btnAgregarResidente.setOnClickListener { mostrarDialogResidente() }
         binding.btnAgregarVehiculoAdmin.setOnClickListener { mostrarDialogVehiculo() }
         binding.btnRestablecerContrasena.setOnClickListener { mostrarDialogRestablecerContrasena() }
+
+        cargarTodo()
+    }
+
+    // Todas las peticiones usan viewLifecycleOwner.lifecycleScope: se cancelan si el usuario
+    // sale de la pantalla, en vez de tocar una vista que ya no existe.
+
+    /** Apartamento, residentes y vehículos en paralelo; si falla el apartamento, pantalla de error. */
+    private fun cargarTodo() {
+        binding.estado.mostrarCargando()
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                // coroutineScope: si una petición falla, el error llega al catch en vez de cerrar la app
+                val (apto, residentes, vehiculos) = coroutineScope {
+                    val a = async { RetrofitClient.instance.getApartamentoById(aptoId) }
+                    val r = async { RetrofitClient.instance.getResidentesPorApartamento(aptoId) }
+                    val v = async { RetrofitClient.instance.getVehiculosPorApartamento(aptoId) }
+                    Triple(a.await(), r.await(), v.await())
+                }
+                val datos = apto.body()
+                if (!apto.isSuccessful || datos == null) {
+                    binding.estado.mostrarError(
+                        RetrofitClient.mensajeDeError(apto, getString(R.string.detalle_error_cargar))
+                    ) { cargarTodo() }
+                    return@launch
+                }
+                binding.barra.toolbar.title = getString(R.string.apto_item_titulo, datos.torre, datos.apto)
+                mostrarResidentes(if (residentes.isSuccessful) residentes.body().orEmpty() else emptyList())
+                mostrarVehiculos(if (vehiculos.isSuccessful) vehiculos.body().orEmpty() else emptyList())
+                binding.estado.mostrarContenido()
+            } catch (e: Exception) {
+                binding.estado.mostrarError("Error de red: ${e.localizedMessage}") { cargarTodo() }
+            }
+        }
+    }
+
+    private fun mostrarResidentes(lista: List<ResidenteDTO>) {
+        residentesAdapter.submitList(lista)
+        binding.tvSinResidentes.visibility = if (lista.isEmpty()) View.VISIBLE else View.GONE
+    }
+
+    private fun mostrarVehiculos(lista: List<VehiculoDTO>) {
+        vehiculosAdapter.submitList(lista)
+        binding.tvSinVehiculos.visibility = if (lista.isEmpty()) View.VISIBLE else View.GONE
+    }
+
+    private fun recargarResidentes() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.instance.getResidentesPorApartamento(aptoId)
+                if (response.isSuccessful) mostrarResidentes(response.body().orEmpty())
+                else avisar(RetrofitClient.mensajeDeError(response, getString(R.string.estado_error_titulo)))
+            } catch (e: Exception) {
+                avisar("Error de red: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    private fun recargarVehiculos() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.instance.getVehiculosPorApartamento(aptoId)
+                if (response.isSuccessful) mostrarVehiculos(response.body().orEmpty())
+                else avisar(RetrofitClient.mensajeDeError(response, getString(R.string.estado_error_titulo)))
+            } catch (e: Exception) {
+                avisar("Error de red: ${e.localizedMessage}")
+            }
+        }
     }
 
     private fun mostrarDialogRestablecerContrasena() {
@@ -91,84 +160,42 @@ class DetalleApartamentoFragment : Fragment() {
         }
     }
 
-    // Todas las peticiones usan viewLifecycleOwner.lifecycleScope: se cancelan si el usuario
-    // sale de la pantalla, en vez de tocar una vista que ya no existe.
-
-    private fun cargarInfoApartamento() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val response = RetrofitClient.instance.getApartamentoById(aptoId)
-                if (response.isSuccessful && response.body() != null) {
-                    val apto = response.body()!!
-                    binding.tvInfoTorre.text = "Torre ${apto.torre} — Apto ${apto.apto}"
-                    binding.tvInfoTorreNum.text = apto.torre
-                    binding.tvInfoAptoNum.text = apto.apto
-                } else {
-                    avisar(RetrofitClient.mensajeDeError(response, "No se pudo cargar el apartamento"))
-                }
-            } catch (_: Exception) {
-                avisar(getString(R.string.error_red))
-            }
-        }
-    }
-
-    private fun cargarResidentes() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val response = RetrofitClient.instance.getResidentesPorApartamento(aptoId)
-                if (response.isSuccessful)
-                    residentesAdapter.submitList(response.body() ?: emptyList())
-                else avisar(RetrofitClient.mensajeDeError(response, "No se pudieron cargar los residentes"))
-            } catch (_: Exception) {
-                avisar(getString(R.string.error_red))
-            }
-        }
-    }
-
-    private fun cargarVehiculos() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val response = RetrofitClient.instance.getVehiculosPorApartamento(aptoId)
-                if (response.isSuccessful)
-                    vehiculosAdapter.submitList(response.body() ?: emptyList())
-                else avisar(RetrofitClient.mensajeDeError(response, "No se pudieron cargar los vehículos"))
-            } catch (_: Exception) {
-                avisar(getString(R.string.error_red))
-            }
-        }
-    }
-
     private fun mostrarDialogResidente() {
         val dialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_agregar_residente, null)
         val tipoView = dialogView.findViewById<AutoCompleteTextView>(R.id.etTipoResidente)
         tipoView.comoLista(Opciones.TIPOS_HABITANTE)
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Agregar Residente")
+        val tilNombre = dialogView.findViewById<TextInputLayout>(R.id.tilNombreResidente)
+        val dialogo = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.residente_nuevo)
             .setView(dialogView)
-            .setPositiveButton("Guardar") { _, _ ->
-                val nombre = dialogView.findViewById<TextInputEditText>(R.id.etNombreResidente).text.toString().trim()
-                val telefono = dialogView.findViewById<TextInputEditText>(R.id.etTelefonoResidente).text.toString().trim()
-                val identificacion = dialogView.findViewById<TextInputEditText>(R.id.etIdentificacionResidente).text.toString().trim()
-                val tipo = tipoView.text.toString()
-                if (nombre.isBlank()) {
-                    avisar("El nombre del residente es obligatorio")
-                    return@setPositiveButton
-                }
-                viewLifecycleOwner.lifecycleScope.launch {
-                    try {
-                        val response = RetrofitClient.instance.createResidente(
-                            ResidenteDTO(null, nombre, telefono, identificacion, tipo, aptoId)
-                        )
-                        if (response.isSuccessful) cargarResidentes()
-                        else avisar(RetrofitClient.mensajeDeError(response, "No se pudo guardar el residente"))
-                    } catch (_: Exception) {
-                        avisar(getString(R.string.error_red))
-                    }
+            .setPositiveButton(R.string.btn_guardar, null)
+            .setNegativeButton(R.string.btn_cancelar, null)
+            .show()
+
+        // Se asigna después de show() para que el diálogo no se cierre si falta el nombre
+        dialogo.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val nombre = dialogView.findViewById<TextInputEditText>(R.id.etNombreResidente).text.toString().trim()
+            if (nombre.isBlank()) {
+                tilNombre.error = getString(R.string.residente_nombre_obligatorio)
+                return@setOnClickListener
+            }
+            val telefono = dialogView.findViewById<TextInputEditText>(R.id.etTelefonoResidente).text.toString().trim()
+            val identificacion = dialogView.findViewById<TextInputEditText>(R.id.etIdentificacionResidente).text.toString().trim()
+            val tipo = tipoView.text.toString()
+            dialogo.dismiss()
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    val response = RetrofitClient.instance.createResidente(
+                        ResidenteDTO(null, nombre, telefono, identificacion, tipo, aptoId)
+                    )
+                    if (response.isSuccessful) recargarResidentes()
+                    else avisar(RetrofitClient.mensajeDeError(response, getString(R.string.residente_error_guardar)))
+                } catch (_: Exception) {
+                    avisar(getString(R.string.error_red))
                 }
             }
-            .setNegativeButton("Cancelar", null)
-            .show()
+        }
     }
 
     private fun mostrarDialogVehiculo() {
@@ -176,32 +203,37 @@ class DetalleApartamentoFragment : Fragment() {
             .inflate(R.layout.dialog_agregar_vehiculo, null)
         val tipoView = dialogView.findViewById<AutoCompleteTextView>(R.id.etTipo)
         tipoView.comoLista(Opciones.TIPOS_VEHICULO)
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Agregar Vehículo")
+        val tilPlaca = dialogView.findViewById<TextInputLayout>(R.id.tilPlaca)
+        val dialogo = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.vehiculo_nuevo)
             .setView(dialogView)
-            .setPositiveButton("Guardar") { _, _ ->
-                val placa = dialogView.findViewById<TextInputEditText>(R.id.etPlaca).text.toString().trim()
-                val marca = dialogView.findViewById<TextInputEditText>(R.id.etMarca).text.toString().trim()
-                val color = dialogView.findViewById<TextInputEditText>(R.id.etColor).text.toString().trim()
-                val tipo = tipoView.text.toString()
-                if (placa.isBlank()) {
-                    avisar("La placa es obligatoria")
-                    return@setPositiveButton
-                }
-                viewLifecycleOwner.lifecycleScope.launch {
-                    try {
-                        val response = RetrofitClient.instance.createVehiculo(
-                            VehiculoDTO(null, placa, marca, color, tipo, aptoId)
-                        )
-                        if (response.isSuccessful) cargarVehiculos()
-                        else avisar(RetrofitClient.mensajeDeError(response, "No se pudo guardar el vehículo"))
-                    } catch (_: Exception) {
-                        avisar(getString(R.string.error_red))
-                    }
+            .setPositiveButton(R.string.btn_guardar, null)
+            .setNegativeButton(R.string.btn_cancelar, null)
+            .show()
+
+        // Se asigna después de show() para que el diálogo no se cierre si falta la placa
+        dialogo.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val placa = dialogView.findViewById<TextInputEditText>(R.id.etPlaca).text.toString().trim()
+            if (placa.isBlank()) {
+                tilPlaca.error = getString(R.string.vehiculo_placa_obligatoria)
+                return@setOnClickListener
+            }
+            val marca = dialogView.findViewById<TextInputEditText>(R.id.etMarca).text.toString().trim()
+            val color = dialogView.findViewById<TextInputEditText>(R.id.etColor).text.toString().trim()
+            val tipo = tipoView.text.toString()
+            dialogo.dismiss()
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    val response = RetrofitClient.instance.createVehiculo(
+                        VehiculoDTO(null, placa, marca, color, tipo, aptoId)
+                    )
+                    if (response.isSuccessful) recargarVehiculos()
+                    else avisar(RetrofitClient.mensajeDeError(response, getString(R.string.vehiculo_error_guardar)))
+                } catch (_: Exception) {
+                    avisar(getString(R.string.error_red))
                 }
             }
-            .setNegativeButton("Cancelar", null)
-            .show()
+        }
     }
 
     private fun avisar(mensaje: String) {

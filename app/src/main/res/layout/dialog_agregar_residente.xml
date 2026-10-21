@@ -6,8 +6,9 @@
     android:padding="16dp">
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilNombreResidente"
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="Nombre completo"
+        android:hint="@string/residente_nombre"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_marginBottom="12dp">
         <com.google.android.material.textfield.TextInputEditText
@@ -17,7 +18,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="Teléfono"
+        android:hint="@string/residente_telefono"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_marginBottom="12dp">
         <com.google.android.material.textfield.TextInputEditText
@@ -28,7 +29,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="Identificación"
+        android:hint="@string/residente_identificacion"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_marginBottom="12dp">
         <com.google.android.material.textfield.TextInputEditText
@@ -40,7 +41,7 @@
     <!-- Lista cerrada: el backend solo acepta PROPIETARIO o ARRENDATARIO -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="Tipo de habitante"
+        android:hint="@string/residente_tipo"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
         <AutoCompleteTextView
             android:id="@+id/etTipoResidente"

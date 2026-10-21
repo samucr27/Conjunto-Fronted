@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentReservasAdminBinding
-import com.example.conjuntoresidencial.util.Resource
+import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
+import com.example.conjuntoresidencial.util.configurarBarra
 import com.google.android.material.snackbar.Snackbar
 
 class ReservasAdminFragment : Fragment() {
@@ -23,45 +25,22 @@ class ReservasAdminFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.rvReservas.layoutManager = LinearLayoutManager(requireContext())
+        configurarBarra(binding.barra.toolbar, R.string.reservas_titulo, R.string.reservas_subtitulo)
+
         val adaptador = ReservaAdapter(
             onAprobar = { reserva -> viewModel.actualizarEstado(reserva.id!!, "APROBADA") },
             onRechazar = { reserva -> viewModel.actualizarEstado(reserva.id!!, "RECHAZADA") }
         )
+        binding.rvReservas.layoutManager = LinearLayoutManager(requireContext())
         binding.rvReservas.adapter = adaptador
-        viewModel.fetchReservas()
-
-        binding.swipeRefreshReservasAdmin.setOnRefreshListener {
-            viewModel.fetchReservas()
-        }
+        binding.estado.vincular(binding.rvReservas)
+        binding.swipe.setOnRefreshListener { viewModel.fetchReservas() }
 
         viewModel.reservas.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.tvNoReservasGlobal.visibility = View.GONE
-                    binding.rvReservas.visibility = View.GONE
-                }
-                is Resource.Success -> {
-                    binding.progressBar.visibility = View.GONE
-                    binding.swipeRefreshReservasAdmin.isRefreshing = false
-                    val lista = resource.data ?: emptyList()
-                    if (lista.isEmpty()) {
-                        binding.tvNoReservasGlobal.visibility = View.VISIBLE
-                        binding.rvReservas.visibility = View.GONE
-                    } else {
-                        binding.tvNoReservasGlobal.visibility = View.GONE
-                        binding.rvReservas.visibility = View.VISIBLE
-                        adaptador.submitList(ReservaConZona.de(lista, viewModel.nombresZonas))
-                    }
-                }
-                is Resource.Error -> {
-                    binding.progressBar.visibility = View.GONE
-                    binding.swipeRefreshReservasAdmin.isRefreshing = false
-                    binding.tvNoReservasGlobal.visibility = View.VISIBLE
-                    binding.tvNoReservasGlobal.text = resource.message
-                }
-            }
+            binding.estado.mostrarRecurso(
+                resource, binding.swipe, R.drawable.ic_event, getString(R.string.reservas_vacio),
+                reintentar = { viewModel.fetchReservas() }
+            ) { adaptador.submitList(ReservaConZona.de(it, viewModel.nombresZonas)) }
         }
 
         viewModel.mensaje.observe(viewLifecycleOwner) { evento ->
@@ -69,6 +48,7 @@ class ReservasAdminFragment : Fragment() {
                 Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
             }
         }
+        if (viewModel.reservas.value == null) viewModel.fetchReservas()
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }

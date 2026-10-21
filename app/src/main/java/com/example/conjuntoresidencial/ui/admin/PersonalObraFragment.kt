@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentPersonalObraBinding
-import com.example.conjuntoresidencial.util.Resource
+import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
+import com.example.conjuntoresidencial.util.configurarBarra
 
 class PersonalObraFragment : Fragment() {
     private var _binding: FragmentPersonalObraBinding? = null
@@ -22,37 +24,21 @@ class PersonalObraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.rvPersonalObra.layoutManager = LinearLayoutManager(requireContext())
+        configurarBarra(binding.barra.toolbar, R.string.personal_titulo, R.string.personal_subtitulo)
+
         val adaptador = PersonalAdapter()
+        binding.rvPersonalObra.layoutManager = LinearLayoutManager(requireContext())
         binding.rvPersonalObra.adapter = adaptador
-        viewModel.fetchPersonal()
+        binding.estado.vincular(binding.rvPersonalObra)
+        binding.swipe.setOnRefreshListener { viewModel.fetchPersonal() }
 
         viewModel.personal.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    binding.progressPersonal.visibility = View.VISIBLE
-                    binding.tvNoPersonal.visibility = View.GONE
-                    binding.rvPersonalObra.visibility = View.GONE
-                }
-                is Resource.Success -> {
-                    binding.progressPersonal.visibility = View.GONE
-                    val lista = resource.data ?: emptyList()
-                    if (lista.isEmpty()) {
-                        binding.tvNoPersonal.visibility = View.VISIBLE
-                        binding.rvPersonalObra.visibility = View.GONE
-                    } else {
-                        binding.tvNoPersonal.visibility = View.GONE
-                        binding.rvPersonalObra.visibility = View.VISIBLE
-                        adaptador.submitList(lista)
-                    }
-                }
-                is Resource.Error -> {
-                    binding.progressPersonal.visibility = View.GONE
-                    binding.tvNoPersonal.visibility = View.VISIBLE
-                    binding.tvNoPersonal.text = resource.message
-                }
-            }
+            binding.estado.mostrarRecurso(
+                resource, binding.swipe, R.drawable.ic_people, getString(R.string.personal_vacio),
+                reintentar = { viewModel.fetchPersonal() }
+            ) { adaptador.submitList(it) }
         }
+        if (viewModel.personal.value == null) viewModel.fetchPersonal()
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }

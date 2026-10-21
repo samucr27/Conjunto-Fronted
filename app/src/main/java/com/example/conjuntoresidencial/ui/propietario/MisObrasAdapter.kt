@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.ItemObraBinding
 import com.example.conjuntoresidencial.model.ObraDTO
 import com.example.conjuntoresidencial.ui.comun.DiffPorId
@@ -28,6 +29,8 @@ class MisObrasAdapter(
         h.binding.root.setOnClickListener { onDetalle(obra) }
         if (obra.estadoObra == "EN_PROCESO") {
             h.binding.btnCambiarEstadoObra.visibility = View.VISIBLE
+            h.binding.btnCambiarEstadoObra.contentDescription =
+                h.binding.root.context.getString(R.string.desc_finalizar_obra, obra.descripcionAdecuacion)
             h.binding.btnCambiarEstadoObra.setOnClickListener { onFinalizar(obra) }
         } else {
             h.binding.btnCambiarEstadoObra.visibility = View.GONE

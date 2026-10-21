@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.model.ResidenteDTO
 import com.example.conjuntoresidencial.ui.comun.DiffPorId
 
@@ -25,6 +26,6 @@ class ResidenteAdapter : ListAdapter<ResidenteDTO, ResidenteAdapter.VH>(DiffPorI
         h.nombre.text = r.nombreCompleto
         // "PROPIETARIO" -> "Propietario"
         val tipo = r.tipoHabitante.lowercase().replaceFirstChar { it.uppercase() }
-        h.detalle.text = "$tipo · CC ${r.identificacion}"
+        h.detalle.text = h.itemView.context.getString(R.string.residente_detalle, tipo, r.identificacion)
     }
 }

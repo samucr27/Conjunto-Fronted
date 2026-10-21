@@ -34,6 +34,8 @@ class ZonaAdapter(
         )
         if (onReservar != null && reservable) {
             holder.binding.btnReservar.visibility = View.VISIBLE
+            holder.binding.btnReservar.contentDescription =
+                holder.binding.root.context.getString(R.string.desc_reservar_zona, zona.nombre)
             holder.binding.btnReservar.setOnClickListener { onReservar.invoke(zona) }
         } else {
             holder.binding.btnReservar.visibility = View.GONE
