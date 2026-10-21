@@ -4,4 +4,20 @@
     <string name="btn_sin_deuda">Sin deuda pendiente</string>
     <string name="saldo_pendiente_format">$%s</string>
     <string name="simulacion_exitosa">Simulación exitosa</string>
+
+    <!-- Sesión y permisos -->
+    <string name="sesion_expirada">Tu sesión expiró. Inicia sesión de nuevo.</string>
+    <string name="sin_permiso">No tienes permiso para realizar esta acción.</string>
+
+    <!-- Restablecer contraseña (detalle de apartamento) -->
+    <string name="btn_restablecer_contrasena">Restablecer contraseña</string>
+    <string name="titulo_restablecer_contrasena">Restablecer contraseña</string>
+    <string name="hint_nueva_contrasena">Nueva contraseña</string>
+    <string name="ayuda_nueva_contrasena">Mínimo 6 caracteres. Compártela con el residente.</string>
+    <string name="error_contrasena_corta">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="contrasena_restablecida">Contraseña restablecida</string>
+    <string name="error_restablecer_contrasena">No se pudo restablecer la contraseña</string>
+    <string name="error_red">Error de red. Revisa tu conexión.</string>
+    <string name="btn_guardar">Guardar</string>
+    <string name="btn_cancelar">Cancelar</string>
 </resources>

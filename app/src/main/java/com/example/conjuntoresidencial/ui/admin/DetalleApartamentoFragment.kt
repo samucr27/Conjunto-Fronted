@@ -4,15 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentDetalleApartamentoBinding
+import com.example.conjuntoresidencial.model.CambioContrasenaRequest
 import com.example.conjuntoresidencial.model.ResidenteDTO
 import com.example.conjuntoresidencial.model.VehiculoDTO
 import com.example.conjuntoresidencial.R
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,6 +46,43 @@ class DetalleApartamentoFragment : Fragment() {
 
         binding.btnAgregarResidente.setOnClickListener { mostrarDialogResidente() }
         binding.btnAgregarVehiculoAdmin.setOnClickListener { mostrarDialogVehiculo() }
+        binding.btnRestablecerContrasena.setOnClickListener { mostrarDialogRestablecerContrasena() }
+    }
+
+    private fun mostrarDialogRestablecerContrasena() {
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_restablecer_contrasena, null)
+        val til = dialogView.findViewById<TextInputLayout>(R.id.tilNuevaContrasena)
+        val et = dialogView.findViewById<TextInputEditText>(R.id.etNuevaContrasena)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle(R.string.titulo_restablecer_contrasena)
+            .setView(dialogView)
+            .setPositiveButton(R.string.btn_guardar, null)
+            .setNegativeButton(R.string.btn_cancelar, null)
+            .show()
+
+        // Se asigna después de show() para que el diálogo no se cierre si la validación falla
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener { boton ->
+            val nueva = et.text?.toString().orEmpty()
+            if (nueva.length < 6) {
+                til.error = getString(R.string.error_contrasena_corta)
+                return@setOnClickListener
+            }
+            til.error = null
+            boton.isEnabled = false
+            viewLifecycleOwner.lifecycleScope.launch {
+                val mensaje = try {
+                    val response = RetrofitClient.instance.restablecerContrasena(aptoId, CambioContrasenaRequest(nueva))
+                    if (response.isSuccessful) getString(R.string.contrasena_restablecida)
+                    else RetrofitClient.mensajeDeError(response, getString(R.string.error_restablecer_contrasena))
+                } catch (_: Exception) {
+                    getString(R.string.error_red)
+                }
+                Toast.makeText(requireContext(), mensaje, Toast.LENGTH_LONG).show()
+                dialog.dismiss()
+            }
+        }
     }
 
     private fun cargarInfoApartamento() {
@@ -54,7 +95,6 @@ class DetalleApartamentoFragment : Fragment() {
                         binding.tvInfoTorre.text = "Torre ${apto.torre} — Apto ${apto.apto}"
                         binding.tvInfoTorreNum.text = apto.torre
                         binding.tvInfoAptoNum.text = apto.apto
-                        binding.tvInfoClave.text = apto.contrasena
                     }
                 }
             } catch (_: Exception) {}

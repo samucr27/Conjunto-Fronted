@@ -112,27 +112,20 @@
                                 android:textStyle="bold"
                                 android:textColor="@color/white"/>
                         </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Clave"
-                                android:textSize="11sp"
-                                android:textColor="@color/white"
-                                android:alpha="0.7"/>
-                            <TextView
-                                android:id="@+id/tvInfoClave"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/white"/>
-                        </LinearLayout>
                     </LinearLayout>
+
+                    <!-- La contraseña ya no se muestra: el backend solo guarda su hash -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRestablecerContrasena"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:minHeight="48dp"
+                        android:text="@string/btn_restablecer_contrasena"
+                        android:textColor="@color/white"
+                        app:strokeColor="@color/white"
+                        app:cornerRadius="10dp"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
