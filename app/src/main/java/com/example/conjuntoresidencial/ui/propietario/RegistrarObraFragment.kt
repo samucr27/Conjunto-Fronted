@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentRegistrarObraBinding
@@ -15,10 +18,7 @@ import com.example.conjuntoresidencial.model.PersonalObraDTO
 import com.example.conjuntoresidencial.util.Resource
 import com.example.conjuntoresidencial.util.SessionManager
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -125,15 +125,31 @@ class RegistrarObraFragment : Fragment() {
 
     private fun guardarPersonalYSalir(obraId: Long) {
         binding.progressRegistrarObra.visibility = View.VISIBLE
-        CoroutineScope(Dispatchers.IO).launch {
+        viewLifecycleOwner.lifecycleScope.launch {
+            // Nombre del trabajador -> motivo, para los que no se pudieron guardar
+            val fallidos = mutableListOf<String>()
             personalList.forEach { dto ->
-                try { RetrofitClient.instance.createPersonalObra(dto.copy(obraId = obraId)) }
-                catch (_: Exception) {}
+                try {
+                    val response = RetrofitClient.instance.createPersonalObra(dto.copy(obraId = obraId))
+                    if (!response.isSuccessful) {
+                        fallidos += "${dto.nombreTrabajador}: ${RetrofitClient.mensajeDeError(response, "error del servidor")}"
+                    }
+                } catch (_: Exception) {
+                    fallidos += "${dto.nombreTrabajador}: sin conexión"
+                }
             }
-            withContext(Dispatchers.Main) {
-                binding.progressRegistrarObra.visibility = View.GONE
-                Snackbar.make(binding.root, "Obra y personal registrados exitosamente", Snackbar.LENGTH_SHORT).show()
+            binding.progressRegistrarObra.visibility = View.GONE
+
+            if (fallidos.isEmpty()) {
+                Toast.makeText(requireContext(), "Obra y personal registrados exitosamente", Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()
+            } else {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Obra registrada con avisos")
+                    .setMessage("La obra se guardó, pero estos trabajadores no:\n\n" + fallidos.joinToString("\n"))
+                    .setPositiveButton("Entendido") { _, _ -> findNavController().popBackStack() }
+                    .setCancelable(false)
+                    .show()
             }
         }
     }

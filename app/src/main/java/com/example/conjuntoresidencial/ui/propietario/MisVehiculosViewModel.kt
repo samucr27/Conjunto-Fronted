@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.model.VehiculoDTO
+import com.example.conjuntoresidencial.util.Evento
 import com.example.conjuntoresidencial.util.Resource
 import kotlinx.coroutines.launch
 
@@ -13,6 +14,9 @@ class MisVehiculosViewModel : ViewModel() {
 
     private val _vehiculos = MutableLiveData<Resource<List<VehiculoDTO>>>()
     val vehiculos: LiveData<Resource<List<VehiculoDTO>>> get() = _vehiculos
+
+    private val _mensaje = MutableLiveData<Evento<String>>()
+    val mensaje: LiveData<Evento<String>> get() = _mensaje
 
     fun fetchVehiculos(aptoId: Long) {
         _vehiculos.value = Resource.Loading
@@ -37,8 +41,12 @@ class MisVehiculosViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     // El backend crea la notificación para el admin
                     fetchVehiculos(vehiculo.apartamentoId)
+                } else {
+                    _mensaje.value = Evento(RetrofitClient.mensajeDeError(response, "No se pudo registrar el vehículo"))
                 }
-            } catch (_: Exception) {}
+            } catch (e: Exception) {
+                _mensaje.value = Evento("Error de red: ${e.localizedMessage}")
+            }
         }
     }
 
@@ -47,7 +55,10 @@ class MisVehiculosViewModel : ViewModel() {
             try {
                 val response = RetrofitClient.instance.deleteVehiculo(vehiculo.id!!)
                 if (response.isSuccessful) fetchVehiculos(aptoId)
-            } catch (_: Exception) {}
+                else _mensaje.value = Evento(RetrofitClient.mensajeDeError(response, "No se pudo eliminar el vehículo"))
+            } catch (e: Exception) {
+                _mensaje.value = Evento("Error de red: ${e.localizedMessage}")
+            }
         }
     }
 }

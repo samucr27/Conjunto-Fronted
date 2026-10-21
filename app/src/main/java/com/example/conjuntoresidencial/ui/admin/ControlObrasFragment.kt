@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.databinding.FragmentControlObrasBinding
 import com.example.conjuntoresidencial.util.Resource
+import com.google.android.material.snackbar.Snackbar
 
 class ControlObrasFragment : Fragment() {
     private var _binding: FragmentControlObrasBinding? = null
@@ -47,6 +48,7 @@ class ControlObrasFragment : Fragment() {
 
                         binding.rvObrasEnProceso.adapter = ObraConPersonalAdapter(
                             lista = lista,
+                            personalPorObra = viewModel.personalPorObra,
                             onCambiarEstado = { obraId, nuevoEstado ->
                                 viewModel.cambiarEstado(obraId, nuevoEstado)
                             }
@@ -61,6 +63,12 @@ class ControlObrasFragment : Fragment() {
                     binding.tvNoObrasProceso.visibility = View.VISIBLE
                     binding.tvNoObrasProceso.text = resource.message
                 }
+            }
+        }
+
+        viewModel.mensaje.observe(viewLifecycleOwner) { evento ->
+            evento.obtenerSiNoManejado()?.let {
+                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
             }
         }
     }

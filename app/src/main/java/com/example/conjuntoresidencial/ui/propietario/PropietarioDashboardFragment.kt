@@ -7,15 +7,13 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentPropietarioDashboardBinding
 import com.example.conjuntoresidencial.util.SessionManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class PropietarioDashboardFragment : Fragment() {
 
@@ -32,21 +30,18 @@ class PropietarioDashboardFragment : Fragment() {
 
         val aptoId = SessionManager(requireContext()).getApartamentoId()
 
-        CoroutineScope(Dispatchers.IO).launch {
+        // Atado a la vista: se cancela si el usuario sale antes de que responda el servidor
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val response = RetrofitClient.instance.getApartamentoById(aptoId)
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful && response.body() != null) {
-                        val apto = response.body()!!
-                        binding.tvBienvenidaPropietario.text = "Torre ${apto.torre} - Apto ${apto.apto}"
-                    } else {
-                        binding.tvBienvenidaPropietario.text = "Apto #$aptoId"
-                    }
-                }
-            } catch (_: Exception) {
-                withContext(Dispatchers.Main) {
+                if (response.isSuccessful && response.body() != null) {
+                    val apto = response.body()!!
+                    binding.tvBienvenidaPropietario.text = "Torre ${apto.torre} - Apto ${apto.apto}"
+                } else {
                     binding.tvBienvenidaPropietario.text = "Apto #$aptoId"
                 }
+            } catch (_: Exception) {
+                binding.tvBienvenidaPropietario.text = "Apto #$aptoId"
             }
         }
 

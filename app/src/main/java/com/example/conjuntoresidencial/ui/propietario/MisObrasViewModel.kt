@@ -6,12 +6,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.model.ObraDTO
+import com.example.conjuntoresidencial.util.Evento
 import com.example.conjuntoresidencial.util.Resource
 import kotlinx.coroutines.launch
 
 class MisObrasViewModel : ViewModel() {
     private val _obras = MutableLiveData<Resource<List<ObraDTO>>>()
     val obras: LiveData<Resource<List<ObraDTO>>> get() = _obras
+
+    private val _mensaje = MutableLiveData<Evento<String>>()
+    val mensaje: LiveData<Evento<String>> get() = _mensaje
 
     private var aptoIdActual: Long = -1L
 
@@ -43,8 +47,12 @@ class MisObrasViewModel : ViewModel() {
                         listaActual[idx] = obraActualizada
                         _obras.value = Resource.Success(listaActual)
                     }
+                } else {
+                    _mensaje.value = Evento(RetrofitClient.mensajeDeError(response, "No se pudo finalizar la obra"))
                 }
-            } catch (_: Exception) {}
+            } catch (e: Exception) {
+                _mensaje.value = Evento("Error de red: ${e.localizedMessage}")
+            }
         }
     }
 }

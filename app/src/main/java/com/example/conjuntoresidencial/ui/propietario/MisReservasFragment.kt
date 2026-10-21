@@ -49,7 +49,7 @@ class MisReservasFragment : Fragment() {
                     } else {
                         binding.tvNoReservasProp.visibility = View.GONE
                         binding.rvReservasPropietario.visibility = View.VISIBLE
-                        binding.rvReservasPropietario.adapter = ReservaAdapter(lista)
+                        binding.rvReservasPropietario.adapter = ReservaAdapter(lista, nombresZonas = viewModel.nombresZonas)
                     }
                 }
                 is Resource.Error -> {

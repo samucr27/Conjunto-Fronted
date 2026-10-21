@@ -49,6 +49,7 @@ class ReservasAdminFragment : Fragment() {
                         binding.rvReservas.visibility = View.VISIBLE
                         binding.rvReservas.adapter = ReservaAdapter(
                             lista,
+                            nombresZonas = viewModel.nombresZonas,
                             onAprobar = { reserva ->
                                 viewModel.actualizarEstado(reserva.id!!, "APROBADA")
                             },

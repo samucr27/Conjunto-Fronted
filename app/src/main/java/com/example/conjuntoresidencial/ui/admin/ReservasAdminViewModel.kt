@@ -9,6 +9,8 @@ import com.example.conjuntoresidencial.model.EstadoRequest
 import com.example.conjuntoresidencial.model.ReservaDTO
 import com.example.conjuntoresidencial.util.Evento
 import com.example.conjuntoresidencial.util.Resource
+import com.example.conjuntoresidencial.util.nombresDeZonas
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class ReservasAdminViewModel : ViewModel() {
@@ -20,11 +22,17 @@ class ReservasAdminViewModel : ViewModel() {
     private val _mensaje = MutableLiveData<Evento<String>>()
     val mensaje: LiveData<Evento<String>> get() = _mensaje
 
+    // zonaId -> nombre; se carga junto con las reservas (una sola petición para todas las zonas)
+    var nombresZonas: Map<Long, String> = emptyMap()
+        private set
+
     fun fetchReservas() {
         _reservas.value = Resource.Loading
         viewModelScope.launch {
             try {
+                val zonasAsync = async { RetrofitClient.instance.getZonasComunes() }
                 val response = RetrofitClient.instance.getReservas()
+                nombresZonas = nombresDeZonas(zonasAsync.await())
                 if (response.isSuccessful && response.body() != null)
                     _reservas.value = Resource.Success(response.body()!!)
                 else _reservas.value = Resource.Error("Error al cargar reservas")
