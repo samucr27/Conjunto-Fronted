@@ -6,10 +6,10 @@ import retrofit2.http.*
 
 interface ApiService {
     @POST("api/auth/admin/login")
-    suspend fun loginAdmin(@Body request: LoginAdminRequest): Response<Void>
+    suspend fun loginAdmin(@Body request: LoginAdminRequest): Response<LoginResponse>
 
     @POST("api/auth/apartamento/login")
-    suspend fun loginApartamento(@Body request: LoginApartamentoRequest): Response<Apartamento>
+    suspend fun loginApartamento(@Body request: LoginApartamentoRequest): Response<LoginResponse>
 
     @GET("api/apartamentos")
     suspend fun getApartamentos(): Response<List<Apartamento>>
@@ -18,10 +18,13 @@ interface ApiService {
     suspend fun getApartamentoById(@Path("id") id: Long): Response<Apartamento>
 
     @POST("api/apartamentos")
-    suspend fun createApartamento(@Body apartamento: Apartamento): Response<Apartamento>
+    suspend fun createApartamento(@Body apartamento: ApartamentoRequest): Response<Apartamento>
 
     @PUT("api/apartamentos/{id}")
-    suspend fun updateApartamento(@Path("id") id: Long, @Body apartamento: Apartamento): Response<Apartamento>
+    suspend fun updateApartamento(@Path("id") id: Long, @Body apartamento: ApartamentoRequest): Response<Apartamento>
+
+    @PUT("api/apartamentos/{id}/contrasena")
+    suspend fun restablecerContrasena(@Path("id") id: Long, @Body request: CambioContrasenaRequest): Response<Void>
 
     @GET("api/residentes/apartamento/{id}")
     suspend fun getResidentesPorApartamento(@Path("id") id: Long): Response<List<ResidenteDTO>>

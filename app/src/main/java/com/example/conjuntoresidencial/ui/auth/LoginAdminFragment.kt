@@ -44,8 +44,11 @@ class LoginAdminFragment : Fragment() {
                 }
                 is Resource.Success -> {
                     binding.progressAdmin.visibility = View.GONE
-                    sessionManager.saveRol("ADMIN")
-                    findNavController().navigate(R.id.action_loginAdminFragment_to_adminDashboardFragment)
+                    resource.data?.let {
+                        sessionManager.saveToken(it.token)
+                        sessionManager.saveRol(it.rol)
+                        findNavController().navigate(R.id.action_loginAdminFragment_to_adminDashboardFragment)
+                    }
                 }
                 is Resource.Error -> {
                     binding.progressAdmin.visibility = View.GONE

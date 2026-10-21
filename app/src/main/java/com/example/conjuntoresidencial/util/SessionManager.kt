@@ -4,7 +4,11 @@ import android.content.Context
 import androidx.core.content.edit
 
 class SessionManager(context: Context) {
-    private val prefs = context.getSharedPreferences("residencial_session", Context.MODE_PRIVATE)
+    // Este archivo está excluido de las copias de seguridad (ver res/xml/backup_rules.xml)
+    private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    fun saveToken(token: String) = prefs.edit { putString("token", token) }
+    fun getToken(): String? = prefs.getString("token", null)
 
     fun saveApartamentoId(id: Long) = prefs.edit { putLong("apartamento_id", id) }
     fun getApartamentoId(): Long = prefs.getLong("apartamento_id", -1L)
@@ -25,4 +29,8 @@ class SessionManager(context: Context) {
     fun getRol(): String? = prefs.getString("rol", null)
 
     fun clearSession() = prefs.edit { clear() }
+
+    companion object {
+        const val PREFS_NAME = "residencial_session"
+    }
 }
