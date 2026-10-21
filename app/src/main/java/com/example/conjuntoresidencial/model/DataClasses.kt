@@ -21,3 +21,5 @@ data class PagoDTO(val id: Long?, val saldoPendiente: Double, val estadoCuenta: 
 data class EstadoRequest(val estado: String)
 // tipo: "RESERVA" o "VEHICULO"; fecha en formato ISO, hora de Colombia ("2026-10-20T20:15:00")
 data class NotificacionDTO(val id: Long, val tipo: String, val mensaje: String, val fecha: String, val leida: Boolean)
+// {"total": n}
+data class ConteoDTO(val total: Long)
