@@ -34,7 +34,7 @@ class MisObrasViewModel : ViewModel() {
         }
     }
 
-    fun finalizarObra(obraId: Long, obra: ObraDTO) {
+    fun finalizarObra(obraId: Long, obra: ObraDTO, errorPorDefecto: String) {
         viewModelScope.launch {
             try {
                 val obraActualizada = obra.copy(estadoObra = "FINALIZADA")
@@ -48,7 +48,7 @@ class MisObrasViewModel : ViewModel() {
                         _obras.value = Resource.Success(listaActual)
                     }
                 } else {
-                    _mensaje.value = Evento(RetrofitClient.mensajeDeError(response, "No se pudo finalizar la obra"))
+                    _mensaje.value = Evento(RetrofitClient.mensajeDeError(response, errorPorDefecto))
                 }
             } catch (e: Exception) {
                 _mensaje.value = Evento("Error de red: ${e.localizedMessage}")

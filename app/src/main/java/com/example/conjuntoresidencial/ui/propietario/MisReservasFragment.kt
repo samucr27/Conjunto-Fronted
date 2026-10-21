@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentMisReservasBinding
 import com.example.conjuntoresidencial.ui.admin.ReservaAdapter
 import com.example.conjuntoresidencial.ui.admin.ReservaConZona
-import com.example.conjuntoresidencial.util.Resource
+import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
 import com.example.conjuntoresidencial.util.SessionManager
+import com.example.conjuntoresidencial.util.configurarBarra
 
 class MisReservasFragment : Fragment() {
     private var _binding: FragmentMisReservasBinding? = null
@@ -25,44 +27,25 @@ class MisReservasFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.rvReservasPropietario.layoutManager = LinearLayoutManager(requireContext())
-        val adaptador = ReservaAdapter()
-        binding.rvReservasPropietario.adapter = adaptador
+        configurarBarra(binding.barra.toolbar, R.string.menu_mis_reservas, R.string.menu_mis_reservas_sub)
         val aptoId = SessionManager(requireContext()).getApartamentoId()
-        viewModel.fetchReservas(aptoId)
 
-        binding.swipeRefreshReservas.setOnRefreshListener {
-            viewModel.fetchReservas(aptoId)
-        }
+        // Sin callbacks: el residente solo ve el estado, no aprueba ni rechaza
+        val adaptador = ReservaAdapter()
+        binding.rvReservasPropietario.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvReservasPropietario.adapter = adaptador
+        binding.estado.vincular(binding.rvReservasPropietario)
+        binding.swipe.setOnRefreshListener { viewModel.fetchReservas(aptoId) }
 
         viewModel.reservas.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    binding.progressReservasProp.visibility = View.VISIBLE
-                    binding.tvNoReservasProp.visibility = View.GONE
-                    binding.rvReservasPropietario.visibility = View.GONE
-                }
-                is Resource.Success -> {
-                    binding.progressReservasProp.visibility = View.GONE
-                    binding.swipeRefreshReservas.isRefreshing = false
-                    val lista = resource.data ?: emptyList()
-                    if (lista.isEmpty()) {
-                        binding.tvNoReservasProp.visibility = View.VISIBLE
-                        binding.rvReservasPropietario.visibility = View.GONE
-                    } else {
-                        binding.tvNoReservasProp.visibility = View.GONE
-                        binding.rvReservasPropietario.visibility = View.VISIBLE
-                        adaptador.submitList(ReservaConZona.de(lista, viewModel.nombresZonas))
-                    }
-                }
-                is Resource.Error -> {
-                    binding.progressReservasProp.visibility = View.GONE
-                    binding.swipeRefreshReservas.isRefreshing = false
-                    binding.tvNoReservasProp.visibility = View.VISIBLE
-                    binding.tvNoReservasProp.text = resource.message
-                }
-            }
+            binding.estado.mostrarRecurso(
+                resource, binding.swipe, R.drawable.ic_event, getString(R.string.mis_reservas_vacio),
+                getString(R.string.mis_reservas_vacio_mensaje),
+                reintentar = { viewModel.fetchReservas(aptoId) }
+            ) { adaptador.submitList(ReservaConZona.de(it, viewModel.nombresZonas)) }
         }
+
+        if (viewModel.reservas.value == null) viewModel.fetchReservas(aptoId)
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }

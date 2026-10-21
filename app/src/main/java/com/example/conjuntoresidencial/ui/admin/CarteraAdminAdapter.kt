@@ -25,7 +25,7 @@ class CarteraAdminAdapter :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val (apto, pago) = getItem(position)
         val b = holder.binding
-        b.tvNumeroApto.text = "Torre ${apto.torre} - Apto ${apto.apto}"
+        b.tvNumeroApto.text = b.root.context.getString(R.string.apto_item_titulo, apto.torre, apto.apto)
 
         // Observaciones del pago; si no hay registro de pago, se indica
         val detalle = when {
