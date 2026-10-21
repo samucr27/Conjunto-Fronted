@@ -35,13 +35,16 @@
             android:layout_marginTop="6dp"
             android:layout_marginBottom="6dp">
 
+            <!-- Etiqueta de estado (ChipEstado): ancho según el texto -->
             <TextView
                 android:id="@+id/tvEstadoObraAdmin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <Space
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="13sp"
-                android:textStyle="bold"/>
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCambiarEstadoObra"

@@ -1,11 +1,11 @@
 package com.example.conjuntoresidencial.ui.propietario
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -49,7 +49,7 @@ class PropietarioDashboardFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    AlertDialog.Builder(requireContext())
+                    MaterialAlertDialogBuilder(requireContext())
                         .setTitle("Cerrar sesión")
                         .setMessage("¿Deseas salir?")
                         .setPositiveButton("Sí") { _, _ ->
@@ -81,7 +81,7 @@ class PropietarioDashboardFragment : Fragment() {
             findNavController().navigate(R.id.action_propietarioDashboardFragment_to_misObrasFragment)
         }
         binding.btnCerrarSesion.setOnClickListener {
-            AlertDialog.Builder(requireContext())
+            MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Cerrar sesión")
                 .setMessage("¿Deseas salir?")
                 .setPositiveButton("Sí") { _, _ ->

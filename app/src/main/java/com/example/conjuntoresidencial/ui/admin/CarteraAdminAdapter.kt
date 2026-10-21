@@ -1,58 +1,41 @@
 package com.example.conjuntoresidencial.ui.admin
 
-import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.ItemCarteraAdminBinding
 import com.example.conjuntoresidencial.model.Apartamento
 import com.example.conjuntoresidencial.model.PagoDTO
-import java.text.Normalizer
+import com.example.conjuntoresidencial.ui.comun.DiffPorId
+import com.example.conjuntoresidencial.ui.comun.Estados
+import com.example.conjuntoresidencial.ui.comun.mostrarEstado
 
-class CarteraAdminAdapter(private val listaCartera: List<Pair<Apartamento, PagoDTO?>>) :
-    RecyclerView.Adapter<CarteraAdminAdapter.ViewHolder>() {
+/** Cada elemento es un apartamento con su registro de pago (null si no tiene). */
+class CarteraAdminAdapter :
+    ListAdapter<Pair<Apartamento, PagoDTO?>, CarteraAdminAdapter.ViewHolder>(DiffPorId { it.first.id }) {
 
     class ViewHolder(val binding: ItemCarteraAdminBinding) : RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemCarteraAdminBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        ViewHolder(ItemCarteraAdminBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val (apto, pago) = listaCartera[position]
+        val (apto, pago) = getItem(position)
+        val b = holder.binding
+        b.tvNumeroApto.text = "Torre ${apto.torre} - Apto ${apto.apto}"
 
-        // Mostramos la torre y el apartamento de forma clara
-        holder.binding.tvNumeroApto.text = "Torre ${apto.torre} - Apto ${apto.apto}"
-
-        // Usamos las observaciones del pago si existen, de lo contrario un texto por defecto
-        holder.binding.tvPropietarioApto.text = if (!pago?.observaciones.isNullOrBlank()) {
-            pago?.observaciones
-        } else {
-            "ID de Cuenta: ${apto.id}"
+        // Observaciones del pago; si no hay registro de pago, se indica
+        val detalle = when {
+            pago == null -> b.root.context.getString(R.string.cartera_sin_registro)
+            pago.observaciones.isNullOrBlank() -> null
+            else -> pago.observaciones
         }
+        b.tvPropietarioApto.text = detalle
+        b.tvPropietarioApto.visibility = if (detalle == null) View.GONE else View.VISIBLE
 
-        // Si no se encuentra registro de pago, asumimos por seguridad que está AL DÍA (saldo 0)
-        val saldo = pago?.saldoPendiente ?: 0.0
-        val estado = pago?.estadoCuenta ?: "Al Día"
-        val estaAlDia = saldo <= 0.0 || esAlDia(estado)
-
-        if (estaAlDia) {
-            holder.binding.tvEstadoPago.text = "AL DÍA"
-            holder.binding.tvEstadoPago.setTextColor(Color.parseColor("#2E7D32"))
-            holder.binding.cardEstadoPago.setCardBackgroundColor(Color.parseColor("#E8F5E9"))
-        } else {
-            holder.binding.tvEstadoPago.text = "DEBE $${saldo}"
-            holder.binding.tvEstadoPago.setTextColor(Color.parseColor("#C62828"))
-            holder.binding.cardEstadoPago.setCardBackgroundColor(Color.parseColor("#FFEBEE"))
-        }
-    }
-
-    override fun getItemCount(): Int = listaCartera.size
-
-    // El backend guarda "Al Día" (con tilde); se compara sin tildes ni mayúsculas
-    private fun esAlDia(estado: String): Boolean {
-        val sinTildes = Normalizer.normalize(estado.trim(), Normalizer.Form.NFD).replace(Regex("\\p{M}"), "")
-        return sinTildes.equals("Al Dia", ignoreCase = true)
+        b.tvEstadoPago.mostrarEstado(Estados.cuenta(pago?.saldoPendiente, pago?.estadoCuenta))
     }
 }

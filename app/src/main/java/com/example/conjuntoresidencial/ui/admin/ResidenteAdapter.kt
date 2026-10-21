@@ -4,11 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.conjuntoresidencial.model.ResidenteDTO
+import com.example.conjuntoresidencial.ui.comun.DiffPorId
 
-class ResidenteAdapter(private val lista: List<ResidenteDTO>) :
-    RecyclerView.Adapter<ResidenteAdapter.VH>() {
+class ResidenteAdapter : ListAdapter<ResidenteDTO, ResidenteAdapter.VH>(DiffPorId { it.id }) {
 
     class VH(v: View) : RecyclerView.ViewHolder(v) {
         val nombre: TextView = v.findViewById(android.R.id.text1)
@@ -16,15 +17,14 @@ class ResidenteAdapter(private val lista: List<ResidenteDTO>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = VH(
-        LayoutInflater.from(parent.context)
-            .inflate(android.R.layout.simple_list_item_2, parent, false)
+        LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_2, parent, false)
     )
 
     override fun onBindViewHolder(h: VH, pos: Int) {
-        val r = lista[pos]
+        val r = getItem(pos)
         h.nombre.text = r.nombreCompleto
-        h.detalle.text = "${r.tipoHabitante} · ${r.identificacion}"
+        // "PROPIETARIO" -> "Propietario"
+        val tipo = r.tipoHabitante.lowercase().replaceFirstChar { it.uppercase() }
+        h.detalle.text = "$tipo · CC ${r.identificacion}"
     }
-
-    override fun getItemCount() = lista.size
 }

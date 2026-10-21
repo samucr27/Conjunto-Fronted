@@ -20,4 +20,31 @@
     <string name="error_red">Error de red. Revisa tu conexión.</string>
     <string name="btn_guardar">Guardar</string>
     <string name="btn_cancelar">Cancelar</string>
+
+    <!-- Componentes comunes -->
+    <string name="volver">Volver</string>
+    <string name="cargando">Cargando</string>
+    <string name="reintentar">Reintentar</string>
+    <string name="estado_error_titulo">No se pudo cargar</string>
+
+    <!-- Etiquetas de estado (ChipEstado) -->
+    <string name="estado_descripcion">Estado: %1$s</string>
+    <string name="estado_pendiente">Pendiente</string>
+    <string name="estado_aprobada">Aprobada</string>
+    <string name="estado_rechazada">Rechazada</string>
+    <string name="estado_en_proceso">En proceso</string>
+    <string name="estado_finalizada">Finalizada</string>
+    <string name="estado_al_dia">Al día</string>
+    <string name="estado_debe">Debe %1$s</string>
+    <string name="estado_arl_vigente">ARL vigente</string>
+    <string name="estado_arl_no_vigente">ARL no vigente</string>
+    <string name="estado_desconocido">%1$s</string>
+    <string name="zona_reservable">Reservable</string>
+    <string name="zona_no_reservable">No reservable</string>
+
+    <!-- Cartera del admin (primera pantalla con EstadoPantalla y barra superior) -->
+    <string name="cartera_titulo">Cartera</string>
+    <string name="cartera_subtitulo">Estado de cuenta por apartamento</string>
+    <string name="cartera_vacia">Aún no hay apartamentos</string>
+    <string name="cartera_sin_registro">Sin registro de pago</string>
 </resources>

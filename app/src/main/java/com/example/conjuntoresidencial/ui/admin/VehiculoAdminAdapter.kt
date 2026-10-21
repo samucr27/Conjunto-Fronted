@@ -4,11 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.conjuntoresidencial.model.VehiculoDTO
+import com.example.conjuntoresidencial.ui.comun.DiffPorId
 
-class VehiculoAdminAdapter(private val lista: List<VehiculoDTO>) :
-    RecyclerView.Adapter<VehiculoAdminAdapter.VH>() {
+class VehiculoAdminAdapter : ListAdapter<VehiculoDTO, VehiculoAdminAdapter.VH>(DiffPorId { it.id }) {
 
     class VH(v: View) : RecyclerView.ViewHolder(v) {
         val placa: TextView = v.findViewById(android.R.id.text1)
@@ -16,15 +17,12 @@ class VehiculoAdminAdapter(private val lista: List<VehiculoDTO>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = VH(
-        LayoutInflater.from(parent.context)
-            .inflate(android.R.layout.simple_list_item_2, parent, false)
+        LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_2, parent, false)
     )
 
     override fun onBindViewHolder(h: VH, pos: Int) {
-        val v = lista[pos]
+        val v = getItem(pos)
         h.placa.text = v.placa
-        h.detalle.text = "${v.marca} · ${v.color} · ${v.tipo}"
+        h.detalle.text = listOf(v.tipo, v.marca, v.color).filter { it.isNotBlank() }.joinToString(" · ")
     }
-
-    override fun getItemCount() = lista.size
 }

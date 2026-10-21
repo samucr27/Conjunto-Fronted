@@ -11,6 +11,7 @@ import com.example.conjuntoresidencial.model.PersonalObraDTO
 import com.example.conjuntoresidencial.util.Evento
 import com.example.conjuntoresidencial.util.Resource
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class ControlObrasViewModel : ViewModel() {
@@ -28,11 +29,13 @@ class ControlObrasViewModel : ViewModel() {
         _obras.value = Resource.Loading
         viewModelScope.launch {
             try {
-                // Trae TODAS las obras (en proceso y finalizadas) y todo el personal en paralelo
-                val obrasAsync = async { RetrofitClient.instance.getAllObras() }
-                val personalAsync = async { RetrofitClient.instance.getTodoElPersonal() }
-                val response = obrasAsync.await()
-                val personal = personalAsync.await()
+                // Trae TODAS las obras (en proceso y finalizadas) y todo el personal en paralelo.
+                // coroutineScope: si una petición falla, el error llega al catch en vez de cerrar la app
+                val (response, personal) = coroutineScope {
+                    val obrasAsync = async { RetrofitClient.instance.getAllObras() }
+                    val personalAsync = async { RetrofitClient.instance.getTodoElPersonal() }
+                    obrasAsync.await() to personalAsync.await()
+                }
                 personalPorObra = if (personal.isSuccessful) personal.body().orEmpty().groupBy { it.obraId } else emptyMap()
                 if (response.isSuccessful && response.body() != null)
                     _obras.value = Resource.Success(response.body()!!)

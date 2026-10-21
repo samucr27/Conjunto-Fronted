@@ -1,10 +1,10 @@
 package com.example.conjuntoresidencial.ui.propietario
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -31,6 +31,11 @@ class MisObrasFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rvMisObras.layoutManager = LinearLayoutManager(requireContext())
+        val adaptador = MisObrasAdapter(
+            onDetalle = { obra -> mostrarDetalleObra(obra) },
+            onFinalizar = { obra -> confirmarFinalizar(obra) }
+        )
+        binding.rvMisObras.adapter = adaptador
         aptoId = SessionManager(requireContext()).getApartamentoId()
         viewModel.fetchObras(aptoId)
 
@@ -55,11 +60,7 @@ class MisObrasFragment : Fragment() {
                     } else {
                         binding.tvNoMisObras.visibility = View.GONE
                         binding.rvMisObras.visibility = View.VISIBLE
-                        binding.rvMisObras.adapter = MisObrasAdapter(
-                            lista,
-                            onDetalle = { obra -> mostrarDetalleObra(obra) },
-                            onFinalizar = { obra -> confirmarFinalizar(obra) }
-                        )
+                        adaptador.submitList(lista)
                     }
                 }
                 is Resource.Error -> {
@@ -96,7 +97,7 @@ class MisObrasFragment : Fragment() {
                 "No se pudo cargar el personal (sin conexión)"
             }
 
-            AlertDialog.Builder(requireContext())
+            MaterialAlertDialogBuilder(requireContext())
                 .setTitle(obra.descripcionAdecuacion)
                 .setMessage(
                     "Estado: ${obra.estadoObra}\n" +
@@ -110,7 +111,7 @@ class MisObrasFragment : Fragment() {
     }
 
     private fun confirmarFinalizar(obra: ObraDTO) {
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Finalizar obra")
             .setMessage("¿Confirmas que la obra \"${obra.descripcionAdecuacion}\" ha finalizado?")
             .setPositiveButton("Sí, finalizar") { _, _ ->

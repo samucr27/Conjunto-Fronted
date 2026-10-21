@@ -23,6 +23,8 @@ class PersonalObraFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rvPersonalObra.layoutManager = LinearLayoutManager(requireContext())
+        val adaptador = PersonalAdapter()
+        binding.rvPersonalObra.adapter = adaptador
         viewModel.fetchPersonal()
 
         viewModel.personal.observe(viewLifecycleOwner) { resource ->
@@ -41,7 +43,7 @@ class PersonalObraFragment : Fragment() {
                     } else {
                         binding.tvNoPersonal.visibility = View.GONE
                         binding.rvPersonalObra.visibility = View.VISIBLE
-                        binding.rvPersonalObra.adapter = PersonalAdapter(lista)
+                        adaptador.submitList(lista)
                     }
                 }
                 is Resource.Error -> {

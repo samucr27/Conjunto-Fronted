@@ -1,11 +1,11 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,6 +27,8 @@ class ZonasComunesAdminFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rvZonasAdmin.layoutManager = LinearLayoutManager(requireContext())
+        val adaptador = ZonaAdapter()
+        binding.rvZonasAdmin.adapter = adaptador
         viewModel.fetchZonas()
 
         binding.swipeRefreshZonasAdmin.setOnRefreshListener {
@@ -39,7 +41,7 @@ class ZonasComunesAdminFragment : Fragment() {
                 is Resource.Success -> {
                     binding.swipeRefreshZonasAdmin.isRefreshing = false
                     binding.rvZonasAdmin.visibility = View.VISIBLE
-                    binding.rvZonasAdmin.adapter = ZonaAdapter(resource.data ?: emptyList())
+                    adaptador.submitList(resource.data ?: emptyList())
                 }
                 is Resource.Error -> {
                     binding.swipeRefreshZonasAdmin.isRefreshing = false
@@ -51,7 +53,7 @@ class ZonasComunesAdminFragment : Fragment() {
         binding.btnRegistrarZona.setOnClickListener {
             val dialogView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.dialog_registrar_zona, null)
-            AlertDialog.Builder(requireContext())
+            MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Nueva Zona Común")
                 .setView(dialogView)
                 .setPositiveButton("Registrar") { _, _ ->

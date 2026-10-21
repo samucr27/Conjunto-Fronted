@@ -26,6 +26,11 @@ class DirectorioApartamentosFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rvApartamentos.layoutManager = LinearLayoutManager(requireContext())
+        val adaptador = ApartamentoAdapter { apto ->
+            val bundle = Bundle().apply { putLong("aptoId", apto.id) }
+            findNavController().navigate(R.id.action_directorioApartamentosFragment_to_detalleApartamentoFragment, bundle)
+        }
+        binding.rvApartamentos.adapter = adaptador
         viewModel.fetchApartamentos()
 
         viewModel.aptos.observe(viewLifecycleOwner) { resource ->
@@ -44,13 +49,7 @@ class DirectorioApartamentosFragment : Fragment() {
                     } else {
                         binding.tvNoAptos.visibility = View.GONE
                         binding.rvApartamentos.visibility = View.VISIBLE
-                        binding.rvApartamentos.adapter = ApartamentoAdapter(lista) { apto ->
-                            val bundle = Bundle().apply { putLong("aptoId", apto.id) }
-                            findNavController().navigate(
-                                R.id.action_directorioApartamentosFragment_to_detalleApartamentoFragment,
-                                bundle
-                            )
-                        }
+                        adaptador.submitList(lista)
                     }
                 }
                 is Resource.Error -> {

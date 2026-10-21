@@ -41,24 +41,11 @@
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardEstadoPago"
+        <!-- Etiqueta de estado (ChipEstado): "Al día" o "Debe $X" -->
+        <TextView
+            android:id="@+id/tvEstadoPago"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="0dp">
-
-            <TextView
-                android:id="@+id/tvEstadoPago"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:textStyle="bold"
-                android:textSize="12sp"/>
-        </com.google.android.material.card.MaterialCardView>
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
