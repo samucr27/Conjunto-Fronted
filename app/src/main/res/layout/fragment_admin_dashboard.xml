@@ -53,7 +53,7 @@
                     app:iconSize="20dp"
                     app:iconGravity="textStart"
                     app:iconPadding="0dp"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     app:strokeColor="@color/white"
                     app:iconTint="@color/white"
                     app:cornerRadius="20dp"/>
@@ -81,7 +81,7 @@
                 android:text="Salir"
                 android:textSize="12sp"
                 android:textColor="@color/white"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/Widget.Material3.Button.OutlinedButton"
                 app:strokeColor="@color/white"/>
         </LinearLayout>
 
@@ -105,12 +105,12 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="52dp" android:layout_height="52dp"
                             app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="#EDE7F6"
+                            app:cardBackgroundColor="@color/md_primary_container"
                             android:layout_marginBottom="10dp">
                             <ImageView android:layout_width="28dp" android:layout_height="28dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_agenda"
-                                app:tint="@color/colorPrimary"/>
+                                app:tint="@color/md_primary"/>
                         </com.google.android.material.card.MaterialCardView>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Directorio" android:textStyle="bold" android:textSize="14sp"
@@ -132,12 +132,12 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="52dp" android:layout_height="52dp"
                             app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="#EDE7F6"
+                            app:cardBackgroundColor="@color/md_primary_container"
                             android:layout_marginBottom="10dp">
                             <ImageView android:layout_width="28dp" android:layout_height="28dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_manage"
-                                app:tint="@color/colorPrimary"/>
+                                app:tint="@color/md_primary"/>
                         </com.google.android.material.card.MaterialCardView>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Control" android:textStyle="bold" android:textSize="14sp"
@@ -159,12 +159,12 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="52dp" android:layout_height="52dp"
                             app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="#EDE7F6"
+                            app:cardBackgroundColor="@color/md_primary_container"
                             android:layout_marginBottom="10dp">
                             <ImageView android:layout_width="28dp" android:layout_height="28dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_recent_history"
-                                app:tint="@color/colorPrimary"/>
+                                app:tint="@color/md_primary"/>
                         </com.google.android.material.card.MaterialCardView>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Historial" android:textStyle="bold" android:textSize="14sp"
@@ -186,12 +186,12 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="52dp" android:layout_height="52dp"
                             app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="#EDE7F6"
+                            app:cardBackgroundColor="@color/md_primary_container"
                             android:layout_marginBottom="10dp">
                             <ImageView android:layout_width="28dp" android:layout_height="28dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_mapmode"
-                                app:tint="@color/colorPrimary"/>
+                                app:tint="@color/md_primary"/>
                         </com.google.android.material.card.MaterialCardView>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Zonas" android:textStyle="bold" android:textSize="14sp"
@@ -213,12 +213,12 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="52dp" android:layout_height="52dp"
                             app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="#EDE7F6"
+                            app:cardBackgroundColor="@color/md_primary_container"
                             android:layout_marginBottom="10dp">
                             <ImageView android:layout_width="28dp" android:layout_height="28dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_my_calendar"
-                                app:tint="@color/colorPrimary"/>
+                                app:tint="@color/md_primary"/>
                         </com.google.android.material.card.MaterialCardView>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Personal" android:textStyle="bold" android:textSize="14sp"
@@ -240,12 +240,12 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="52dp" android:layout_height="52dp"
                             app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="#EDE7F6"
+                            app:cardBackgroundColor="@color/md_primary_container"
                             android:layout_marginBottom="10dp">
                             <ImageView android:layout_width="28dp" android:layout_height="28dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_view"
-                                app:tint="@color/colorPrimary"/>
+                                app:tint="@color/md_primary"/>
                         </com.google.android.material.card.MaterialCardView>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Cartera" android:textStyle="bold" android:textSize="14sp"

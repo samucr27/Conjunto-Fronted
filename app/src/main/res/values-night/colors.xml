@@ -1,9 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorSurface">@color/colorSurfaceDark</color>
-    <color name="colorCard">@color/colorCardDark</color>
-    <color name="colorTextPrimary">@color/colorTextPrimaryDark</color>
-    <color name="colorTextSecondary">@color/colorTextSecondaryDark</color>
-    <color name="colorDivider">@color/colorDividerDark</color>
-    <color name="white">#E8E8F0</color>
+    <!-- Roles de color Material 3 - modo oscuro (ver values/colors.xml) -->
+    <color name="md_primary">#D0BCFF</color>
+    <color name="md_on_primary">#381E72</color>
+    <color name="md_primary_container">#4A2C93</color>
+    <color name="md_on_primary_container">#E9DDFF</color>
+    <color name="md_secondary">#CCC2DC</color>
+    <color name="md_on_secondary">#332D41</color>
+    <color name="md_secondary_container">#4A4458</color>
+    <color name="md_on_secondary_container">#E8DEF8</color>
+    <color name="md_tertiary">#EFB8C8</color>
+    <color name="md_on_tertiary">#4A2532</color>
+    <color name="md_tertiary_container">#633B48</color>
+    <color name="md_on_tertiary_container">#FFD9E3</color>
+    <color name="md_error">#FFB4AB</color>
+    <color name="md_on_error">#690005</color>
+    <color name="md_error_container">#93000A</color>
+    <color name="md_on_error_container">#FFDAD6</color>
+    <color name="md_surface">#141218</color>
+    <color name="md_on_surface">#E6E0E9</color>
+    <color name="md_surface_variant">#49454E</color>
+    <color name="md_on_surface_variant">#CAC4CF</color>
+    <color name="md_surface_container_lowest">#0F0D13</color>
+    <color name="md_surface_container_low">#1D1B20</color>
+    <color name="md_surface_container">#211F26</color>
+    <color name="md_surface_container_high">#2B2930</color>
+    <color name="md_surface_container_highest">#36343B</color>
+    <color name="md_outline">#948F99</color>
+    <color name="md_outline_variant">#49454E</color>
+    <color name="md_inverse_surface">#E6E0E9</color>
+    <color name="md_inverse_on_surface">#322F35</color>
+    <color name="md_inverse_primary">#5E35B1</color>
+
+    <color name="estado_exito">#9BD69E</color>
+    <color name="estado_on_exito">#003913</color>
+    <color name="estado_exito_container">#00531F</color>
+    <color name="estado_on_exito_container">#B6F2B9</color>
+    <color name="estado_advertencia">#F5BF48</color>
+    <color name="estado_on_advertencia">#402D00</color>
+    <color name="estado_advertencia_container">#5C4200</color>
+    <color name="estado_on_advertencia_container">#FFDEA3</color>
+
+    <!-- Nombres antiguos: las tarjetas usan un contenedor algo más claro que el fondo -->
+    <color name="colorCard">@color/md_surface_container_low</color>
+    <!-- Texto sobre los encabezados morados: blanco suave en modo oscuro -->
+    <color name="white">#F5EFF7</color>
 </resources>

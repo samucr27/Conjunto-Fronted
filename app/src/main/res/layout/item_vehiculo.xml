@@ -23,14 +23,14 @@
             android:layout_height="48dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="#EDE7F6"
+            app:cardBackgroundColor="@color/md_primary_container"
             android:layout_marginEnd="14dp">
             <ImageView
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:layout_gravity="center"
                 android:src="@android:drawable/ic_menu_directions"
-                app:tint="@color/colorPrimary"/>
+                app:tint="@color/md_primary"/>
         </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
@@ -64,7 +64,7 @@
             android:text="Eliminar"
             android:textSize="12sp"
             app:cornerRadius="10dp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             app:strokeColor="@color/colorError"/>
 
     </LinearLayout>
