@@ -13,6 +13,8 @@ import com.example.conjuntoresidencial.databinding.FragmentLoginApartamentoBindi
 import com.example.conjuntoresidencial.util.Resource
 import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.util.exigirTexto
+import com.example.conjuntoresidencial.util.limpiarErrorAlEscribir
 import android.view.inputmethod.EditorInfo
 
 class LoginApartamentoFragment : Fragment() {
@@ -36,7 +38,14 @@ class LoginApartamentoFragment : Fragment() {
             (accion == EditorInfo.IME_ACTION_DONE).also { if (it) binding.btnLoginApto.performClick() }
         }
 
+        listOf(binding.tilTorreApto, binding.tilNumApto, binding.tilPassApto).forEach { it.limpiarErrorAlEscribir() }
         binding.btnLoginApto.setOnClickListener {
+            val completos = listOf(
+                binding.tilTorreApto.exigirTexto(getString(R.string.login_falta_torre)),
+                binding.tilNumApto.exigirTexto(getString(R.string.login_falta_apartamento)),
+                binding.tilPassApto.exigirTexto(getString(R.string.login_falta_contrasena))
+            ).all { it }
+            if (!completos) return@setOnClickListener
             val torre = binding.etTorreApto.text.toString().trim()
             val apto = binding.etNumApto.text.toString().trim()
             val pass = binding.etPassApto.text.toString().trim()

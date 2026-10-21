@@ -25,7 +25,7 @@ class DirectorioViewModel : ViewModel() {
                     _aptos.value = Resource.Error("Error al cargar apartamentos")
                 }
             } catch (e: Exception) {
-                _aptos.value = Resource.Error("Error de red: ${e.localizedMessage}")
+                _aptos.value = Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }

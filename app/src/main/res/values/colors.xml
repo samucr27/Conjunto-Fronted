@@ -39,12 +39,8 @@
 
     <!-- Colores de estado (no existen en M3): éxito = "Al día", "Aprobada", "Finalizada";
          advertencia = "Pendiente", "En proceso"; error usa md_error*. -->
-    <color name="estado_exito">#1E6B30</color>
-    <color name="estado_on_exito">#FFFFFF</color>
     <color name="estado_exito_container">#B6F2B9</color>
     <color name="estado_on_exito_container">#002108</color>
-    <color name="estado_advertencia">#7A5900</color>
-    <color name="estado_on_advertencia">#FFFFFF</color>
     <color name="estado_advertencia_container">#FFDEA3</color>
     <color name="estado_on_advertencia_container">#261900</color>
 
@@ -55,13 +51,6 @@
          ================================================================ -->
     <!-- Fondo de encabezados y acentos: el morado de la marca en ambos modos -->
     <color name="colorPrimary">#5E35B1</color>
-    <color name="colorPrimaryDark">#4527A0</color>
-    <color name="colorSurface">@color/md_surface</color>
-    <color name="colorCard">@color/md_surface_container_lowest</color>
-    <color name="colorTextPrimary">@color/md_on_surface</color>
-    <color name="colorTextSecondary">@color/md_on_surface_variant</color>
-    <color name="colorDivider">@color/md_outline_variant</color>
-    <color name="colorError">@color/md_error</color>
     <!-- Texto sobre los encabezados morados -->
     <color name="white">#FFFFFF</color>
     <!-- Subtítulo de la barra superior: lavanda claro (contraste 6,0:1 sobre #5E35B1) -->

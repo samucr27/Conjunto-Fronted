@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- ================================================================
          Tema Material 3. Un solo tema para claro y oscuro: los colores
          cambian solos con values-night/colors.xml.
@@ -91,42 +91,42 @@
     <style name="TextAppearance.App.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
         <item name="fontFamily">@font/poppins</item>
         <item name="android:fontFamily">@font/poppins</item>
-        <item name="android:textFontWeight">500</item>
+        <item name="android:textFontWeight" tools:targetApi="28">500</item>
     </style>
     <style name="TextAppearance.App.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
         <item name="fontFamily">@font/poppins</item>
         <item name="android:fontFamily">@font/poppins</item>
-        <item name="android:textFontWeight">500</item>
+        <item name="android:textFontWeight" tools:targetApi="28">500</item>
     </style>
     <style name="TextAppearance.App.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
         <item name="fontFamily">@font/poppins</item>
         <item name="android:fontFamily">@font/poppins</item>
-        <item name="android:textFontWeight">400</item>
+        <item name="android:textFontWeight" tools:targetApi="28">400</item>
     </style>
     <style name="TextAppearance.App.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
         <item name="fontFamily">@font/poppins</item>
         <item name="android:fontFamily">@font/poppins</item>
-        <item name="android:textFontWeight">400</item>
+        <item name="android:textFontWeight" tools:targetApi="28">400</item>
     </style>
     <style name="TextAppearance.App.BodySmall" parent="TextAppearance.Material3.BodySmall">
         <item name="fontFamily">@font/poppins</item>
         <item name="android:fontFamily">@font/poppins</item>
-        <item name="android:textFontWeight">400</item>
+        <item name="android:textFontWeight" tools:targetApi="28">400</item>
     </style>
     <style name="TextAppearance.App.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
         <item name="fontFamily">@font/poppins</item>
         <item name="android:fontFamily">@font/poppins</item>
-        <item name="android:textFontWeight">500</item>
+        <item name="android:textFontWeight" tools:targetApi="28">500</item>
     </style>
     <style name="TextAppearance.App.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
         <item name="fontFamily">@font/poppins</item>
         <item name="android:fontFamily">@font/poppins</item>
-        <item name="android:textFontWeight">500</item>
+        <item name="android:textFontWeight" tools:targetApi="28">500</item>
     </style>
     <style name="TextAppearance.App.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
         <item name="fontFamily">@font/poppins</item>
         <item name="android:fontFamily">@font/poppins</item>
-        <item name="android:textFontWeight">500</item>
+        <item name="android:textFontWeight" tools:targetApi="28">500</item>
     </style>
 
     <!-- ================================================================

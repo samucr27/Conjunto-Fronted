@@ -34,7 +34,7 @@ class LoginApartamentoViewModel : ViewModel() {
                     )
                 }
             } catch (e: Exception) {
-                _loginState.value = Resource.Error("Error en red: ${e.localizedMessage}")
+                _loginState.value = Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }

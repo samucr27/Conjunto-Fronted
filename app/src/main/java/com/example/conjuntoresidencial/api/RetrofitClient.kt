@@ -9,6 +9,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
@@ -41,6 +42,19 @@ object RetrofitClient {
             .build()
             .create(ApiService::class.java)
     }
+
+    /**
+     * Mensaje para el usuario cuando una petición lanza una excepción, sin detalles técnicos.
+     * Los fallos de red ya vienen traducidos por [TiempoEsperaInterceptor]; cualquier otro
+     * (por ejemplo, una respuesta que no se pudo leer) se cambia por uno genérico.
+     */
+    fun mensajeDeExcepcion(e: Exception): String = when {
+        e is IOException && e.message in TiempoEsperaInterceptor.MENSAJES -> e.message!!
+        e is IOException -> TiempoEsperaInterceptor.MENSAJE_SIN_CONEXION
+        else -> MENSAJE_INESPERADO
+    }
+
+    const val MENSAJE_INESPERADO = "Ocurrió un error inesperado. Intenta de nuevo"
 
     /** Lee el {"mensaje": "..."} del cuerpo de error del backend, o devuelve [porDefecto]. */
     fun mensajeDeError(response: Response<*>, porDefecto: String): String {

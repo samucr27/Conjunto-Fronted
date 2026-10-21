@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.core.widget.doAfterTextChanged
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -21,11 +21,10 @@ import com.example.conjuntoresidencial.util.Formatos
 import com.example.conjuntoresidencial.util.Resource
 import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.util.limpiarErrorAlEscribir
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Locale
@@ -75,9 +74,8 @@ class RegistrarObraFragment : Fragment() {
 
         mostrarPersonal()
         binding.btnAgregarPersonal.setOnClickListener { agregarPersonalDesdeCampos() }
-        limpiarErrorAlEscribir(binding.tilDescripcionObra, binding.etDescripcionObra)
-        limpiarErrorAlEscribir(binding.tilNombrePersonalExterno, binding.etNombrePersonalExterno)
-        limpiarErrorAlEscribir(binding.tilCcPersonalExterno, binding.etCcPersonalExterno)
+        listOf(binding.tilDescripcionObra, binding.tilNombrePersonalExterno, binding.tilCcPersonalExterno)
+            .forEach { it.limpiarErrorAlEscribir() }
 
         binding.btnGuardarObra.setOnClickListener {
             val descripcion = binding.etDescripcionObra.text.toString().trim()
@@ -143,7 +141,8 @@ class RegistrarObraFragment : Fragment() {
         viewModel.personal.forEach { p ->
             binding.chipsPersonal.addView(Chip(requireContext()).apply {
                 text = getString(R.string.registrar_obra_trabajador_fila, p.nombreTrabajador, p.cedula)
-                chipIcon = requireContext().getDrawable(
+                chipIcon = AppCompatResources.getDrawable(
+                    requireContext(),
                     if (p.arlEstado) R.drawable.ic_check_circle else R.drawable.ic_error_outline
                 )
                 isChipIconVisible = true
@@ -210,10 +209,6 @@ class RegistrarObraFragment : Fragment() {
         val partes = iso?.split("-")?.mapNotNull { it.toIntOrNull() } ?: return null
         if (partes.size != 3) return null
         return Calendar.getInstance().apply { set(partes[0], partes[1] - 1, partes[2], 0, 0, 0) }
-    }
-
-    private fun limpiarErrorAlEscribir(til: TextInputLayout, campo: TextInputEditText) {
-        campo.doAfterTextChanged { if (!it.isNullOrEmpty()) til.error = null }
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }

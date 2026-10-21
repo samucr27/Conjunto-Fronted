@@ -52,6 +52,7 @@
                             android:textColor="?attr/colorOnSurfaceVariant" />
 
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilUsuarioAdmin"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="16dp"
@@ -66,10 +67,12 @@
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilPassAdmin"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="24dp"
                             android:hint="@string/login_contrasena"
+                            app:endIconContentDescription="@string/mostrar_contrasena"
                             app:endIconMode="password_toggle">
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etPassAdmin"

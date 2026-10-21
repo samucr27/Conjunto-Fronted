@@ -33,7 +33,7 @@ class RegistrarObraViewModel : ViewModel() {
                     _obraState.value = Resource.Error(RetrofitClient.mensajeDeError(response, errorPorDefecto))
                 }
             } catch (e: Exception) {
-                _obraState.value = Resource.Error("Error de red: ${e.localizedMessage}")
+                _obraState.value = Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }

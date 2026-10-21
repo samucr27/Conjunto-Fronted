@@ -29,7 +29,7 @@ class MisObrasViewModel : ViewModel() {
                     _obras.value = Resource.Success(response.body()!!)
                 else _obras.value = Resource.Error("Error al cargar obras")
             } catch (e: Exception) {
-                _obras.value = Resource.Error("Error de red: ${e.localizedMessage}")
+                _obras.value = Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }
@@ -51,7 +51,7 @@ class MisObrasViewModel : ViewModel() {
                     _mensaje.value = Evento(RetrofitClient.mensajeDeError(response, errorPorDefecto))
                 }
             } catch (e: Exception) {
-                _mensaje.value = Evento("Error de red: ${e.localizedMessage}")
+                _mensaje.value = Evento(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }

@@ -13,6 +13,8 @@ import com.example.conjuntoresidencial.databinding.FragmentLoginAdminBinding
 import com.example.conjuntoresidencial.util.Resource
 import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.util.exigirTexto
+import com.example.conjuntoresidencial.util.limpiarErrorAlEscribir
 import android.view.inputmethod.EditorInfo
 
 class LoginAdminFragment : Fragment() {
@@ -38,7 +40,14 @@ class LoginAdminFragment : Fragment() {
             (accion == EditorInfo.IME_ACTION_DONE).also { if (it) binding.btnIngresarAdmin.performClick() }
         }
 
+        binding.tilUsuarioAdmin.limpiarErrorAlEscribir()
+        binding.tilPassAdmin.limpiarErrorAlEscribir()
         binding.btnIngresarAdmin.setOnClickListener {
+            val completos = listOf(
+                binding.tilUsuarioAdmin.exigirTexto(getString(R.string.login_falta_usuario)),
+                binding.tilPassAdmin.exigirTexto(getString(R.string.login_falta_contrasena))
+            ).all { it }
+            if (!completos) return@setOnClickListener
             val user = binding.etUsuarioAdmin.text.toString().trim()
             val pass = binding.etPassAdmin.text.toString().trim()
             viewModel.loginAdmin(user, pass)

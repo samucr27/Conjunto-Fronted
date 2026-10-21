@@ -85,7 +85,7 @@ class DetalleApartamentoFragment : Fragment() {
                 mostrarVehiculos(if (vehiculos.isSuccessful) vehiculos.body().orEmpty() else emptyList())
                 binding.estado.mostrarContenido()
             } catch (e: Exception) {
-                binding.estado.mostrarError("Error de red: ${e.localizedMessage}") { cargarTodo() }
+                binding.estado.mostrarError(RetrofitClient.mensajeDeExcepcion(e)) { cargarTodo() }
             }
         }
     }
@@ -107,7 +107,7 @@ class DetalleApartamentoFragment : Fragment() {
                 if (response.isSuccessful) mostrarResidentes(response.body().orEmpty())
                 else avisar(RetrofitClient.mensajeDeError(response, getString(R.string.estado_error_titulo)))
             } catch (e: Exception) {
-                avisar("Error de red: ${e.localizedMessage}")
+                avisar(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }
@@ -119,7 +119,7 @@ class DetalleApartamentoFragment : Fragment() {
                 if (response.isSuccessful) mostrarVehiculos(response.body().orEmpty())
                 else avisar(RetrofitClient.mensajeDeError(response, getString(R.string.estado_error_titulo)))
             } catch (e: Exception) {
-                avisar("Error de red: ${e.localizedMessage}")
+                avisar(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }

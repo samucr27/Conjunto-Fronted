@@ -32,17 +32,12 @@
     <color name="md_inverse_on_surface">#322F35</color>
     <color name="md_inverse_primary">#5E35B1</color>
 
-    <color name="estado_exito">#9BD69E</color>
-    <color name="estado_on_exito">#003913</color>
     <color name="estado_exito_container">#00531F</color>
     <color name="estado_on_exito_container">#B6F2B9</color>
-    <color name="estado_advertencia">#F5BF48</color>
-    <color name="estado_on_advertencia">#402D00</color>
     <color name="estado_advertencia_container">#5C4200</color>
     <color name="estado_on_advertencia_container">#FFDEA3</color>
 
     <!-- Nombres antiguos: las tarjetas usan un contenedor algo más claro que el fondo -->
-    <color name="colorCard">@color/md_surface_container_low</color>
     <!-- Texto sobre los encabezados morados: blanco suave en modo oscuro -->
     <color name="white">#F5EFF7</color>
 </resources>

@@ -45,7 +45,7 @@ class CarteraAdminViewModel : ViewModel() {
                     )
                 }
             } catch (e: Exception) {
-                _cartera.value = Resource.Error("Error de red: ${e.localizedMessage}")
+                _cartera.value = Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }

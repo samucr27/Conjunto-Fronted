@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.core.view.MenuItemCompat
+import androidx.core.view.AccessibilityDelegateCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -29,6 +31,8 @@ class AdminDashboardFragment : Fragment() {
     private var _binding: FragmentAdminDashboardBinding? = null
     private val binding get() = _binding!!
     private var insignia: BadgeDrawable? = null
+    // Lo que TalkBack lee en la campana: "Notificaciones" o "Notificaciones, 2 sin leer"
+    private var descripcionCampana = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAdminDashboardBinding.inflate(inflater, container, false)
@@ -91,6 +95,20 @@ class AdminDashboardFragment : Fragment() {
         }
         BadgeUtils.attachBadgeDrawable(nueva, binding.barra.toolbar, R.id.accion_notificaciones)
         insignia = nueva
+        descripcionCampana = getString(R.string.notificaciones)
+
+        // Al pegar la insignia, Material cambia la descripción de la campana por la de la insignia:
+        // queda vacía si no hay notificaciones (TalkBack no la nombra) y en inglés si las hay.
+        // attachBadgeDrawable lo hace con post(); este post() va después y pone la nuestra.
+        binding.barra.toolbar.post {
+            val campana = _binding?.barra?.toolbar?.findViewById<View>(R.id.accion_notificaciones) ?: return@post
+            ViewCompat.setAccessibilityDelegate(campana, object : AccessibilityDelegateCompat() {
+                override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfoCompat) {
+                    super.onInitializeAccessibilityNodeInfo(host, info)
+                    info.contentDescription = descripcionCampana
+                }
+            })
+        }
     }
 
     private fun actualizarInsignia() {
@@ -110,14 +128,9 @@ class AdminDashboardFragment : Fragment() {
         val badge = insignia ?: return
         badge.number = noLeidas
         badge.isVisible = noLeidas > 0
-        // TalkBack lee "Notificaciones, 2 sin leer"
-        binding.barra.toolbar.menu.findItem(R.id.accion_notificaciones)?.let { item ->
-            MenuItemCompat.setContentDescription(
-                item,
-                if (noLeidas > 0) getString(R.string.notificaciones_no_leidas, noLeidas)
-                else getString(R.string.notificaciones)
-            )
-        }
+        descripcionCampana =
+            if (noLeidas > 0) getString(R.string.notificaciones_no_leidas, noLeidas)
+            else getString(R.string.notificaciones)
     }
 
     private fun mostrarDialogNotificaciones() {

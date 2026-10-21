@@ -41,7 +41,7 @@ class ControlObrasViewModel : ViewModel() {
                     _obras.value = Resource.Success(response.body()!!)
                 else _obras.value = Resource.Error("Error al cargar obras")
             } catch (e: Exception) {
-                _obras.value = Resource.Error("Error de red: ${e.localizedMessage}")
+                _obras.value = Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }
@@ -62,7 +62,7 @@ class ControlObrasViewModel : ViewModel() {
                     _mensaje.value = Evento(RetrofitClient.mensajeDeError(response, "No se pudo cambiar el estado de la obra"))
                 }
             } catch (e: Exception) {
-                _mensaje.value = Evento("Error de red: ${e.localizedMessage}")
+                _mensaje.value = Evento(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }
