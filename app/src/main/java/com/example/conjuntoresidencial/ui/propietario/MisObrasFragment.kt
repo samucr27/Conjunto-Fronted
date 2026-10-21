@@ -1,6 +1,5 @@
 package com.example.conjuntoresidencial.ui.propietario
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +8,20 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.api.RetrofitClient
+import com.example.conjuntoresidencial.databinding.DialogDetalleObraBinding
 import com.example.conjuntoresidencial.databinding.FragmentMisObrasBinding
+import com.example.conjuntoresidencial.databinding.ItemPersonalFilaBinding
 import com.example.conjuntoresidencial.model.ObraDTO
-import com.example.conjuntoresidencial.util.Resource
+import com.example.conjuntoresidencial.model.PersonalObraDTO
+import com.example.conjuntoresidencial.ui.comun.Estados
+import com.example.conjuntoresidencial.ui.comun.mostrarEstado
+import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
+import com.example.conjuntoresidencial.util.Formatos
 import com.example.conjuntoresidencial.util.SessionManager
+import com.example.conjuntoresidencial.util.configurarBarra
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -30,46 +38,24 @@ class MisObrasFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.rvMisObras.layoutManager = LinearLayoutManager(requireContext())
+        configurarBarra(binding.barra.toolbar, R.string.menu_mis_obras, R.string.mis_obras_subtitulo)
+        aptoId = SessionManager(requireContext()).getApartamentoId()
+
         val adaptador = MisObrasAdapter(
             onDetalle = { obra -> mostrarDetalleObra(obra) },
             onFinalizar = { obra -> confirmarFinalizar(obra) }
         )
+        binding.rvMisObras.layoutManager = LinearLayoutManager(requireContext())
         binding.rvMisObras.adapter = adaptador
-        aptoId = SessionManager(requireContext()).getApartamentoId()
-        viewModel.fetchObras(aptoId)
-
-        binding.swipeRefreshMisObras.setOnRefreshListener {
-            viewModel.fetchObras(aptoId)
-        }
+        binding.estado.vincular(binding.rvMisObras)
+        binding.swipe.setOnRefreshListener { viewModel.fetchObras(aptoId) }
 
         viewModel.obras.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    binding.progressMisObras.visibility = View.VISIBLE
-                    binding.tvNoMisObras.visibility = View.GONE
-                    binding.rvMisObras.visibility = View.GONE
-                }
-                is Resource.Success -> {
-                    binding.progressMisObras.visibility = View.GONE
-                    binding.swipeRefreshMisObras.isRefreshing = false
-                    val lista = resource.data ?: emptyList()
-                    if (lista.isEmpty()) {
-                        binding.tvNoMisObras.visibility = View.VISIBLE
-                        binding.rvMisObras.visibility = View.GONE
-                    } else {
-                        binding.tvNoMisObras.visibility = View.GONE
-                        binding.rvMisObras.visibility = View.VISIBLE
-                        adaptador.submitList(lista)
-                    }
-                }
-                is Resource.Error -> {
-                    binding.progressMisObras.visibility = View.GONE
-                    binding.swipeRefreshMisObras.isRefreshing = false
-                    binding.tvNoMisObras.visibility = View.VISIBLE
-                    binding.tvNoMisObras.text = resource.message
-                }
-            }
+            binding.estado.mostrarRecurso(
+                resource, binding.swipe, R.drawable.ic_build, getString(R.string.mis_obras_vacio),
+                getString(R.string.mis_obras_vacio_mensaje),
+                reintentar = { viewModel.fetchObras(aptoId) }
+            ) { adaptador.submitList(it) }
         }
 
         viewModel.mensaje.observe(viewLifecycleOwner) { evento ->
@@ -77,47 +63,51 @@ class MisObrasFragment : Fragment() {
                 Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
             }
         }
+
+        if (viewModel.obras.value == null) viewModel.fetchObras(aptoId)
     }
 
+    /** Carga el personal de la obra y muestra el detalle; se cancela si el usuario sale de la pantalla. */
     private fun mostrarDetalleObra(obra: ObraDTO) {
-        // Cargar personal de esa obra desde el backend; se cancela si el usuario sale de la pantalla
         viewLifecycleOwner.lifecycleScope.launch {
-            val personalTexto = try {
+            val personal: List<PersonalObraDTO>? = try {
                 val response = RetrofitClient.instance.getPersonalPorObra(obra.id!!)
-                val personal = if (response.isSuccessful) response.body() ?: emptyList() else null
-                when {
-                    personal == null -> "No se pudo cargar el personal"
-                    personal.isEmpty() -> "Sin personal registrado"
-                    else -> personal.joinToString("\n") { p ->
-                        val arl = if (p.arlEstado) "✓ ARL" else "✗ Sin ARL"
-                        "• ${p.nombreTrabajador} — CC ${p.cedula} — $arl"
-                    }
-                }
+                if (response.isSuccessful) response.body().orEmpty() else null
             } catch (_: Exception) {
-                "No se pudo cargar el personal (sin conexión)"
+                null
             }
+
+            val vista = DialogDetalleObraBinding.inflate(layoutInflater)
+            vista.tvEstadoDetalle.mostrarEstado(Estados.obra(obra.estadoObra))
+            vista.tvFechasDetalle.text = Formatos.rango(obra.fechaInicio, obra.fechaFinEstimada)
+            when {
+                personal == null -> vista.tvSinPersonalDetalle.setText(R.string.obra_error_personal)
+                personal.isEmpty() -> vista.tvSinPersonalDetalle.setText(R.string.obras_sin_personal)
+                else -> personal.forEach { p ->
+                    val fila = ItemPersonalFilaBinding.inflate(layoutInflater, vista.contenedorPersonal, true)
+                    fila.tvNombreFila.text = p.nombreTrabajador
+                    fila.tvCedulaFila.text = getString(R.string.personal_cedula, p.cedula)
+                    fila.tvArlFila.mostrarEstado(Estados.arl(p.arlEstado))
+                }
+            }
+            vista.tvSinPersonalDetalle.visibility = if (personal.isNullOrEmpty()) View.VISIBLE else View.GONE
 
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(obra.descripcionAdecuacion)
-                .setMessage(
-                    "Estado: ${obra.estadoObra}\n" +
-                            "Inicio: ${obra.fechaInicio}\n" +
-                            "Fin estimado: ${obra.fechaFinEstimada}\n\n" +
-                            "Personal externo:\n$personalTexto"
-                )
-                .setPositiveButton("Cerrar", null)
+                .setView(vista.root)
+                .setPositiveButton(R.string.btn_cerrar, null)
                 .show()
         }
     }
 
     private fun confirmarFinalizar(obra: ObraDTO) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Finalizar obra")
-            .setMessage("¿Confirmas que la obra \"${obra.descripcionAdecuacion}\" ha finalizado?")
-            .setPositiveButton("Sí, finalizar") { _, _ ->
-                viewModel.finalizarObra(obra.id!!, obra)
+            .setTitle(R.string.obra_finalizar_titulo)
+            .setMessage(getString(R.string.obra_finalizar_pregunta, obra.descripcionAdecuacion))
+            .setPositiveButton(R.string.obra_finalizar_si) { _, _ ->
+                viewModel.finalizarObra(obra.id!!, obra, getString(R.string.obra_error_finalizar))
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(R.string.btn_cancelar, null)
             .show()
     }
 

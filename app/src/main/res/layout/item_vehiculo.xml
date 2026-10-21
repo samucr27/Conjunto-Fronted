@@ -55,16 +55,17 @@
 
             </LinearLayout>
 
+        <!-- Solo ícono para no quitarle ancho al texto con letra grande;
+             la descripción para TalkBack la pone VehiculoAdapter ("Eliminar vehículo ABC123") -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEliminarVehiculo"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginStart="8dp"
-            android:minHeight="48dp"
-            android:text="@string/vehiculo_eliminar"
-            android:textColor="?attr/colorError"
-            app:strokeColor="?attr/colorError" />
+            android:contentDescription="@string/vehiculo_eliminar"
+            app:icon="@drawable/ic_delete"
+            app:iconTint="?attr/colorError" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

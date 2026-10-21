@@ -4,14 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.google.android.material.snackbar.Snackbar
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentMiCarteraBinding
+import com.example.conjuntoresidencial.model.PagoDTO
+import com.example.conjuntoresidencial.ui.comun.Estados
+import com.example.conjuntoresidencial.ui.comun.mostrarEstado
+import com.example.conjuntoresidencial.util.Formatos
 import com.example.conjuntoresidencial.util.Resource
 import com.example.conjuntoresidencial.util.SessionManager
+import com.example.conjuntoresidencial.util.configurarBarra
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 
 class MiCarteraFragment : Fragment() {
 
@@ -27,52 +32,70 @@ class MiCarteraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        configurarBarra(binding.barra.toolbar, R.string.mi_cartera_titulo, R.string.mi_cartera_subtitulo)
         aptoId = SessionManager(requireContext()).getApartamentoId()
-        viewModel.fetchPagos(aptoId)
-
-        binding.btnSimularPago.setOnClickListener { viewModel.simularPago(aptoId) }
+        binding.estado.vincular(binding.contenido)
+        binding.swipe.setOnRefreshListener { cargar() }
 
         viewModel.pagoState.observe(viewLifecycleOwner) { resource ->
             when (resource) {
-                is Resource.Loading -> binding.progressCartera.visibility = View.VISIBLE
+                is Resource.Loading -> if (!binding.swipe.isRefreshing) binding.estado.mostrarCargando()
                 is Resource.Success -> {
-                    binding.progressCartera.visibility = View.GONE
+                    binding.swipe.isRefreshing = false
                     val pago = resource.data
-                    if (pago != null) {
-                        binding.tvNoRegistrosCartera.visibility = View.GONE
-                        binding.layoutInfoCartera.visibility = View.VISIBLE
-                        binding.tvSaldoPendiente.text = getString(R.string.saldo_pendiente_format, pago.saldoPendiente.toString())
-                        binding.tvEstadoCuenta.text = pago.estadoCuenta
-                        binding.tvObservacionesCartera.text = pago.observaciones
-                        if (pago.saldoPendiente > 0) {
-                            binding.btnSimularPago.isEnabled = true
-                            binding.btnSimularPago.text = getString(R.string.btn_simular_pago)
-                            binding.btnSimularPago.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green_pay))
-                        } else {
-                            binding.btnSimularPago.isEnabled = false
-                            binding.btnSimularPago.text = getString(R.string.btn_sin_deuda)
-                            binding.btnSimularPago.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray_disabled))
-                        }
+                    if (pago == null) {
+                        binding.estado.mostrarVacio(
+                            R.drawable.ic_wallet, getString(R.string.mi_cartera_sin_registro),
+                            getString(R.string.mi_cartera_sin_registro_mensaje)
+                        )
                     } else {
-                        binding.tvNoRegistrosCartera.visibility = View.VISIBLE
-                        binding.layoutInfoCartera.visibility = View.GONE
+                        mostrarPago(pago)
+                        binding.estado.mostrarContenido()
                     }
                 }
                 is Resource.Error -> {
-                    binding.progressCartera.visibility = View.GONE
-                    Snackbar.make(binding.root, resource.message, Snackbar.LENGTH_LONG).show()
+                    binding.swipe.isRefreshing = false
+                    binding.estado.mostrarError(resource.message) { cargar() }
                 }
             }
         }
 
-        viewModel.simulacionState.observe(viewLifecycleOwner) { resource ->
-            if (resource is Resource.Success) {
-                Snackbar.make(binding.root, getString(R.string.simulacion_exitosa), Snackbar.LENGTH_SHORT).show()
-                viewModel.fetchPagos(aptoId)
-            } else if (resource is Resource.Error) {
-                Snackbar.make(binding.root, resource.message, Snackbar.LENGTH_LONG).show()
+        viewModel.simulacion.observe(viewLifecycleOwner) { evento ->
+            evento.obtenerSiNoManejado()?.let { error ->
+                Snackbar.make(binding.root, error ?: getString(R.string.simulacion_exitosa), Snackbar.LENGTH_LONG).show()
             }
         }
+
+        if (viewModel.pagoState.value == null) cargar()
+    }
+
+    private fun cargar() = viewModel.fetchPagos(aptoId, getString(R.string.mi_cartera_error))
+
+    private fun mostrarPago(pago: PagoDTO) {
+        val saldo = Formatos.moneda(pago.saldoPendiente)
+        binding.tvSaldoPendiente.text = saldo
+        binding.tvEstadoCuenta.mostrarEstado(Estados.cuenta(pago.saldoPendiente, pago.estadoCuenta))
+        // Puede venir null del backend aunque el modelo diga String
+        val observaciones: String? = pago.observaciones
+        binding.tvObservacionesCartera.text = observaciones
+        binding.cardObservaciones.visibility = if (observaciones.isNullOrBlank()) View.GONE else View.VISIBLE
+
+        // Sin deuda el botón queda deshabilitado con su propio texto (colores del tema, no fijos)
+        val debe = pago.saldoPendiente > 0
+        binding.btnSimularPago.isEnabled = debe
+        binding.btnSimularPago.setText(if (debe) R.string.btn_simular_pago else R.string.btn_sin_deuda)
+        binding.btnSimularPago.setOnClickListener { confirmarPago(saldo) }
+    }
+
+    private fun confirmarPago(saldo: String) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.mi_cartera_pagar_titulo)
+            .setMessage(getString(R.string.mi_cartera_pagar_pregunta, saldo))
+            .setPositiveButton(R.string.mi_cartera_pagar_si) { _, _ ->
+                viewModel.simularPago(aptoId, getString(R.string.mi_cartera_error_pago))
+            }
+            .setNegativeButton(R.string.btn_cancelar, null)
+            .show()
     }
 
     override fun onDestroyView() {

@@ -1,303 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <androidx.constraintlayout.widget.ConstraintLayout
+<!-- Formulario para registrar una obra y, opcionalmente, su personal externo.
+     El botón de guardar queda fijo abajo para no tener que buscarlo al final del formulario. -->
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorSurface">
+        android:orientation="vertical">
 
-        <!-- HEADER -->
-        <LinearLayout
-            android:id="@+id/header"
-            android:layout_width="0dp"
-            android:layout_height="90dp"
-            android:background="@color/colorPrimary"
-            android:gravity="center_vertical"
-            android:paddingStart="24dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Registrar Obra"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Completa los datos de la adecuación"
-                    android:textSize="12sp"
-                    android:textColor="@color/white"
-                    android:alpha="0.8"/>
-            </LinearLayout>
-        </LinearLayout>
+        <include
+            android:id="@+id/barra"
+            layout="@layout/barra_superior" />
 
         <androidx.core.widget.NestedScrollView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/header"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:layout_weight="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="16dp">
 
-                <!-- CARD DATOS DE LA OBRA -->
+                <!-- Datos de la obra -->
                 <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.Material3.CardView.Filled"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="3dp"
-                    app:cardBackgroundColor="@color/colorCard"
-                    android:layout_marginBottom="16dp">
+                    android:layout_height="wrap_content">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="20dp">
+                        android:padding="16dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Datos de la obra"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/md_primary"
-                            android:layout_marginBottom="14dp"/>
+                            android:accessibilityHeading="true"
+                            android:text="@string/registrar_obra_datos"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:textColor="?attr/colorOnSurface" />
 
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilDescripcionObra"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Descripción de la adecuación"
-                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                            android:layout_marginBottom="16dp">
+                            android:layout_marginTop="12dp"
+                            android:hint="@string/registrar_obra_descripcion">
+
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etDescripcionObra"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:inputType="textMultiLine"
-                                android:minLines="3"/>
+                                android:inputType="textCapSentences|textMultiLine"
+                                android:maxLines="4" />
                         </com.google.android.material.textfield.TextInputLayout>
 
+                        <!-- Fechas: no editables, al tocarlas se abre el calendario -->
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilFechaInicioObra"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Fecha de Inicio"
-                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                            app:startIconDrawable="@android:drawable/ic_menu_my_calendar"
-                            android:layout_marginBottom="16dp">
+                            android:layout_marginTop="12dp"
+                            android:hint="@string/registrar_obra_inicio"
+                            app:startIconContentDescription="@null"
+                            app:startIconDrawable="@drawable/ic_event">
+
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etFechaInicioObra"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:cursorVisible="false"
                                 android:focusable="false"
-                                android:clickable="true"/>
+                                android:inputType="none" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilFechaFinObra"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Fecha Fin Estimada"
-                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                            app:startIconDrawable="@android:drawable/ic_menu_my_calendar"
-                            android:layout_marginBottom="16dp">
+                            android:layout_marginTop="12dp"
+                            android:hint="@string/registrar_obra_fin"
+                            app:startIconContentDescription="@null"
+                            app:startIconDrawable="@drawable/ic_event">
+
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etFechaFinObra"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:cursorVisible="false"
                                 android:focusable="false"
-                                android:clickable="true"/>
+                                android:inputType="none" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Estado inicial"
-                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                            android:layout_marginBottom="4dp">
+                            android:layout_marginTop="12dp"
+                            android:hint="@string/registrar_obra_estado">
+
                             <AutoCompleteTextView
                                 android:id="@+id/spinnerEstadoObra"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:inputType="none"
-                                android:focusable="false"
-                                android:clickable="true"/>
+                                android:inputType="none" />
                         </com.google.android.material.textfield.TextInputLayout>
-
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- CARD PERSONAL EXTERNO -->
+                <!-- Personal externo -->
                 <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.Material3.CardView.Filled"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="3dp"
-                    app:cardBackgroundColor="@color/colorCard"
-                    android:layout_marginBottom="20dp">
+                    android:layout_marginTop="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="20dp">
+                        android:padding="16dp">
 
-                        <!-- Título sección -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="14dp">
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
-                                app:cardCornerRadius="10dp"
-                                app:cardElevation="0dp"
-                                app:cardBackgroundColor="@color/md_primary_container"
-                                android:layout_marginEnd="10dp">
-                                <ImageView
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:layout_gravity="center"
-                                    android:src="@android:drawable/ic_menu_agenda"
-                                    app:tint="@color/md_primary"/>
-                            </com.google.android.material.card.MaterialCardView>
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Personal Externo"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/md_primary"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Agrega los trabajadores que ingresan"
-                                    android:textSize="11sp"
-                                    android:textColor="@color/colorTextSecondary"/>
-                            </LinearLayout>
-                        </LinearLayout>
+                            android:accessibilityHeading="true"
+                            android:text="@string/registrar_obra_personal"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:textColor="?attr/colorOnSurface" />
 
-                        <!-- Nombre -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/registrar_obra_personal_ayuda"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
+
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilNombrePersonalExterno"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Nombre del trabajador"
-                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                            android:layout_marginBottom="12dp">
+                            android:layout_marginTop="12dp"
+                            android:hint="@string/registrar_obra_trabajador">
+
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etNombrePersonalExterno"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:inputType="textPersonName|textCapWords"/>
+                                android:inputType="textPersonName|textCapWords" />
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <!-- Cédula -->
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilCcPersonalExterno"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Cédula (CC)"
-                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                            android:layout_marginBottom="14dp">
+                            android:layout_marginTop="12dp"
+                            android:hint="@string/registrar_obra_cedula">
+
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etCcPersonalExterno"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:inputType="number"/>
+                                android:inputType="number" />
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <!-- ARL switch -->
-                        <LinearLayout
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchArlPersonalExterno"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="14dp">
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Estado ARL"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/colorTextPrimary"
-                                    android:textStyle="bold"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="¿El trabajador cuenta con ARL vigente?"
-                                    android:textSize="12sp"
-                                    android:textColor="@color/colorTextSecondary"/>
-                            </LinearLayout>
-                            <com.google.android.material.switchmaterial.SwitchMaterial
-                                android:id="@+id/switchArlPersonalExterno"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-                        </LinearLayout>
+                            android:layout_marginTop="8dp"
+                            android:minHeight="48dp"
+                            android:text="@string/registrar_obra_arl"
+                            android:textAppearance="?attr/textAppearanceBodyLarge" />
 
-                        <!-- Botón agregar trabajador -->
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnAgregarPersonal"
-                            android:layout_width="match_parent"
-                            android:layout_height="44dp"
-                            android:text="+ Agregar trabajador"
-                            style="@style/Widget.Material3.Button.OutlinedButton"
-                            app:cornerRadius="10dp"/>
-
-                        <!-- Contador de personal agregado -->
-                        <TextView
-                            android:id="@+id/tvContadorPersonal"
+                            style="@style/Widget.Material3.Button.TonalButton.Icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_gravity="center_horizontal"
-                            android:text=""
-                            android:textSize="13sp"
-                            android:textColor="@color/md_primary"
-                            android:textStyle="bold"
-                            android:visibility="gone"/>
+                            android:layout_marginTop="8dp"
+                            android:minHeight="48dp"
+                            android:text="@string/registrar_obra_agregar_trabajador"
+                            app:icon="@drawable/ic_add" />
 
+                        <!-- Trabajadores agregados; cada chip se puede quitar con su "x" -->
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/chipsPersonal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:visibility="gone" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
-
-                <!-- BOTÓN GUARDAR OBRA -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnGuardarObra"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:text="Registrar Obra"
-                    app:cornerRadius="12dp"/>
-
-                <ProgressBar
-                    android:id="@+id/progressRegistrarObra"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:visibility="gone"
-                    android:layout_marginTop="16dp"/>
-
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressRegistrarObra"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGuardarObra"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:minHeight="56dp"
+            android:text="@string/registrar_obra_guardar" />
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

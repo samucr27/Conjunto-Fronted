@@ -1,6 +1,5 @@
 package com.example.conjuntoresidencial.ui.propietario
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,18 +7,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentRegistrarObraBinding
 import com.example.conjuntoresidencial.model.PersonalObraDTO
+import com.example.conjuntoresidencial.ui.comun.Estados
+import com.example.conjuntoresidencial.util.Formatos
 import com.example.conjuntoresidencial.util.Resource
 import com.example.conjuntoresidencial.util.SessionManager
+import com.example.conjuntoresidencial.util.configurarBarra
+import com.google.android.material.chip.Chip
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
@@ -28,7 +35,9 @@ class RegistrarObraFragment : Fragment() {
     private var _binding: FragmentRegistrarObraBinding? = null
     private val binding get() = _binding!!
     private val viewModel: RegistrarObraViewModel by viewModels()
-    private val personalList = mutableListOf<PersonalObraDTO>()
+
+    // Valores que acepta el backend; en pantalla se muestran con su etiqueta ("En proceso")
+    private val estados = listOf("EN_PROCESO", "FINALIZADA")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRegistrarObraBinding.inflate(inflater, container, false)
@@ -37,134 +46,174 @@ class RegistrarObraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        configurarBarra(binding.barra.toolbar, R.string.registrar_obra_titulo, R.string.registrar_obra_subtitulo)
         val aptoId = SessionManager(requireContext()).getApartamentoId()
 
-        val estados = listOf("EN_PROCESO", "FINALIZADA")
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, estados)
-        binding.spinnerEstadoObra.setAdapter(adapter)
-        binding.spinnerEstadoObra.setText(estados[0], false)
+        val etiquetas = estados.map { getString(Estados.obra(it).etiqueta) }
+        binding.spinnerEstadoObra.setAdapter(
+            ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, etiquetas)
+        )
+        binding.spinnerEstadoObra.setText(etiquetas[estados.indexOf(viewModel.estado)], false)
+        binding.spinnerEstadoObra.setOnItemClickListener { _, _, posicion, _ -> viewModel.estado = estados[posicion] }
 
-        // Date pickers bloqueando fechas anteriores a hoy
+        // Las fechas se guardan en el ViewModel (formato del backend) y se muestran como dd/MM/yyyy
+        mostrarFechas()
         binding.etFechaInicioObra.setOnClickListener {
-            showDatePicker { binding.etFechaInicioObra.setText(it) }
+            elegirFecha(viewModel.fechaInicio, null) {
+                viewModel.fechaInicio = it
+                // Si el fin quedó antes del nuevo inicio, se borra para elegirlo otra vez
+                if (viewModel.fechaFin.isNotEmpty() && viewModel.fechaFin < it) viewModel.fechaFin = ""
+                mostrarFechas()
+            }
         }
         binding.etFechaFinObra.setOnClickListener {
-            showDatePicker { binding.etFechaFinObra.setText(it) }
+            elegirFecha(viewModel.fechaFin, viewModel.fechaInicio.ifEmpty { null }) {
+                viewModel.fechaFin = it
+                mostrarFechas()
+            }
         }
 
+        mostrarPersonal()
         binding.btnAgregarPersonal.setOnClickListener { agregarPersonalDesdeCampos() }
+        limpiarErrorAlEscribir(binding.tilDescripcionObra, binding.etDescripcionObra)
+        limpiarErrorAlEscribir(binding.tilNombrePersonalExterno, binding.etNombrePersonalExterno)
+        limpiarErrorAlEscribir(binding.tilCcPersonalExterno, binding.etCcPersonalExterno)
 
         binding.btnGuardarObra.setOnClickListener {
             val descripcion = binding.etDescripcionObra.text.toString().trim()
-            val fechaInicio = binding.etFechaInicioObra.text.toString().trim()
-            val fechaFin = binding.etFechaFinObra.text.toString().trim()
-            val estado = binding.spinnerEstadoObra.text.toString()
-
-            if (descripcion.isEmpty() || fechaInicio.isEmpty() || fechaFin.isEmpty()) {
-                Snackbar.make(binding.root, "Complete todos los campos de la obra", Snackbar.LENGTH_SHORT).show()
+            binding.tilDescripcionObra.error =
+                if (descripcion.isEmpty()) getString(R.string.registrar_obra_descripcion_obligatoria) else null
+            binding.tilFechaInicioObra.error =
+                if (viewModel.fechaInicio.isEmpty()) getString(R.string.registrar_obra_fecha_obligatoria) else null
+            binding.tilFechaFinObra.error =
+                if (viewModel.fechaFin.isEmpty()) getString(R.string.registrar_obra_fecha_obligatoria) else null
+            if (descripcion.isEmpty() || viewModel.fechaInicio.isEmpty() || viewModel.fechaFin.isEmpty()) {
                 return@setOnClickListener
             }
-
-            val fmt = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val dInicio = fmt.parse(fechaInicio)
-            val dFin = fmt.parse(fechaFin)
-            if (dFin != null && dInicio != null && dFin.before(dInicio)) {
-                Snackbar.make(binding.root, "La fecha fin no puede ser anterior a la fecha de inicio", Snackbar.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-
-            viewModel.registrarObra(descripcion, fechaInicio, fechaFin, estado, aptoId)
+            viewModel.registrarObra(descripcion, aptoId, getString(R.string.registrar_obra_error))
         }
 
         viewModel.obraState.observe(viewLifecycleOwner) { resource ->
+            val cargando = resource is Resource.Loading
+            binding.progressRegistrarObra.visibility = if (cargando) View.VISIBLE else View.GONE
+            binding.btnGuardarObra.isEnabled = !cargando
             when (resource) {
-                is Resource.Loading -> {
-                    binding.progressRegistrarObra.visibility = View.VISIBLE
-                    binding.btnGuardarObra.isEnabled = false
-                }
+                is Resource.Loading -> Unit
                 is Resource.Success -> {
-                    binding.progressRegistrarObra.visibility = View.GONE
                     val obraId = resource.data?.id
-                    if (obraId != null && personalList.isNotEmpty()) {
+                    if (obraId != null && viewModel.personal.isNotEmpty()) {
                         guardarPersonalYSalir(obraId)
                     } else {
-                        Snackbar.make(binding.root, "Obra registrada exitosamente", Snackbar.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.registrar_obra_exito, Toast.LENGTH_SHORT).show()
                         findNavController().popBackStack()
                     }
                 }
-                is Resource.Error -> {
-                    binding.progressRegistrarObra.visibility = View.GONE
-                    binding.btnGuardarObra.isEnabled = true
-                    Snackbar.make(binding.root, resource.message, Snackbar.LENGTH_LONG).show()
-                }
+                is Resource.Error -> Snackbar.make(binding.root, resource.message, Snackbar.LENGTH_LONG).show()
             }
         }
+    }
+
+    private fun mostrarFechas() {
+        binding.etFechaInicioObra.setText(Formatos.fecha(viewModel.fechaInicio))
+        binding.etFechaFinObra.setText(Formatos.fecha(viewModel.fechaFin))
+        if (viewModel.fechaInicio.isNotEmpty()) binding.tilFechaInicioObra.error = null
+        if (viewModel.fechaFin.isNotEmpty()) binding.tilFechaFinObra.error = null
     }
 
     private fun agregarPersonalDesdeCampos() {
         val nombre = binding.etNombrePersonalExterno.text.toString().trim()
         val cc = binding.etCcPersonalExterno.text.toString().trim()
-        val arl = binding.switchArlPersonalExterno.isChecked
+        binding.tilNombrePersonalExterno.error =
+            if (nombre.isEmpty()) getString(R.string.registrar_obra_nombre_obligatorio) else null
+        binding.tilCcPersonalExterno.error =
+            if (cc.isEmpty()) getString(R.string.registrar_obra_cedula_obligatoria) else null
+        if (nombre.isEmpty() || cc.isEmpty()) return
 
-        if (nombre.isEmpty() || cc.isEmpty()) {
-            Snackbar.make(binding.root, "Ingresa nombre y cédula del trabajador", Snackbar.LENGTH_SHORT).show()
-            return
-        }
-
-        personalList.add(PersonalObraDTO(null, nombre, cc, arl, 0L))
+        viewModel.personal += PersonalObraDTO(null, nombre, cc, binding.switchArlPersonalExterno.isChecked, 0L)
         binding.etNombrePersonalExterno.text?.clear()
         binding.etCcPersonalExterno.text?.clear()
         binding.switchArlPersonalExterno.isChecked = false
+        binding.etNombrePersonalExterno.requestFocus()
+        mostrarPersonal()
+    }
 
-        val count = personalList.size
-        binding.tvContadorPersonal.text = "$count trabajador${if (count != 1) "es" else ""} agregado${if (count != 1) "s" else ""}"
-        binding.tvContadorPersonal.visibility = View.VISIBLE
-        Snackbar.make(binding.root, "Trabajador agregado a la lista", Snackbar.LENGTH_SHORT).show()
+    /** Un chip por trabajador agregado; la "x" lo quita de la lista. */
+    private fun mostrarPersonal() {
+        binding.chipsPersonal.removeAllViews()
+        viewModel.personal.forEach { p ->
+            binding.chipsPersonal.addView(Chip(requireContext()).apply {
+                text = getString(R.string.registrar_obra_trabajador_fila, p.nombreTrabajador, p.cedula)
+                chipIcon = requireContext().getDrawable(
+                    if (p.arlEstado) R.drawable.ic_check_circle else R.drawable.ic_error_outline
+                )
+                isChipIconVisible = true
+                contentDescription = "$text, ${getString(Estados.arl(p.arlEstado).etiqueta)}"
+                isCloseIconVisible = true
+                closeIconContentDescription = getString(R.string.registrar_obra_quitar, p.nombreTrabajador)
+                setOnCloseIconClickListener {
+                    viewModel.personal.remove(p)
+                    mostrarPersonal()
+                }
+            })
+        }
+        binding.chipsPersonal.visibility = if (viewModel.personal.isEmpty()) View.GONE else View.VISIBLE
     }
 
     private fun guardarPersonalYSalir(obraId: Long) {
         binding.progressRegistrarObra.visibility = View.VISIBLE
+        binding.btnGuardarObra.isEnabled = false
         viewLifecycleOwner.lifecycleScope.launch {
-            // Nombre del trabajador -> motivo, para los que no se pudieron guardar
+            // "Nombre: motivo" de los trabajadores que no se pudieron guardar
             val fallidos = mutableListOf<String>()
-            personalList.forEach { dto ->
+            viewModel.personal.forEach { dto ->
                 try {
                     val response = RetrofitClient.instance.createPersonalObra(dto.copy(obraId = obraId))
                     if (!response.isSuccessful) {
-                        fallidos += "${dto.nombreTrabajador}: ${RetrofitClient.mensajeDeError(response, "error del servidor")}"
+                        fallidos += "${dto.nombreTrabajador}: ${RetrofitClient.mensajeDeError(response, getString(R.string.registrar_obra_error))}"
                     }
                 } catch (_: Exception) {
-                    fallidos += "${dto.nombreTrabajador}: sin conexión"
+                    fallidos += "${dto.nombreTrabajador}: ${getString(R.string.registrar_obra_sin_conexion)}"
                 }
             }
             binding.progressRegistrarObra.visibility = View.GONE
 
             if (fallidos.isEmpty()) {
-                Toast.makeText(requireContext(), "Obra y personal registrados exitosamente", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.registrar_obra_exito_personal, Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()
             } else {
                 MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Obra registrada con avisos")
-                    .setMessage("La obra se guardó, pero estos trabajadores no:\n\n" + fallidos.joinToString("\n"))
-                    .setPositiveButton("Entendido") { _, _ -> findNavController().popBackStack() }
+                    .setTitle(R.string.registrar_obra_avisos_titulo)
+                    .setMessage(getString(R.string.registrar_obra_avisos_mensaje, fallidos.joinToString("\n")))
+                    .setPositiveButton(R.string.btn_entendido) { _, _ -> findNavController().popBackStack() }
                     .setCancelable(false)
                     .show()
             }
         }
     }
 
-    // Bloquea fechas anteriores a hoy
-    private fun showDatePicker(onDate: (String) -> Unit) {
-        val hoy = Calendar.getInstance()
-        val picker = DatePickerDialog(
-            requireContext(), { _, y, m, d ->
-                onDate(String.format("%04d-%02d-%02d", y, m + 1, d))
-            },
-            hoy.get(Calendar.YEAR), hoy.get(Calendar.MONTH), hoy.get(Calendar.DAY_OF_MONTH)
-        )
-        picker.datePicker.minDate = hoy.timeInMillis
+    /**
+     * Calendario que no deja elegir días anteriores a hoy (ni a [minimo], "yyyy-MM-dd").
+     * Devuelve la fecha en el formato del backend.
+     */
+    private fun elegirFecha(actual: String, minimo: String?, alElegir: (String) -> Unit) {
+        val inicial = Calendar.getInstance()
+        aCalendario(actual)?.let { inicial.time = it.time }
+        val picker = DatePickerDialog(requireContext(), { _, y, m, d ->
+            alElegir(String.format(Locale.US, "%04d-%02d-%02d", y, m + 1, d))
+        }, inicial.get(Calendar.YEAR), inicial.get(Calendar.MONTH), inicial.get(Calendar.DAY_OF_MONTH))
+        val hoy = Calendar.getInstance().timeInMillis - 1000
+        picker.datePicker.minDate = maxOf(hoy, aCalendario(minimo)?.timeInMillis ?: 0L)
         picker.show()
+    }
+
+    private fun aCalendario(iso: String?): Calendar? {
+        val partes = iso?.split("-")?.mapNotNull { it.toIntOrNull() } ?: return null
+        if (partes.size != 3) return null
+        return Calendar.getInstance().apply { set(partes[0], partes[1] - 1, partes[2], 0, 0, 0) }
+    }
+
+    private fun limpiarErrorAlEscribir(til: TextInputLayout, campo: TextInputEditText) {
+        campo.doAfterTextChanged { if (!it.isNullOrEmpty()) til.error = null }
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }

@@ -62,8 +62,6 @@
     <color name="colorTextSecondary">@color/md_on_surface_variant</color>
     <color name="colorDivider">@color/md_outline_variant</color>
     <color name="colorError">@color/md_error</color>
-    <color name="green_pay">@color/estado_exito</color>
-    <color name="gray_disabled">@color/md_outline</color>
     <!-- Texto sobre los encabezados morados -->
     <color name="white">#FFFFFF</color>
     <!-- Subtítulo de la barra superior: lavanda claro (contraste 6,0:1 sobre #5E35B1) -->

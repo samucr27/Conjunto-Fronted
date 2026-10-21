@@ -34,7 +34,7 @@ class MisVehiculosViewModel : ViewModel() {
         }
     }
 
-    fun agregarVehiculo(vehiculo: VehiculoDTO) {
+    fun agregarVehiculo(vehiculo: VehiculoDTO, errorPorDefecto: String) {
         viewModelScope.launch {
             try {
                 val response = RetrofitClient.instance.createVehiculo(vehiculo)
@@ -42,7 +42,7 @@ class MisVehiculosViewModel : ViewModel() {
                     // El backend crea la notificación para el admin
                     fetchVehiculos(vehiculo.apartamentoId)
                 } else {
-                    _mensaje.value = Evento(RetrofitClient.mensajeDeError(response, "No se pudo registrar el vehículo"))
+                    _mensaje.value = Evento(RetrofitClient.mensajeDeError(response, errorPorDefecto))
                 }
             } catch (e: Exception) {
                 _mensaje.value = Evento("Error de red: ${e.localizedMessage}")
@@ -50,12 +50,12 @@ class MisVehiculosViewModel : ViewModel() {
         }
     }
 
-    fun eliminarVehiculo(vehiculo: VehiculoDTO, aptoId: Long) {
+    fun eliminarVehiculo(vehiculo: VehiculoDTO, aptoId: Long, errorPorDefecto: String) {
         viewModelScope.launch {
             try {
                 val response = RetrofitClient.instance.deleteVehiculo(vehiculo.id!!)
                 if (response.isSuccessful) fetchVehiculos(aptoId)
-                else _mensaje.value = Evento(RetrofitClient.mensajeDeError(response, "No se pudo eliminar el vehículo"))
+                else _mensaje.value = Evento(RetrofitClient.mensajeDeError(response, errorPorDefecto))
             } catch (e: Exception) {
                 _mensaje.value = Evento("Error de red: ${e.localizedMessage}")
             }

@@ -135,10 +135,9 @@
     <string name="desc_finalizar_obra">Finalizar obra: %1$s</string>
     <string name="desc_reservar_zona">Reservar %1$s</string>
     <string name="desc_eliminar_vehiculo">Eliminar vehículo %1$s</string>
-    <string name="btn_simular_pago">Simular Pago</string>
+    <string name="btn_simular_pago">Simular pago</string>
     <string name="btn_sin_deuda">Sin deuda pendiente</string>
-    <string name="saldo_pendiente_format">$%s</string>
-    <string name="simulacion_exitosa">Simulación exitosa</string>
+    <string name="simulacion_exitosa">Pago simulado: tu cuenta quedó al día</string>
 
     <!-- Sesión y permisos -->
     <string name="sesion_expirada">Tu sesión expiró. Inicia sesión de nuevo.</string>
@@ -182,4 +181,83 @@
     <string name="cartera_subtitulo">Estado de cuenta por apartamento</string>
     <string name="cartera_vacia">Aún no hay apartamentos</string>
     <string name="cartera_sin_registro">Sin registro de pago</string>
+    <!-- Bloque 5: pantallas del residente -->
+    <string name="vehiculos_titulo">Mis vehículos</string>
+    <string name="vehiculos_subtitulo">Autorizados para ingresar al conjunto</string>
+    <string name="vehiculos_agregar">Agregar vehículo</string>
+    <string name="vehiculos_vacio">No tienes vehículos registrados</string>
+    <string name="vehiculos_vacio_mensaje">Agrega uno para que portería lo reconozca.</string>
+    <string name="vehiculo_eliminar_titulo">Eliminar vehículo</string>
+    <string name="vehiculo_eliminar_pregunta">¿Eliminar el vehículo %1$s? Ya no podrá ingresar al conjunto.</string>
+    <string name="vehiculo_error_eliminar">No se pudo eliminar el vehículo</string>
+
+    <string name="zonas_res_subtitulo">Elige una zona para reservarla</string>
+    <string name="zonas_res_vacio">No hay zonas comunes registradas</string>
+    <string name="reserva_titulo">Reservar %1$s</string>
+    <string name="reserva_fecha">Fecha</string>
+    <string name="reserva_hora">Hora de inicio</string>
+    <string name="reserva_ayuda">La reserva queda pendiente hasta que la administración la apruebe.</string>
+    <string name="reserva_fecha_obligatoria">Elige la fecha</string>
+    <string name="reserva_hora_obligatoria">Elige la hora</string>
+    <string name="reserva_hora_pasada">Esa hora ya pasó</string>
+    <string name="reserva_creada">Reserva enviada. Queda pendiente de aprobación.</string>
+    <string name="reserva_error_crear">No se pudo crear la reserva</string>
+
+    <string name="mis_reservas_vacio">Aún no tienes reservas</string>
+    <string name="mis_reservas_vacio_mensaje">Puedes reservar desde Zonas comunes.</string>
+
+    <string name="mis_obras_subtitulo">Toca una obra para ver el detalle</string>
+    <string name="mis_obras_vacio">No tienes obras registradas</string>
+    <string name="mis_obras_vacio_mensaje">Regístralas desde el panel antes de empezar.</string>
+    <string name="obra_fechas">Fechas</string>
+    <string name="obra_personal_externo">Personal externo</string>
+    <string name="obra_error_personal">No se pudo cargar el personal</string>
+    <string name="obra_finalizar_titulo">Finalizar obra</string>
+    <string name="obra_finalizar_pregunta">¿Confirmas que la obra «%1$s» terminó?</string>
+    <string name="obra_finalizar_si">Sí, finalizar</string>
+    <string name="obra_error_finalizar">No se pudo finalizar la obra</string>
+    <string name="btn_cerrar">Cerrar</string>
+
+    <string name="mi_cartera_titulo">Mi cartera</string>
+    <string name="mi_cartera_subtitulo">Saldo y estado de cuenta</string>
+    <string name="mi_cartera_saldo">Saldo pendiente</string>
+    <string name="mi_cartera_observaciones">Observaciones</string>
+    <string name="mi_cartera_sin_registro">Aún no hay estado de cuenta</string>
+    <string name="mi_cartera_sin_registro_mensaje">La administración todavía no ha registrado la cartera de tu apartamento.</string>
+    <string name="mi_cartera_error">No se pudo consultar tu estado de cuenta</string>
+    <string name="mi_cartera_pagar_titulo">Simular pago</string>
+    <string name="mi_cartera_pagar_pregunta">Se registrará el pago de %1$s. Es una simulación: no se cobra dinero real.</string>
+    <string name="mi_cartera_pagar_si">Pagar</string>
+    <string name="mi_cartera_error_pago">No se pudo procesar el pago</string>
+
+    <string name="registrar_obra_titulo">Registrar obra</string>
+    <string name="registrar_obra_subtitulo">Avisa a la administración antes de empezar</string>
+    <string name="registrar_obra_datos">Datos de la obra</string>
+    <string name="registrar_obra_descripcion">Descripción de la adecuación</string>
+    <string name="registrar_obra_inicio">Fecha de inicio</string>
+    <string name="registrar_obra_fin">Fecha fin estimada</string>
+    <string name="registrar_obra_estado">Estado inicial</string>
+    <string name="registrar_obra_personal">Personal externo</string>
+    <string name="registrar_obra_personal_ayuda">Trabajadores que entrarán al conjunto. Puedes agregarlos después.</string>
+    <string name="registrar_obra_trabajador">Nombre del trabajador</string>
+    <string name="registrar_obra_cedula">Cédula</string>
+    <string name="registrar_obra_arl">Tiene ARL vigente</string>
+    <string name="registrar_obra_agregar_trabajador">Agregar trabajador</string>
+    <string name="registrar_obra_quitar">Quitar a %1$s</string>
+    <string name="registrar_obra_trabajador_fila">%1$s · CC %2$s</string>
+    <string name="registrar_obra_guardar">Registrar obra</string>
+    <string name="registrar_obra_descripcion_obligatoria">Describe la obra</string>
+    <string name="registrar_obra_fecha_obligatoria">Elige la fecha</string>
+    <string name="registrar_obra_fin_antes">No puede ser anterior al inicio</string>
+    <string name="registrar_obra_nombre_obligatorio">Escribe el nombre</string>
+    <string name="registrar_obra_cedula_obligatoria">Escribe la cédula</string>
+    <string name="registrar_obra_error">No se pudo registrar la obra</string>
+    <string name="registrar_obra_exito">Obra registrada</string>
+    <string name="registrar_obra_exito_personal">Obra y personal registrados</string>
+    <string name="registrar_obra_avisos_titulo">Obra registrada con avisos</string>
+    <string name="registrar_obra_avisos_mensaje">La obra se guardó, pero estos trabajadores no:
+
+%1$s</string>
+    <string name="registrar_obra_sin_conexion">sin conexión</string>
+    <string name="btn_entendido">Entendido</string>
 </resources>

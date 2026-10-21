@@ -1,22 +1,30 @@
 package com.example.conjuntoresidencial.ui.propietario
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentZonasComunesPropietarioBinding
 import com.example.conjuntoresidencial.model.ZonaComunDTO
 import com.example.conjuntoresidencial.ui.admin.ZonaAdapter
-import com.example.conjuntoresidencial.util.Resource
+import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
+import com.example.conjuntoresidencial.util.Formatos
 import com.example.conjuntoresidencial.util.SessionManager
+import com.example.conjuntoresidencial.util.configurarBarra
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import java.util.Calendar
+import java.util.Locale
 
 class ZonasComunesPropietarioFragment : Fragment() {
     private var _binding: FragmentZonasComunesPropietarioBinding? = null
@@ -30,128 +38,105 @@ class ZonasComunesPropietarioFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.rvZonasPropietario.layoutManager = LinearLayoutManager(requireContext())
-        val session = SessionManager(requireContext())
-        val aptoId = session.getApartamentoId()
-        val adaptador = ZonaAdapter { zona -> mostrarDialogReserva(zona, aptoId) }
-        binding.rvZonasPropietario.adapter = adaptador
-        viewModel.fetchZonas()
+        configurarBarra(binding.barra.toolbar, R.string.menu_zonas, R.string.zonas_res_subtitulo)
+        val aptoId = SessionManager(requireContext()).getApartamentoId()
 
-        binding.swipeRefreshZonas.setOnRefreshListener { viewModel.fetchZonas() }
+        // Con callback: las zonas reservables muestran el botón "Reservar"
+        val adaptador = ZonaAdapter { zona -> mostrarDialogReserva(zona, aptoId) }
+        binding.rvZonasPropietario.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvZonasPropietario.adapter = adaptador
+        binding.estado.vincular(binding.rvZonasPropietario)
+        binding.swipe.setOnRefreshListener { viewModel.fetchZonas() }
 
         viewModel.zonas.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    binding.progressZonasProp.visibility = View.VISIBLE
-                    binding.tvNoZonasProp.visibility = View.GONE
-                }
-                is Resource.Success -> {
-                    binding.progressZonasProp.visibility = View.GONE
-                    binding.swipeRefreshZonas.isRefreshing = false
-                    val lista = resource.data ?: emptyList()
-                    if (lista.isEmpty()) {
-                        binding.tvNoZonasProp.visibility = View.VISIBLE
-                    } else {
-                        binding.tvNoZonasProp.visibility = View.GONE
-                        adaptador.submitList(lista)
-                    }
-                }
-                is Resource.Error -> {
-                    binding.progressZonasProp.visibility = View.GONE
-                    binding.swipeRefreshZonas.isRefreshing = false
-                    binding.tvNoZonasProp.visibility = View.VISIBLE
-                    binding.tvNoZonasProp.text = resource.message
-                }
+            binding.estado.mostrarRecurso(
+                resource, binding.swipe, R.drawable.ic_place, getString(R.string.zonas_res_vacio),
+                reintentar = { viewModel.fetchZonas() }
+            ) { adaptador.submitList(it) }
+        }
+
+        viewModel.reserva.observe(viewLifecycleOwner) { evento ->
+            evento.obtenerSiNoManejado()?.let { error ->
+                Snackbar.make(binding.root, error ?: getString(R.string.reserva_creada), Snackbar.LENGTH_LONG).show()
             }
         }
 
-        viewModel.reservaState.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Loading -> {}
-                is Resource.Success -> Snackbar.make(binding.root, "Reserva creada exitosamente", Snackbar.LENGTH_SHORT).show()
-                is Resource.Error -> Snackbar.make(binding.root, resource.message, Snackbar.LENGTH_LONG).show()
-            }
-        }
+        if (viewModel.zonas.value == null) viewModel.fetchZonas()
     }
 
     private fun mostrarDialogReserva(zona: ZonaComunDTO, aptoId: Long) {
-        var fechaSeleccionada = ""
-        var horaSeleccionada = ""
-        var calFecha = Calendar.getInstance()
+        val vista = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_reservar_zona, null)
+        val tilFecha = vista.findViewById<TextInputLayout>(R.id.tilFechaReserva)
+        val tilHora = vista.findViewById<TextInputLayout>(R.id.tilHoraReserva)
+        val etFecha = vista.findViewById<TextInputEditText>(R.id.etFechaReserva)
+        val etHora = vista.findViewById<TextInputEditText>(R.id.etHoraReserva)
 
-        val fechaText = android.widget.TextView(requireContext()).apply {
-            text = "Fecha: No seleccionada"
-            setPadding(16, 8, 16, 8)
-        }
-        val horaText = android.widget.TextView(requireContext()).apply {
-            text = "Hora: No seleccionada"
-            setPadding(16, 8, 16, 8)
-        }
+        // Valores en el formato del backend ("2026-10-23", "14:00"); en pantalla, formato local
+        var fecha: Calendar? = null
+        var fechaIso = ""
+        var horaIso = ""
 
-        val btnFecha = com.google.android.material.button.MaterialButton(requireContext()).apply {
-            text = "Seleccionar Fecha"
-            setOnClickListener {
-                val hoy = Calendar.getInstance()
-                val picker = DatePickerDialog(requireContext(), { _, y, m, d ->
-                    calFecha = Calendar.getInstance().apply { set(y, m, d) }
-                    fechaSeleccionada = String.format("%04d-%02d-%02d", y, m + 1, d)
-                    fechaText.text = "Fecha: $fechaSeleccionada"
-                    horaSeleccionada = ""
-                    horaText.text = "Hora: No seleccionada"
-                }, hoy.get(Calendar.YEAR), hoy.get(Calendar.MONTH), hoy.get(Calendar.DAY_OF_MONTH))
-                picker.datePicker.minDate = hoy.timeInMillis
-                picker.show()
-            }
-        }
-
-        val btnHora = com.google.android.material.button.MaterialButton(requireContext()).apply {
-            text = "Seleccionar Hora"
-            setOnClickListener {
-                if (fechaSeleccionada.isEmpty()) {
-                    Snackbar.make(binding.root, "Primero selecciona una fecha", Snackbar.LENGTH_SHORT).show()
-                    return@setOnClickListener
+        etFecha.setOnClickListener {
+            val hoy = Calendar.getInstance()
+            val inicial = fecha ?: hoy
+            DatePickerDialog(requireContext(), { _, y, m, d ->
+                fecha = Calendar.getInstance().apply { set(y, m, d) }
+                fechaIso = String.format(Locale.US, "%04d-%02d-%02d", y, m + 1, d)
+                etFecha.setText(Formatos.fecha(fechaIso))
+                tilFecha.error = null
+                // Si ya había hora y con la nueva fecha queda en el pasado, se pide otra vez
+                if (horaIso.isNotEmpty() && enElPasado(fecha!!, horaIso)) {
+                    horaIso = ""
+                    etHora.text = null
                 }
-                val ahora = Calendar.getInstance()
-                TimePickerDialog(requireContext(), { _, h, min ->
-                    val esHoy = calFecha.get(Calendar.YEAR) == ahora.get(Calendar.YEAR) &&
-                            calFecha.get(Calendar.DAY_OF_YEAR) == ahora.get(Calendar.DAY_OF_YEAR)
-                    if (esHoy && (h < ahora.get(Calendar.HOUR_OF_DAY) ||
-                                (h == ahora.get(Calendar.HOUR_OF_DAY) && min <= ahora.get(Calendar.MINUTE)))) {
-                        Snackbar.make(binding.root, "No puedes reservar en una hora pasada", Snackbar.LENGTH_SHORT).show()
-                    } else {
-                        horaSeleccionada = String.format("%02d:%02d", h, min)
-                        horaText.text = "Hora: $horaSeleccionada"
-                    }
-                }, ahora.get(Calendar.HOUR_OF_DAY), ahora.get(Calendar.MINUTE), true).show()
+            }, inicial.get(Calendar.YEAR), inicial.get(Calendar.MONTH), inicial.get(Calendar.DAY_OF_MONTH)).apply {
+                datePicker.minDate = hoy.timeInMillis - 1000
+            }.show()
+        }
+
+        etHora.setOnClickListener {
+            val elegida = fecha
+            if (elegida == null) {
+                tilFecha.error = getString(R.string.reserva_fecha_obligatoria)
+                return@setOnClickListener
             }
-        }
-
-        val layout = android.widget.LinearLayout(requireContext()).apply {
-            orientation = android.widget.LinearLayout.VERTICAL
-            setPadding(32, 16, 32, 16)
-            addView(btnFecha)
-            addView(fechaText)
-            addView(btnHora)
-            addView(horaText)
-        }
-
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Reservar ${zona.nombre}")
-            .setView(layout)
-            .setPositiveButton("Confirmar") { _, _ ->
-                if (fechaSeleccionada.isEmpty() || horaSeleccionada.isEmpty()) {
-                    Snackbar.make(binding.root, "Selecciona fecha y hora", Snackbar.LENGTH_SHORT).show()
+            val ahora = Calendar.getInstance()
+            TimePickerDialog(requireContext(), { _, h, min ->
+                val hora = String.format(Locale.US, "%02d:%02d", h, min)
+                if (enElPasado(elegida, hora)) {
+                    tilHora.error = getString(R.string.reserva_hora_pasada)
                 } else {
-                    viewModel.crearReserva(
-                        fecha = fechaSeleccionada,
-                        hora = horaSeleccionada,
-                        zonaComunId = zona.id!!,
-                        apartamentoId = aptoId
-                    )
+                    horaIso = hora
+                    etHora.setText(Formatos.hora(hora))
+                    tilHora.error = null
                 }
-            }
-            .setNegativeButton("Cancelar", null)
+            }, (ahora.get(Calendar.HOUR_OF_DAY) + 1) % 24, 0, DateFormat.is24HourFormat(requireContext())).show()
+        }
+
+        val dialogo = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.reserva_titulo, zona.nombre))
+            .setView(vista)
+            .setPositiveButton(R.string.zona_reservar, null)
+            .setNegativeButton(R.string.btn_cancelar, null)
             .show()
+
+        // Se asigna después de show() para que el diálogo no se cierre si falta un dato
+        dialogo.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            tilFecha.error = if (fechaIso.isEmpty()) getString(R.string.reserva_fecha_obligatoria) else null
+            tilHora.error = if (horaIso.isEmpty()) getString(R.string.reserva_hora_obligatoria) else null
+            if (fechaIso.isEmpty() || horaIso.isEmpty()) return@setOnClickListener
+            viewModel.crearReserva(fechaIso, horaIso, zona.id!!, aptoId, getString(R.string.reserva_error_crear))
+            dialogo.dismiss()
+        }
+    }
+
+    /** true si la fecha elegida a esa hora ("HH:mm") ya pasó. El backend también lo valida. */
+    private fun enElPasado(fecha: Calendar, hora: String): Boolean {
+        val (h, m) = hora.split(":").map { it.toInt() }
+        val momento = (fecha.clone() as Calendar).apply {
+            set(Calendar.HOUR_OF_DAY, h); set(Calendar.MINUTE, m); set(Calendar.SECOND, 0)
+        }
+        return momento.before(Calendar.getInstance())
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }
