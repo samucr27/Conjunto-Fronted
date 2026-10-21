@@ -1,7 +1,7 @@
 package com.example.conjuntoresidencial.api
 
 import android.content.Context
-import com.example.conjuntoresidencial.BuildConfig
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.model.MensajeError
 import com.example.conjuntoresidencial.util.SessionManager
 import com.google.gson.Gson
@@ -13,9 +13,6 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    // debug: backend local (10.0.2.2); release: Render. Ver app/build.gradle.kts
-    private val BASE_URL = BuildConfig.API_URL
-
     private lateinit var appContext: Context
 
     /** Se llama una vez desde ConjuntoApp.onCreate(), antes de cualquier petición. */
@@ -36,7 +33,8 @@ object RetrofitClient {
 
     val instance: ApiService by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            // Render, o la de -PapiUrl en debug. Ver app/build.gradle.kts
+            .baseUrl(appContext.getString(R.string.api_url))
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
