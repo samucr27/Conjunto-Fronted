@@ -42,7 +42,7 @@
                 android:text="Salir"
                 android:textSize="12sp"
                 android:textColor="@color/white"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/Widget.Material3.Button.OutlinedButton"
                 app:strokeColor="@color/white"/>
         </LinearLayout>
 
@@ -66,11 +66,11 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="52dp" android:layout_height="52dp"
                             app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="#EDE7F6" android:layout_marginBottom="10dp">
+                            app:cardBackgroundColor="@color/md_primary_container" android:layout_marginBottom="10dp">
                             <ImageView android:layout_width="28dp" android:layout_height="28dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_directions"
-                                app:tint="@color/colorPrimary"/>
+                                app:tint="@color/md_primary"/>
                         </com.google.android.material.card.MaterialCardView>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Mis Vehículos" android:textStyle="bold" android:textSize="14sp"
@@ -89,11 +89,11 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="52dp" android:layout_height="52dp"
                             app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="#EDE7F6" android:layout_marginBottom="10dp">
+                            app:cardBackgroundColor="@color/md_primary_container" android:layout_marginBottom="10dp">
                             <ImageView android:layout_width="28dp" android:layout_height="28dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_mapmode"
-                                app:tint="@color/colorPrimary"/>
+                                app:tint="@color/md_primary"/>
                         </com.google.android.material.card.MaterialCardView>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Zonas Comunes" android:textStyle="bold" android:textSize="14sp"
@@ -112,11 +112,11 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="52dp" android:layout_height="52dp"
                             app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="#EDE7F6" android:layout_marginBottom="10dp">
+                            app:cardBackgroundColor="@color/md_primary_container" android:layout_marginBottom="10dp">
                             <ImageView android:layout_width="28dp" android:layout_height="28dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_recent_history"
-                                app:tint="@color/colorPrimary"/>
+                                app:tint="@color/md_primary"/>
                         </com.google.android.material.card.MaterialCardView>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Mis Reservas" android:textStyle="bold" android:textSize="14sp"
@@ -135,11 +135,11 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="52dp" android:layout_height="52dp"
                             app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="#EDE7F6" android:layout_marginBottom="10dp">
+                            app:cardBackgroundColor="@color/md_primary_container" android:layout_marginBottom="10dp">
                             <ImageView android:layout_width="28dp" android:layout_height="28dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_my_calendar"
-                                app:tint="@color/colorPrimary"/>
+                                app:tint="@color/md_primary"/>
                         </com.google.android.material.card.MaterialCardView>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Mi Cartera" android:textStyle="bold" android:textSize="14sp"
@@ -158,11 +158,11 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="52dp" android:layout_height="52dp"
                             app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="#EDE7F6" android:layout_marginBottom="10dp">
+                            app:cardBackgroundColor="@color/md_primary_container" android:layout_marginBottom="10dp">
                             <ImageView android:layout_width="28dp" android:layout_height="28dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_input_add"
-                                app:tint="@color/colorPrimary"/>
+                                app:tint="@color/md_primary"/>
                         </com.google.android.material.card.MaterialCardView>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Registrar Obra" android:textStyle="bold" android:textSize="14sp"
@@ -181,11 +181,11 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="52dp" android:layout_height="52dp"
                             app:cardCornerRadius="14dp" app:cardElevation="0dp"
-                            app:cardBackgroundColor="#EDE7F6" android:layout_marginBottom="10dp">
+                            app:cardBackgroundColor="@color/md_primary_container" android:layout_marginBottom="10dp">
                             <ImageView android:layout_width="28dp" android:layout_height="28dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_manage"
-                                app:tint="@color/colorPrimary"/>
+                                app:tint="@color/md_primary"/>
                         </com.google.android.material.card.MaterialCardView>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Mis Obras" android:textStyle="bold" android:textSize="14sp"

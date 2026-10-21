@@ -1,24 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Modo claro -->
+    <!-- ================================================================
+         Roles de color Material 3 - modo claro (modo oscuro en values-night).
+         Generados a partir del morado de la marca #5E35B1.
+         En los layouts usar los atributos del tema (?attr/colorPrimary,
+         ?attr/colorOnSurface...), no estos colores directamente.
+         ================================================================ -->
+    <color name="md_primary">#5E35B1</color>
+    <color name="md_on_primary">#FFFFFF</color>
+    <color name="md_primary_container">#E9DDFF</color>
+    <color name="md_on_primary_container">#22005D</color>
+    <color name="md_secondary">#625B71</color>
+    <color name="md_on_secondary">#FFFFFF</color>
+    <color name="md_secondary_container">#E8DEF8</color>
+    <color name="md_on_secondary_container">#1E192B</color>
+    <color name="md_tertiary">#7E5260</color>
+    <color name="md_on_tertiary">#FFFFFF</color>
+    <color name="md_tertiary_container">#FFD9E3</color>
+    <color name="md_on_tertiary_container">#31101D</color>
+    <color name="md_error">#BA1A1A</color>
+    <color name="md_on_error">#FFFFFF</color>
+    <color name="md_error_container">#FFDAD6</color>
+    <color name="md_on_error_container">#410002</color>
+    <color name="md_surface">#FDF7FF</color>
+    <color name="md_on_surface">#1D1B20</color>
+    <color name="md_surface_variant">#E7E0EB</color>
+    <color name="md_on_surface_variant">#49454E</color>
+    <color name="md_surface_container_lowest">#FFFFFF</color>
+    <color name="md_surface_container_low">#F7F2FA</color>
+    <color name="md_surface_container">#F2ECF4</color>
+    <color name="md_surface_container_high">#ECE6EE</color>
+    <color name="md_surface_container_highest">#E6E0E9</color>
+    <color name="md_outline">#7A757F</color>
+    <color name="md_outline_variant">#CAC4CF</color>
+    <color name="md_inverse_surface">#322F35</color>
+    <color name="md_inverse_on_surface">#F5EFF7</color>
+    <color name="md_inverse_primary">#D0BCFF</color>
+
+    <!-- Colores de estado (no existen en M3): éxito = "Al día", "Aprobada", "Finalizada";
+         advertencia = "Pendiente", "En proceso"; error usa md_error*. -->
+    <color name="estado_exito">#1E6B30</color>
+    <color name="estado_on_exito">#FFFFFF</color>
+    <color name="estado_exito_container">#B6F2B9</color>
+    <color name="estado_on_exito_container">#002108</color>
+    <color name="estado_advertencia">#7A5900</color>
+    <color name="estado_on_advertencia">#FFFFFF</color>
+    <color name="estado_advertencia_container">#FFDEA3</color>
+    <color name="estado_on_advertencia_container">#261900</color>
+
+    <!-- ================================================================
+         Nombres antiguos, todavía usados en los layouts. Ahora apuntan a la
+         paleta M3 para que cambien con el modo oscuro. Se eliminarán a medida
+         que cada pantalla pase a los atributos del tema (bloques 3 a 5).
+         ================================================================ -->
+    <!-- Fondo de encabezados y acentos: el morado de la marca en ambos modos -->
     <color name="colorPrimary">#5E35B1</color>
     <color name="colorPrimaryDark">#4527A0</color>
-    <color name="colorPrimaryLight">#7E57C2</color>
-    <color name="colorAccent">#7C4DFF</color>
-    <color name="colorSurface">#F4F6FB</color>
-    <color name="colorCard">#FFFFFF</color>
-    <color name="colorTextPrimary">#1A1A2E</color>
-    <color name="colorTextSecondary">#6B7280</color>
-    <color name="colorDivider">#E5E7EB</color>
-    <color name="colorError">#C62828</color>
-    <color name="green_pay">#2E7D32</color>
-    <color name="gray_disabled">#9E9E9E</color>
+    <color name="colorSurface">@color/md_surface</color>
+    <color name="colorCard">@color/md_surface_container_lowest</color>
+    <color name="colorTextPrimary">@color/md_on_surface</color>
+    <color name="colorTextSecondary">@color/md_on_surface_variant</color>
+    <color name="colorDivider">@color/md_outline_variant</color>
+    <color name="colorError">@color/md_error</color>
+    <color name="green_pay">@color/estado_exito</color>
+    <color name="gray_disabled">@color/md_outline</color>
+    <!-- Texto sobre los encabezados morados -->
     <color name="white">#FFFFFF</color>
-
-    <!-- Modo oscuro -->
-    <color name="colorSurfaceDark">#121212</color>
-    <color name="colorCardDark">#1E1E2E</color>
-    <color name="colorTextPrimaryDark">#E8E8F0</color>
-    <color name="colorTextSecondaryDark">#9CA3AF</color>
-    <color name="colorDividerDark">#2D2D3F</color>
 </resources>

@@ -96,8 +96,8 @@
                     android:text="Soy Residente"
                     android:textSize="15sp"
                     app:cornerRadius="12dp"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    app:strokeColor="@color/colorPrimary"/>
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    app:strokeColor="@color/md_primary"/>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

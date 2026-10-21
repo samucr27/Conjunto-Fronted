@@ -53,8 +53,8 @@
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 app:cornerRadius="8dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                app:strokeColor="@color/colorPrimary"/>
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                app:strokeColor="@color/md_primary"/>
 
         </LinearLayout>
 

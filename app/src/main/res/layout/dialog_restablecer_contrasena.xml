@@ -12,7 +12,7 @@
         android:hint="@string/hint_nueva_contrasena"
         app:helperText="@string/ayuda_nueva_contrasena"
         app:endIconMode="password_toggle"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etNuevaContrasena"
             android:layout_width="match_parent" android:layout_height="wrap_content"

@@ -79,7 +79,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Usuario"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                             android:layout_marginBottom="16dp">
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etUsuarioAdmin"
@@ -92,7 +92,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Contraseña"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                             app:passwordToggleEnabled="true"
                             android:layout_marginBottom="24dp">
                             <com.google.android.material.textfield.TextInputEditText
