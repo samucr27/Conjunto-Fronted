@@ -6,12 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.model.ZonaComunDTO
+import com.example.conjuntoresidencial.util.Evento
 import com.example.conjuntoresidencial.util.Resource
 import kotlinx.coroutines.launch
 
 class ZonasAdminViewModel : ViewModel() {
     private val _zonas = MutableLiveData<Resource<List<ZonaComunDTO>>>()
     val zonas: LiveData<Resource<List<ZonaComunDTO>>> get() = _zonas
+
+    /** Resultado de registrar una zona: null = éxito, texto = mensaje de error. */
+    private val _registro = MutableLiveData<Evento<String?>>()
+    val registro: LiveData<Evento<String?>> get() = _registro
 
     fun fetchZonas() {
         _zonas.value = Resource.Loading
@@ -20,22 +25,27 @@ class ZonasAdminViewModel : ViewModel() {
                 val response = RetrofitClient.instance.getZonasComunes()
                 if (response.isSuccessful && response.body() != null)
                     _zonas.value = Resource.Success(response.body()!!)
-                else _zonas.value = Resource.Error("Error al cargar zonas")
+                else _zonas.value = Resource.Error(RetrofitClient.mensajeDeError(response, "Error al cargar zonas"))
             } catch (e: Exception) {
                 _zonas.value = Resource.Error("Error de red: ${e.localizedMessage}")
             }
         }
     }
 
-    fun registrarZona(nombre: String, estado: String, descripcion: String, esReservable: Boolean) {
+    fun registrarZona(nombre: String, estado: String, descripcion: String, esReservable: Boolean, errorPorDefecto: String) {
         viewModelScope.launch {
             try {
                 val zona = ZonaComunDTO(null, nombre, estado, descripcion, esReservable)
                 val response = RetrofitClient.instance.createZonaComun(zona)
-                if (response.isSuccessful) fetchZonas()
-                else android.util.Log.e("ZonasVM", "Error: ${response.code()}")
+                if (response.isSuccessful) {
+                    _registro.value = Evento(null)
+                    fetchZonas()
+                } else {
+                    // Antes solo se escribía en el log: el admin no se enteraba del error
+                    _registro.value = Evento(RetrofitClient.mensajeDeError(response, errorPorDefecto))
+                }
             } catch (e: Exception) {
-                android.util.Log.e("ZonasVM", "Excepcion: ${e.localizedMessage}")
+                _registro.value = Evento("Error de red: ${e.localizedMessage}")
             }
         }
     }

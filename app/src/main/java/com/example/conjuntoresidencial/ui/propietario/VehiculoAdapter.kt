@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.ItemVehiculoBinding
 import com.example.conjuntoresidencial.model.VehiculoDTO
 import com.example.conjuntoresidencial.ui.comun.DiffPorId
@@ -21,6 +22,8 @@ class VehiculoAdapter(
         val v = getItem(pos)
         h.binding.tvMarcaVehiculo.text = "${v.marca} · ${v.tipo}"
         h.binding.tvPlacaVehiculo.text = "${v.placa} · ${v.color}"
+        h.binding.btnEliminarVehiculo.contentDescription =
+            h.binding.root.context.getString(R.string.desc_eliminar_vehiculo, v.placa)
         h.binding.btnEliminarVehiculo.setOnClickListener { onEliminar(v) }
     }
 }

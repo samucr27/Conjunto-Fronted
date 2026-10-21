@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentControlObrasBinding
-import com.example.conjuntoresidencial.util.Resource
+import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
+import com.example.conjuntoresidencial.util.configurarBarra
 import com.google.android.material.snackbar.Snackbar
 
 class ControlObrasFragment : Fragment() {
@@ -23,38 +25,23 @@ class ControlObrasFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.rvObrasEnProceso.layoutManager = LinearLayoutManager(requireContext())
+        configurarBarra(binding.barra.toolbar, R.string.obras_titulo, R.string.obras_subtitulo)
+
         // Un solo adaptador: submitList conserva el scroll y solo redibuja lo que cambió
         val adaptador = ObraConPersonalAdapter { obraId, nuevoEstado -> viewModel.cambiarEstado(obraId, nuevoEstado) }
+        binding.rvObrasEnProceso.layoutManager = LinearLayoutManager(requireContext())
         binding.rvObrasEnProceso.adapter = adaptador
-        viewModel.fetchObras()
+        binding.estado.vincular(binding.rvObrasEnProceso)
+        binding.swipe.setOnRefreshListener { viewModel.fetchObras() }
 
         viewModel.obras.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    binding.progressObrasProceso.visibility = View.VISIBLE
-                    binding.tvNoObrasProceso.visibility = View.GONE
-                    binding.rvObrasEnProceso.visibility = View.GONE
-                }
-                is Resource.Success -> {
-                    binding.progressObrasProceso.visibility = View.GONE
-                    val lista = resource.data ?: emptyList()
-                    if (lista.isEmpty()) {
-                        binding.tvNoObrasProceso.visibility = View.VISIBLE
-                        binding.rvObrasEnProceso.visibility = View.GONE
-                    } else {
-                        binding.tvNoObrasProceso.visibility = View.GONE
-                        binding.rvObrasEnProceso.visibility = View.VISIBLE
-                        adaptador.submitList(lista.map { obra ->
-                            ObraConPersonal(obra, obra.id?.let { viewModel.personalPorObra[it] }.orEmpty())
-                        })
-                    }
-                }
-                is Resource.Error -> {
-                    binding.progressObrasProceso.visibility = View.GONE
-                    binding.tvNoObrasProceso.visibility = View.VISIBLE
-                    binding.tvNoObrasProceso.text = resource.message
-                }
+            binding.estado.mostrarRecurso(
+                resource, binding.swipe, R.drawable.ic_build, getString(R.string.obras_vacio),
+                reintentar = { viewModel.fetchObras() }
+            ) { lista ->
+                adaptador.submitList(lista.map { obra ->
+                    ObraConPersonal(obra, obra.id?.let { viewModel.personalPorObra[it] }.orEmpty())
+                })
             }
         }
 
@@ -63,6 +50,7 @@ class ControlObrasFragment : Fragment() {
                 Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
             }
         }
+        if (viewModel.obras.value == null) viewModel.fetchObras()
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }

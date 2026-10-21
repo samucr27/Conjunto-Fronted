@@ -1,99 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Elemento de lista (item_reserva). Estructura común de las listas: ver layouts_items.py -->
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="12dp"
-    android:layout_marginEnd="12dp"
-    android:layout_marginBottom="10dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="3dp"
-    app:cardBackgroundColor="@color/colorCard">
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="4dp"
+    app:cardElevation="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_vertical">
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/md_primary_container"
-            android:layout_marginEnd="14dp">
-            <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:layout_gravity="center"
-                android:src="@android:drawable/ic_menu_recent_history"
-                app:tint="@color/md_primary"/>
-        </com.google.android.material.card.MaterialCardView>
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tvZonaReserva"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="@color/colorTextPrimary"/>
-
-            <TextView
-                android:id="@+id/tvFechaReserva"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="13sp"
-                android:textColor="@color/colorTextSecondary"
-                android:layout_marginTop="2dp"/>
-
-            <TextView
-                android:id="@+id/tvEstadoReserva"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textColor="@color/md_primary"
-                android:textStyle="bold"
-                android:layout_marginTop="4dp"/>
+            <FrameLayout
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="14dp"
+                android:background="@drawable/fondo_icono_tarjeta">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_event"
+                    app:tint="?attr/colorOnPrimaryContainer" />
+            </FrameLayout>
 
             <LinearLayout
-                android:id="@+id/layoutBotonesReserva"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:visibility="gone">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnAprobarReserva"
-                    android:layout_width="0dp"
-                    android:layout_height="36dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:text="Aprobar"
-                    android:textSize="12sp"
-                    app:cornerRadius="10dp"/>
+                <TextView
+                    android:id="@+id/tvZonaReserva"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnSurface" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnRechazarReserva"
-                    android:layout_width="0dp"
-                    android:layout_height="36dp"
-                    android:layout_weight="1"
-                    android:text="Rechazar"
-                    android:textSize="12sp"
-                    app:cornerRadius="10dp"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    app:strokeColor="@color/colorError"/>
+                <TextView
+                    android:id="@+id/tvFechaReserva"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <!-- Etiqueta de estado (ChipEstado) -->
+                <TextView
+                    android:id="@+id/tvEstadoReserva"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp" />
 
             </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutBotonesReserva"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRechazarReserva"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:minHeight="48dp"
+                android:text="@string/reservas_rechazar"
+                android:textColor="?attr/colorError"
+                app:strokeColor="?attr/colorError" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAprobarReserva"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="48dp"
+                android:text="@string/reservas_aprobar" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

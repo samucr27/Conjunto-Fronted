@@ -6,8 +6,9 @@
     android:padding="16dp">
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilPlaca"
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="Placa" android:layout_marginBottom="12dp"
+        android:hint="@string/vehiculo_placa" android:layout_marginBottom="12dp"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etPlaca"
@@ -17,7 +18,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="Marca" android:layout_marginBottom="12dp"
+        android:hint="@string/vehiculo_marca" android:layout_marginBottom="12dp"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etMarca"
@@ -26,7 +27,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="Color" android:layout_marginBottom="12dp"
+        android:hint="@string/vehiculo_color" android:layout_marginBottom="12dp"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etColor"
@@ -36,7 +37,7 @@
     <!-- Lista cerrada: el backend solo acepta Carro o Moto -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="Tipo"
+        android:hint="@string/vehiculo_tipo"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
         <AutoCompleteTextView
             android:id="@+id/etTipo"

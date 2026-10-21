@@ -1,18 +1,23 @@
 package com.example.conjuntoresidencial.ui.admin
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentZonasComunesAdminBinding
-import com.example.conjuntoresidencial.util.Resource
+import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
+import com.example.conjuntoresidencial.util.configurarBarra
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class ZonasComunesAdminFragment : Fragment() {
     private var _binding: FragmentZonasComunesAdminBinding? = null
@@ -26,47 +31,63 @@ class ZonasComunesAdminFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.rvZonasAdmin.layoutManager = LinearLayoutManager(requireContext())
-        val adaptador = ZonaAdapter()
-        binding.rvZonasAdmin.adapter = adaptador
-        viewModel.fetchZonas()
+        configurarBarra(binding.barra.toolbar, R.string.zonas_titulo, R.string.zonas_subtitulo)
 
-        binding.swipeRefreshZonasAdmin.setOnRefreshListener {
-            viewModel.fetchZonas()
-        }
+        val adaptador = ZonaAdapter()
+        binding.rvZonasAdmin.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvZonasAdmin.adapter = adaptador
+        binding.estado.vincular(binding.rvZonasAdmin)
+        binding.swipe.setOnRefreshListener { viewModel.fetchZonas() }
 
         viewModel.zonas.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Loading -> binding.rvZonasAdmin.visibility = View.GONE
-                is Resource.Success -> {
-                    binding.swipeRefreshZonasAdmin.isRefreshing = false
-                    binding.rvZonasAdmin.visibility = View.VISIBLE
-                    adaptador.submitList(resource.data ?: emptyList())
-                }
-                is Resource.Error -> {
-                    binding.swipeRefreshZonasAdmin.isRefreshing = false
-                    binding.rvZonasAdmin.visibility = View.GONE
-                }
+            binding.estado.mostrarRecurso(
+                resource, binding.swipe, R.drawable.ic_place, getString(R.string.zonas_vacio),
+                reintentar = { viewModel.fetchZonas() }
+            ) { adaptador.submitList(it) }
+        }
+
+        viewModel.registro.observe(viewLifecycleOwner) { evento ->
+            evento.obtenerSiNoManejado()?.let { error ->
+                Snackbar.make(binding.root, error ?: getString(R.string.zona_registrada), Snackbar.LENGTH_LONG).show()
             }
         }
 
-        binding.btnRegistrarZona.setOnClickListener {
-            val dialogView = LayoutInflater.from(requireContext())
-                .inflate(R.layout.dialog_registrar_zona, null)
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Nueva Zona Común")
-                .setView(dialogView)
-                .setPositiveButton("Registrar") { _, _ ->
-                    val nombre = dialogView.findViewById<TextInputEditText>(R.id.etNombreZona).text.toString()
-                    val estado = dialogView.findViewById<TextInputEditText>(R.id.etEstadoZona).text.toString()
-                    val descripcion = dialogView.findViewById<TextInputEditText>(R.id.etDescripcionZona).text.toString()
-                    val esReservable = dialogView.findViewById<CheckBox>(R.id.cbEsReservable).isChecked
-                    if (nombre.isNotBlank()) {
-                        viewModel.registrarZona(nombre, estado, descripcion, esReservable)
-                    }
-                }
-                .setNegativeButton("Cancelar", null)
-                .show()
+        // El botón flotante se encoge a solo ícono al desplazar la lista hacia abajo
+        binding.rvZonasAdmin.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0) binding.btnRegistrarZona.shrink() else if (dy < 0) binding.btnRegistrarZona.extend()
+            }
+        })
+        binding.btnRegistrarZona.setOnClickListener { mostrarDialogRegistrar() }
+
+        if (viewModel.zonas.value == null) viewModel.fetchZonas()
+    }
+
+    private fun mostrarDialogRegistrar() {
+        val vista = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_registrar_zona, null)
+        val tilNombre = vista.findViewById<TextInputLayout>(R.id.tilNombreZona)
+        val dialogo = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.zona_nueva_titulo)
+            .setView(vista)
+            .setPositiveButton(R.string.btn_registrar, null)
+            .setNegativeButton(R.string.btn_cancelar, null)
+            .show()
+
+        // Se asigna después de show() para que el diálogo no se cierre si falta el nombre
+        dialogo.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val nombre = vista.findViewById<TextInputEditText>(R.id.etNombreZona).text.toString().trim()
+            if (nombre.isBlank()) {
+                tilNombre.error = getString(R.string.zona_nombre_obligatorio)
+                return@setOnClickListener
+            }
+            viewModel.registrarZona(
+                nombre,
+                vista.findViewById<TextInputEditText>(R.id.etEstadoZona).text.toString().trim(),
+                vista.findViewById<TextInputEditText>(R.id.etDescripcionZona).text.toString().trim(),
+                vista.findViewById<CheckBox>(R.id.cbEsReservable).isChecked,
+                getString(R.string.zona_error_registrar)
+            )
+            dialogo.dismiss()
         }
     }
 

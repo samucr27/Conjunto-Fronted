@@ -3,44 +3,51 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingStart="24dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="24dp">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="Nombre de la zona"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-        android:layout_marginBottom="12dp">
+        android:id="@+id/tilNombreZona"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:hint="@string/zona_nombre">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etNombreZona"
-            android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapSentences" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="Estado (Bueno / Regular / Malo)"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-        android:layout_marginBottom="12dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:hint="@string/zona_estado">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etEstadoZona"
-            android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapSentences" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="Descripción del estado"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-        android:layout_marginBottom="12dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:hint="@string/zona_descripcion">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etDescripcionZona"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:inputType="textMultiLine" android:minLines="2"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapSentences|textMultiLine" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <CheckBox
         android:id="@+id/cbEsReservable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="¿Es reservable por residentes?"
-        android:textSize="14sp"/>
-
+        android:minHeight="48dp"
+        android:text="@string/zona_reservable_pregunta" />
 </LinearLayout>

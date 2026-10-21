@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.ItemObraConPersonalBinding
 import com.example.conjuntoresidencial.model.ObraDTO
 import com.example.conjuntoresidencial.model.PersonalObraDTO
@@ -40,12 +41,14 @@ class ObraConPersonalAdapter(
         // Botón cambiar estado — solo visible si está EN_PROCESO
         if (obra.estadoObra == "EN_PROCESO") {
             h.binding.btnCambiarEstadoObra.visibility = View.VISIBLE
-            h.binding.btnCambiarEstadoObra.text = "Finalizar"
+            h.binding.btnCambiarEstadoObra.contentDescription =
+                h.binding.root.context.getString(R.string.desc_finalizar_obra, obra.descripcionAdecuacion)
             h.binding.btnCambiarEstadoObra.setOnClickListener { onCambiarEstado(obra.id!!, "FINALIZADA") }
         } else {
             h.binding.btnCambiarEstadoObra.visibility = View.GONE
         }
 
         h.personalAdapter.submitList(personal)
+        h.binding.tvSinPersonal.visibility = if (personal.isEmpty()) View.VISIBLE else View.GONE
     }
 }

@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.ItemReservaBinding
 import com.example.conjuntoresidencial.model.ReservaDTO
 import com.example.conjuntoresidencial.ui.comun.DiffPorId
@@ -39,6 +40,10 @@ class ReservaAdapter(
 
         if (reserva.estado == "PENDIENTE" && onAprobar != null && onRechazar != null) {
             holder.binding.layoutBotonesReserva.visibility = View.VISIBLE
+            val ctx = holder.binding.root.context
+            val cuando = Formatos.fechaHora(reserva.fecha, reserva.hora)
+            holder.binding.btnAprobarReserva.contentDescription = ctx.getString(R.string.desc_aprobar_reserva, nombreZona, cuando)
+            holder.binding.btnRechazarReserva.contentDescription = ctx.getString(R.string.desc_rechazar_reserva, nombreZona, cuando)
             holder.binding.btnAprobarReserva.setOnClickListener { onAprobar.invoke(reserva) }
             holder.binding.btnRechazarReserva.setOnClickListener { onRechazar.invoke(reserva) }
         } else {
