@@ -19,3 +19,5 @@ data class ZonaComunDTO(val id: Long?, val nombre: String, val estadoRecibido: S
 data class ReservaDTO(val id: Long?, val fecha: String, val hora: String, val estado: String, val zonaComunId: Long, val apartamentoId: Long)
 data class PagoDTO(val id: Long?, val saldoPendiente: Double, val estadoCuenta: String, val observaciones: String, val apartamentoId: Long)
 data class EstadoRequest(val estado: String)
+// tipo: "RESERVA" o "VEHICULO"; fecha en formato ISO, hora de Colombia ("2026-10-20T20:15:00")
+data class NotificacionDTO(val id: Long, val tipo: String, val mensaje: String, val fecha: String, val leida: Boolean)

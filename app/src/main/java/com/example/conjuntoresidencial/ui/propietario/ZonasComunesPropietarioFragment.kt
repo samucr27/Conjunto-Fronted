@@ -33,7 +33,6 @@ class ZonasComunesPropietarioFragment : Fragment() {
         binding.rvZonasPropietario.layoutManager = LinearLayoutManager(requireContext())
         val session = SessionManager(requireContext())
         val aptoId = session.getApartamentoId()
-        val torreApto = session.getTorreApto()
         viewModel.fetchZonas()
 
         binding.swipeRefreshZonas.setOnRefreshListener { viewModel.fetchZonas() }
@@ -53,7 +52,7 @@ class ZonasComunesPropietarioFragment : Fragment() {
                     } else {
                         binding.tvNoZonasProp.visibility = View.GONE
                         binding.rvZonasPropietario.adapter = ZonaAdapter(lista) { zona ->
-                            mostrarDialogReserva(zona, aptoId, torreApto)
+                            mostrarDialogReserva(zona, aptoId)
                         }
                     }
                 }
@@ -75,7 +74,7 @@ class ZonasComunesPropietarioFragment : Fragment() {
         }
     }
 
-    private fun mostrarDialogReserva(zona: ZonaComunDTO, aptoId: Long, torreApto: String) {
+    private fun mostrarDialogReserva(zona: ZonaComunDTO, aptoId: Long) {
         var fechaSeleccionada = ""
         var horaSeleccionada = ""
         var calFecha = Calendar.getInstance()
@@ -147,9 +146,7 @@ class ZonasComunesPropietarioFragment : Fragment() {
                         fecha = fechaSeleccionada,
                         hora = horaSeleccionada,
                         zonaComunId = zona.id!!,
-                        apartamentoId = aptoId,
-                        nombreZona = zona.nombre,
-                        torreApto = torreApto
+                        apartamentoId = aptoId
                     )
                 }
             }

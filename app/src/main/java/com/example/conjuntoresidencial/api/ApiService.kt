@@ -115,4 +115,14 @@ interface ApiService {
 
     @PUT("api/obras/{id}/estado")
     suspend fun cambiarEstadoObra(@Path("id") id: Long, @Body estado: EstadoRequest): Response<ObraDTO>
+
+    // Notificaciones del administrador
+    @GET("api/notificaciones")
+    suspend fun getNotificaciones(): Response<List<NotificacionDTO>>
+
+    @PUT("api/notificaciones/leidas")
+    suspend fun marcarNotificacionesLeidas(): Response<Void>
+
+    @DELETE("api/notificaciones")
+    suspend fun eliminarNotificaciones(): Response<Void>
 }

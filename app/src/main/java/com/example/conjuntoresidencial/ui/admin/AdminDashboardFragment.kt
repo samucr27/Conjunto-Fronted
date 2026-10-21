@@ -7,11 +7,15 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.conjuntoresidencial.R
+import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentAdminDashboardBinding
-import com.example.conjuntoresidencial.util.AdminNotificacionManager
+import com.example.conjuntoresidencial.model.NotificacionDTO
 import com.example.conjuntoresidencial.util.SessionManager
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 class AdminDashboardFragment : Fragment() {
 
@@ -72,7 +76,18 @@ class AdminDashboardFragment : Fragment() {
     }
 
     private fun actualizarBadge() {
-        val noLeidas = AdminNotificacionManager.contarNoLeidas(requireContext())
+        viewLifecycleOwner.lifecycleScope.launch {
+            val noLeidas = try {
+                val response = RetrofitClient.instance.getNotificaciones()
+                if (response.isSuccessful) response.body().orEmpty().count { !it.leida } else 0
+            } catch (_: Exception) {
+                0 // sin conexión: no se muestra el contador
+            }
+            mostrarBadge(noLeidas)
+        }
+    }
+
+    private fun mostrarBadge(noLeidas: Int) {
         if (noLeidas > 0) {
             binding.tvBadgeNotificaciones.visibility = View.VISIBLE
             binding.tvBadgeNotificaciones.text = if (noLeidas > 9) "9+" else noLeidas.toString()
@@ -82,8 +97,23 @@ class AdminDashboardFragment : Fragment() {
     }
 
     private fun mostrarDialogNotificaciones() {
-        val notificaciones = AdminNotificacionManager.getNotificaciones(requireContext())
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.instance.getNotificaciones()
+                if (response.isSuccessful) {
+                    mostrarDialogNotificaciones(response.body().orEmpty())
+                } else {
+                    Snackbar.make(binding.root,
+                        RetrofitClient.mensajeDeError(response, "No se pudieron cargar las notificaciones"),
+                        Snackbar.LENGTH_LONG).show()
+                }
+            } catch (_: Exception) {
+                Snackbar.make(binding.root, R.string.error_red, Snackbar.LENGTH_LONG).show()
+            }
+        }
+    }
 
+    private fun mostrarDialogNotificaciones(notificaciones: List<NotificacionDTO>) {
         if (notificaciones.isEmpty()) {
             AlertDialog.Builder(requireContext())
                 .setTitle("Actividad reciente")
@@ -97,7 +127,7 @@ class AdminDashboardFragment : Fragment() {
             notificaciones.forEach { n ->
                 val icono = if (n.tipo == "VEHICULO") "🚗" else "📅"
                 appendLine("$icono ${n.mensaje}")
-                appendLine("   ${n.fecha}")
+                appendLine("   ${formatearFecha(n.fecha)}")
                 appendLine()
             }
         }
@@ -105,19 +135,32 @@ class AdminDashboardFragment : Fragment() {
         AlertDialog.Builder(requireContext())
             .setTitle("Actividad reciente (${notificaciones.size})")
             .setMessage(mensaje.trim())
-            .setPositiveButton("Marcar todas como leídas") { _, _ ->
-                AdminNotificacionManager.marcarTodasLeidas(requireContext())
-                actualizarBadge()
-            }
+            .setPositiveButton("Marcar todas como leídas", null) // ya se marcan al abrir
             .setNeutralButton("Limpiar todo") { _, _ ->
-                AdminNotificacionManager.limpiarTodas(requireContext())
-                actualizarBadge()
+                viewLifecycleOwner.lifecycleScope.launch {
+                    try { RetrofitClient.instance.eliminarNotificaciones() } catch (_: Exception) {}
+                    actualizarBadge()
+                }
             }
             .setNegativeButton("Cerrar", null)
             .show()
 
-        AdminNotificacionManager.marcarTodasLeidas(requireContext())
-        actualizarBadge()
+        // Abrir la lista cuenta como leerla
+        if (notificaciones.any { !it.leida }) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                try { RetrofitClient.instance.marcarNotificacionesLeidas() } catch (_: Exception) {}
+                actualizarBadge()
+            }
+        }
+    }
+
+    // "2026-10-20T20:15:00" -> "20/10/2026 20:15" (sin java.time: minSdk 24)
+    private fun formatearFecha(iso: String): String = try {
+        val (fecha, hora) = iso.split("T")
+        val (anio, mes, dia) = fecha.split("-")
+        "$dia/$mes/$anio ${hora.take(5)}"
+    } catch (_: Exception) {
+        iso
     }
 
     private fun mostrarDialogSalir() {
