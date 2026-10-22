@@ -14,7 +14,9 @@ import com.example.conjuntoresidencial.ui.comun.mostrarEstado
 import com.example.conjuntoresidencial.util.Formatos
 import com.example.conjuntoresidencial.util.Resource
 import com.example.conjuntoresidencial.util.SessionManager
-import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.ui.comun.accionesDeLista
+import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
@@ -32,7 +34,11 @@ class MiCarteraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarBarra(binding.barra.toolbar, R.string.mi_cartera_titulo, R.string.mi_cartera_subtitulo)
+        // Pestaña de la barra inferior: sin botón para volver
+        configurarEncabezado(
+            binding.encabezado, R.string.mi_cartera_titulo, R.string.mi_cartera_subtitulo,
+            atras = false, menu = R.menu.menu_lista, alElegir = accionesDeLista(binding.swipe) { cargar() }
+        )
         aptoId = SessionManager(requireContext()).getApartamentoId()
         binding.estado.vincular(binding.contenido)
         binding.swipe.setOnRefreshListener { cargar() }
@@ -74,7 +80,12 @@ class MiCarteraFragment : Fragment() {
     private fun mostrarPago(pago: PagoDTO) {
         val saldo = Formatos.moneda(pago.saldoPendiente)
         binding.tvSaldoPendiente.text = saldo
-        binding.tvEstadoCuenta.mostrarEstado(Estados.cuenta(pago.saldoPendiente, pago.estadoCuenta))
+        val estado = Estados.cuenta(pago.saldoPendiente, pago.estadoCuenta)
+        binding.tvEstadoCuenta.mostrarEstado(estado)
+        // Resumen del encabezado: "Al día" o "Debe $350.000"
+        binding.encabezado.ponerInfo(
+            if (estado.argumento != null) getString(estado.etiqueta, estado.argumento) else getString(estado.etiqueta)
+        )
         // Puede venir null del backend aunque el modelo diga String
         val observaciones: String? = pago.observaciones
         binding.tvObservacionesCartera.text = observaciones

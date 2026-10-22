@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- La app dibuja de borde a borde (obligatorio desde Android 15). MainActivity
      ajusta la altura de vistaBarraEstado y los márgenes del contenido según las
-     barras del sistema, para que nada quede debajo de ellas. -->
+     barras del sistema, para que nada quede debajo de ellas.
+     La barra inferior flotante solo se muestra en las pestañas principales (Inicio,
+     Notificaciones, Cuenta...); MainActivity elige su menú según el rol. -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,13 +21,37 @@
         android:background="@color/colorPrimary"
         android:importantForAccessibility="no" />
 
-    <fragment
-        android:id="@+id/nav_host_fragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+    <FrameLayout
+        android:id="@+id/contenedor"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_graph" />
+        android:layout_weight="1">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/nav_graph" />
+
+        <!-- Barra inferior flotante (estilo One UI): cápsula con sombra, separada de los bordes -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/barraInferior"
+            style="@style/Widget.App.BarraInferior"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:visibility="gone">
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/navInferior"
+                style="@style/Widget.App.NavInferior"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
 
 </LinearLayout>

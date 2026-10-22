@@ -24,17 +24,13 @@
     <string name="panel_residente_subtitulo">Panel del residente</string>
     <string name="panel_residente_titulo">Torre %1$s · Apto %2$s</string>
     <string name="notificaciones">Notificaciones</string>
-    <string name="notificaciones_no_leidas" tools:ignore="PluralsCandidate">Notificaciones, %1$d sin leer</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
     <string name="cerrar_sesion_pregunta">¿Deseas salir de tu cuenta?</string>
     <string name="cerrar_sesion_confirmar">Salir</string>
-    <string name="actividad_reciente">Actividad reciente</string>
-    <string name="actividad_reciente_n">Actividad reciente (%1$d)</string>
     <string name="actividad_vacia">No hay notificaciones nuevas.</string>
     <string name="actividad_limpiar">Limpiar todo</string>
     <string name="actividad_error_cargar">No se pudieron cargar las notificaciones</string>
     <string name="actividad_error_limpiar">No se pudieron limpiar las notificaciones</string>
-    <string name="cerrar">Cerrar</string>
 
     <!-- Tarjetas de los paneles -->
     <string name="menu_directorio">Directorio</string>
@@ -159,6 +155,28 @@
     <!-- Componentes comunes -->
     <string name="volver">Volver</string>
     <string name="mas_opciones">Más opciones</string>
+    <!-- Barra inferior -->
+    <string name="pestana_inicio">Inicio</string>
+    <string name="pestana_cuenta">Cuenta</string>
+    <string name="pestana_reservas">Reservas</string>
+    <string name="pestana_cartera">Cartera</string>
+    <!-- Pestaña Notificaciones -->
+    <string name="notificaciones_descripcion">Nuevas reservas y vehículos registrados</string>
+    <string name="notificaciones_vacio_mensaje">Aquí aparecerán las reservas y vehículos que registren los residentes.</string>
+    <string name="notificaciones_limpiar_pregunta">Se borrarán todas las notificaciones. Esta acción no se puede deshacer.</string>
+    <string name="notificacion_nueva">Nueva</string>
+    <!-- Pestaña Cuenta -->
+    <string name="cuenta_descripcion">Perfil y ajustes de la app</string>
+    <string name="cuenta_perfil">Perfil</string>
+    <string name="cuenta_rol">Rol</string>
+    <string name="cuenta_usuario">Usuario</string>
+    <string name="cuenta_apartamento">Apartamento</string>
+    <string name="cuenta_tema">Tema</string>
+    <string name="rol_admin">Administrador</string>
+    <string name="rol_residente">Residente</string>
+    <string name="tema_sistema">Sistema</string>
+    <string name="tema_claro">Claro</string>
+    <string name="tema_oscuro">Oscuro</string>
     <string name="accion_actualizar">Actualizar</string>
     <string name="cargando">Cargando</string>
     <string name="reintentar">Reintentar</string>
@@ -272,6 +290,14 @@
 
     <!-- Resúmenes del encabezado One UI (ui/comun/EncabezadoGrande.kt, resumen) -->
     <string name="resumen_sin_notificaciones">Sin notificaciones nuevas</string>
+    <plurals name="resumen_avisos">
+        <item quantity="one">%d notificación</item>
+        <item quantity="other">%d notificaciones</item>
+    </plurals>
+    <plurals name="resumen_nuevas">
+        <item quantity="one">%d nueva</item>
+        <item quantity="other">%d nuevas</item>
+    </plurals>
     <plurals name="resumen_notificaciones">
         <item quantity="one">%d notificación sin leer</item>
         <item quantity="other">%d notificaciones sin leer</item>

@@ -31,8 +31,10 @@ class MisReservasFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val aptoId = SessionManager(requireContext()).getApartamentoId()
+        // Pestaña de la barra inferior: sin botón para volver
         configurarEncabezado(
-            binding.encabezado, R.string.menu_mis_reservas, R.string.menu_mis_reservas_sub, menu = R.menu.menu_lista,
+            binding.encabezado, R.string.menu_mis_reservas, R.string.menu_mis_reservas_sub,
+            atras = false, menu = R.menu.menu_lista,
             alElegir = accionesDeLista(binding.swipe) { viewModel.fetchReservas(aptoId) }
         )
 

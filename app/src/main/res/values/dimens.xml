@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Espacio entre la barra inferior flotante y el borde de abajo (y entre la barra y el contenido) -->
+    <dimen name="separacion_barra_inferior">12dp</dimen>
+</resources>
