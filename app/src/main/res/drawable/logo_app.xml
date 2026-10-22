@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Logo dentro de la app, sobre los encabezados morados: el símbolo blanco del ícono
+     (ic_launcher_foreground) en un círculo blanco translúcido. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#26FFFFFF" />
+            <stroke
+                android:width="1.5dp"
+                android:color="#40FFFFFF" />
+        </shape>
+    </item>
+    <!-- El símbolo ocupa el centro de su caja de 108: se amplía para llenar mejor el círculo -->
+    <item
+        android:bottom="-14dp"
+        android:drawable="@drawable/ic_launcher_foreground"
+        android:left="-14dp"
+        android:right="-14dp"
+        android:top="-14dp" />
+</layer-list>
