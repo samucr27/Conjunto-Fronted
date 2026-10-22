@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fondo del contenido bajo el encabezado grande: esquinas superiores redondeadas
+     que se montan sobre el morado (behavior_overlapTop), como las hojas de One UI. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="?attr/colorSurface" />
+    <corners
+        android:topLeftRadius="28dp"
+        android:topRightRadius="28dp" />
+</shape>

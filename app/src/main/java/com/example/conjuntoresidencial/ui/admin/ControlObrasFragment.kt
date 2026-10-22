@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentControlObrasBinding
 import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
-import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.ui.comun.accionesDeLista
+import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.ui.comun.resumen
 import com.google.android.material.snackbar.Snackbar
 
 class ControlObrasFragment : Fragment() {
@@ -25,7 +28,10 @@ class ControlObrasFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarBarra(binding.barra.toolbar, R.string.obras_titulo, R.string.obras_subtitulo)
+        configurarEncabezado(
+            binding.encabezado, R.string.obras_titulo, R.string.obras_subtitulo, menu = R.menu.menu_lista,
+            alElegir = accionesDeLista(binding.swipe) { viewModel.fetchObras() }
+        )
 
         // Un solo adaptador: submitList conserva el scroll y solo redibuja lo que cambió
         val adaptador = ObraConPersonalAdapter { obraId, nuevoEstado -> viewModel.cambiarEstado(obraId, nuevoEstado) }
@@ -42,6 +48,10 @@ class ControlObrasFragment : Fragment() {
                 adaptador.submitList(lista.map { obra ->
                     ObraConPersonal(obra, obra.id?.let { viewModel.personalPorObra[it] }.orEmpty())
                 })
+                binding.encabezado.ponerInfo(resumen(
+                    R.plurals.resumen_obras, lista.size,
+                    R.plurals.resumen_en_proceso to lista.count { it.estadoObra == "EN_PROCESO" }
+                ))
             }
         }
 

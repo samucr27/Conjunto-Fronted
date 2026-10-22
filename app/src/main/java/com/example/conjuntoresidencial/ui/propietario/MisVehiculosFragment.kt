@@ -17,7 +17,10 @@ import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
 import com.example.conjuntoresidencial.util.Opciones
 import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.util.comoLista
-import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.ui.comun.accionesDeLista
+import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.ui.comun.resumen
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -36,7 +39,10 @@ class MisVehiculosFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarBarra(binding.barra.toolbar, R.string.vehiculos_titulo, R.string.vehiculos_subtitulo)
+        configurarEncabezado(
+            binding.encabezado, R.string.vehiculos_titulo, R.string.vehiculos_subtitulo, menu = R.menu.menu_lista,
+            alElegir = accionesDeLista(binding.swipe) { viewModel.fetchVehiculos(aptoId) }
+        )
         aptoId = SessionManager(requireContext()).getApartamentoId()
 
         val adaptador = VehiculoAdapter { vehiculo -> confirmarEliminar(vehiculo) }
@@ -50,7 +56,10 @@ class MisVehiculosFragment : Fragment() {
                 resource, binding.swipe, R.drawable.ic_car, getString(R.string.vehiculos_vacio),
                 getString(R.string.vehiculos_vacio_mensaje),
                 reintentar = { viewModel.fetchVehiculos(aptoId) }
-            ) { adaptador.submitList(it) }
+            ) { lista ->
+                adaptador.submitList(lista)
+                binding.encabezado.ponerInfo(resumen(R.plurals.resumen_vehiculos, lista.size))
+            }
         }
 
         viewModel.mensaje.observe(viewLifecycleOwner) { evento ->

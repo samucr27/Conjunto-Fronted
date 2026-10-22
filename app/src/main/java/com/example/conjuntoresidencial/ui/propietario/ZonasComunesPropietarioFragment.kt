@@ -18,7 +18,10 @@ import com.example.conjuntoresidencial.ui.admin.ZonaAdapter
 import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
 import com.example.conjuntoresidencial.util.Formatos
 import com.example.conjuntoresidencial.util.SessionManager
-import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.ui.comun.accionesDeLista
+import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.ui.comun.resumen
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -38,7 +41,10 @@ class ZonasComunesPropietarioFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarBarra(binding.barra.toolbar, R.string.menu_zonas, R.string.zonas_res_subtitulo)
+        configurarEncabezado(
+            binding.encabezado, R.string.menu_zonas, R.string.zonas_res_subtitulo, menu = R.menu.menu_lista,
+            alElegir = accionesDeLista(binding.swipe) { viewModel.fetchZonas() }
+        )
         val aptoId = SessionManager(requireContext()).getApartamentoId()
 
         // Con callback: las zonas reservables muestran el botón "Reservar"
@@ -52,7 +58,13 @@ class ZonasComunesPropietarioFragment : Fragment() {
             binding.estado.mostrarRecurso(
                 resource, binding.swipe, R.drawable.ic_place, getString(R.string.zonas_res_vacio),
                 reintentar = { viewModel.fetchZonas() }
-            ) { adaptador.submitList(it) }
+            ) { lista ->
+                adaptador.submitList(lista)
+                binding.encabezado.ponerInfo(resumen(
+                    R.plurals.resumen_zonas, lista.size,
+                    R.plurals.resumen_reservables to lista.count { it.esReservable == true }
+                ))
+            }
         }
 
         viewModel.reserva.observe(viewLifecycleOwner) { evento ->

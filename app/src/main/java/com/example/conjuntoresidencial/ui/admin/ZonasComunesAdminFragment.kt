@@ -13,7 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentZonasComunesAdminBinding
 import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
-import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.ui.comun.accionesDeLista
+import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.ui.comun.resumen
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -31,7 +34,10 @@ class ZonasComunesAdminFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarBarra(binding.barra.toolbar, R.string.zonas_titulo, R.string.zonas_subtitulo)
+        configurarEncabezado(
+            binding.encabezado, R.string.zonas_titulo, R.string.zonas_subtitulo, menu = R.menu.menu_lista,
+            alElegir = accionesDeLista(binding.swipe) { viewModel.fetchZonas() }
+        )
 
         val adaptador = ZonaAdapter()
         binding.rvZonasAdmin.layoutManager = LinearLayoutManager(requireContext())
@@ -43,7 +49,13 @@ class ZonasComunesAdminFragment : Fragment() {
             binding.estado.mostrarRecurso(
                 resource, binding.swipe, R.drawable.ic_place, getString(R.string.zonas_vacio),
                 reintentar = { viewModel.fetchZonas() }
-            ) { adaptador.submitList(it) }
+            ) { lista ->
+                adaptador.submitList(lista)
+                binding.encabezado.ponerInfo(resumen(
+                    R.plurals.resumen_zonas, lista.size,
+                    R.plurals.resumen_reservables to lista.count { it.esReservable == true }
+                ))
+            }
         }
 
         viewModel.registro.observe(viewLifecycleOwner) { evento ->

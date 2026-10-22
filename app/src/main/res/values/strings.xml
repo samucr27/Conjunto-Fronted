@@ -158,6 +158,8 @@
 
     <!-- Componentes comunes -->
     <string name="volver">Volver</string>
+    <string name="mas_opciones">Más opciones</string>
+    <string name="accion_actualizar">Actualizar</string>
     <string name="cargando">Cargando</string>
     <string name="reintentar">Reintentar</string>
     <string name="estado_error_titulo">No se pudo cargar</string>
@@ -267,4 +269,55 @@
 %1$s</string>
     <string name="registrar_obra_sin_conexion">sin conexión</string>
     <string name="btn_entendido">Entendido</string>
+
+    <!-- Resúmenes del encabezado One UI (ui/comun/EncabezadoGrande.kt, resumen) -->
+    <string name="resumen_sin_notificaciones">Sin notificaciones nuevas</string>
+    <plurals name="resumen_notificaciones">
+        <item quantity="one">%d notificación sin leer</item>
+        <item quantity="other">%d notificaciones sin leer</item>
+    </plurals>
+    <plurals name="resumen_apartamentos">
+        <item quantity="one">%d apartamento</item>
+        <item quantity="other">%d apartamentos</item>
+    </plurals>
+    <plurals name="resumen_obras">
+        <item quantity="one">%d obra</item>
+        <item quantity="other">%d obras</item>
+    </plurals>
+    <plurals name="resumen_en_proceso">
+        <item quantity="one">%d en proceso</item>
+        <item quantity="other">%d en proceso</item>
+    </plurals>
+    <plurals name="resumen_trabajadores">
+        <item quantity="one">%d trabajador</item>
+        <item quantity="other">%d trabajadores</item>
+    </plurals>
+    <plurals name="resumen_sin_arl">
+        <item quantity="one">%d sin ARL vigente</item>
+        <item quantity="other">%d sin ARL vigente</item>
+    </plurals>
+    <plurals name="resumen_reservas">
+        <item quantity="one">%d reserva</item>
+        <item quantity="other">%d reservas</item>
+    </plurals>
+    <plurals name="resumen_pendientes">
+        <item quantity="one">%d pendiente</item>
+        <item quantity="other">%d pendientes</item>
+    </plurals>
+    <plurals name="resumen_zonas">
+        <item quantity="one">%d zona común</item>
+        <item quantity="other">%d zonas comunes</item>
+    </plurals>
+    <plurals name="resumen_reservables">
+        <item quantity="one">%d reservable</item>
+        <item quantity="other">%d reservables</item>
+    </plurals>
+    <plurals name="resumen_en_mora">
+        <item quantity="one">%d en mora</item>
+        <item quantity="other">%d en mora</item>
+    </plurals>
+    <plurals name="resumen_vehiculos">
+        <item quantity="one">%d vehículo</item>
+        <item quantity="other">%d vehículos</item>
+    </plurals>
 </resources>
