@@ -1,26 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Panel: barra superior (título y acciones) + tarjetas (layout/item_tarjeta_menu.xml).
-         Textos, íconos y acciones de cada tarjeta se asignan en el fragment. -->
-    <LinearLayout
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- Panel One UI: encabezado grande (layout/encabezado_grande.xml) y, debajo, la hoja con
+         las tarjetas (layout/item_tarjeta_menu.xml). Textos, íconos y acciones se asignan en el fragment. -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface"
-        android:orientation="vertical">
+        android:background="?attr/colorSurface">
 
         <include
-            android:id="@+id/barra"
-            layout="@layout/barra_superior" />
+            android:id="@+id/encabezado"
+            layout="@layout/encabezado_grande" />
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/fondo_hoja"
+            app:behavior_overlapTop="28dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:columnCount="2"
-                android:padding="12dp"
+                android:paddingStart="12dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="12dp"
                 android:useDefaultMargins="false">
 
                 <include
@@ -66,6 +72,6 @@
                     android:layout_columnWeight="1"
                     android:layout_margin="6dp" />
             </GridLayout>
-        </ScrollView>
-    </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

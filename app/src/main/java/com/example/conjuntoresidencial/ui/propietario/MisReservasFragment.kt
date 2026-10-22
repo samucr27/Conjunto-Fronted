@@ -13,7 +13,10 @@ import com.example.conjuntoresidencial.ui.admin.ReservaAdapter
 import com.example.conjuntoresidencial.ui.admin.ReservaConZona
 import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
 import com.example.conjuntoresidencial.util.SessionManager
-import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.ui.comun.accionesDeLista
+import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.ui.comun.resumen
 
 class MisReservasFragment : Fragment() {
     private var _binding: FragmentMisReservasBinding? = null
@@ -27,8 +30,11 @@ class MisReservasFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarBarra(binding.barra.toolbar, R.string.menu_mis_reservas, R.string.menu_mis_reservas_sub)
         val aptoId = SessionManager(requireContext()).getApartamentoId()
+        configurarEncabezado(
+            binding.encabezado, R.string.menu_mis_reservas, R.string.menu_mis_reservas_sub, menu = R.menu.menu_lista,
+            alElegir = accionesDeLista(binding.swipe) { viewModel.fetchReservas(aptoId) }
+        )
 
         // Sin callbacks: el residente solo ve el estado, no aprueba ni rechaza
         val adaptador = ReservaAdapter()
@@ -42,7 +48,13 @@ class MisReservasFragment : Fragment() {
                 resource, binding.swipe, R.drawable.ic_event, getString(R.string.mis_reservas_vacio),
                 getString(R.string.mis_reservas_vacio_mensaje),
                 reintentar = { viewModel.fetchReservas(aptoId) }
-            ) { adaptador.submitList(ReservaConZona.de(it, viewModel.nombresZonas)) }
+            ) { lista ->
+                adaptador.submitList(ReservaConZona.de(lista, viewModel.nombresZonas))
+                binding.encabezado.ponerInfo(resumen(
+                    R.plurals.resumen_reservas, lista.size,
+                    R.plurals.resumen_pendientes to lista.count { it.estado == "PENDIENTE" }
+                ))
+            }
         }
 
         if (viewModel.reservas.value == null) viewModel.fetchReservas(aptoId)

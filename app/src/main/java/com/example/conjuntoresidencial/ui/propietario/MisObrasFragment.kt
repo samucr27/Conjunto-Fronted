@@ -20,7 +20,10 @@ import com.example.conjuntoresidencial.ui.comun.mostrarEstado
 import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
 import com.example.conjuntoresidencial.util.Formatos
 import com.example.conjuntoresidencial.util.SessionManager
-import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.ui.comun.accionesDeLista
+import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.ui.comun.resumen
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -38,7 +41,10 @@ class MisObrasFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarBarra(binding.barra.toolbar, R.string.menu_mis_obras, R.string.mis_obras_subtitulo)
+        configurarEncabezado(
+            binding.encabezado, R.string.menu_mis_obras, R.string.mis_obras_subtitulo, menu = R.menu.menu_lista,
+            alElegir = accionesDeLista(binding.swipe) { viewModel.fetchObras(aptoId) }
+        )
         aptoId = SessionManager(requireContext()).getApartamentoId()
 
         val adaptador = MisObrasAdapter(
@@ -55,7 +61,13 @@ class MisObrasFragment : Fragment() {
                 resource, binding.swipe, R.drawable.ic_build, getString(R.string.mis_obras_vacio),
                 getString(R.string.mis_obras_vacio_mensaje),
                 reintentar = { viewModel.fetchObras(aptoId) }
-            ) { adaptador.submitList(it) }
+            ) { lista ->
+                adaptador.submitList(lista)
+                binding.encabezado.ponerInfo(resumen(
+                    R.plurals.resumen_obras, lista.size,
+                    R.plurals.resumen_en_proceso to lista.count { it.estadoObra == "EN_PROCESO" }
+                ))
+            }
         }
 
         viewModel.mensaje.observe(viewLifecycleOwner) { evento ->

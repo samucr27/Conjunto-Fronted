@@ -1,48 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <!-- Pantalla de lista: barra superior, deslizar para recargar, lista y estados
-         (cargando / vacío / error). Ver ui/comun/PantallaLista.kt -->
+    <!-- Pantalla de lista One UI: encabezado grande (layout/encabezado_grande.xml) y, debajo,
+         la hoja con la lista y sus estados (cargando / vacío / error). Ver ui/comun/PantallaLista.kt -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/colorSurface">
 
-        <LinearLayout
+        <include
+            android:id="@+id/encabezado"
+            layout="@layout/encabezado_grande" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:background="@drawable/fondo_hoja"
+            app:behavior_overlapTop="28dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <include
-                android:id="@+id/barra"
-                layout="@layout/barra_superior" />
-
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/swipe"
+            <!-- paddingTop: la lista no se dibuja sobre las esquinas redondeadas de la hoja -->
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingTop="12dp">
 
-                <FrameLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvZonasPropietario"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="16dp" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvZonasPropietario"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clipToPadding="false"
-                        android:paddingStart="8dp"
-                        android:paddingTop="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp" />
-
-                    <com.example.conjuntoresidencial.ui.comun.EstadoPantallaView
-                        android:id="@+id/estado"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </FrameLayout>
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-        </LinearLayout>
+                <com.example.conjuntoresidencial.ui.comun.EstadoPantallaView
+                    android:id="@+id/estado"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </FrameLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

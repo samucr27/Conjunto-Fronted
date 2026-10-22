@@ -11,7 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentDirectorioApartamentosBinding
 import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
-import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.ui.comun.accionesDeLista
+import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.ui.comun.resumen
 
 class DirectorioApartamentosFragment : Fragment() {
     private var _binding: FragmentDirectorioApartamentosBinding? = null
@@ -25,7 +28,10 @@ class DirectorioApartamentosFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarBarra(binding.barra.toolbar, R.string.directorio_titulo, R.string.directorio_subtitulo)
+        configurarEncabezado(
+            binding.encabezado, R.string.directorio_titulo, R.string.directorio_subtitulo, menu = R.menu.menu_lista,
+            alElegir = accionesDeLista(binding.swipe) { viewModel.fetchApartamentos() }
+        )
 
         val adaptador = ApartamentoAdapter { apto ->
             val bundle = Bundle().apply { putLong("aptoId", apto.id) }
@@ -40,7 +46,10 @@ class DirectorioApartamentosFragment : Fragment() {
             binding.estado.mostrarRecurso(
                 resource, binding.swipe, R.drawable.ic_apartment, getString(R.string.directorio_vacio),
                 reintentar = { viewModel.fetchApartamentos() }
-            ) { adaptador.submitList(it) }
+            ) { lista ->
+                adaptador.submitList(lista)
+                binding.encabezado.ponerInfo(resumen(R.plurals.resumen_apartamentos, lista.size))
+            }
         }
         // Al volver del detalle o girar la pantalla se reutiliza lo ya cargado
         if (viewModel.aptos.value == null) viewModel.fetchApartamentos()

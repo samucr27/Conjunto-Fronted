@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentReservasAdminBinding
 import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
-import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.ui.comun.accionesDeLista
+import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.ui.comun.resumen
 import com.google.android.material.snackbar.Snackbar
 
 class ReservasAdminFragment : Fragment() {
@@ -25,7 +28,10 @@ class ReservasAdminFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarBarra(binding.barra.toolbar, R.string.reservas_titulo, R.string.reservas_subtitulo)
+        configurarEncabezado(
+            binding.encabezado, R.string.reservas_titulo, R.string.reservas_subtitulo, menu = R.menu.menu_lista,
+            alElegir = accionesDeLista(binding.swipe) { viewModel.fetchReservas() }
+        )
 
         val adaptador = ReservaAdapter(
             onAprobar = { reserva -> viewModel.actualizarEstado(reserva.id!!, "APROBADA") },
@@ -40,7 +46,13 @@ class ReservasAdminFragment : Fragment() {
             binding.estado.mostrarRecurso(
                 resource, binding.swipe, R.drawable.ic_event, getString(R.string.reservas_vacio),
                 reintentar = { viewModel.fetchReservas() }
-            ) { adaptador.submitList(ReservaConZona.de(it, viewModel.nombresZonas)) }
+            ) { lista ->
+                adaptador.submitList(ReservaConZona.de(lista, viewModel.nombresZonas))
+                binding.encabezado.ponerInfo(resumen(
+                    R.plurals.resumen_reservas, lista.size,
+                    R.plurals.resumen_pendientes to lista.count { it.estado == "PENDIENTE" }
+                ))
+            }
         }
 
         viewModel.mensaje.observe(viewLifecycleOwner) { evento ->

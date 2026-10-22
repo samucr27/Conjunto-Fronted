@@ -11,7 +11,7 @@ import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentPropietarioDashboardBinding
 import com.example.conjuntoresidencial.ui.comun.configurar
 import com.example.conjuntoresidencial.util.SessionManager
-import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.util.confirmarCerrarSesion
 
 class PropietarioDashboardFragment : Fragment() {
@@ -27,16 +27,14 @@ class PropietarioDashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        configurarBarra(
-            binding.barra.toolbar, R.string.panel_residente_subtitulo,
-            atras = false, menu = R.menu.menu_panel_propietario
-        ) { item ->
-            if (item == R.id.accion_cerrar_sesion) { confirmarCerrarSesion(); true } else false
-        }
         // Torre y apartamento ya están en la sesión desde el login: no hace falta pedirlos al servidor
         val sesion = SessionManager(requireContext())
-        binding.barra.toolbar.title = getString(R.string.panel_residente_titulo, sesion.getTorre(), sesion.getApto())
-        binding.barra.toolbar.subtitle = getString(R.string.panel_residente_subtitulo)
+        configurarEncabezado(
+            binding.encabezado, getString(R.string.panel_residente_titulo, sesion.getTorre(), sesion.getApto()),
+            R.string.panel_residente_subtitulo, atras = false, menu = R.menu.menu_panel
+        ) { item ->
+            (item == R.id.accion_cerrar_sesion).also { if (it) confirmarCerrarSesion() }
+        }
 
         // "Atrás" en el panel pregunta si se quiere cerrar sesión
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,

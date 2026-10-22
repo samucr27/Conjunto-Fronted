@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Menú "⋮" de las pantallas de lista -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/accion_actualizar"
+        android:title="@string/accion_actualizar" />
+</menu>

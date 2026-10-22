@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentCarteraAdminBinding
 import com.example.conjuntoresidencial.util.Resource
-import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.ui.comun.accionesDeLista
+import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.ui.comun.resumen
 
 class CarteraAdminFragment : Fragment() {
 
@@ -25,7 +28,10 @@ class CarteraAdminFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarBarra(binding.barra.toolbar, R.string.cartera_titulo, R.string.cartera_subtitulo)
+        configurarEncabezado(
+            binding.encabezado, R.string.cartera_titulo, R.string.cartera_subtitulo, menu = R.menu.menu_lista,
+            alElegir = accionesDeLista(binding.swipeCartera) { viewModel.fetchCartera() }
+        )
 
         val adaptador = CarteraAdminAdapter()
         binding.rvCarteraAdmin.layoutManager = LinearLayoutManager(requireContext())
@@ -42,6 +48,10 @@ class CarteraAdminFragment : Fragment() {
                     binding.swipeCartera.isRefreshing = false
                     val lista = resource.data.orEmpty()
                     adaptador.submitList(lista)
+                    binding.encabezado.ponerInfo(resumen(
+                        R.plurals.resumen_apartamentos, lista.size,
+                        R.plurals.resumen_en_mora to lista.count { (it.second?.saldoPendiente ?: 0.0) > 0 }
+                    ))
                     if (lista.isEmpty()) {
                         binding.estado.mostrarVacio(R.drawable.ic_wallet, getString(R.string.cartera_vacia))
                     } else {

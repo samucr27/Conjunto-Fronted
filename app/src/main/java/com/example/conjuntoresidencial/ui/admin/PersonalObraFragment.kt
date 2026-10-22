@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentPersonalObraBinding
 import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
-import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.ui.comun.accionesDeLista
+import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.ui.comun.resumen
 
 class PersonalObraFragment : Fragment() {
     private var _binding: FragmentPersonalObraBinding? = null
@@ -24,7 +27,10 @@ class PersonalObraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarBarra(binding.barra.toolbar, R.string.personal_titulo, R.string.personal_subtitulo)
+        configurarEncabezado(
+            binding.encabezado, R.string.personal_titulo, R.string.personal_subtitulo, menu = R.menu.menu_lista,
+            alElegir = accionesDeLista(binding.swipe) { viewModel.fetchPersonal() }
+        )
 
         val adaptador = PersonalAdapter()
         binding.rvPersonalObra.layoutManager = LinearLayoutManager(requireContext())
@@ -36,7 +42,13 @@ class PersonalObraFragment : Fragment() {
             binding.estado.mostrarRecurso(
                 resource, binding.swipe, R.drawable.ic_people, getString(R.string.personal_vacio),
                 reintentar = { viewModel.fetchPersonal() }
-            ) { adaptador.submitList(it) }
+            ) { lista ->
+                adaptador.submitList(lista)
+                binding.encabezado.ponerInfo(resumen(
+                    R.plurals.resumen_trabajadores, lista.size,
+                    R.plurals.resumen_sin_arl to lista.count { !it.arlEstado }
+                ))
+            }
         }
         if (viewModel.personal.value == null) viewModel.fetchPersonal()
     }
