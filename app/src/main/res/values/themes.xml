@@ -190,6 +190,21 @@
         <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Full</item>
     </style>
 
+    <!-- Barra inferior flotante (activity_main.xml): cápsula con sombra -->
+    <style name="Widget.App.BarraInferior" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">?attr/colorSurfaceContainerHigh</item>
+        <item name="cardElevation">6dp</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Full</item>
+    </style>
+    <style name="Widget.App.NavInferior" parent="Widget.Material3.BottomNavigationView">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="elevation">0dp</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <!-- Los márgenes del sistema los maneja MainActivity: la barra flota por encima -->
+        <item name="paddingBottomSystemWindowInsets">false</item>
+    </style>
+
     <style name="Widget.App.CardView" parent="Widget.Material3.CardView.Elevated">
         <item name="cardBackgroundColor">?attr/colorSurfaceContainerLow</item>
         <item name="shapeAppearance">@style/ShapeAppearance.App.Medium</item>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Barra inferior del administrador. Los id son los de las pantallas (nav_graph): MainActivity navega a ellos. -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/adminDashboardFragment"
+        android:icon="@drawable/ic_home"
+        android:title="@string/pestana_inicio" />
+    <item
+        android:id="@+id/notificacionesFragment"
+        android:icon="@drawable/ic_notifications"
+        android:title="@string/notificaciones" />
+    <item
+        android:id="@+id/cuentaFragment"
+        android:icon="@drawable/ic_person"
+        android:title="@string/pestana_cuenta" />
+</menu>

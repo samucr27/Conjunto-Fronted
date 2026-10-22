@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Barra inferior del residente. Los id son los de las pantallas (nav_graph): MainActivity navega a ellos. -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/propietarioDashboardFragment"
+        android:icon="@drawable/ic_home"
+        android:title="@string/pestana_inicio" />
+    <item
+        android:id="@+id/misReservasFragment"
+        android:icon="@drawable/ic_event"
+        android:title="@string/pestana_reservas" />
+    <item
+        android:id="@+id/miCarteraFragment"
+        android:icon="@drawable/ic_wallet"
+        android:title="@string/pestana_cartera" />
+    <item
+        android:id="@+id/cuentaFragment"
+        android:icon="@drawable/ic_person"
+        android:title="@string/pestana_cuenta" />
+</menu>

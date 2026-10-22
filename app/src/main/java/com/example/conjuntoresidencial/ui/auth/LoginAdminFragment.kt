@@ -64,6 +64,7 @@ class LoginAdminFragment : Fragment() {
                     resource.data?.let {
                         sessionManager.saveToken(it.token)
                         sessionManager.saveRol(it.rol)
+                        it.usuario?.let(sessionManager::saveUsuario)
                         findNavController().navigate(R.id.action_loginAdminFragment_to_adminDashboardFragment)
                     }
                 }

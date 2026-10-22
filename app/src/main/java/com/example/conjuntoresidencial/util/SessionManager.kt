@@ -27,6 +27,11 @@ class SessionManager(context: Context) {
 
     fun saveRol(rol: String) = prefs.edit { putString("rol", rol) }
     fun getRol(): String? = prefs.getString("rol", null)
+    fun esAdmin(): Boolean = getRol() == "ADMIN"
+
+    // Usuario del administrador (el residente se identifica con torre y apartamento)
+    fun saveUsuario(usuario: String) = prefs.edit { putString("usuario", usuario) }
+    fun getUsuario(): String = prefs.getString("usuario", "") ?: ""
 
     fun clearSession() = prefs.edit { clear() }
 
