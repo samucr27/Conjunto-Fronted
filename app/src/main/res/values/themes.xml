@@ -160,13 +160,23 @@
     </style>
 
     <!-- Barra superior: el morado de la marca en ambos modos, texto e iconos claros -->
-    <!-- Botón redondo que flota sobre el encabezado morado (volver, más opciones): círculo blanco translúcido -->
+    <!-- Botón redondo que flota arriba (volver, más opciones): círculo perfecto morado translúcido
+         con un borde blanco tenue, para verse igual sobre el encabezado y sobre el contenido difuminado -->
     <style name="Widget.App.BotonRedondo" parent="Widget.Material3.Button.IconButton.Filled">
-        <item name="backgroundTint">#33FFFFFF</item>
+        <item name="backgroundTint">@color/boton_flotante</item>
         <item name="iconTint">@color/white</item>
         <item name="iconSize">24dp</item>
+        <item name="iconPadding">0dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="strokeColor">#40FFFFFF</item>
+        <item name="strokeWidth">1dp</item>
+        <!-- Sin márgenes ni anchos mínimos: el círculo ocupa exactamente los 48 dp -->
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
         <item name="android:padding">12dp</item>
         <item name="rippleColor">#40FFFFFF</item>
         <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Full</item>

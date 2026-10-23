@@ -19,6 +19,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Solo para BlurView (desenfoque de la barra inferior y la franja superior)
+        maven("https://jitpack.io") {
+            content { includeGroup("com.github.Dimezis") }
+        }
     }
 }
 

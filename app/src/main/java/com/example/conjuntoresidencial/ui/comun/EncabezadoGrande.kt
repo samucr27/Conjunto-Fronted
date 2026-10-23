@@ -1,11 +1,15 @@
 package com.example.conjuntoresidencial.ui.comun
 
 import android.view.View
+import android.view.ViewTreeObserver
+import android.widget.EditText
 import androidx.annotation.MenuRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
-import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.conjuntoresidencial.R
@@ -31,33 +35,43 @@ fun Fragment.configurarEncabezado(
     @MenuRes menu: Int? = null,
     alElegir: (Int) -> Boolean = { false }
 ) {
-    // Alto desplegado: 40 % de la pantalla (no la mitad: con letra grande dejaría poco para la lista)
+    // Alto desplegado: 40 % de la pantalla (no la mitad: con letra grande dejaría poco para la lista),
+    // más la barra de estado, porque el encabezado empieza detrás de ella
+    val controles = controlesFlotantes
+    val margenSuperior = controles?.margenSuperior ?: 0
     encabezado.colapsable.layoutParams.height =
-        (resources.displayMetrics.heightPixels * PROPORCION_ENCABEZADO).toInt()
+        (resources.displayMetrics.heightPixels * PROPORCION_ENCABEZADO).toInt() + margenSuperior
+    // La información empieza bajo la barra de estado y la fila de botones flotantes
+    encabezado.zonaInfo.updatePadding(
+        top = margenSuperior + resources.getDimensionPixelSize(R.dimen.alto_botones_superiores)
+    )
 
     encabezado.ponerTitulo(titulo)
     encabezado.tvDescripcion.text = descripcion?.let { getString(it) }
     encabezado.tvDescripcion.visibility = if (descripcion == null) View.GONE else View.VISIBLE
 
-    encabezado.btnVolver.visibility = if (atras) View.VISIBLE else View.GONE
-    encabezado.btnVolver.setOnClickListener { findNavController().navigateUp() }
+    // Botones redondos "volver" y "⋮": flotan sobre todas las pantallas (MainActivity)
+    controles?.mostrarControles(atras, { findNavController().navigateUp() }, menu, alElegir)
 
-    encabezado.btnMas.visibility = if (menu == null) View.GONE else View.VISIBLE
-    if (menu != null) {
-        encabezado.btnMas.setOnClickListener { boton ->
-            PopupMenu(requireContext(), boton).apply {
-                inflate(menu)
-                setOnMenuItemClickListener { alElegir(it.itemId) }
-            }.show()
-        }
+    // Al escribir en un campo (logins, formularios) el encabezado se recoge: con el teclado
+    // abierto, desplegado ocuparía casi todo el espacio y taparía los demás campos
+    val alEnfocar = ViewTreeObserver.OnGlobalFocusChangeListener { _, nuevo ->
+        if (nuevo is EditText) encabezado.root.setExpanded(false, true)
     }
+    encabezado.root.viewTreeObserver.addOnGlobalFocusChangeListener(alEnfocar)
+    viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+        override fun onDestroy(owner: LifecycleOwner) {
+            encabezado.root.viewTreeObserver.takeIf { it.isAlive }?.removeOnGlobalFocusChangeListener(alEnfocar)
+        }
+    })
 
-    // Al plegar, la información se desvanece y aparece el título pequeño de la barra
+    // Al deslizar, la información se desvanece mientras sale de la pantalla y, al final,
+    // aparece la franja difuminada bajo los botones
     encabezado.root.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { barra, desplazamiento ->
         val recorrido = barra.totalScrollRange.takeIf { it > 0 } ?: return@OnOffsetChangedListener
         val plegado = abs(desplazamiento).toFloat() / recorrido
-        encabezado.zonaInfo.alpha = (1f - plegado * 1.6f).coerceIn(0f, 1f)
-        encabezado.tvTituloCompacto.alpha = ((plegado - 0.6f) / 0.4f).coerceIn(0f, 1f)
+        encabezado.zonaInfo.alpha = (1f - plegado * 1.4f).coerceIn(0f, 1f)
+        if (isResumed || isVisible) controlesFlotantes?.ponerPlegado(plegado)
     })
 }
 
@@ -72,7 +86,6 @@ fun Fragment.configurarEncabezado(
 
 fun EncabezadoGrandeBinding.ponerTitulo(titulo: CharSequence) {
     tvTituloGrande.text = titulo
-    tvTituloCompacto.text = titulo
 }
 
 /** Resumen bajo el título ("4 reservas · 2 pendientes"); null lo oculta (por ejemplo, si hubo error). */

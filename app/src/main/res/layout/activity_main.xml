@@ -1,31 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- La app dibuja de borde a borde (obligatorio desde Android 15). MainActivity
-     ajusta la altura de vistaBarraEstado y los márgenes del contenido según las
-     barras del sistema, para que nada quede debajo de ellas.
-     La barra inferior flotante solo se muestra en las pestañas principales (Inicio,
-     Notificaciones, Cuenta...); MainActivity elige su menú según el rol. -->
-<LinearLayout
+<!-- La app dibuja de borde a borde (obligatorio desde Android 15): el contenido llega hasta
+     arriba (detrás de la barra de estado) y hasta abajo. Encima flotan dos capas translúcidas
+     que desenfocan lo que pasa por debajo (BlurView, Android 12+; antes, un degradado):
+       - arriba, la franja con los botones redondos "volver" y "⋮" (ui/comun/ControlesFlotantes);
+       - abajo, la barra de pestañas, solo en las pantallas principales.
+     MainActivity ajusta sus márgenes según las barras del sistema. -->
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/raiz"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="?attr/colorSurface">
 
-    <!-- Franja detrás de la barra de estado: el morado de la marca, como los encabezados -->
-    <View
-        android:id="@+id/vistaBarraEstado"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/colorPrimary"
-        android:importantForAccessibility="no" />
-
-    <FrameLayout
+    <!-- Lo que se desenfoca: todas las pantallas -->
+    <eightbitlab.com.blurview.BlurTarget
         android:id="@+id/contenedor"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:background="?attr/colorSurface">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/nav_host_fragment"
@@ -34,24 +27,62 @@
             android:layout_height="match_parent"
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graph" />
+    </eightbitlab.com.blurview.BlurTarget>
 
-        <!-- Barra inferior flotante (estilo One UI): cápsula con sombra, separada de los bordes -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/barraInferior"
-            style="@style/Widget.App.BarraInferior"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:visibility="gone">
+    <!-- Franja superior difuminada: aparece cuando el encabezado sale de la pantalla -->
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/franjaSuperior"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="top"
+        android:alpha="0"
+        android:importantForAccessibility="no" />
 
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/navInferior"
-                style="@style/Widget.App.NavInferior"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.card.MaterialCardView>
+    <!-- Botones flotantes de arriba (se configuran desde cada pantalla) -->
+    <FrameLayout
+        android:id="@+id/botonesSuperiores"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_gravity="top"
+        android:visibility="gone">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnVolver"
+            style="@style/Widget.App.BotonRedondo"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="12dp"
+            android:contentDescription="@string/volver"
+            app:icon="@drawable/ic_arrow_back" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMas"
+            style="@style/Widget.App.BotonRedondo"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="@string/mas_opciones"
+            app:icon="@drawable/ic_more_vert" />
     </FrameLayout>
 
-</LinearLayout>
+    <!-- Barra inferior flotante (estilo One UI): cápsula con sombra, separada de los bordes -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/barraInferior"
+        style="@style/Widget.App.BarraInferior"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/navInferior"
+            style="@style/Widget.App.NavInferior"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>
