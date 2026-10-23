@@ -10,16 +10,25 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentDirectorioApartamentosBinding
+import com.example.conjuntoresidencial.model.Apartamento
 import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
 import com.example.conjuntoresidencial.ui.comun.accionesDeLista
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.ui.comun.resumen
+import com.example.conjuntoresidencial.util.map
 
+/**
+ * Directorio en dos pasos para encontrar rápido un apartamento: primero la lista de torres y,
+ * al tocar una, esta misma pantalla con sus apartamentos (argumento [ARG_TORRE]).
+ */
 class DirectorioApartamentosFragment : Fragment() {
     private var _binding: FragmentDirectorioApartamentosBinding? = null
     private val binding get() = _binding!!
     private val viewModel: DirectorioViewModel by viewModels()
+
+    /** Torre elegida; null = lista de torres. */
+    private val torre: String? get() = arguments?.getString(ARG_TORRE)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDirectorioApartamentosBinding.inflate(inflater, container, false)
@@ -28,32 +37,92 @@ class DirectorioApartamentosFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarEncabezado(
-            binding.encabezado, R.string.directorio_titulo, R.string.directorio_subtitulo, menu = R.menu.menu_lista,
-            alElegir = accionesDeLista(binding.swipe) { viewModel.fetchApartamentos() }
-        )
+        val torre = torre
+        val recargar = { viewModel.fetchApartamentos() }
+        if (torre == null) {
+            configurarEncabezado(
+                binding.encabezado, R.string.directorio_titulo, R.string.directorio_subtitulo,
+                menu = R.menu.menu_lista, alElegir = accionesDeLista(binding.swipe, recargar)
+            )
+        } else {
+            configurarEncabezado(
+                binding.encabezado, getString(R.string.directorio_torre_titulo, torre),
+                R.string.directorio_torre_subtitulo,
+                menu = R.menu.menu_lista, alElegir = accionesDeLista(binding.swipe, recargar)
+            )
+        }
 
-        val adaptador = ApartamentoAdapter { apto ->
+        binding.rvApartamentos.layoutManager = LinearLayoutManager(requireContext())
+        binding.estado.vincular(binding.rvApartamentos)
+        binding.swipe.setOnRefreshListener { recargar() }
+
+        if (torre == null) mostrarTorres() else mostrarApartamentos(torre)
+        // Al volver del detalle o girar la pantalla se reutiliza lo ya cargado
+        if (viewModel.aptos.value == null) recargar()
+    }
+
+    private fun mostrarTorres() {
+        val adaptador = TorreAdapter { elegida ->
+            findNavController().navigate(
+                R.id.action_directorioApartamentosFragment_to_torre,
+                Bundle().apply { putString(ARG_TORRE, elegida.nombre) }
+            )
+        }
+        binding.rvApartamentos.adapter = adaptador
+        viewModel.aptos.observe(viewLifecycleOwner) { resource ->
+            binding.estado.mostrarRecurso(
+                resource.map { torresDe(it) }, binding.swipe, R.drawable.ic_apartment,
+                getString(R.string.directorio_vacio), reintentar = { viewModel.fetchApartamentos() }
+            ) { torres ->
+                adaptador.submitList(torres)
+                binding.encabezado.ponerInfo(resumen(
+                    R.plurals.resumen_torres, torres.size,
+                    R.plurals.resumen_apartamentos to torres.sumOf { it.apartamentos }
+                ))
+            }
+        }
+    }
+
+    private fun mostrarApartamentos(torre: String) {
+        val adaptador = ApartamentoAdapter(soloNumero = true) { apto ->
             val bundle = Bundle().apply { putLong("aptoId", apto.id) }
             findNavController().navigate(R.id.action_directorioApartamentosFragment_to_detalleApartamentoFragment, bundle)
         }
-        binding.rvApartamentos.layoutManager = LinearLayoutManager(requireContext())
         binding.rvApartamentos.adapter = adaptador
-        binding.estado.vincular(binding.rvApartamentos)
-        binding.swipe.setOnRefreshListener { viewModel.fetchApartamentos() }
-
         viewModel.aptos.observe(viewLifecycleOwner) { resource ->
+            val deLaTorre = resource.map { aptos ->
+                aptos.filter { it.torre == torre }.sortedWith(compareBy(ORDEN_NATURAL) { it.apto })
+            }
             binding.estado.mostrarRecurso(
-                resource, binding.swipe, R.drawable.ic_apartment, getString(R.string.directorio_vacio),
-                reintentar = { viewModel.fetchApartamentos() }
+                deLaTorre, binding.swipe, R.drawable.ic_apartment,
+                getString(R.string.directorio_torre_vacia), reintentar = { viewModel.fetchApartamentos() }
             ) { lista ->
                 adaptador.submitList(lista)
                 binding.encabezado.ponerInfo(resumen(R.plurals.resumen_apartamentos, lista.size))
             }
         }
-        // Al volver del detalle o girar la pantalla se reutiliza lo ya cargado
-        if (viewModel.aptos.value == null) viewModel.fetchApartamentos()
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }
+
+    companion object {
+        const val ARG_TORRE = "torre"
+
+        /** Números como números: "Torre 2" antes que "Torre 10"; si no son números, por texto. */
+        val ORDEN_NATURAL = Comparator<String> { a, b ->
+            val na = a.trim().toIntOrNull()
+            val nb = b.trim().toIntOrNull()
+            when {
+                na != null && nb != null -> na.compareTo(nb)
+                na != null -> -1
+                nb != null -> 1
+                else -> a.compareTo(b, ignoreCase = true)
+            }
+        }
+
+        fun torresDe(aptos: List<Apartamento>): List<Torre> =
+            aptos.groupBy { it.torre }
+                .map { (nombre, deLaTorre) -> Torre(nombre, deLaTorre.size) }
+                .sortedWith(compareBy(ORDEN_NATURAL) { it.nombre })
+    }
 }

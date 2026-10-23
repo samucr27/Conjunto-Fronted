@@ -59,16 +59,20 @@
 
     <!-- Administrador: listas -->
     <string name="directorio_titulo">Directorio</string>
-    <string name="directorio_subtitulo">Toca un apartamento para ver su detalle</string>
+    <string name="directorio_subtitulo">Elige una torre para ver sus apartamentos</string>
+    <string name="directorio_torre_titulo">Torre %1$s</string>
+    <string name="directorio_torre_subtitulo">Toca un apartamento para ver su detalle</string>
     <string name="directorio_vacio">No hay apartamentos registrados</string>
+    <string name="directorio_torre_vacia">Esta torre no tiene apartamentos registrados</string>
     <string name="apto_item_titulo">Torre %1$s · Apto %2$s</string>
+    <string name="apto_item_solo">Apartamento %1$s</string>
     <string name="apto_item_detalle">Residentes y vehículos</string>
     <string name="obras_titulo">Obras</string>
     <string name="obras_subtitulo">Adecuaciones y personal asignado</string>
     <string name="obras_vacio">No hay obras registradas</string>
     <string name="obras_finalizar">Finalizar</string>
     <string name="obras_personal_asignado">Personal asignado</string>
-    <string name="obras_sin_personal">Sin personal asignado</string>
+    <string name="obras_sin_personal">No tiene personal asignado</string>
     <string name="personal_titulo">Personal de obra</string>
     <string name="personal_subtitulo">Trabajadores registrados en las obras</string>
     <string name="personal_vacio">No hay personal registrado</string>
@@ -309,6 +313,10 @@
     <plurals name="resumen_notificaciones">
         <item quantity="one">%d notificación sin leer</item>
         <item quantity="other">%d notificaciones sin leer</item>
+    </plurals>
+    <plurals name="resumen_torres">
+        <item quantity="one">%d torre</item>
+        <item quantity="other">%d torres</item>
     </plurals>
     <plurals name="resumen_apartamentos">
         <item quantity="one">%d apartamento</item>

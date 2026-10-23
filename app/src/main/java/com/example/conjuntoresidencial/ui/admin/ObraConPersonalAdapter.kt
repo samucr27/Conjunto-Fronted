@@ -48,7 +48,9 @@ class ObraConPersonalAdapter(
             h.binding.btnCambiarEstadoObra.visibility = View.GONE
         }
 
+        // Sin personal: solo "No tiene personal asignado", sin el título de la sección
         h.personalAdapter.submitList(personal)
         h.binding.tvSinPersonal.visibility = if (personal.isEmpty()) View.VISIBLE else View.GONE
+        h.binding.tvTituloPersonal.visibility = if (personal.isEmpty()) View.GONE else View.VISIBLE
     }
 }

@@ -61,6 +61,9 @@
         tools:layout="@layout/fragment_directorio_apartamentos">
         <action android:id="@+id/action_directorioApartamentosFragment_to_detalleApartamentoFragment"
             app:destination="@id/detalleApartamentoFragment" />
+        <!-- Directorio → apartamentos de una torre (la misma pantalla, con el argumento "torre") -->
+        <action android:id="@+id/action_directorioApartamentosFragment_to_torre"
+            app:destination="@id/directorioApartamentosFragment" />
     </fragment>
 
     <fragment
