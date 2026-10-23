@@ -14,6 +14,7 @@ import com.example.conjuntoresidencial.ui.comun.accionesDeLista
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.ui.comun.resumen
+import com.example.conjuntoresidencial.ui.comun.aviso
 import com.google.android.material.snackbar.Snackbar
 
 class ReservasAdminFragment : Fragment() {
@@ -33,9 +34,13 @@ class ReservasAdminFragment : Fragment() {
             alElegir = accionesDeLista(binding.swipe) { viewModel.fetchReservas() }
         )
 
+        // Abierta desde una notificación: esa reserva va resaltada y se desplaza hasta ella
+        val resaltada = arguments?.getLong(ARG_RESALTAR)?.takeIf { arguments?.containsKey(ARG_RESALTAR) == true }
+        var desplazada = false
         val adaptador = ReservaAdapter(
             onAprobar = { reserva -> viewModel.actualizarEstado(reserva.id!!, "APROBADA") },
-            onRechazar = { reserva -> viewModel.actualizarEstado(reserva.id!!, "RECHAZADA") }
+            onRechazar = { reserva -> viewModel.actualizarEstado(reserva.id!!, "RECHAZADA") },
+            resaltada = resaltada
         )
         binding.rvReservas.layoutManager = LinearLayoutManager(requireContext())
         binding.rvReservas.adapter = adaptador
@@ -47,7 +52,13 @@ class ReservasAdminFragment : Fragment() {
                 resource, binding.swipe, R.drawable.ic_event, getString(R.string.reservas_vacio),
                 reintentar = { viewModel.fetchReservas() }
             ) { lista ->
-                adaptador.submitList(ReservaConZona.de(lista, viewModel.nombresZonas))
+                adaptador.submitList(ReservaConZona.de(lista, viewModel.nombresZonas)) {
+                    val posicion = lista.indexOfFirst { it.id == resaltada }
+                    if (!desplazada && posicion >= 0) {
+                        desplazada = true
+                        binding.rvReservas.scrollToPosition(posicion)
+                    }
+                }
                 binding.encabezado.ponerInfo(resumen(
                     R.plurals.resumen_reservas, lista.size,
                     R.plurals.resumen_pendientes to lista.count { it.estado == "PENDIENTE" }
@@ -57,11 +68,16 @@ class ReservasAdminFragment : Fragment() {
 
         viewModel.mensaje.observe(viewLifecycleOwner) { evento ->
             evento.obtenerSiNoManejado()?.let {
-                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+                aviso(it, Snackbar.LENGTH_LONG).show()
             }
         }
         if (viewModel.reservas.value == null) viewModel.fetchReservas()
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }
+
+    companion object {
+        /** Id de la reserva que se abrió desde una notificación. */
+        const val ARG_RESALTAR = "reservaResaltada"
+    }
 }

@@ -15,6 +15,7 @@ import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.util.exigirTexto
 import com.example.conjuntoresidencial.util.limpiarErrorAlEscribir
+import com.example.conjuntoresidencial.ui.comun.aviso
 import android.view.inputmethod.EditorInfo
 
 class LoginAdminFragment : Fragment() {
@@ -71,7 +72,7 @@ class LoginAdminFragment : Fragment() {
                 is Resource.Error -> {
                     binding.progressAdmin.visibility = View.GONE
                     binding.btnIngresarAdmin.isEnabled = true
-                    Snackbar.make(binding.root, resource.message, Snackbar.LENGTH_LONG).show()
+                    aviso(resource.message, Snackbar.LENGTH_LONG).show()
                 }
             }
         }

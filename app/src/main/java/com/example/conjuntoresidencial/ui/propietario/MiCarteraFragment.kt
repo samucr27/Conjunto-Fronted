@@ -17,6 +17,7 @@ import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.ui.comun.accionesDeLista
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.ui.comun.aviso
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
@@ -68,7 +69,7 @@ class MiCarteraFragment : Fragment() {
 
         viewModel.simulacion.observe(viewLifecycleOwner) { evento ->
             evento.obtenerSiNoManejado()?.let { error ->
-                Snackbar.make(binding.root, error ?: getString(R.string.simulacion_exitosa), Snackbar.LENGTH_LONG).show()
+                aviso(error ?: getString(R.string.simulacion_exitosa), Snackbar.LENGTH_LONG).show()
             }
         }
 

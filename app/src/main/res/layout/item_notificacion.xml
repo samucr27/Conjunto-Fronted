@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Notificación del administrador: ícono según el tipo (reserva o vehículo), mensaje, fecha
-     y un punto si era nueva al abrir la pestaña. Misma estructura que las demás listas. -->
+<!-- Notificación del administrador: ícono según el tipo (reserva o vehículo), mensaje y fecha.
+     Las nuevas se ven resaltadas (fondo, negrilla, etiqueta "Nueva" y punto); el fondo y el
+     texto los pone NotificacionAdapter. Al tocarla lleva a su pantalla; se borra deslizándola. -->
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,6 +11,8 @@
     android:layout_marginTop="4dp"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="4dp"
+    android:clickable="true"
+    android:focusable="true"
     app:cardElevation="1dp">
 
     <LinearLayout
@@ -45,6 +48,17 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:textColor="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/tvEtiquetaNueva"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:importantForAccessibility="no"
+                android:text="@string/notificacion_nueva"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="?attr/colorPrimary"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tvFecha"

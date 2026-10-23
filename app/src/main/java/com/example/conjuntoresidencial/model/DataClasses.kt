@@ -12,14 +12,21 @@ data class LoginResponse(val token: String, val expiraEn: String?, val rol: Stri
 // Cuerpo de los errores del backend: {"mensaje": "..."}
 data class MensajeError(val mensaje: String?)
 data class ResidenteDTO(val id: Long?, val nombreCompleto: String, val telefono: String, val identificacion: String, val tipoHabitante: String, val apartamentoId: Long)
-data class VehiculoDTO(val id: Long?, val placa: String, val marca: String, val color: String, val tipo: String, val apartamentoId: Long)
+// marca y color son opcionales en el backend: pueden venir en null
+data class VehiculoDTO(val id: Long?, val placa: String, val marca: String?, val color: String?, val tipo: String, val apartamentoId: Long)
 data class ObraDTO(val id: Long?, val descripcionAdecuacion: String, val fechaInicio: String, val fechaFinEstimada: String, val estadoObra: String, val apartamentoId: Long)
 data class PersonalObraDTO(val id: Long?, val nombreTrabajador: String, val cedula: String, val arlEstado: Boolean, val obraId: Long, val torrePiso: String? = null, val aptoNum: String? = null)
 data class ZonaComunDTO(val id: Long?, val nombre: String, val estadoRecibido: String, val descripcionEstado: String, val esReservable: Boolean? = null)
 data class ReservaDTO(val id: Long?, val fecha: String, val hora: String, val estado: String, val zonaComunId: Long, val apartamentoId: Long)
 data class PagoDTO(val id: Long?, val saldoPendiente: Double, val estadoCuenta: String, val observaciones: String, val apartamentoId: Long)
 data class EstadoRequest(val estado: String)
-// tipo: "RESERVA" o "VEHICULO"; fecha en formato ISO, hora de Colombia ("2026-10-20T20:15:00")
-data class NotificacionDTO(val id: Long, val tipo: String, val mensaje: String, val fecha: String, val leida: Boolean)
+// tipo: "RESERVA" o "VEHICULO"; fecha en formato ISO, hora de Colombia ("2026-10-20T20:15:00").
+// referenciaId (la reserva o el vehículo) y apartamentoId dicen a qué pantalla lleva; null en las viejas.
+data class NotificacionDTO(
+    val id: Long, val tipo: String, val mensaje: String, val fecha: String, val leida: Boolean,
+    val referenciaId: Long? = null, val apartamentoId: Long? = null
+)
+// Token de Firebase del celular (avisos)
+data class DispositivoRequest(val token: String)
 // {"total": n}
 data class ConteoDTO(val total: Long)

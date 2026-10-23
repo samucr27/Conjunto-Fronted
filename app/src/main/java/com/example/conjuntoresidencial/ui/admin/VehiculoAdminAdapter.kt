@@ -23,6 +23,6 @@ class VehiculoAdminAdapter : ListAdapter<VehiculoDTO, VehiculoAdminAdapter.VH>(D
     override fun onBindViewHolder(h: VH, pos: Int) {
         val v = getItem(pos)
         h.placa.text = v.placa
-        h.detalle.text = listOf(v.tipo, v.marca, v.color).filter { it.isNotBlank() }.joinToString(" · ")
+        h.detalle.text = listOf(v.tipo, v.marca, v.color).filterNot { it.isNullOrBlank() }.joinToString(" · ")
     }
 }

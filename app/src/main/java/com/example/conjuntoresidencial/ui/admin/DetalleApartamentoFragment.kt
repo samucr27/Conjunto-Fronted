@@ -21,6 +21,7 @@ import com.example.conjuntoresidencial.util.comoLista
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.ui.comun.ponerTitulo
+import com.example.conjuntoresidencial.ui.comun.aviso
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -254,7 +255,7 @@ class DetalleApartamentoFragment : Fragment() {
     }
 
     private fun avisar(mensaje: String) {
-        _binding?.let { Snackbar.make(it.root, mensaje, Snackbar.LENGTH_LONG).show() }
+        _binding?.let { aviso(mensaje, Snackbar.LENGTH_LONG).show() }
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }

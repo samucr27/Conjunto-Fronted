@@ -169,6 +169,14 @@
     <string name="notificaciones_vacio_mensaje">Aquí aparecerán las reservas y vehículos que registren los residentes.</string>
     <string name="notificaciones_limpiar_pregunta">Se borrarán todas las notificaciones. Esta acción no se puede deshacer.</string>
     <string name="notificacion_nueva">Nueva</string>
+    <string name="notificacion_eliminada">Notificación eliminada</string>
+    <string name="notificaciones_marcar_leidas">Marcar todas como leídas</string>
+    <string name="notificaciones_error_marcar">No se pudieron marcar como leídas</string>
+    <string name="notificaciones_error_eliminar">No se pudo eliminar la notificación</string>
+    <string name="deshacer">Deshacer</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="canal_avisos">Avisos</string>
+    <string name="canal_avisos_descripcion">Nuevas reservas, vehículos y otros avisos del conjunto</string>
     <!-- Pestaña Cuenta -->
     <string name="cuenta_descripcion">Perfil y ajustes de la app</string>
     <string name="cuenta_perfil">Perfil</string>

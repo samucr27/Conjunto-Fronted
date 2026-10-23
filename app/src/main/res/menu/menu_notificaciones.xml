@@ -5,6 +5,9 @@
         android:id="@+id/accion_actualizar"
         android:title="@string/accion_actualizar" />
     <item
+        android:id="@+id/accion_marcar_leidas"
+        android:title="@string/notificaciones_marcar_leidas" />
+    <item
         android:id="@+id/accion_limpiar"
         android:title="@string/actividad_limpiar" />
 </menu>
