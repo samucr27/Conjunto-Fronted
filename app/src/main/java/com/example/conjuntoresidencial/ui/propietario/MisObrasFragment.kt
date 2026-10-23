@@ -103,6 +103,8 @@ class MisObrasFragment : Fragment() {
                 }
             }
             vista.tvSinPersonalDetalle.visibility = if (personal.isNullOrEmpty()) View.VISIBLE else View.GONE
+            // Sin personal: solo el mensaje, sin el título de la sección
+            vista.tvTituloPersonalDetalle.visibility = if (personal?.isEmpty() == true) View.GONE else View.VISIBLE
 
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(obra.descripcionAdecuacion)
