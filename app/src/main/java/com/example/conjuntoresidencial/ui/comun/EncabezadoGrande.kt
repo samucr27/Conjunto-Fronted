@@ -1,16 +1,20 @@
 package com.example.conjuntoresidencial.ui.comun
 
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.EditText
 import androidx.annotation.MenuRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updatePadding
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.EncabezadoGrandeBinding
@@ -53,6 +57,16 @@ fun Fragment.configurarEncabezado(
     // Botones redondos "volver" y "⋮": flotan sobre todas las pantallas (MainActivity)
     controles?.mostrarControles(atras, { findNavController().navigateUp() }, menu, alElegir)
 
+    // El contenido pasa por debajo de la barra inferior translúcida: la lista deja al final
+    // un espacio de su alto para que el último elemento se pueda leer y tocar
+    contenidoDesplazable(encabezado)?.let { lista ->
+        val rellenoOriginal = lista.paddingBottom
+        lista.clipToPadding = false
+        controles?.espacioInferior?.observe(viewLifecycleOwner) { espacio ->
+            lista.updatePadding(bottom = rellenoOriginal + espacio)
+        }
+    }
+
     // Al escribir en un campo (logins, formularios) el encabezado se recoge: con el teclado
     // abierto, desplegado ocuparía casi todo el espacio y taparía los demás campos
     val alEnfocar = ViewTreeObserver.OnGlobalFocusChangeListener { _, nuevo ->
@@ -73,6 +87,23 @@ fun Fragment.configurarEncabezado(
         encabezado.zonaInfo.alpha = (1f - plegado * 1.4f).coerceIn(0f, 1f)
         if (isResumed || isVisible) controlesFlotantes?.ponerPlegado(plegado)
     })
+}
+
+/**
+ * La lista o el NestedScrollView del contenido que se desliza bajo el encabezado: el hermano
+ * con appbar_scrolling_view_behavior en el CoordinatorLayout, o el primero que haya dentro de él.
+ */
+private fun contenidoDesplazable(encabezado: EncabezadoGrandeBinding): ViewGroup? {
+    val coordinador = encabezado.root.parent as? CoordinatorLayout ?: return null
+    val hoja = (0 until coordinador.childCount).map { coordinador.getChildAt(it) }.firstOrNull {
+        (it.layoutParams as? CoordinatorLayout.LayoutParams)?.behavior is AppBarLayout.ScrollingViewBehavior
+    } ?: return null
+    fun buscar(v: View): ViewGroup? = when (v) {
+        is RecyclerView, is NestedScrollView -> v as ViewGroup
+        is ViewGroup -> (0 until v.childCount).asSequence().mapNotNull { buscar(v.getChildAt(it)) }.firstOrNull()
+        else -> null
+    }
+    return buscar(hoja)
 }
 
 fun Fragment.configurarEncabezado(
