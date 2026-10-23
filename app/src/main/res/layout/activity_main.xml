@@ -67,15 +67,16 @@
             app:icon="@drawable/ic_more_vert" />
     </FrameLayout>
 
-    <!-- Barra inferior flotante (estilo One UI): cápsula con sombra, separada de los bordes -->
-    <com.google.android.material.card.MaterialCardView
+    <!-- Barra inferior flotante (estilo One UI): cápsula translúcida que desenfoca el contenido
+         que pasa por debajo, separada de los bordes -->
+    <eightbitlab.com.blurview.BlurView
         android:id="@+id/barraInferior"
-        style="@style/Widget.App.BarraInferior"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:background="@drawable/fondo_barra_inferior"
         android:visibility="gone">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -83,6 +84,6 @@
             style="@style/Widget.App.NavInferior"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </com.google.android.material.card.MaterialCardView>
+    </eightbitlab.com.blurview.BlurView>
 
 </FrameLayout>

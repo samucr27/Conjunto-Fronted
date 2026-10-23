@@ -59,5 +59,10 @@
     <color name="boton_flotante">#B35E35B1</color>
     <!-- Velo morado sobre el contenido desenfocado de la franja superior y la barra inferior -->
     <color name="velo_desenfoque">#995E35B1</color>
+    <!-- Velo de la barra inferior: superficie lavanda translúcida (íconos y textos oscuros legibles) -->
+    <color name="velo_barra">#A6EDE4F7</color>
+    <!-- Barra inferior en Android 7-11 (sin desenfoque): casi opaca para que se lea bien -->
+    <color name="fondo_barra_respaldo">#F2F3EDF7</color>
+    <color name="borde_barra">#1F5E35B1</color>
     <color name="barra_subtitulo">#E9DDFF</color>
 </resources>

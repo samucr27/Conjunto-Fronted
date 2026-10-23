@@ -182,11 +182,17 @@
         <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Full</item>
     </style>
 
-    <!-- Barra inferior flotante (activity_main.xml): cápsula con sombra -->
-    <style name="Widget.App.BarraInferior" parent="Widget.Material3.CardView.Elevated">
-        <item name="cardBackgroundColor">?attr/colorSurfaceContainerHigh</item>
-        <item name="cardElevation">6dp</item>
-        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Full</item>
+    <!-- Botón flotante de las listas (Agregar vehículo, Registrar zona): cápsula morada translúcida
+         que al desplazar se encoge a un círculo con el ícono -->
+    <style name="Widget.App.BotonFlotante" parent="Widget.Material3.ExtendedFloatingActionButton.Icon.Primary">
+        <item name="backgroundTint">@color/boton_flotante</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="iconTint">@color/white</item>
+        <item name="rippleColor">#40FFFFFF</item>
+        <item name="strokeColor">#40FFFFFF</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Material3.Corner.Full</item>
+        <item name="elevation">2dp</item>
     </style>
     <style name="Widget.App.NavInferior" parent="Widget.Material3.BottomNavigationView">
         <item name="android:background">@android:color/transparent</item>

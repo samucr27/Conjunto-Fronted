@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.ViewOutlineProvider
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.MenuRes
@@ -14,6 +15,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -23,14 +26,13 @@ import com.example.conjuntoresidencial.util.SesionEventos
 import com.example.conjuntoresidencial.util.SessionManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
 import eightbitlab.com.blurview.BlurTarget
 import eightbitlab.com.blurview.BlurView
 
 class MainActivity : AppCompatActivity(), ControlesFlotantes {
 
     private lateinit var navController: NavController
-    private lateinit var barraInferior: MaterialCardView
+    private lateinit var barraInferior: BlurView
     private lateinit var navInferior: BottomNavigationView
     private lateinit var franjaSuperior: BlurView
     private lateinit var botonesSuperiores: View
@@ -43,6 +45,8 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     private var margenInferiorSistema = 0
     override var margenSuperior = 0
         private set
+    private val _espacioInferior = MutableLiveData(0)
+    override val espacioInferior: LiveData<Int> get() = _espacioInferior
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,16 +111,18 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     }
 
     /**
-     * La barra flota sobre la barra de navegación del sistema; el contenido termina encima
-     * de ella para que nunca tape el último elemento de una lista.
+     * La barra flota sobre la barra de navegación del sistema y el contenido pasa por debajo
+     * de ella (se ve desenfocado). Para que el último elemento de una lista se pueda leer,
+     * cada pantalla deja al final un espacio del alto de la barra ([espacioInferior]).
      */
     private fun acomodarContenido() {
         val separacion = resources.getDimensionPixelSize(R.dimen.separacion_barra_inferior)
         barraInferior.updateLayoutParams<android.widget.FrameLayout.LayoutParams> {
             bottomMargin = margenInferiorSistema + separacion
         }
-        val ocupado = if (barraInferior.visibility == View.VISIBLE) barraInferior.height + 2 * separacion else 0
-        findViewById<View>(R.id.nav_host_fragment).setPadding(0, 0, 0, margenInferiorSistema + ocupado)
+        findViewById<View>(R.id.nav_host_fragment).setPadding(0, 0, 0, margenInferiorSistema)
+        val espacio = if (barraInferior.visibility == View.VISIBLE) barraInferior.height + 2 * separacion else 0
+        if (_espacioInferior.value != espacio) _espacioInferior.value = espacio
     }
 
     /** Pestañas de cada rol. Los id del menú son los de las pantallas del nav_graph. */
@@ -199,9 +205,16 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             franjaSuperior.setupWith(findViewById<BlurTarget>(R.id.contenedor))
                 .setBlurRadius(RADIO_DESENFOQUE)
                 .setOverlayColor(ContextCompat.getColor(this, R.color.velo_desenfoque))
+            barraInferior.setupWith(findViewById<BlurTarget>(R.id.contenedor))
+                .setBlurRadius(RADIO_DESENFOQUE)
+                .setOverlayColor(ContextCompat.getColor(this, R.color.velo_barra))
         } else {
             franjaSuperior.setBackgroundResource(R.drawable.franja_degradada)
+            barraInferior.setBackgroundResource(R.drawable.fondo_barra_inferior_respaldo)
         }
+        // El desenfoque se recorta con la forma de cápsula del fondo
+        barraInferior.outlineProvider = ViewOutlineProvider.BACKGROUND
+        barraInferior.clipToOutline = true
     }
 
     override fun mostrarControles(atras: Boolean, alVolver: () -> Unit, @MenuRes menu: Int?, alElegir: (Int) -> Boolean) {
