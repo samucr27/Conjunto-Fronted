@@ -1,12 +1,15 @@
 package com.example.conjuntoresidencial
 
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -14,22 +17,32 @@ import androidx.core.view.updateLayoutParams
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
+import com.example.conjuntoresidencial.ui.comun.ControlesFlotantes
 import com.example.conjuntoresidencial.ui.comun.NotificacionesViewModel
 import com.example.conjuntoresidencial.util.SesionEventos
 import com.example.conjuntoresidencial.util.SessionManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import eightbitlab.com.blurview.BlurTarget
+import eightbitlab.com.blurview.BlurView
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ControlesFlotantes {
 
     private lateinit var navController: NavController
     private lateinit var barraInferior: MaterialCardView
     private lateinit var navInferior: BottomNavigationView
+    private lateinit var franjaSuperior: BlurView
+    private lateinit var botonesSuperiores: View
+    private lateinit var btnVolver: MaterialButton
+    private lateinit var btnMas: MaterialButton
     private val notificaciones: NotificacionesViewModel by viewModels()
 
     // Menú que muestra ahora la barra inferior (null = oculta)
     @MenuRes private var menuActual: Int? = null
     private var margenInferiorSistema = 0
+    override var margenSuperior = 0
+        private set
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +50,11 @@ class MainActivity : AppCompatActivity() {
         navController = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
         barraInferior = findViewById(R.id.barraInferior)
         navInferior = findViewById(R.id.navInferior)
+        franjaSuperior = findViewById(R.id.franjaSuperior)
+        botonesSuperiores = findViewById(R.id.botonesSuperiores)
+        btnVolver = findViewById(R.id.btnVolver)
+        btnMas = findViewById(R.id.btnMas)
+        configurarDesenfoque()
         ajustarBarrasDelSistema()
         configurarBarraInferior()
 
@@ -62,13 +80,17 @@ class MainActivity : AppCompatActivity() {
     private fun ajustarBarrasDelSistema() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         val raiz = findViewById<View>(R.id.raiz)
-        val franjaEstado = findViewById<View>(R.id.vistaBarraEstado)
         val contenedor = findViewById<View>(R.id.contenedor)
+        val altoBotones = resources.getDimensionPixelSize(R.dimen.alto_botones_superiores)
 
         ViewCompat.setOnApplyWindowInsetsListener(raiz) { _, insets ->
             val barras = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
             val teclado = insets.getInsets(WindowInsetsCompat.Type.ime())
-            franjaEstado.layoutParams = franjaEstado.layoutParams.apply { height = barras.top }
+            // Arriba el contenido llega hasta el borde (detrás de la barra de estado): la franja
+            // difuminada cubre la barra de estado y la fila de botones
+            margenSuperior = barras.top
+            franjaSuperior.updateLayoutParams<android.widget.FrameLayout.LayoutParams> { height = barras.top + altoBotones }
+            botonesSuperiores.updateLayoutParams<android.widget.FrameLayout.LayoutParams> { topMargin = barras.top }
             contenedor.setPadding(barras.left, 0, barras.right, 0)
             // Abajo: la barra de navegación o el teclado, el que ocupe más
             margenInferiorSistema = maxOf(barras.bottom, teclado.bottom)
@@ -79,7 +101,7 @@ class MainActivity : AppCompatActivity() {
         val modoOscuro = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
             Configuration.UI_MODE_NIGHT_YES
         WindowCompat.getInsetsController(window, window.decorView).apply {
-            isAppearanceLightStatusBars = false          // iconos blancos sobre la franja morada
+            isAppearanceLightStatusBars = false          // iconos blancos sobre el morado (encabezado o franja)
             isAppearanceLightNavigationBars = !modoOscuro // iconos oscuros sobre fondo claro
         }
     }
@@ -100,6 +122,8 @@ class MainActivity : AppCompatActivity() {
     /** Pestañas de cada rol. Los id del menú son los de las pantallas del nav_graph. */
     private fun configurarBarraInferior() {
         navController.addOnDestinationChangedListener { _, destino, _ ->
+            // Cada pantalla vuelve a pedir sus botones de arriba (configurarEncabezado)
+            ocultarControles()
             val menu = when (destino.id) {
                 R.id.adminDashboardFragment, R.id.notificacionesFragment -> R.menu.menu_barra_admin
                 R.id.propietarioDashboardFragment, R.id.misReservasFragment, R.id.miCarteraFragment ->
@@ -164,6 +188,47 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    // ---- Botones flotantes y franja superior (ControlesFlotantes) ----
+
+    /**
+     * Desenfoque en vivo de lo que pasa bajo la franja superior (Android 12+, en el hilo de
+     * dibujo del sistema). En versiones anteriores no hay desenfoque eficiente: degradado morado.
+     */
+    private fun configurarDesenfoque() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            franjaSuperior.setupWith(findViewById<BlurTarget>(R.id.contenedor))
+                .setBlurRadius(RADIO_DESENFOQUE)
+                .setOverlayColor(ContextCompat.getColor(this, R.color.velo_desenfoque))
+        } else {
+            franjaSuperior.setBackgroundResource(R.drawable.franja_degradada)
+        }
+    }
+
+    override fun mostrarControles(atras: Boolean, alVolver: () -> Unit, @MenuRes menu: Int?, alElegir: (Int) -> Boolean) {
+        botonesSuperiores.visibility = View.VISIBLE
+        btnVolver.visibility = if (atras) View.VISIBLE else View.GONE
+        btnVolver.setOnClickListener { alVolver() }
+        btnMas.visibility = if (menu == null) View.GONE else View.VISIBLE
+        btnMas.setOnClickListener { boton ->
+            if (menu == null) return@setOnClickListener
+            PopupMenu(this, boton).apply {
+                inflate(menu)
+                setOnMenuItemClickListener { alElegir(it.itemId) }
+            }.show()
+        }
+    }
+
+    override fun ponerPlegado(fraccion: Float) {
+        franjaSuperior.alpha = ((fraccion - 0.75f) / 0.25f).coerceIn(0f, 1f)
+    }
+
+    private fun ocultarControles() {
+        botonesSuperiores.visibility = View.GONE
+        btnVolver.setOnClickListener(null)
+        btnMas.setOnClickListener(null)
+        franjaSuperior.alpha = 0f
+    }
+
     /** Vuelve al selector de login y vacía la pila para que "atrás" no regrese a pantallas protegidas. */
     private fun irAlLogin() {
         val actual = navController.currentDestination?.id
@@ -174,6 +239,10 @@ class MainActivity : AppCompatActivity() {
             null,
             NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build()
         )
+    }
+
+    companion object {
+        private const val RADIO_DESENFOQUE = 24f
     }
 
     override fun onDestroy() {

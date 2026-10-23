@@ -54,5 +54,10 @@
     <!-- Texto sobre los encabezados morados -->
     <color name="white">#FFFFFF</color>
     <!-- Subtítulo de la barra superior: lavanda claro (contraste 6,0:1 sobre #5E35B1) -->
+    <!-- Fondo de los botones redondos flotantes (70 % del morado: contraste 4:1 con el ícono blanco
+         aunque debajo pase contenido claro) -->
+    <color name="boton_flotante">#B35E35B1</color>
+    <!-- Velo morado sobre el contenido desenfocado de la franja superior y la barra inferior -->
+    <color name="velo_desenfoque">#995E35B1</color>
     <color name="barra_subtitulo">#E9DDFF</color>
 </resources>
