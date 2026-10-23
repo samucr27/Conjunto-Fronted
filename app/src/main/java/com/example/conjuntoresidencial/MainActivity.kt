@@ -137,6 +137,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
      * hay nada flotante abajo (y el botón fijo de "Registrar obra" se vería borroso).
      */
     private fun actualizarZonasDifuminadas() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
         val efecto = difuminado ?: return
         val altoBotones = resources.getDimensionPixelSize(R.dimen.alto_botones_superiores)
         val arriba = margenSuperior + if (botonesSuperiores.visibility == View.VISIBLE) altoBotones else 0
