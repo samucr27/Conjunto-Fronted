@@ -14,5 +14,8 @@ fun ItemTarjetaMenuBinding.configurar(
     this.icono.setImageResource(icono)
     this.titulo.setText(titulo)
     this.subtitulo.setText(subtitulo)
+    // Nombre propio para TalkBack ("Directorio, Apartamentos"): con letra grande la tarjeta puede
+    // quedar cortada bajo la barra inferior y sus textos, fuera de la pantalla, no la nombrarían
+    root.contentDescription = "${this.titulo.text}, ${this.subtitulo.text}"
     root.setOnClickListener { alTocar() }
 }
