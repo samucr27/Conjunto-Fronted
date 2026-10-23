@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import com.example.conjuntoresidencial.BuildConfig
 import com.example.conjuntoresidencial.R
@@ -51,6 +53,16 @@ class CuentaFragment : Fragment() {
         configurarEncabezado(binding.encabezado, R.string.pestana_cuenta, R.string.cuenta_descripcion, atras = false)
         binding.encabezado.ponerInfo(listOf(binding.tvRol.text, identidad).filter { it.isNotBlank() }.joinToString(" · "))
 
+        // Con letra grande los tres botones no caben en una fila ("Sist…", "Osc…"): van en columna
+        if (resources.configuration.fontScale >= 1.3f) {
+            binding.grupoTema.orientation = LinearLayout.VERTICAL
+            botonesTema.values.forEach { id ->
+                binding.grupoTema.findViewById<View>(id).updateLayoutParams<LinearLayout.LayoutParams> {
+                    width = LinearLayout.LayoutParams.MATCH_PARENT
+                    weight = 0f
+                }
+            }
+        }
         binding.grupoTema.check(botonesTema.getValue(Tema.actual(requireContext())))
         binding.grupoTema.addOnButtonCheckedListener { _, id, marcado ->
             if (!marcado) return@addOnButtonCheckedListener
