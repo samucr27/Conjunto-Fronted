@@ -10,7 +10,9 @@ import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.DrawableRes
 import androidx.annotation.MenuRes
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
@@ -32,6 +34,7 @@ import com.example.conjuntoresidencial.util.SesionEventos
 import com.example.conjuntoresidencial.util.SessionManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import eightbitlab.com.blurview.BlurTarget
 import eightbitlab.com.blurview.BlurView
 
@@ -44,6 +47,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     private lateinit var botonesSuperiores: View
     private lateinit var btnVolver: MaterialButton
     private lateinit var btnMas: MaterialButton
+    private lateinit var botonFlotante: ExtendedFloatingActionButton
     private val notificaciones: NotificacionesViewModel by viewModels()
 
     // Menú que muestra ahora la barra inferior (null = oculta)
@@ -52,9 +56,8 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     // Difuminado progresivo de los bordes (Android 13+); null en versiones anteriores
     private var difuminado: DifuminadoProgresivo? = null
     private var tecladoAbierto = false
-    // Botón fijo abajo de la pantalla actual (Registrar obra, Agregar...): el difuminado termina encima
-    private var vistaReservada: View? = null
-    private val alCambiarReservada = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> actualizarZonasDifuminadas() }
+    // Alto que tapa la barra inferior (0 si no se muestra); el difuminado de abajo la cubre
+    private var espacioBarra = 0
     private var modoOscuro = false
     override var margenSuperior = 0
         private set
@@ -74,6 +77,11 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         botonesSuperiores = findViewById(R.id.botonesSuperiores)
         btnVolver = findViewById(R.id.btnVolver)
         btnMas = findViewById(R.id.btnMas)
+        botonFlotante = findViewById(R.id.botonFlotante)
+        // Si el botón cambia de alto (encogido, letra grande) las listas ajustan su espacio final
+        botonFlotante.addOnLayoutChangeListener { _, _, top, _, bottom, _, viejoTop, _, viejoBottom ->
+            if (bottom - top != viejoBottom - viejoTop) acomodarContenido()
+        }
         configurarDesenfoque()
         ajustarBarrasDelSistema()
         configurarBarraInferior()
@@ -128,26 +136,34 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     }
 
     /**
-     * La barra flota sobre la barra de navegación del sistema y el contenido pasa por debajo
-     * de ella (se ve desenfocado). Para que el último elemento de una lista se pueda leer,
-     * cada pantalla deja al final un espacio del alto de la barra ([espacioInferior]).
+     * La barra y el botón flotante quedan sobre la barra de navegación del sistema y el contenido
+     * pasa por debajo de ellos (se ve desenfocado). Para que el último elemento de una lista se
+     * pueda leer, cada pantalla deja al final un espacio ([espacioInferior]) que cubre la zona
+     * difuminada, la barra y el botón: al llegar al final, el último elemento queda nítido.
      */
     private fun acomodarContenido() {
         val separacion = resources.getDimensionPixelSize(R.dimen.separacion_barra_inferior)
+        val margenBoton = (resources.displayMetrics.density * MARGEN_BOTON_DP).toInt()
         barraInferior.updateLayoutParams<android.widget.FrameLayout.LayoutParams> {
             bottomMargin = margenInferiorSistema + separacion
         }
+        botonFlotante.updateLayoutParams<android.widget.FrameLayout.LayoutParams> {
+            bottomMargin = margenInferiorSistema + margenBoton
+        }
         findViewById<View>(R.id.nav_host_fragment).setPadding(0, 0, 0, margenInferiorSistema)
-        val espacio = if (barraInferior.visibility == View.VISIBLE) barraInferior.height + 2 * separacion else 0
+        espacioBarra = if (barraInferior.visibility == View.VISIBLE) barraInferior.height + 2 * separacion else 0
+        val espacioBoton = if (botonFlotante.visibility == View.VISIBLE) botonFlotante.height + 2 * margenBoton else 0
+        val espacio = maxOf(espacioBarra, espacioBoton, zonaAbajo) + separacion
         if (_espacioInferior.value != espacio) _espacioInferior.value = espacio
         actualizarZonasDifuminadas()
     }
 
     /**
      * Zonas del difuminado progresivo. Arriba: la barra de estado y, si se muestran, la fila de
-     * botones (el título grande empieza justo debajo y en reposo se ve nítido). Abajo: solo en
-     * las pestañas, desde encima de la barra inferior hasta el borde; en las demás pantallas no
-     * hay nada flotante abajo (y el botón fijo de "Registrar obra" se vería borroso).
+     * botones (el título grande empieza justo debajo y en reposo se ve nítido). Abajo: en las
+     * pestañas, desde encima de la barra inferior hasta el borde; en las demás pantallas, una
+     * franja fija sobre la barra de navegación del sistema. El botón flotante está fuera del
+     * contenido que se difumina, así que siempre se ve nítido encima.
      */
     private fun actualizarZonasDifuminadas() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
@@ -155,19 +171,11 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         val contenedor = findViewById<View>(R.id.contenedor)
         val altoBotones = resources.getDimensionPixelSize(R.dimen.alto_botones_superiores)
         val arriba = margenSuperior + if (botonesSuperiores.visibility == View.VISIBLE) altoBotones else 0
-        val espacioBarra = _espacioInferior.value ?: 0
-        val reservada = vistaReservada?.takeIf { it.isAttachedToWindow && it.visibility == View.VISIBLE && it.height > 0 }
         val (abajo, fin) = when {
             // Con el teclado abierto no se difumina abajo: ahí está el campo en el que se escribe
             tecladoAbierto -> 0 to 0
             // Pestañas: el contenido pasa bajo la barra translúcida hasta el borde
             espacioBarra > 0 -> espacioBarra + margenInferiorSistema to contenedor.height
-            // Botón fijo abajo: el difuminado termina justo encima de él
-            reservada != null -> {
-                val ubicacion = IntArray(2).also(reservada::getLocationInWindow)
-                val inicioContenedor = IntArray(2).also(contenedor::getLocationInWindow)
-                zonaAbajo to (ubicacion[1] - inicioContenedor[1] - zonaSeparacion)
-            }
             // Resto: hasta donde termina el contenido (encima de la barra de navegación del sistema)
             else -> zonaAbajo to (contenedor.height - margenInferiorSistema)
         }
@@ -175,14 +183,23 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     }
 
     private val zonaAbajo get() = (resources.displayMetrics.density * ZONA_ABAJO_DP).toInt()
-    private val zonaSeparacion get() = (resources.displayMetrics.density * 8).toInt()
 
-    override fun reservarAbajo(vista: View?) {
-        vistaReservada?.removeOnLayoutChangeListener(alCambiarReservada)
-        vistaReservada = vista
-        vista?.addOnLayoutChangeListener(alCambiarReservada)
-        // Al crearse la pantalla aún no tiene posición: se recalcula tras el primer dibujo
-        (vista ?: botonesSuperiores).post { actualizarZonasDifuminadas() }
+    override fun mostrarBotonFlotante(@StringRes texto: Int, @DrawableRes icono: Int, alTocar: () -> Unit) =
+        botonFlotante.apply {
+            setText(texto)
+            setIconResource(icono)
+            setOnClickListener { alTocar() }
+            isEnabled = true
+            extend()
+            visibility = View.VISIBLE
+            acomodarContenido()
+        }
+
+    private fun ocultarBotonFlotante() {
+        if (botonFlotante.visibility == View.GONE) return
+        botonFlotante.visibility = View.GONE
+        botonFlotante.setOnClickListener(null)
+        acomodarContenido()
     }
 
     /** Pestañas de cada rol. Los id del menú son los de las pantallas del nav_graph. */
@@ -190,7 +207,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         navController.addOnDestinationChangedListener { _, destino, _ ->
             // Cada pantalla vuelve a pedir sus botones de arriba (configurarEncabezado)
             ocultarControles()
-            reservarAbajo(null)
+            ocultarBotonFlotante()
             val menu = when (destino.id) {
                 R.id.adminDashboardFragment, R.id.notificacionesFragment -> R.menu.menu_barra_admin
                 R.id.propietarioDashboardFragment, R.id.misReservasFragment, R.id.miCarteraFragment ->
@@ -390,6 +407,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         // Lo que tarda en dibujarse el logo animado (drawable/logo_animado) y su salida
         private const val DURACION_LOGO_MS = 1100L
         private const val SALIDA_LOGO_MS = 350L
+        private const val MARGEN_BOTON_DP = 16
         private const val ESPERA_MAXIMA_INICIO_MS = 4000L
     }
 

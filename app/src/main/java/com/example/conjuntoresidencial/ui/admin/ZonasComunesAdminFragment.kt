@@ -65,15 +65,14 @@ class ZonasComunesAdminFragment : Fragment() {
             }
         }
 
-        // El botón flotante se encoge a solo ícono al desplazar la lista hacia abajo
-        binding.rvZonasAdmin.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
-                if (dy > 0) binding.btnRegistrarZona.shrink() else if (dy < 0) binding.btnRegistrarZona.extend()
-            }
-        })
-        binding.btnRegistrarZona.setOnClickListener { mostrarDialogRegistrar() }
-        // El difuminado de abajo termina encima del botón flotante
-        controlesFlotantes?.reservarAbajo(binding.btnRegistrarZona)
+        // Botón flotante (encima del difuminado); se encoge a solo ícono al desplazar hacia abajo
+        controlesFlotantes?.mostrarBotonFlotante(R.string.zonas_registrar, R.drawable.ic_add) { mostrarDialogRegistrar() }?.let { boton ->
+            binding.rvZonasAdmin.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+                    if (dy > 0) boton.shrink() else if (dy < 0) boton.extend()
+                }
+            })
+        }
 
         if (viewModel.zonas.value == null) viewModel.fetchZonas()
     }
