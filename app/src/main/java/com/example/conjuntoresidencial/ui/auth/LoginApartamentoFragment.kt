@@ -12,7 +12,7 @@ import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentLoginApartamentoBinding
 import com.example.conjuntoresidencial.util.Resource
 import com.example.conjuntoresidencial.util.SessionManager
-import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.util.exigirTexto
 import com.example.conjuntoresidencial.util.limpiarErrorAlEscribir
 import android.view.inputmethod.EditorInfo
@@ -31,7 +31,7 @@ class LoginApartamentoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sessionManager = SessionManager(requireContext())
-        configurarBarra(binding.barra.toolbar, R.string.login_residente_titulo)
+        configurarEncabezado(binding.encabezado, R.string.login_residente_titulo)
 
         // "Listo" en el teclado del campo de contraseña también inicia sesión
         binding.etPassApto.setOnEditorActionListener { _, accion, _ ->

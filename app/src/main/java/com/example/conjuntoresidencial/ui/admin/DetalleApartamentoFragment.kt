@@ -18,7 +18,9 @@ import com.example.conjuntoresidencial.model.ResidenteDTO
 import com.example.conjuntoresidencial.model.VehiculoDTO
 import com.example.conjuntoresidencial.util.Opciones
 import com.example.conjuntoresidencial.util.comoLista
-import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.ui.comun.ponerTitulo
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -35,6 +37,9 @@ class DetalleApartamentoFragment : Fragment() {
     private val residentesAdapter = ResidenteAdapter()
     private val vehiculosAdapter = VehiculoAdminAdapter()
 
+    private var totalResidentes = 0
+    private var totalVehiculos = 0
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDetalleApartamentoBinding.inflate(inflater, container, false)
         return binding.root
@@ -43,7 +48,7 @@ class DetalleApartamentoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         aptoId = arguments?.getLong("aptoId") ?: -1L
-        configurarBarra(binding.barra.toolbar, R.string.detalle_titulo, R.string.detalle_subtitulo)
+        configurarEncabezado(binding.encabezado, R.string.detalle_titulo, R.string.detalle_subtitulo)
 
         binding.rvResidentesApto.layoutManager = LinearLayoutManager(requireContext())
         binding.rvVehiculosApto.layoutManager = LinearLayoutManager(requireContext())
@@ -80,7 +85,7 @@ class DetalleApartamentoFragment : Fragment() {
                     ) { cargarTodo() }
                     return@launch
                 }
-                binding.barra.toolbar.title = getString(R.string.apto_item_titulo, datos.torre, datos.apto)
+                binding.encabezado.ponerTitulo(getString(R.string.apto_item_titulo, datos.torre, datos.apto))
                 mostrarResidentes(if (residentes.isSuccessful) residentes.body().orEmpty() else emptyList())
                 mostrarVehiculos(if (vehiculos.isSuccessful) vehiculos.body().orEmpty() else emptyList())
                 binding.estado.mostrarContenido()
@@ -93,11 +98,23 @@ class DetalleApartamentoFragment : Fragment() {
     private fun mostrarResidentes(lista: List<ResidenteDTO>) {
         residentesAdapter.submitList(lista)
         binding.tvSinResidentes.visibility = if (lista.isEmpty()) View.VISIBLE else View.GONE
+        totalResidentes = lista.size
+        ponerResumen()
     }
 
     private fun mostrarVehiculos(lista: List<VehiculoDTO>) {
         vehiculosAdapter.submitList(lista)
         binding.tvSinVehiculos.visibility = if (lista.isEmpty()) View.VISIBLE else View.GONE
+        totalVehiculos = lista.size
+        ponerResumen()
+    }
+
+    /** Resumen del encabezado: "2 residentes · 2 vehículos". */
+    private fun ponerResumen() {
+        binding.encabezado.ponerInfo(listOf(
+            resources.getQuantityString(R.plurals.resumen_residentes, totalResidentes, totalResidentes),
+            resources.getQuantityString(R.plurals.resumen_vehiculos, totalVehiculos, totalVehiculos)
+        ).joinToString(" · "))
     }
 
     private fun recargarResidentes() {

@@ -290,6 +290,14 @@
 
     <!-- Resúmenes del encabezado One UI (ui/comun/EncabezadoGrande.kt, resumen) -->
     <string name="resumen_sin_notificaciones">Sin notificaciones nuevas</string>
+    <plurals name="resumen_residentes">
+        <item quantity="one">%d residente</item>
+        <item quantity="other">%d residentes</item>
+    </plurals>
+    <plurals name="resumen_trabajadores_agregados">
+        <item quantity="one">%d trabajador agregado</item>
+        <item quantity="other">%d trabajadores agregados</item>
+    </plurals>
     <plurals name="resumen_avisos">
         <item quantity="one">%d notificación</item>
         <item quantity="other">%d notificaciones</item>

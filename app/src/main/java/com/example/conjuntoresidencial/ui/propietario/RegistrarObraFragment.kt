@@ -20,7 +20,8 @@ import com.example.conjuntoresidencial.ui.comun.Estados
 import com.example.conjuntoresidencial.util.Formatos
 import com.example.conjuntoresidencial.util.Resource
 import com.example.conjuntoresidencial.util.SessionManager
-import com.example.conjuntoresidencial.util.configurarBarra
+import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.util.limpiarErrorAlEscribir
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -45,7 +46,7 @@ class RegistrarObraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarBarra(binding.barra.toolbar, R.string.registrar_obra_titulo, R.string.registrar_obra_subtitulo)
+        configurarEncabezado(binding.encabezado, R.string.registrar_obra_titulo, R.string.registrar_obra_subtitulo)
         val aptoId = SessionManager(requireContext()).getApartamentoId()
 
         val etiquetas = estados.map { getString(Estados.obra(it).etiqueta) }
@@ -156,6 +157,11 @@ class RegistrarObraFragment : Fragment() {
             })
         }
         binding.chipsPersonal.visibility = if (viewModel.personal.isEmpty()) View.GONE else View.VISIBLE
+        // Resumen del encabezado: "2 trabajadores agregados"
+        val n = viewModel.personal.size
+        binding.encabezado.ponerInfo(
+            if (n == 0) null else resources.getQuantityString(R.plurals.resumen_trabajadores_agregados, n, n)
+        )
     }
 
     private fun guardarPersonalYSalir(obraId: Long) {
