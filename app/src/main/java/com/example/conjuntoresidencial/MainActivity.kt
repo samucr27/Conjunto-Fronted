@@ -21,6 +21,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import com.example.conjuntoresidencial.ui.comun.ControlesFlotantes
+import com.example.conjuntoresidencial.ui.comun.DifuminadoProgresivo
 import com.example.conjuntoresidencial.ui.comun.NotificacionesViewModel
 import com.example.conjuntoresidencial.util.SesionEventos
 import com.example.conjuntoresidencial.util.SessionManager
@@ -43,6 +44,9 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     // Menú que muestra ahora la barra inferior (null = oculta)
     @MenuRes private var menuActual: Int? = null
     private var margenInferiorSistema = 0
+    // Difuminado progresivo de los bordes (Android 13+); null en versiones anteriores
+    private var difuminado: DifuminadoProgresivo? = null
+    private var modoOscuro = false
     override var margenSuperior = 0
         private set
     private val _espacioInferior = MutableLiveData(0)
@@ -102,10 +106,10 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             WindowInsetsCompat.CONSUMED
         }
 
-        val modoOscuro = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+        modoOscuro = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
             Configuration.UI_MODE_NIGHT_YES
         WindowCompat.getInsetsController(window, window.decorView).apply {
-            isAppearanceLightStatusBars = false          // iconos blancos sobre el morado (encabezado o franja)
+            isAppearanceLightStatusBars = false          // iconos blancos sobre el morado del encabezado
             isAppearanceLightNavigationBars = !modoOscuro // iconos oscuros sobre fondo claro
         }
     }
@@ -123,6 +127,21 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         findViewById<View>(R.id.nav_host_fragment).setPadding(0, 0, 0, margenInferiorSistema)
         val espacio = if (barraInferior.visibility == View.VISIBLE) barraInferior.height + 2 * separacion else 0
         if (_espacioInferior.value != espacio) _espacioInferior.value = espacio
+        actualizarZonasDifuminadas()
+    }
+
+    /**
+     * Zonas del difuminado progresivo. Arriba: la barra de estado y, si se muestran, la fila de
+     * botones (el título grande empieza justo debajo y en reposo se ve nítido). Abajo: solo en
+     * las pestañas, desde encima de la barra inferior hasta el borde; en las demás pantallas no
+     * hay nada flotante abajo (y el botón fijo de "Registrar obra" se vería borroso).
+     */
+    private fun actualizarZonasDifuminadas() {
+        val efecto = difuminado ?: return
+        val altoBotones = resources.getDimensionPixelSize(R.dimen.alto_botones_superiores)
+        val arriba = margenSuperior + if (botonesSuperiores.visibility == View.VISIBLE) altoBotones else 0
+        val abajo = (_espacioInferior.value ?: 0).let { if (it > 0) it + margenInferiorSistema else 0 }
+        efecto.ponerZonas(arriba.toFloat(), abajo.toFloat())
     }
 
     /** Pestañas de cada rol. Los id del menú son los de las pantallas del nav_graph. */
@@ -201,16 +220,29 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
      * dibujo del sistema). En versiones anteriores no hay desenfoque eficiente: degradado morado.
      */
     private fun configurarDesenfoque() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            franjaSuperior.setupWith(findViewById<BlurTarget>(R.id.contenedor))
-                .setBlurRadius(RADIO_DESENFOQUE)
-                .setOverlayColor(ContextCompat.getColor(this, R.color.velo_desenfoque))
-            barraInferior.setupWith(findViewById<BlurTarget>(R.id.contenedor))
-                .setBlurRadius(RADIO_DESENFOQUE)
-                .setOverlayColor(ContextCompat.getColor(this, R.color.velo_barra))
-        } else {
-            franjaSuperior.setBackgroundResource(R.drawable.franja_degradada)
-            barraInferior.setBackgroundResource(R.drawable.fondo_barra_inferior_respaldo)
+        val contenedor = findViewById<BlurTarget>(R.id.contenedor)
+        when {
+            // Android 13+: el contenido mismo se difumina poco a poco hacia los bordes.
+            // No hace falta franja; la barra es una cápsula translúcida sin desenfoque propio.
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+                difuminado = DifuminadoProgresivo(contenedor, resources.displayMetrics.density * RADIO_PROGRESIVO_DP)
+                franjaSuperior.visibility = View.GONE
+                barraInferior.setBackgroundResource(R.drawable.fondo_barra_inferior_translucida)
+            }
+            // Android 12: desenfoque simple de una franja fija y de la barra (BlurView)
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                franjaSuperior.setupWith(contenedor)
+                    .setBlurRadius(RADIO_DESENFOQUE)
+                    .setOverlayColor(ContextCompat.getColor(this, R.color.velo_desenfoque))
+                barraInferior.setupWith(contenedor)
+                    .setBlurRadius(RADIO_DESENFOQUE)
+                    .setOverlayColor(ContextCompat.getColor(this, R.color.velo_barra))
+            }
+            // Android 7-11: sin desenfoque en vivo, degradado del color de fondo
+            else -> {
+                franjaSuperior.setBackgroundResource(R.drawable.franja_degradada)
+                barraInferior.setBackgroundResource(R.drawable.fondo_barra_inferior_respaldo)
+            }
         }
         // El desenfoque se recorta con la forma de cápsula del fondo
         barraInferior.outlineProvider = ViewOutlineProvider.BACKGROUND
@@ -219,6 +251,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
 
     override fun mostrarControles(atras: Boolean, alVolver: () -> Unit, @MenuRes menu: Int?, alElegir: (Int) -> Boolean) {
         botonesSuperiores.visibility = View.VISIBLE
+        actualizarZonasDifuminadas()
         btnVolver.visibility = if (atras) View.VISIBLE else View.GONE
         btnVolver.setOnClickListener { alVolver() }
         btnMas.visibility = if (menu == null) View.GONE else View.VISIBLE
@@ -233,6 +266,9 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
 
     override fun ponerPlegado(fraccion: Float) {
         franjaSuperior.alpha = ((fraccion - 0.75f) / 0.25f).coerceIn(0f, 1f)
+        // Cuando el encabezado morado sale, arriba pasa el contenido: en modo claro los iconos
+        // de la barra de estado (hora, batería) pasan a oscuros para seguir leyéndose
+        ponerIconosOscuros(!modoOscuro && fraccion > 0.85f)
     }
 
     private fun ocultarControles() {
@@ -240,6 +276,13 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         btnVolver.setOnClickListener(null)
         btnMas.setOnClickListener(null)
         franjaSuperior.alpha = 0f
+        ponerIconosOscuros(false)
+        actualizarZonasDifuminadas()
+    }
+
+    private fun ponerIconosOscuros(oscuros: Boolean) {
+        val control = WindowCompat.getInsetsController(window, window.decorView)
+        if (control.isAppearanceLightStatusBars != oscuros) control.isAppearanceLightStatusBars = oscuros
     }
 
     /** Vuelve al selector de login y vacía la pila para que "atrás" no regrese a pantallas protegidas. */
@@ -256,6 +299,8 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
 
     companion object {
         private const val RADIO_DESENFOQUE = 24f
+        // Radio del desenfoque justo en el borde (dp); hacia el centro baja hasta 0
+        private const val RADIO_PROGRESIVO_DP = 22f
     }
 
     override fun onDestroy() {
