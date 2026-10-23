@@ -69,15 +69,14 @@ class MisVehiculosFragment : Fragment() {
             }
         }
 
-        // El botón flotante se encoge a solo ícono al desplazar la lista hacia abajo
-        binding.rvVehiculos.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
-                if (dy > 0) binding.btnAgregarVehiculo.shrink() else if (dy < 0) binding.btnAgregarVehiculo.extend()
-            }
-        })
-        binding.btnAgregarVehiculo.setOnClickListener { mostrarDialogAgregar() }
-        // El difuminado de abajo termina encima del botón flotante
-        controlesFlotantes?.reservarAbajo(binding.btnAgregarVehiculo)
+        // Botón flotante (encima del difuminado); se encoge a solo ícono al desplazar hacia abajo
+        controlesFlotantes?.mostrarBotonFlotante(R.string.vehiculos_agregar, R.drawable.ic_add) { mostrarDialogAgregar() }?.let { boton ->
+            binding.rvVehiculos.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+                    if (dy > 0) boton.shrink() else if (dy < 0) boton.extend()
+                }
+            })
+        }
 
         if (viewModel.vehiculos.value == null) viewModel.fetchVehiculos(aptoId)
     }

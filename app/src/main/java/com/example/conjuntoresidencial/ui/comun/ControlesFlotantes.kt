@@ -1,9 +1,11 @@
 package com.example.conjuntoresidencial.ui.comun
 
-import android.view.View
+import androidx.annotation.DrawableRes
 import androidx.annotation.MenuRes
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 
 /**
  * Botones redondos "volver" y "⋮" y franja superior difuminada, que flotan sobre todas las
@@ -16,18 +18,20 @@ interface ControlesFlotantes {
     val margenSuperior: Int
 
     /**
-     * Espacio que tapa la barra inferior translúcida (0 si no se muestra). El contenido pasa por
-     * debajo de ella, así que las listas lo dejan libre al final para que el último elemento se lea.
+     * Espacio que las listas dejan libre al final: lo que ocupan abajo la zona difuminada, la
+     * barra inferior translúcida y el botón flotante. Así el último elemento se puede subir
+     * hasta verse nítido y nada lo tapa.
      */
     val espacioInferior: LiveData<Int>
 
     fun mostrarControles(atras: Boolean, alVolver: () -> Unit, @MenuRes menu: Int?, alElegir: (Int) -> Boolean)
 
     /**
-     * Botón fijo al fondo de la pantalla (Registrar obra, Agregar vehículo...): el difuminado de
-     * abajo termina justo encima de él para que se vea nítido. Al cambiar de pantalla se olvida.
+     * Acción principal de la pantalla (Registrar zona, Agregar vehículo, Registrar obra): un botón
+     * que flota abajo a la derecha, nítido encima del difuminado. Al cambiar de pantalla se oculta.
+     * Devuelve el botón para encogerlo al desplazar o desactivarlo mientras se guarda.
      */
-    fun reservarAbajo(vista: View?)
+    fun mostrarBotonFlotante(@StringRes texto: Int, @DrawableRes icono: Int, alTocar: () -> Unit): ExtendedFloatingActionButton
 
     /**
      * Cuánto ha salido el encabezado grande de la pantalla: 0 = desplegado, 1 = fuera.
