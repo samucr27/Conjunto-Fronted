@@ -15,6 +15,7 @@ import com.example.conjuntoresidencial.databinding.FragmentZonasComunesAdminBind
 import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
 import com.example.conjuntoresidencial.ui.comun.accionesDeLista
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.controlesFlotantes
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.ui.comun.resumen
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -71,6 +72,8 @@ class ZonasComunesAdminFragment : Fragment() {
             }
         })
         binding.btnRegistrarZona.setOnClickListener { mostrarDialogRegistrar() }
+        // El difuminado de abajo termina encima del botón flotante
+        controlesFlotantes?.reservarAbajo(binding.btnRegistrarZona)
 
         if (viewModel.zonas.value == null) viewModel.fetchZonas()
     }

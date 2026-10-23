@@ -1,5 +1,6 @@
 package com.example.conjuntoresidencial.ui.comun
 
+import android.view.View
 import androidx.annotation.MenuRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -21,6 +22,12 @@ interface ControlesFlotantes {
     val espacioInferior: LiveData<Int>
 
     fun mostrarControles(atras: Boolean, alVolver: () -> Unit, @MenuRes menu: Int?, alElegir: (Int) -> Boolean)
+
+    /**
+     * Botón fijo al fondo de la pantalla (Registrar obra, Agregar vehículo...): el difuminado de
+     * abajo termina justo encima de él para que se vea nítido. Al cambiar de pantalla se olvida.
+     */
+    fun reservarAbajo(vista: View?)
 
     /**
      * Cuánto ha salido el encabezado grande de la pantalla: 0 = desplegado, 1 = fuera.
