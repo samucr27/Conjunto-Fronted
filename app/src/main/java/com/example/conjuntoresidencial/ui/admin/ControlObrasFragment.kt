@@ -14,6 +14,7 @@ import com.example.conjuntoresidencial.ui.comun.accionesDeLista
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.ui.comun.resumen
+import com.example.conjuntoresidencial.ui.comun.aviso
 import com.google.android.material.snackbar.Snackbar
 
 class ControlObrasFragment : Fragment() {
@@ -57,7 +58,7 @@ class ControlObrasFragment : Fragment() {
 
         viewModel.mensaje.observe(viewLifecycleOwner) { evento ->
             evento.obtenerSiNoManejado()?.let {
-                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+                aviso(it, Snackbar.LENGTH_LONG).show()
             }
         }
         if (viewModel.obras.value == null) viewModel.fetchObras()

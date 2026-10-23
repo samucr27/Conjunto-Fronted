@@ -133,4 +133,17 @@ interface ApiService {
 
     @DELETE("api/notificaciones")
     suspend fun eliminarNotificaciones(): Response<Void>
+
+    @PUT("api/notificaciones/{id}/leida")
+    suspend fun marcarNotificacionLeida(@Path("id") id: Long): Response<Void>
+
+    @DELETE("api/notificaciones/{id}")
+    suspend fun eliminarNotificacion(@Path("id") id: Long): Response<Void>
+
+    // Celular que recibe avisos (al iniciar sesión) y su baja (al cerrarla; no pide sesión)
+    @POST("api/dispositivos")
+    suspend fun registrarDispositivo(@Body dispositivo: DispositivoRequest): Response<Void>
+
+    @POST("api/dispositivos/baja")
+    suspend fun darDeBajaDispositivo(@Body dispositivo: DispositivoRequest): Response<Void>
 }

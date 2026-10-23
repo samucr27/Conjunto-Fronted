@@ -1,6 +1,9 @@
 package com.example.conjuntoresidencial
 
+import android.Manifest
 import android.animation.ValueAnimator
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.drawable.Animatable
 import android.os.Build
@@ -9,6 +12,7 @@ import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.annotation.MenuRes
@@ -27,7 +31,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
+import com.example.conjuntoresidencial.push.AvisosCelular
 import com.example.conjuntoresidencial.ui.comun.ControlesFlotantes
+import com.example.conjuntoresidencial.ui.comun.DestinoNotificacion
 import com.example.conjuntoresidencial.ui.comun.DifuminadoProgresivo
 import com.example.conjuntoresidencial.ui.comun.NotificacionesViewModel
 import com.example.conjuntoresidencial.util.SesionEventos
@@ -35,6 +41,7 @@ import com.example.conjuntoresidencial.util.SessionManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import eightbitlab.com.blurview.BlurTarget
 import eightbitlab.com.blurview.BlurView
 
@@ -48,7 +55,15 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     private lateinit var btnVolver: MaterialButton
     private lateinit var btnMas: MaterialButton
     private lateinit var botonFlotante: ExtendedFloatingActionButton
+    private lateinit var capaAvisos: View
+    // Aviso en pantalla: se cierra al cambiar de pantalla (su ancla puede desaparecer)
+    private var avisoActual: Snackbar? = null
     private val notificaciones: NotificacionesViewModel by viewModels()
+    // Aviso del celular que se tocó: se abre en cuanto haya sesión de administrador
+    private var avisoPendiente: DestinoNotificacion? = null
+    // El celular se registra para recibir avisos una vez por sesión
+    private var celularRegistrado = false
+    private val pedirPermisoAvisos = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
 
     // Menú que muestra ahora la barra inferior (null = oculta)
     @MenuRes private var menuActual: Int? = null
@@ -78,6 +93,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         btnVolver = findViewById(R.id.btnVolver)
         btnMas = findViewById(R.id.btnMas)
         botonFlotante = findViewById(R.id.botonFlotante)
+        capaAvisos = findViewById(R.id.capaAvisos)
         // Si el botón cambia de alto (encogido, letra grande) las listas ajustan su espacio final
         botonFlotante.addOnLayoutChangeListener { _, _, top, _, bottom, _, viejoTop, _, viejoBottom ->
             if (bottom - top != viejoBottom - viejoTop) acomodarContenido()
@@ -85,6 +101,8 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         configurarDesenfoque()
         ajustarBarrasDelSistema()
         configurarBarraInferior()
+
+        recibirAviso(intent)
 
         SesionEventos.expirada.observe(this) { evento ->
             evento.obtenerSiNoManejado()?.let {
@@ -151,6 +169,8 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             bottomMargin = margenInferiorSistema + margenBoton
         }
         findViewById<View>(R.id.nav_host_fragment).setPadding(0, 0, 0, margenInferiorSistema)
+        // Los avisos quedan sobre la barra de navegación del sistema (o el teclado)
+        capaAvisos.setPadding(0, 0, 0, margenInferiorSistema)
         espacioBarra = if (barraInferior.visibility == View.VISIBLE) barraInferior.height + 2 * separacion else 0
         val espacioBoton = if (botonFlotante.visibility == View.VISIBLE) botonFlotante.height + 2 * margenBoton else 0
         val espacio = maxOf(espacioBarra, espacioBoton, zonaAbajo) + separacion
@@ -195,6 +215,16 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             acomodarContenido()
         }
 
+    override fun crearAviso(texto: CharSequence, duracion: Int): Snackbar =
+        Snackbar.make(capaAvisos, texto, duracion).apply {
+            anchorView = when {
+                barraInferior.visibility == View.VISIBLE -> barraInferior
+                botonFlotante.visibility == View.VISIBLE -> botonFlotante
+                else -> null
+            }
+            avisoActual = this
+        }
+
     private fun ocultarBotonFlotante() {
         if (botonFlotante.visibility == View.GONE) return
         botonFlotante.visibility = View.GONE
@@ -208,6 +238,8 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             // Cada pantalla vuelve a pedir sus botones de arriba (configurarEncabezado)
             ocultarControles()
             ocultarBotonFlotante()
+            avisoActual?.dismiss()
+            avisoActual = null
             val menu = when (destino.id) {
                 R.id.adminDashboardFragment, R.id.notificacionesFragment -> R.menu.menu_barra_admin
                 R.id.propietarioDashboardFragment, R.id.misReservasFragment, R.id.miCarteraFragment ->
@@ -219,6 +251,14 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             mostrarBarra(menu)
             if (menu != null && navInferior.selectedItemId != destino.id) navInferior.selectedItemId = destino.id
             if (menu == R.menu.menu_barra_admin) notificaciones.actualizarConteo()
+            when (destino.id) {
+                R.id.adminDashboardFragment, R.id.propietarioDashboardFragment -> {
+                    prepararAvisos()
+                    // Después de este cambio de pantalla, no dentro de él
+                    if (destino.id == R.id.adminDashboardFragment) navInferior.post { abrirAvisoPendiente() }
+                }
+                R.id.loginSelectorFragment -> celularRegistrado = false
+            }
         }
 
         navInferior.setOnItemSelectedListener { item ->
@@ -229,6 +269,46 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
 
         // Insignia de no leídas en la pestaña Notificaciones (solo existe en la barra del administrador)
         notificaciones.noLeidas.observe(this) { ponerInsignia() }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        recibirAviso(intent)
+    }
+
+    /** Se tocó un aviso del celular: lleva a su pantalla (si no hay sesión, después del login). */
+    private fun recibirAviso(intent: Intent?) {
+        val destino = DestinoNotificacion.de(intent) ?: return
+        DestinoNotificacion.limpiar(intent)
+        avisoPendiente = destino
+        abrirAvisoPendiente()
+    }
+
+    private fun abrirAvisoPendiente() {
+        val destino = avisoPendiente ?: return
+        val sesion = SessionManager(this)
+        if (sesion.getToken() == null || !sesion.esAdmin()) return
+        val actual = navController.currentDestination?.id
+        if (actual == null || actual in setOf(R.id.loginSelectorFragment, R.id.loginAdminFragment, R.id.loginApartamentoFragment)) return
+        avisoPendiente = null
+        destino.notificacionId?.let(notificaciones::marcarLeida)
+        destino.abrir(navController)
+    }
+
+    /**
+     * Al entrar a un panel: registra el celular para recibir avisos y, en Android 13+, pide
+     * permiso para mostrarlos (el sistema deja de preguntar si el usuario lo niega dos veces).
+     */
+    private fun prepararAvisos() {
+        if (celularRegistrado) return
+        celularRegistrado = true
+        AvisosCelular.registrar(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            pedirPermisoAvisos.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 
     private fun ponerInsignia() {

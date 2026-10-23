@@ -21,9 +21,12 @@ class VehiculoAdapter(
     override fun onBindViewHolder(h: VH, pos: Int) {
         val v = getItem(pos)
         val ctx = h.binding.root.context
-        h.binding.tvMarcaVehiculo.text = ctx.getString(R.string.dos_datos, v.marca, v.tipo)
-        h.binding.tvPlacaVehiculo.text = ctx.getString(R.string.dos_datos, v.placa, v.color)
+        // "Mazda · Carro" y "ABC123 · Rojo"; sin marca o color se omiten (son opcionales)
+        h.binding.tvMarcaVehiculo.text = listOf(v.marca, v.tipo).filterNot { it.isNullOrBlank() }.joinToString(SEPARADOR)
+        h.binding.tvPlacaVehiculo.text = listOf(v.placa, v.color).filterNot { it.isNullOrBlank() }.joinToString(SEPARADOR)
         h.binding.btnEliminarVehiculo.contentDescription = ctx.getString(R.string.desc_eliminar_vehiculo, v.placa)
         h.binding.btnEliminarVehiculo.setOnClickListener { onEliminar(v) }
     }
 }
+
+private const val SEPARADOR = " · "

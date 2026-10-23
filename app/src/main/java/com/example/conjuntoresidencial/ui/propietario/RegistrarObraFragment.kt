@@ -24,6 +24,7 @@ import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.ui.comun.controlesFlotantes
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.util.limpiarErrorAlEscribir
+import com.example.conjuntoresidencial.ui.comun.aviso
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -112,7 +113,7 @@ class RegistrarObraFragment : Fragment() {
                         findNavController().popBackStack()
                     }
                 }
-                is Resource.Error -> Snackbar.make(binding.root, resource.message, Snackbar.LENGTH_LONG).show()
+                is Resource.Error -> aviso(resource.message, Snackbar.LENGTH_LONG).show()
             }
         }
     }
