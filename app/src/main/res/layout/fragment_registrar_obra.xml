@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Formulario para registrar una obra y, opcionalmente, su personal externo.
+     Encabezado One UI (layout/encabezado_grande.xml) y, debajo, la hoja con el formulario.
      El botón de guardar queda fijo abajo para no tener que buscarlo al final del formulario. -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,14 +9,17 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface">
 
+    <include
+        android:id="@+id/encabezado"
+        layout="@layout/encabezado_grande" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <include
-            android:id="@+id/barra"
-            layout="@layout/barra_superior" />
+        android:background="@drawable/fondo_hoja"
+        android:orientation="vertical"
+        app:behavior_overlapTop="28dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -26,7 +30,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingStart="16dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="104dp">
 
                 <!-- Datos de la obra -->
                 <com.google.android.material.card.MaterialCardView
@@ -210,6 +217,17 @@
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+
+    <!-- Fijo al fondo de la pantalla y fuera de la hoja: la hoja que se desliza bajo el
+         encabezado mide como si este estuviera plegado, así que dentro de ella el botón
+         quedaba fuera de la pantalla mientras el encabezado estaba desplegado. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="?attr/colorSurface"
+        android:orientation="vertical">
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progressRegistrarObra"

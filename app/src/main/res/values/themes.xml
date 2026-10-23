@@ -160,24 +160,6 @@
     </style>
 
     <!-- Barra superior: el morado de la marca en ambos modos, texto e iconos claros -->
-    <style name="Widget.App.BarraSuperior" parent="Widget.Material3.Toolbar">
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="android:minHeight">?attr/actionBarSize</item>
-        <item name="titleTextAppearance">@style/TextAppearance.App.TitleLarge</item>
-        <item name="titleTextColor">@color/white</item>
-        <item name="subtitleTextAppearance">@style/TextAppearance.App.BodyMedium</item>
-        <item name="subtitleTextColor">@color/barra_subtitulo</item>
-        <item name="navigationIconTint">@color/white</item>
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BarraSuperior</item>
-    </style>
-    <!-- Los iconos del menú de la barra (Salir, notificaciones...) también en blanco -->
-    <style name="ThemeOverlay.App.BarraSuperior" parent="">
-        <item name="colorOnSurface">@color/white</item>
-        <item name="colorOnSurfaceVariant">@color/white</item>
-        <item name="colorControlNormal">@color/white</item>
-        <item name="actionMenuTextColor">@color/white</item>
-    </style>
-
     <!-- Botón redondo que flota sobre el encabezado morado (volver, más opciones): círculo blanco translúcido -->
     <style name="Widget.App.BotonRedondo" parent="Widget.Material3.Button.IconButton.Filled">
         <item name="backgroundTint">#33FFFFFF</item>

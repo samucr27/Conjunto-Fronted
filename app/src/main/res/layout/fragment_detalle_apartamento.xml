@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <LinearLayout
+    <!-- Encabezado One UI (layout/encabezado_grande.xml): el título pasa a "Torre X · Apto Y"
+         cuando carga el apartamento. Debajo, la hoja con acceso, residentes y vehículos. -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface"
-        android:orientation="vertical">
+        android:background="?attr/colorSurface">
 
-        <!-- El título pasa a "Torre X · Apto Y" cuando carga el apartamento -->
         <include
-            android:id="@+id/barra"
-            layout="@layout/barra_superior" />
+            android:id="@+id/encabezado"
+            layout="@layout/encabezado_grande" />
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/fondo_hoja"
+            app:behavior_overlapTop="28dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/contenido"
@@ -25,7 +28,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:paddingStart="16dp"
+                    android:paddingTop="20dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="16dp">
 
                     <!-- Acceso del residente -->
                     <com.google.android.material.card.MaterialCardView
@@ -212,5 +218,5 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </FrameLayout>
-    </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
