@@ -8,6 +8,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/raiz"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -85,5 +86,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </eightbitlab.com.blurview.BlurView>
+
+    <!-- Carga inicial: el logo se dibuja sobre el morado de la pantalla de inicio y luego se
+         desvanece (MainActivity.mostrarLogoAnimado). Tapa y bloquea todo mientras tanto
+         (clickable solo para tragarse los toques; no es un control). -->
+    <FrameLayout
+        android:id="@+id/capaInicio"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/ic_launcher_background"
+        android:clickable="true"
+        android:focusable="false"
+        android:visibility="gone"
+        tools:ignore="KeyboardInaccessibleWidget">
+
+        <ImageView
+            android:id="@+id/imgLogoInicio"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/logo_animado" />
+    </FrameLayout>
 
 </FrameLayout>
