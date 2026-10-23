@@ -57,12 +57,16 @@
     <!-- Fondo de los botones redondos flotantes (70 % del morado: contraste 4:1 con el ícono blanco
          aunque debajo pase contenido claro) -->
     <color name="boton_flotante">#B35E35B1</color>
-    <!-- Velo morado sobre el contenido desenfocado de la franja superior y la barra inferior -->
-    <color name="velo_desenfoque">#995E35B1</color>
-    <!-- Velo de la barra inferior: superficie lavanda translúcida (íconos y textos oscuros legibles) -->
-    <color name="velo_barra">#A6EDE4F7</color>
-    <!-- Barra inferior en Android 7-11 (sin desenfoque): casi opaca para que se lea bien -->
-    <color name="fondo_barra_respaldo">#F2F3EDF7</color>
-    <color name="borde_barra">#1F5E35B1</color>
+    <!-- Difuminado de los bordes y barra inferior: colores neutros (los del fondo), sin tono morado.
+         velo_desenfoque: sobre la franja de Android 12; velo_barra: sobre la barra de Android 12;
+         barra_translucida: barra de Android 13+ (el desenfoque lo pone el contenido);
+         fondo_barra_respaldo: barra de Android 7-11, casi opaca para leerse bien. -->
+    <color name="velo_desenfoque">#66FDF7FF</color>
+    <color name="velo_barra">#99F2ECF4</color>
+    <color name="barra_translucida">#B3F2ECF4</color>
+    <color name="fondo_barra_respaldo">#F2F2ECF4</color>
+    <color name="borde_barra">#1F000000</color>
+    <color name="franja_inicio">#F2FDF7FF</color>
+    <color name="franja_fin">#00FDF7FF</color>
     <color name="barra_subtitulo">#E9DDFF</color>
 </resources>

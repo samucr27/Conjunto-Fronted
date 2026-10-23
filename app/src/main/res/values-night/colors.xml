@@ -40,8 +40,12 @@
     <!-- Nombres antiguos: las tarjetas usan un contenedor algo más claro que el fondo -->
     <!-- Texto sobre los encabezados morados: blanco suave en modo oscuro -->
     <color name="white">#F5EFF7</color>
-    <!-- Barra inferior translúcida en modo oscuro -->
-    <color name="velo_barra">#A62B2930</color>
-    <color name="fondo_barra_respaldo">#F22B2930</color>
-    <color name="borde_barra">#33FFFFFF</color>
+    <!-- Difuminado y barra inferior en modo oscuro (colores neutros, ver values/colors.xml) -->
+    <color name="velo_desenfoque">#66141218</color>
+    <color name="velo_barra">#99211F26</color>
+    <color name="barra_translucida">#B3211F26</color>
+    <color name="fondo_barra_respaldo">#F2211F26</color>
+    <color name="borde_barra">#26FFFFFF</color>
+    <color name="franja_inicio">#F2141218</color>
+    <color name="franja_fin">#00141218</color>
 </resources>
