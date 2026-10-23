@@ -43,8 +43,23 @@ fun Fragment.configurarEncabezado(
     // más la barra de estado, porque el encabezado empieza detrás de ella
     val controles = controlesFlotantes
     val margenSuperior = controles?.margenSuperior ?: 0
-    encabezado.colapsable.layoutParams.height =
-        (resources.displayMetrics.heightPixels * PROPORCION_ENCABEZADO).toInt() + margenSuperior
+    val altoBase = (resources.displayMetrics.heightPixels * PROPORCION_ENCABEZADO).toInt() + margenSuperior
+    encabezado.colapsable.layoutParams.height = altoBase
+    // Si la información no cabe (logo, letra grande, pantalla baja), el encabezado crece lo
+    // necesario para que nada quede escondido debajo de la hoja
+    encabezado.zonaInfo.addOnLayoutChangeListener { info, izq, _, der, _, _, _, _, _ ->
+        info.post {
+            info.measure(
+                View.MeasureSpec.makeMeasureSpec(der - izq, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
+            val alto = maxOf(altoBase, info.measuredHeight)
+            if (encabezado.colapsable.layoutParams.height != alto) {
+                encabezado.colapsable.layoutParams.height = alto
+                encabezado.colapsable.requestLayout()
+            }
+        }
+    }
     // La información empieza bajo la barra de estado y la fila de botones flotantes
     encabezado.zonaInfo.updatePadding(
         top = margenSuperior + resources.getDimensionPixelSize(R.dimen.alto_botones_superiores)

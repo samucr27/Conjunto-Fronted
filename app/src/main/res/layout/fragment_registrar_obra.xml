@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Formulario para registrar una obra y, opcionalmente, su personal externo.
      Encabezado One UI (layout/encabezado_grande.xml) y, debajo, la hoja con el formulario.
-     El botón de guardar queda fijo abajo para no tener que buscarlo al final del formulario. -->
+     El botón de guardar flota abajo (MainActivity) para no tener que buscarlo al final del
+     formulario; mientras se guarda se ve la barra de progreso arriba de la hoja. -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -21,6 +22,16 @@
         app:behavior_overlapTop="28dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressRegistrarObra"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="28dp"
+            android:indeterminate="true"
+            android:visibility="gone" />
+
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -33,7 +44,7 @@
                 android:paddingStart="16dp"
                 android:paddingTop="20dp"
                 android:paddingEnd="16dp"
-                android:paddingBottom="104dp">
+                android:paddingBottom="16dp">
 
                 <!-- Datos de la obra -->
                 <com.google.android.material.card.MaterialCardView
@@ -219,29 +230,4 @@
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 
-    <!-- Fijo al fondo de la pantalla y fuera de la hoja: la hoja que se desliza bajo el
-         encabezado mide como si este estuviera plegado, así que dentro de ella el botón
-         quedaba fuera de la pantalla mientras el encabezado estaba desplegado. -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="?attr/colorSurface"
-        android:orientation="vertical">
-
-        <com.google.android.material.progressindicator.LinearProgressIndicator
-            android:id="@+id/progressRegistrarObra"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="gone" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGuardarObra"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:minHeight="56dp"
-            android:text="@string/registrar_obra_guardar" />
-    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
