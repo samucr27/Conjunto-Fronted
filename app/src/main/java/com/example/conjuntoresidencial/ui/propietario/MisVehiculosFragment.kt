@@ -19,6 +19,7 @@ import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.util.comoLista
 import com.example.conjuntoresidencial.ui.comun.accionesDeLista
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.controlesFlotantes
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.ui.comun.resumen
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -75,6 +76,8 @@ class MisVehiculosFragment : Fragment() {
             }
         })
         binding.btnAgregarVehiculo.setOnClickListener { mostrarDialogAgregar() }
+        // El difuminado de abajo termina encima del botón flotante
+        controlesFlotantes?.reservarAbajo(binding.btnAgregarVehiculo)
 
         if (viewModel.vehiculos.value == null) viewModel.fetchVehiculos(aptoId)
     }

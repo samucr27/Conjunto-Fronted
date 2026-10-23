@@ -4,6 +4,14 @@
          Tema Material 3. Un solo tema para claro y oscuro: los colores
          cambian solos con values-night/colors.xml.
          ================================================================ -->
+    <!-- Pantalla de inicio: fondo morado de la marca y el logo animado (drawable/logo_animado).
+         Al terminar, MainActivity pasa al tema normal (postSplashScreenTheme). -->
+    <style name="Theme.App.Inicio" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/ic_launcher_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_vacio</item>
+        <item name="postSplashScreenTheme">@style/Theme.ConjuntoResidencial</item>
+    </style>
+
     <style name="Theme.ConjuntoResidencial" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Roles de color -->
         <item name="colorPrimary">@color/md_primary</item>

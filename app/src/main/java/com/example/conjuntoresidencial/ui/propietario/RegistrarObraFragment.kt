@@ -21,6 +21,7 @@ import com.example.conjuntoresidencial.util.Formatos
 import com.example.conjuntoresidencial.util.Resource
 import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.controlesFlotantes
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.util.limpiarErrorAlEscribir
 import com.google.android.material.chip.Chip
@@ -78,6 +79,8 @@ class RegistrarObraFragment : Fragment() {
         listOf(binding.tilDescripcionObra, binding.tilNombrePersonalExterno, binding.tilCcPersonalExterno)
             .forEach { it.limpiarErrorAlEscribir() }
 
+        // El difuminado de abajo termina encima del botón fijo de guardar (y su barra de progreso)
+        controlesFlotantes?.reservarAbajo(binding.btnGuardarObra.parent as View)
         binding.btnGuardarObra.setOnClickListener {
             val descripcion = binding.etDescripcionObra.text.toString().trim()
             binding.tilDescripcionObra.error =

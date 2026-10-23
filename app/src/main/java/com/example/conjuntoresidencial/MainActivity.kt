@@ -1,16 +1,21 @@
 package com.example.conjuntoresidencial
 
+import android.animation.ValueAnimator
 import android.content.res.Configuration
+import android.graphics.drawable.Animatable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewOutlineProvider
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -46,6 +51,10 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     private var margenInferiorSistema = 0
     // Difuminado progresivo de los bordes (Android 13+); null en versiones anteriores
     private var difuminado: DifuminadoProgresivo? = null
+    private var tecladoAbierto = false
+    // Botón fijo abajo de la pantalla actual (Registrar obra, Agregar...): el difuminado termina encima
+    private var vistaReservada: View? = null
+    private val alCambiarReservada = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> actualizarZonasDifuminadas() }
     private var modoOscuro = false
     override var margenSuperior = 0
         private set
@@ -53,8 +62,11 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     override val espacioInferior: LiveData<Int> get() = _espacioInferior
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Pantalla de inicio del sistema: solo el fondo morado (el logo lo anima la app)
+        val inicio = installSplashScreen()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        if (savedInstanceState == null) mostrarLogoAnimado(inicio)
         navController = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
         barraInferior = findViewById(R.id.barraInferior)
         navInferior = findViewById(R.id.navInferior)
@@ -102,6 +114,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             contenedor.setPadding(barras.left, 0, barras.right, 0)
             // Abajo: la barra de navegación o el teclado, el que ocupe más
             margenInferiorSistema = maxOf(barras.bottom, teclado.bottom)
+            tecladoAbierto = teclado.bottom > barras.bottom
             acomodarContenido()
             WindowInsetsCompat.CONSUMED
         }
@@ -139,10 +152,37 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     private fun actualizarZonasDifuminadas() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
         val efecto = difuminado ?: return
+        val contenedor = findViewById<View>(R.id.contenedor)
         val altoBotones = resources.getDimensionPixelSize(R.dimen.alto_botones_superiores)
         val arriba = margenSuperior + if (botonesSuperiores.visibility == View.VISIBLE) altoBotones else 0
-        val abajo = (_espacioInferior.value ?: 0).let { if (it > 0) it + margenInferiorSistema else 0 }
-        efecto.ponerZonas(arriba.toFloat(), abajo.toFloat())
+        val espacioBarra = _espacioInferior.value ?: 0
+        val reservada = vistaReservada?.takeIf { it.isAttachedToWindow && it.visibility == View.VISIBLE && it.height > 0 }
+        val (abajo, fin) = when {
+            // Con el teclado abierto no se difumina abajo: ahí está el campo en el que se escribe
+            tecladoAbierto -> 0 to 0
+            // Pestañas: el contenido pasa bajo la barra translúcida hasta el borde
+            espacioBarra > 0 -> espacioBarra + margenInferiorSistema to contenedor.height
+            // Botón fijo abajo: el difuminado termina justo encima de él
+            reservada != null -> {
+                val ubicacion = IntArray(2).also(reservada::getLocationInWindow)
+                val inicioContenedor = IntArray(2).also(contenedor::getLocationInWindow)
+                zonaAbajo to (ubicacion[1] - inicioContenedor[1] - zonaSeparacion)
+            }
+            // Resto: hasta donde termina el contenido (encima de la barra de navegación del sistema)
+            else -> zonaAbajo to (contenedor.height - margenInferiorSistema)
+        }
+        efecto.ponerZonas(arriba.toFloat(), abajo.toFloat(), fin.toFloat())
+    }
+
+    private val zonaAbajo get() = (resources.displayMetrics.density * ZONA_ABAJO_DP).toInt()
+    private val zonaSeparacion get() = (resources.displayMetrics.density * 8).toInt()
+
+    override fun reservarAbajo(vista: View?) {
+        vistaReservada?.removeOnLayoutChangeListener(alCambiarReservada)
+        vistaReservada = vista
+        vista?.addOnLayoutChangeListener(alCambiarReservada)
+        // Al crearse la pantalla aún no tiene posición: se recalcula tras el primer dibujo
+        (vista ?: botonesSuperiores).post { actualizarZonasDifuminadas() }
     }
 
     /** Pestañas de cada rol. Los id del menú son los de las pantallas del nav_graph. */
@@ -150,6 +190,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         navController.addOnDestinationChangedListener { _, destino, _ ->
             // Cada pantalla vuelve a pedir sus botones de arriba (configurarEncabezado)
             ocultarControles()
+            reservarAbajo(null)
             val menu = when (destino.id) {
                 R.id.adminDashboardFragment, R.id.notificacionesFragment -> R.menu.menu_barra_admin
                 R.id.propietarioDashboardFragment, R.id.misReservasFragment, R.id.miCarteraFragment ->
@@ -212,6 +253,48 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             destino, null,
             NavOptions.Builder().setPopUpTo(inicio, false).setLaunchSingleTop(true).build()
         )
+    }
+
+    /**
+     * Carga inicial: sobre el mismo morado de la pantalla de inicio el logo se dibuja trazo a
+     * trazo (drawable/logo_animado) y después crece y se desvanece dejando ver la app. Lo hace
+     * la app y no el sistema para que se vea igual en todas las versiones de Android.
+     * Si el usuario desactivó las animaciones, no se muestra.
+     */
+    private fun mostrarLogoAnimado(inicio: SplashScreen) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !ValueAnimator.areAnimatorsEnabled()) return
+        val capa = findViewById<View>(R.id.capaInicio)
+        capa.visibility = View.VISIBLE
+        // Empieza cuando se va la pantalla del sistema (si no, se animaría oculta debajo de ella);
+        // por si el sistema no la mostró, arranca igual al poco del primer dibujo
+        var empezado = false
+        val empezar = {
+            if (!empezado) {
+                empezado = true
+                animarLogo(capa)
+            }
+        }
+        inicio.setOnExitAnimationListener { pantalla ->
+            pantalla.remove()
+            empezar()
+        }
+        capa.postDelayed(empezar, ESPERA_MAXIMA_INICIO_MS)
+    }
+
+    private fun animarLogo(capa: View) {
+        val logo = findViewById<ImageView>(R.id.imgLogoInicio)
+        (logo.drawable as? Animatable)?.start()
+        logo.animate()
+            .scaleX(1.25f).scaleY(1.25f).alpha(0f)
+            .setStartDelay(DURACION_LOGO_MS)
+            .setDuration(SALIDA_LOGO_MS)
+            .start()
+        capa.animate()
+            .alpha(0f)
+            .setStartDelay(DURACION_LOGO_MS + SALIDA_LOGO_MS / 3)
+            .setDuration(SALIDA_LOGO_MS)
+            .withEndAction { capa.visibility = View.GONE }
+            .start()
     }
 
     // ---- Botones flotantes y franja superior (ControlesFlotantes) ----
@@ -302,6 +385,12 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         private const val RADIO_DESENFOQUE = 24f
         // Radio del desenfoque justo en el borde (dp); hacia el centro baja hasta 0
         private const val RADIO_PROGRESIVO_DP = 22f
+        // Alto de la zona difuminada de abajo en pantallas sin barra inferior (dp)
+        private const val ZONA_ABAJO_DP = 96
+        // Lo que tarda en dibujarse el logo animado (drawable/logo_animado) y su salida
+        private const val DURACION_LOGO_MS = 1100L
+        private const val SALIDA_LOGO_MS = 350L
+        private const val ESPERA_MAXIMA_INICIO_MS = 4000L
     }
 
     override fun onDestroy() {

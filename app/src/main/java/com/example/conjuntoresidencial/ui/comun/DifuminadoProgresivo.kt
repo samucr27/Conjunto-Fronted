@@ -25,6 +25,8 @@ class DifuminadoProgresivo(private val vista: View, private val radioMaximo: Flo
     /** Alto (px) de la zona difuminada de arriba y de abajo; 0 = sin difuminado en ese borde. */
     private var arriba = 0f
     private var abajo = 0f
+    /** Dónde termina (px desde arriba) la zona de abajo; debajo de ese punto el contenido queda nítido. */
+    private var finAbajo = 0f
 
     init {
         vista.addOnLayoutChangeListener { _, _, top, _, bottom, _, viejoTop, _, viejoBottom ->
@@ -32,10 +34,15 @@ class DifuminadoProgresivo(private val vista: View, private val radioMaximo: Flo
         }
     }
 
-    fun ponerZonas(arriba: Float, abajo: Float) {
-        if (arriba == this.arriba && abajo == this.abajo) return
+    /**
+     * @param finAbajo dónde llega el desenfoque máximo de abajo (px desde arriba); por debajo el
+     *   contenido se ve nítido, para no desenfocar botones fijos como "Registrar obra"
+     */
+    fun ponerZonas(arriba: Float, abajo: Float, finAbajo: Float) {
+        if (arriba == this.arriba && abajo == this.abajo && finAbajo == this.finAbajo) return
         this.arriba = arriba
         this.abajo = abajo
+        this.finAbajo = finAbajo
         aplicar()
     }
 
@@ -51,6 +58,7 @@ class DifuminadoProgresivo(private val vista: View, private val radioMaximo: Flo
             mascara.setFloatUniform("tamano", vista.width.toFloat(), vista.height.toFloat())
             mascara.setFloatUniform("arriba", arriba)
             mascara.setFloatUniform("abajo", abajo)
+            mascara.setFloatUniform("finAbajo", if (finAbajo > 0f) finAbajo else vista.height.toFloat())
             mascara.setFloatUniform("nivel", i.toFloat())
             mascara.setFloatUniform("niveles", NIVELES.toFloat())
             val radio = radioMaximo * (i + 1) / NIVELES
@@ -72,6 +80,7 @@ class DifuminadoProgresivo(private val vista: View, private val radioMaximo: Flo
             uniform float2 tamano;
             uniform float arriba;
             uniform float abajo;
+            uniform float finAbajo;
             uniform float nivel;
             uniform float niveles;
 
@@ -79,7 +88,9 @@ class DifuminadoProgresivo(private val vista: View, private val radioMaximo: Flo
                 // Cercanía al borde: 0 fuera de las zonas, 1 justo en el borde
                 float t = 0.0;
                 if (arriba > 0.0 && p.y < arriba) t = 1.0 - p.y / arriba;
-                if (abajo > 0.0 && p.y > tamano.y - abajo) t = max(t, (p.y - (tamano.y - abajo)) / abajo);
+                if (abajo > 0.0 && p.y > finAbajo - abajo && p.y <= finAbajo) {
+                    t = max(t, (p.y - (finAbajo - abajo)) / abajo);
+                }
                 // Cada nivel aparece en su tramo; suavizado para que no se noten los saltos
                 float alfa = smoothstep(0.0, 1.0, clamp(t * niveles - nivel, 0.0, 1.0));
                 if (alfa <= 0.0) return half4(0.0);
