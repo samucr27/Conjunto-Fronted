@@ -87,6 +87,18 @@
             android:layout_height="wrap_content" />
     </eightbitlab.com.blurview.BlurView>
 
+    <!-- Acción principal de la pantalla (Registrar zona, Agregar vehículo, Registrar obra):
+         está fuera de "contenedor", así que flota nítida encima del difuminado de abajo.
+         La muestra cada pantalla con ControlesFlotantes.mostrarBotonFlotante. -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/botonFlotante"
+        style="@style/Widget.App.BotonFlotante"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone" />
+
     <!-- Carga inicial: el logo se dibuja sobre el morado de la pantalla de inicio y luego se
          desvanece (MainActivity.mostrarLogoAnimado). Tapa y bloquea todo mientras tanto
          (clickable solo para tragarse los toques; no es un control). -->

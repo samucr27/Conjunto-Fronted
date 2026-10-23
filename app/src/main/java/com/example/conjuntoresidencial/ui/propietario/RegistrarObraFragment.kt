@@ -26,6 +26,7 @@ import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.util.limpiarErrorAlEscribir
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -36,6 +37,8 @@ class RegistrarObraFragment : Fragment() {
     private var _binding: FragmentRegistrarObraBinding? = null
     private val binding get() = _binding!!
     private val viewModel: RegistrarObraViewModel by viewModels()
+    // Botón de guardar: flota en la capa de MainActivity, encima del difuminado
+    private var btnGuardar: ExtendedFloatingActionButton? = null
 
     // Valores que acepta el backend; en pantalla se muestran con su etiqueta ("En proceso")
     private val estados = listOf("EN_PROCESO", "FINALIZADA")
@@ -79,9 +82,8 @@ class RegistrarObraFragment : Fragment() {
         listOf(binding.tilDescripcionObra, binding.tilNombrePersonalExterno, binding.tilCcPersonalExterno)
             .forEach { it.limpiarErrorAlEscribir() }
 
-        // El difuminado de abajo termina encima del botón fijo de guardar (y su barra de progreso)
-        controlesFlotantes?.reservarAbajo(binding.btnGuardarObra.parent as View)
-        binding.btnGuardarObra.setOnClickListener {
+        // Botón de guardar flotante, nítido encima del difuminado de abajo
+        btnGuardar = controlesFlotantes?.mostrarBotonFlotante(R.string.registrar_obra_guardar, R.drawable.ic_check_circle) {
             val descripcion = binding.etDescripcionObra.text.toString().trim()
             binding.tilDescripcionObra.error =
                 if (descripcion.isEmpty()) getString(R.string.registrar_obra_descripcion_obligatoria) else null
@@ -90,7 +92,7 @@ class RegistrarObraFragment : Fragment() {
             binding.tilFechaFinObra.error =
                 if (viewModel.fechaFin.isEmpty()) getString(R.string.registrar_obra_fecha_obligatoria) else null
             if (descripcion.isEmpty() || viewModel.fechaInicio.isEmpty() || viewModel.fechaFin.isEmpty()) {
-                return@setOnClickListener
+                return@mostrarBotonFlotante
             }
             viewModel.registrarObra(descripcion, aptoId, getString(R.string.registrar_obra_error))
         }
@@ -98,7 +100,7 @@ class RegistrarObraFragment : Fragment() {
         viewModel.obraState.observe(viewLifecycleOwner) { resource ->
             val cargando = resource is Resource.Loading
             binding.progressRegistrarObra.visibility = if (cargando) View.VISIBLE else View.GONE
-            binding.btnGuardarObra.isEnabled = !cargando
+            btnGuardar?.isEnabled = !cargando
             when (resource) {
                 is Resource.Loading -> Unit
                 is Resource.Success -> {
@@ -169,7 +171,7 @@ class RegistrarObraFragment : Fragment() {
 
     private fun guardarPersonalYSalir(obraId: Long) {
         binding.progressRegistrarObra.visibility = View.VISIBLE
-        binding.btnGuardarObra.isEnabled = false
+        btnGuardar?.isEnabled = false
         viewLifecycleOwner.lifecycleScope.launch {
             // "Nombre: motivo" de los trabajadores que no se pudieron guardar
             val fallidos = mutableListOf<String>()
@@ -220,5 +222,5 @@ class RegistrarObraFragment : Fragment() {
         return Calendar.getInstance().apply { set(partes[0], partes[1] - 1, partes[2], 0, 0, 0) }
     }
 
-    override fun onDestroyView() { super.onDestroyView(); _binding = null }
+    override fun onDestroyView() { super.onDestroyView(); _binding = null; btnGuardar = null }
 }
