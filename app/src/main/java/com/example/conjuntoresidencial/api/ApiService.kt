@@ -11,6 +11,10 @@ interface ApiService {
     @POST("api/auth/apartamento/login")
     suspend fun loginApartamento(@Body request: LoginApartamentoRequest): Response<LoginResponse>
 
+    // Cuenta → Perfil: cambiar la propia contraseña (400 si la actual no coincide)
+    @PUT("api/auth/contrasena")
+    suspend fun cambiarContrasena(@Body request: CambioPropiaContrasenaRequest): Response<Void>
+
     @GET("api/apartamentos")
     suspend fun getApartamentos(): Response<List<Apartamento>>
 

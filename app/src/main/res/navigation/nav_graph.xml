@@ -159,4 +159,30 @@
         android:name="com.example.conjuntoresidencial.ui.comun.CuentaFragment"
         tools:layout="@layout/fragment_cuenta" />
 
+    <!-- Pantallas de Cuenta (se abren por id desde CuentaFragment) -->
+    <fragment
+        android:id="@+id/perfilFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.PerfilFragment"
+        tools:layout="@layout/fragment_perfil" />
+    <fragment
+        android:id="@+id/ajustesFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.AjustesFragment"
+        tools:layout="@layout/fragment_ajustes" />
+    <fragment
+        android:id="@+id/permisosFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.PermisosFragment"
+        tools:layout="@layout/fragment_permisos" />
+    <fragment
+        android:id="@+id/legalFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.LegalFragment"
+        tools:layout="@layout/fragment_legal" />
+    <fragment
+        android:id="@+id/documentoFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.DocumentoFragment"
+        tools:layout="@layout/fragment_documento" />
+    <fragment
+        android:id="@+id/ayudaFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.AyudaFragment"
+        tools:layout="@layout/fragment_ayuda" />
+
 </navigation>

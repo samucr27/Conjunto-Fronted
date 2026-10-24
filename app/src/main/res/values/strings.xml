@@ -128,7 +128,6 @@
     <string name="vehiculo_error_guardar">No se pudo guardar el vehículo</string>
     <string name="vehiculo_eliminar">Eliminar</string>
     <!-- Dos datos en una línea: "Mazda · Carro" -->
-    <string name="dos_datos">%1$s · %2$s</string>
 
     <!-- Descripciones para TalkBack: dicen sobre qué elemento actúa cada botón -->
     <string name="desc_aprobar_reserva">Aprobar reserva: %1$s, %2$s</string>
@@ -370,4 +369,117 @@
         <item quantity="one">%d vehículo</item>
         <item quantity="other">%d vehículos</item>
     </plurals>
+    <!-- P4 bloque 3: Cuenta -->
+    <string name="cuenta_perfil_sub">Tus datos y tu contraseña</string>
+    <string name="cuenta_ajustes">Ajustes</string>
+    <string name="cuenta_ajustes_sub">Tema, avisos y huella o rostro</string>
+    <string name="cuenta_permisos">Permisos</string>
+    <string name="cuenta_permisos_sub">Lo que la app puede usar del celular</string>
+    <string name="cuenta_legal">Legal</string>
+    <string name="cuenta_legal_sub">Términos, privacidad y licencias</string>
+    <string name="cuenta_ayuda">Ayuda</string>
+    <string name="cuenta_ayuda_sub">Preguntas frecuentes</string>
+    <string name="cuenta_acerca_de">Acerca de MiConjunto</string>
+    <string name="acerca_de_mensaje">%1$s\n\n%2$s\n\nApp para administrar el conjunto: directorio, obras, reservas de zonas comunes, vehículos, cartera y avisos.</string>
+
+    <!-- Perfil -->
+    <string name="perfil_descripcion">Tus datos y la seguridad de la cuenta</string>
+    <string name="perfil_datos">Datos</string>
+    <string name="perfil_seguridad">Seguridad</string>
+    <string name="perfil_cambiar_contrasena">Cambiar contraseña</string>
+    <string name="perfil_cambiar_contrasena_sub">Necesitas la contraseña actual</string>
+    <string name="perfil_nota_compartida">La contraseña del apartamento es la misma para todos sus residentes: si la cambias, avísales.</string>
+    <string name="hint_contrasena_actual">Contraseña actual</string>
+    <string name="hint_repetir_contrasena">Repite la nueva contraseña</string>
+    <string name="ayuda_contrasena_propia">Mínimo 6 caracteres</string>
+    <string name="contrasena_falta_actual">Escribe tu contraseña actual</string>
+    <string name="contrasena_muy_corta">Debe tener al menos 6 caracteres</string>
+    <string name="contrasena_no_coinciden">Las contraseñas no coinciden</string>
+    <string name="contrasena_cambiada">Contraseña cambiada</string>
+    <string name="contrasena_error_cambiar">No se pudo cambiar la contraseña</string>
+    <string name="btn_cambiar">Cambiar</string>
+    <string name="btn_confirmar">Confirmar</string>
+
+    <!-- Ajustes -->
+    <string name="ajustes_descripcion">Cómo se ve y se comporta la app en este celular</string>
+    <string name="ajustes_apariencia">Apariencia</string>
+    <string name="ajustes_notificaciones">Notificaciones</string>
+    <string name="ajustes_avisos">Avisos en este celular</string>
+    <string name="ajustes_avisos_sub">Reservas, vehículos y otros avisos en el panel de notificaciones</string>
+    <string name="ajustes_avisos_no_disponibles">No disponibles en esta versión de la app</string>
+    <string name="ajustes_avisos_sistema">Ajustes de notificaciones del sistema</string>
+    <string name="ajustes_avisos_sistema_sub">Sonido, vibración y cómo se muestran</string>
+    <string name="ajustes_seguridad">Seguridad</string>
+    <string name="ajustes_huella">Entrar con huella o rostro</string>
+    <string name="ajustes_huella_sub">Sin escribir la contraseña cada vez</string>
+    <string name="ajustes_huella_otra_cuenta">Ahora entra a %1$s. Al activarla aquí, entrará a esta cuenta.</string>
+    <string name="ajustes_huella_no_disponible">Registra una huella o tu rostro en los ajustes del celular para usarla</string>
+    <string name="ajustes_confirmar_titulo">Confirma tu contraseña</string>
+    <string name="ajustes_confirmar_mensaje">Se guardará cifrada en este celular y solo tu huella o rostro podrán usarla.</string>
+
+    <!-- Permisos -->
+    <string name="permisos_descripcion">Lo que la app usa del celular y su estado</string>
+    <string name="permiso_notificaciones">Notificaciones</string>
+    <string name="permiso_notificaciones_sub">Para mostrar avisos de reservas y vehículos</string>
+    <string name="permiso_biometria">Huella o rostro</string>
+    <string name="permiso_biometria_sub">Para entrar sin escribir la contraseña</string>
+    <string name="permiso_permitido">Permitido</string>
+    <string name="permiso_no_permitido">No permitido</string>
+    <string name="permiso_configurada">Configurada</string>
+    <string name="permiso_sin_registrar">Sin registrar</string>
+    <string name="permiso_no_disponible">No disponible</string>
+    <string name="permisos_nota">MiConjunto no usa la cámara, la ubicación, los contactos ni el micrófono. Cuando puedas subir comprobantes de pago, te pedirá acceso solo a la foto o el archivo que elijas.</string>
+    <string name="permisos_ajustes_app">Ajustes de la app en el celular</string>
+    <string name="permisos_ajustes_app_sub">Todos los permisos, almacenamiento y más</string>
+
+    <!-- Legal -->
+    <string name="legal_descripcion">Las condiciones de uso y cómo se tratan tus datos</string>
+    <string name="legal_terminos">Términos y condiciones</string>
+    <string name="legal_terminos_sub">Las reglas para usar la app</string>
+    <string name="legal_privacidad">Política de privacidad</string>
+    <string name="legal_privacidad_sub">Tratamiento de datos personales (Ley 1581 de 2012)</string>
+    <string name="legal_licencias">Licencias de código abierto</string>
+    <string name="legal_licencias_sub">Librerías que usa la app</string>
+    <string name="legal_nota">Textos de referencia para un proyecto académico. Antes de usar la app en un conjunto real, la administración debe revisarlos con su asesor legal.</string>
+
+    <!-- Ayuda -->
+    <string name="ayuda_descripcion">Respuestas a las dudas más comunes</string>
+    <string name="ayuda_contacto">¿No encuentras lo que buscas? Comunícate con la administración de tu conjunto.</string>
+    <string-array name="ayuda_preguntas">
+        <item>¿Cómo entro a la app?</item>
+        <item>Olvidé la contraseña del apartamento</item>
+        <item>¿Cómo reservo una zona común?</item>
+        <item>¿Por qué no me llegan los avisos?</item>
+        <item>¿Cómo entro con huella o rostro?</item>
+        <item>¿Cómo registro una obra o un vehículo?</item>
+        <item>¿Por qué me pide iniciar sesión otra vez?</item>
+    </string-array>
+    <string-array name="ayuda_respuestas">
+        <item>Elige si eres administrador o residente. Los residentes entran con la torre, el número de apartamento y la contraseña que les entregó la administración.</item>
+        <item>Pídele a la administración que la restablezca: desde el detalle de tu apartamento puede asignarte una nueva. Después podrás cambiarla en Cuenta → Perfil.</item>
+        <item>En tu panel abre Zonas comunes, toca Reservar en la zona que quieras y elige la fecha y la hora. La administración aprueba o rechaza la reserva y lo verás en Mis reservas.</item>
+        <item>Revisa en Cuenta → Ajustes que los avisos estén activados y en Cuenta → Permisos que las notificaciones estén permitidas. También deben estar activadas en los ajustes del celular.</item>
+        <item>Actívalo en Cuenta → Ajustes, o acepta la opción que aparece después de entrar con tu contraseña. Tu celular debe tener una huella o tu rostro registrados.</item>
+        <item>Desde tu panel, en Registrar obra o en Mis vehículos. La administración recibe un aviso con lo que registraste.</item>
+        <item>Por seguridad, la sesión se cierra al salir de la app y al pasar varias horas. Con la huella o el rostro activados vuelves a entrar con un toque.</item>
+    </string-array>
+
+    <!-- Huella o rostro -->
+    <string name="biometria_cuenta_admin">Administrador · %1$s</string>
+    <string name="biometria_cuenta_residente">Torre %1$s · Apto %2$s</string>
+    <string name="biometria_ofrecer_titulo">¿Entrar con huella o rostro?</string>
+    <string name="biometria_ofrecer_mensaje">La próxima vez podrás entrar a %1$s sin escribir la contraseña. Puedes cambiarlo en Cuenta → Ajustes.</string>
+    <string name="biometria_activar">Activar</string>
+    <string name="biometria_activada">Listo: la próxima vez entra con tu huella o rostro</string>
+    <string name="biometria_desactivada">Ya no se entra con huella o rostro</string>
+    <string name="biometria_activar_titulo">Activar el acceso con huella o rostro</string>
+    <string name="biometria_entrar_titulo">Entrar a MiConjunto</string>
+    <string name="biometria_usar_contrasena">Usar contraseña</string>
+    <string name="biometria_entrar">Entrar con huella o rostro</string>
+    <string name="biometria_invalidada">Se registró otra huella en el celular: por seguridad, entra con tu contraseña y vuelve a activarla.</string>
+    <string name="biometria_error_datos">No se pudieron leer los datos guardados: entra con tu contraseña.</string>
+    <string name="biometria_contrasena_cambio">La contraseña de %1$s cambió: entra con la nueva y vuelve a activar la huella.</string>
+    <string name="biometria_reconfirmar">Confirma con tu huella o rostro para seguir entrando con ellos</string>
+    <string name="ahora_no">Ahora no</string>
+    <string name="vineta">•  %1$s</string>
 </resources>

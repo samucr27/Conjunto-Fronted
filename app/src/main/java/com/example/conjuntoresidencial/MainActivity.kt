@@ -64,6 +64,9 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     // El celular se registra para recibir avisos una vez por sesión
     private var celularRegistrado = false
     private val pedirPermisoAvisos = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
+    // Lo que espera a que termine el logo animado de la carga (alTerminarCarga)
+    private val trasLaCarga = mutableListOf<() -> Unit>()
+    private var cargando = false
 
     // Menú que muestra ahora la barra inferior (null = oculta)
     @MenuRes private var menuActual: Int? = null
@@ -215,6 +218,10 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             acomodarContenido()
         }
 
+    override fun alTerminarCarga(accion: () -> Unit) {
+        if (cargando) trasLaCarga += accion else accion()
+    }
+
     override fun crearAviso(texto: CharSequence, duracion: Int): Snackbar =
         Snackbar.make(capaAvisos, texto, duracion).apply {
             anchorView = when {
@@ -304,7 +311,8 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         if (celularRegistrado) return
         celularRegistrado = true
         AvisosCelular.registrar(this)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+        // Si los apagó en Cuenta → Ajustes, tampoco se pide el permiso
+        if (AvisosCelular.activados(this) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
             pedirPermisoAvisos.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -362,6 +370,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !ValueAnimator.areAnimatorsEnabled()) return
         val capa = findViewById<View>(R.id.capaInicio)
         capa.visibility = View.VISIBLE
+        cargando = true
         // Empieza cuando se va la pantalla del sistema (si no, se animaría oculta debajo de ella);
         // por si el sistema no la mostró, arranca igual al poco del primer dibujo
         var empezado = false
@@ -390,7 +399,11 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             .alpha(0f)
             .setStartDelay(DURACION_LOGO_MS + SALIDA_LOGO_MS / 3)
             .setDuration(SALIDA_LOGO_MS)
-            .withEndAction { capa.visibility = View.GONE }
+            .withEndAction {
+                capa.visibility = View.GONE
+                cargando = false
+                trasLaCarga.toList().also { trasLaCarga.clear() }.forEach { it() }
+            }
             .start()
     }
 

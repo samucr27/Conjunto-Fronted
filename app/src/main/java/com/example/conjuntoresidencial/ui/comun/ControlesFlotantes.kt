@@ -35,6 +35,12 @@ interface ControlesFlotantes {
     fun mostrarBotonFlotante(@StringRes texto: Int, @DrawableRes icono: Int, alTocar: () -> Unit): ExtendedFloatingActionButton
 
     /**
+     * Ejecuta [accion] cuando termina el logo animado de la carga (enseguida si ya terminó):
+     * así lo que se muestre en ese momento (la huella al abrir) no queda detrás del logo.
+     */
+    fun alTerminarCarga(accion: () -> Unit)
+
+    /**
      * Mensaje breve (Snackbar) en la capa de avisos, justo encima de la barra inferior o del
      * botón flotante si se muestran. Usar con Fragment.aviso (ui/comun/Avisos.kt).
      */
