@@ -66,6 +66,8 @@ dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     // Pantalla de inicio con el logo animado (Android 12+; en anteriores, el logo fijo)
     implementation("androidx.core:core-splashscreen:1.0.1")
+    // Entrar con huella o rostro
+    implementation("androidx.biometric:biometric:1.1.0")
     // Desenfoque en vivo del contenido bajo las barras translúcidas (Apache 2.0)
     implementation("com.github.Dimezis:BlurView:version-3.2.0")
     implementation("androidx.appcompat:appcompat:1.7.0")

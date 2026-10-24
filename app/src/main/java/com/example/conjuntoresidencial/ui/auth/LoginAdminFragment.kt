@@ -6,16 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentLoginAdminBinding
 import com.example.conjuntoresidencial.util.Resource
-import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.util.exigirTexto
 import com.example.conjuntoresidencial.util.limpiarErrorAlEscribir
 import com.example.conjuntoresidencial.ui.comun.aviso
+import com.example.conjuntoresidencial.seguridad.AccesoBiometrico
 import android.view.inputmethod.EditorInfo
 
 class LoginAdminFragment : Fragment() {
@@ -23,6 +22,9 @@ class LoginAdminFragment : Fragment() {
     private var _binding: FragmentLoginAdminBinding? = null
     private val binding get() = _binding!!
     private val viewModel: LoginAdminViewModel by viewModels()
+
+    // Lo que se escribió en el último intento: se cifra si el usuario activa la huella
+    private var credenciales: AccesoBiometrico.Credenciales? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -33,7 +35,6 @@ class LoginAdminFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val sessionManager = SessionManager(requireContext())
         configurarEncabezado(binding.encabezado, R.string.login_admin_titulo)
 
         // "Listo" en el teclado del campo de contraseña también inicia sesión
@@ -51,6 +52,7 @@ class LoginAdminFragment : Fragment() {
             if (!completos) return@setOnClickListener
             val user = binding.etUsuarioAdmin.text.toString().trim()
             val pass = binding.etPassAdmin.text.toString().trim()
+            credenciales = AccesoBiometrico.Credenciales("ADMIN", usuario = user, contrasena = pass)
             viewModel.loginAdmin(user, pass)
         }
 
@@ -62,12 +64,8 @@ class LoginAdminFragment : Fragment() {
                 }
                 is Resource.Success -> {
                     binding.progressAdmin.visibility = View.GONE
-                    resource.data?.let {
-                        sessionManager.saveToken(it.token)
-                        sessionManager.saveRol(it.rol)
-                        it.usuario?.let(sessionManager::saveUsuario)
-                        findNavController().navigate(R.id.action_loginAdminFragment_to_adminDashboardFragment)
-                    }
+                    // Guarda la sesión, ofrece entrar con huella la próxima vez y abre el panel
+                    resource.data?.let { completarInicioSesion(it, credenciales) }
                 }
                 is Resource.Error -> {
                     binding.progressAdmin.visibility = View.GONE

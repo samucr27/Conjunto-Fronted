@@ -1,0 +1,42 @@
+Última actualización: 23 de octubre de 2026.
+
+Esta política explica cómo se tratan los datos personales en MiConjunto, conforme a la Ley 1581 de 2012 y el Decreto 1377 de 2013 (compilado en el Decreto 1074 de 2015) sobre protección de datos personales en Colombia.
+
+# 1. Responsable del tratamiento
+La administración del conjunto residencial es la responsable de los datos registrados en la app y de atender las consultas y reclamos de sus titulares.
+
+# 2. Qué datos se tratan
+- Residentes: nombre completo, número de identificación, teléfono y si es propietario o arrendatario.
+- Apartamento: torre, número y contraseña (guardada cifrada, nunca en texto legible).
+- Vehículos: placa, tipo, marca y color.
+- Obras: descripción, fechas y datos del personal externo (nombre, cédula y estado de la ARL).
+- Reservas de zonas comunes y estado de cuenta del apartamento.
+- Datos técnicos: un identificador del celular para enviarle avisos, solo si los avisos están activados.
+
+# 3. Para qué se usan
+- Identificar a los residentes y controlar el ingreso de vehículos y de personal de obra.
+- Gestionar las reservas de zonas comunes y las obras en los apartamentos.
+- Informar el estado de cuenta de cada apartamento.
+- Enviar avisos relacionados con el conjunto.
+Los datos no se venden ni se usan para publicidad.
+
+# 4. Huella o rostro
+MiConjunto nunca recibe ni guarda tu huella o tu rostro: los verifica el propio celular. Si activas esta opción, tu contraseña se guarda cifrada solo en tu celular y se desbloquea con tu huella o rostro. Puedes desactivarla en cualquier momento en Cuenta → Ajustes.
+
+# 5. Datos de terceros
+Quien registra residentes o personal de obra debe contar con la autorización de esas personas para compartir sus datos con la administración.
+
+# 6. Tus derechos
+Como titular de los datos puedes:
+- Conocer, actualizar y rectificar tus datos.
+- Pedir prueba de la autorización que diste.
+- Ser informado sobre el uso que se les ha dado.
+- Revocar la autorización o pedir que se eliminen, cuando no exista un deber legal o contractual de conservarlos.
+- Presentar quejas ante la Superintendencia de Industria y Comercio.
+Para ejercerlos, comunícate con la administración del conjunto. Las consultas se responden en máximo 10 días hábiles y los reclamos en máximo 15 días hábiles.
+
+# 7. Seguridad
+Las comunicaciones con el servidor van cifradas (HTTPS), las contraseñas se guardan cifradas y cada usuario solo puede ver la información que le corresponde.
+
+# 8. Cambios a esta política
+Cuando cambie, la nueva versión estará en Cuenta → Legal con su fecha de actualización.

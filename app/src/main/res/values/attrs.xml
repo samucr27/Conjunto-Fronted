@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fila de opción estilo One UI (ui/comun/FilaOpcion.kt) -->
+    <declare-styleable name="FilaOpcion">
+        <attr name="filaIcono" format="reference" />
+        <attr name="filaTitulo" format="string" />
+        <attr name="filaSubtitulo" format="string" />
+        <!-- enlace: con flecha y lleva a otra pantalla; interruptor: con switch; estado: texto a la derecha -->
+        <attr name="filaTipo" format="enum">
+            <enum name="enlace" value="0" />
+            <enum name="interruptor" value="1" />
+            <enum name="estado" value="2" />
+        </attr>
+    </declare-styleable>
+</resources>

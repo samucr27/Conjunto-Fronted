@@ -1,0 +1,18 @@
+MiConjunto usa estas librerías y recursos de código abierto. Gracias a sus autores.
+
+# Apache License 2.0
+- AndroidX (AppCompat, Core, Fragment, Lifecycle, Navigation, RecyclerView, SwipeRefreshLayout, ConstraintLayout, SplashScreen, Biometric). The Android Open Source Project.
+- Material Components for Android. Google.
+- Material Icons. Google.
+- Firebase Cloud Messaging. Google.
+- Gson. Google.
+- Retrofit y OkHttp. Square, Inc.
+- Kotlin y kotlinx.coroutines. JetBrains.
+- BlurView. Dmitry Saviuk.
+
+Licencia completa: https://www.apache.org/licenses/LICENSE-2.0
+
+# SIL Open Font License 1.1
+- Poppins (tipografía). Indian Type Foundry.
+
+Licencia completa: https://openfontlicense.org

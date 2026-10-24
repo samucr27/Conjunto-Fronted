@@ -7,6 +7,8 @@ data class Apartamento(val id: Long, val torre: String, val apto: String)
 // Para crear/editar: la contraseña solo se envía (en edición es opcional)
 data class ApartamentoRequest(val torre: String, val apto: String, val contrasena: String? = null)
 data class CambioContrasenaRequest(val nuevaContrasena: String)
+// El usuario cambia su propia contraseña (Cuenta → Perfil)
+data class CambioPropiaContrasenaRequest(val contrasenaActual: String, val contrasenaNueva: String)
 // Respuesta de los dos logins: usuario solo viene para el admin; torre y apto solo para el propietario
 data class LoginResponse(val token: String, val expiraEn: String?, val rol: String, val id: Long, val usuario: String?, val torre: String?, val apto: String?)
 // Cuerpo de los errores del backend: {"mensaje": "..."}

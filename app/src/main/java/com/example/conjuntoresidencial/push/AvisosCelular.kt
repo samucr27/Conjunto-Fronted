@@ -35,10 +35,21 @@ object AvisosCelular {
 
     private const val CANAL = "avisos"
     private const val TAG = "AvisosCelular"
+    private const val PREFS = "ajustes"
+    private const val CLAVE_ACTIVADOS = "avisos_activados"
     // Los registros no deben depender de la pantalla: siguen aunque se cierre
     private val alcance = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     fun disponible(context: Context): Boolean = FirebaseApp.getApps(context).isNotEmpty()
+
+    /** Cuenta → Ajustes → "Avisos en este celular" (sí por defecto). Va aparte de la sesión. */
+    fun activados(context: Context): Boolean =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(CLAVE_ACTIVADOS, true)
+
+    fun cambiarActivados(context: Context, activados: Boolean) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putBoolean(CLAVE_ACTIVADOS, activados).apply()
+        if (activados) registrar(context) else darDeBaja(context)
+    }
 
     /** Canal "Avisos" (Android 8+): el usuario puede silenciarlo desde los ajustes del sistema. */
     fun crearCanal(context: Context) {
@@ -50,11 +61,11 @@ object AvisosCelular {
 
     /** Asocia este celular a la sesión actual para que le lleguen sus avisos. */
     fun registrar(context: Context) {
-        if (!disponible(context)) return
+        if (!disponible(context) || !activados(context)) return
         alcance.launch {
             try {
                 val token = FirebaseMessaging.getInstance().token.await()
-                enviarRegistro(token)
+                enviarRegistro(context, token)
             } catch (e: Exception) {
                 Log.w(TAG, "No se pudo registrar el celular para avisos", e)
             }
@@ -62,7 +73,8 @@ object AvisosCelular {
     }
 
     /** Firebase cambió el token (ServicioMensajes): se vuelve a registrar si hay sesión. */
-    internal fun enviarRegistro(token: String) {
+    internal fun enviarRegistro(context: Context, token: String) {
+        if (!activados(context)) return
         alcance.launch {
             try {
                 RetrofitClient.instance.registrarDispositivo(DispositivoRequest(token))

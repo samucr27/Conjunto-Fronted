@@ -13,6 +13,8 @@ import com.google.firebase.messaging.RemoteMessage
 class ServicioMensajes : FirebaseMessagingService() {
 
     override fun onMessageReceived(mensaje: RemoteMessage) {
+        // Desactivados en Ajustes: el celular ya se dio de baja; por si llega uno en camino
+        if (!AvisosCelular.activados(this)) return
         val datos = mensaje.data
         AvisosCelular.mostrar(
             this,
@@ -24,6 +26,6 @@ class ServicioMensajes : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         // Solo con sesión: si no, se registra al iniciarla (MainActivity)
-        if (SessionManager(this).getToken() != null) AvisosCelular.enviarRegistro(token)
+        if (SessionManager(this).getToken() != null) AvisosCelular.enviarRegistro(this, token)
     }
 }

@@ -2,6 +2,7 @@ package com.example.conjuntoresidencial.util
 
 import android.content.Context
 import androidx.core.content.edit
+import com.example.conjuntoresidencial.model.LoginResponse
 
 class SessionManager(context: Context) {
     // Este archivo está excluido de las copias de seguridad (ver res/xml/backup_rules.xml)
@@ -32,6 +33,19 @@ class SessionManager(context: Context) {
     // Usuario del administrador (el residente se identifica con torre y apartamento)
     fun saveUsuario(usuario: String) = prefs.edit { putString("usuario", usuario) }
     fun getUsuario(): String = prefs.getString("usuario", "") ?: ""
+
+    /** Guarda lo que devuelve el login (con contraseña o con huella). */
+    fun guardar(respuesta: LoginResponse) {
+        saveToken(respuesta.token)
+        saveRol(respuesta.rol)
+        if (respuesta.rol == "ADMIN") {
+            respuesta.usuario?.let(::saveUsuario)
+        } else {
+            saveApartamentoId(respuesta.id)
+            saveTorre(respuesta.torre ?: "")
+            saveApto(respuesta.apto ?: "")
+        }
+    }
 
     fun clearSession() = prefs.edit { clear() }
 
