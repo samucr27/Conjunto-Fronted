@@ -41,6 +41,12 @@ object Formatos {
     fun fechaHora(fecha: String?, hora: String?): String =
         listOf(fecha(fecha), hora(hora)).filter { it.isNotBlank() }.joinToString(" · ")
 
+    /** "2026-10-25" + "14:00" + "17:00" -> "25/10/2026 · 2:00 p. m. a 5:00 p. m." (sin fin, solo el inicio) */
+    fun horario(fecha: String?, inicio: String?, fin: String?): String {
+        val horas = if (fin.isNullOrBlank()) hora(inicio) else "${hora(inicio)} a ${hora(fin)}"
+        return listOf(fecha(fecha), horas).filter { it.isNotBlank() }.joinToString(" · ")
+    }
+
     /** Rango de fechas de una obra: "16/10/2026 → 31/10/2026" */
     fun rango(desde: String?, hasta: String?): String = "${fecha(desde)} → ${fecha(hasta)}"
 

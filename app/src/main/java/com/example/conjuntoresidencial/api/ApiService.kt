@@ -90,6 +90,12 @@ interface ApiService {
     @PUT("api/zonas/{id}")
     suspend fun updateZonaComun(@Path("id") id: Long, @Body zona: ZonaComunDTO): Response<ZonaComunDTO>
 
+    // Calendario de reservas (P4): lo ocupado de la zona entre dos fechas (máximo 62 días)
+    @GET("api/zonas/{id}/disponibilidad")
+    suspend fun getDisponibilidad(
+        @Path("id") zonaId: Long, @Query("desde") desde: String, @Query("hasta") hasta: String
+    ): Response<DisponibilidadDTO>
+
     @GET("api/reservas")
     suspend fun getReservas(): Response<List<ReservaDTO>>
 

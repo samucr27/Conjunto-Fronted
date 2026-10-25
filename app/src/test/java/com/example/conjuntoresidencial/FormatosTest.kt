@@ -22,6 +22,13 @@ class FormatosTest {
     }
 
     @Test
+    fun horarioDeUnaReserva() {
+        assertEquals("25/10/2026 · 2:00 p. m. a 5:00 p. m.", Formatos.horario("2026-10-25", "14:00:00", "17:00:00"))
+        // Reservas sin hora de fin: solo el inicio
+        assertEquals("25/10/2026 · 2:00 p. m.", Formatos.horario("2026-10-25", "14:00", null))
+    }
+
+    @Test
     fun fechaHoraUnidas() {
         assertEquals("23/10/2026 · 2:00 p. m.", Formatos.fechaHora("2026-10-23", "14:00:00"))
         assertEquals("23/10/2026", Formatos.fechaHora("2026-10-23", null))
