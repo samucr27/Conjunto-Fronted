@@ -159,6 +159,12 @@
         android:name="com.example.conjuntoresidencial.ui.comun.CuentaFragment"
         tools:layout="@layout/fragment_cuenta" />
 
+    <!-- Reservar una zona con el calendario de disponibilidad (residente) -->
+    <fragment
+        android:id="@+id/reservarZonaFragment"
+        android:name="com.example.conjuntoresidencial.ui.reservas.ReservarZonaFragment"
+        tools:layout="@layout/fragment_reservar_zona" />
+
     <!-- Vehículos por aprobar y cupos (administrador) -->
     <fragment
         android:id="@+id/vehiculosAdminFragment"

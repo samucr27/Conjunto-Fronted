@@ -260,13 +260,6 @@
 
     <string name="zonas_res_subtitulo">Elige una zona para reservarla</string>
     <string name="zonas_res_vacio">No hay zonas comunes registradas</string>
-    <string name="reserva_titulo">Reservar %1$s</string>
-    <string name="reserva_fecha">Fecha</string>
-    <string name="reserva_hora">Hora de inicio</string>
-    <string name="reserva_ayuda">La reserva queda pendiente hasta que la administración la apruebe.</string>
-    <string name="reserva_fecha_obligatoria">Elige la fecha</string>
-    <string name="reserva_hora_obligatoria">Elige la hora</string>
-    <string name="reserva_hora_pasada">Esa hora ya pasó</string>
     <string name="reserva_creada">Reserva enviada. Queda pendiente de aprobación.</string>
     <string name="reserva_error_crear">No se pudo crear la reserva</string>
 
@@ -524,5 +517,78 @@
     <string name="biometria_contrasena_cambio">La contraseña de %1$s cambió: entra con la nueva y vuelve a activar la huella.</string>
     <string name="biometria_reconfirmar">Confirma con tu huella o rostro para seguir entrando con ellos</string>
     <string name="ahora_no">Ahora no</string>
+    <string name="editar">Editar</string>
+
+    <!-- P4 bloque 5: reservar con calendario -->
+    <string name="reservar_descripcion">Elige el día y el horario; la administración la aprueba</string>
+    <string name="reservar_paso_dia">1. Elige el día</string>
+    <string name="reservar_paso_horario">2. Toca la hora de inicio y luego la de fin</string>
+    <string name="reservar_mes_anterior">Mes anterior</string>
+    <string name="reservar_mes_siguiente">Mes siguiente</string>
+    <string name="reservar_error_disponibilidad">No se pudo cargar la disponibilidad</string>
+    <string name="reservar_franja">%1$s a %2$s</string>
+    <string name="reservar_toca_inicio">Aún no eliges el horario</string>
+    <string name="reservar_resumen">De %1$s a %2$s · %3$s</string>
+    <string name="reservar_horas_minutos">%1$d h %2$d min</string>
+    <string name="reservar_horario">%1$s a %2$s</string>
+    <string name="reservar_asistentes">3. ¿Cuántas personas asisten?</string>
+    <string name="reservar_asistentes_minimo">Escribe cuántas personas asisten</string>
+    <string name="reservar_nota_aprobacion">La reserva queda pendiente hasta que la administración la apruebe. Te llegará un aviso con la respuesta.</string>
+    <string name="franja_libre">Libre</string>
+    <string name="franja_ocupada">Ocupado</string>
+    <string name="franja_propia">Tu reserva</string>
+    <string name="franja_pasada">Ya pasó</string>
+    <string name="franja_elegida">Elegida</string>
+    <string name="dia_libre">Libre</string>
+    <string name="dia_parcial">Parcial</string>
+    <string name="dia_lleno">Lleno</string>
+    <string name="dia_libre_desc">todo el horario libre</string>
+    <string name="dia_parcial_desc">con horas libres</string>
+    <string name="dia_lleno_desc">sin horas libres</string>
+    <string name="dia_pasado_desc">ya no se puede reservar</string>
+    <string name="dia_cargando_desc">cargando disponibilidad</string>
+    <string-array name="dias_semana_iniciales">
+        <item>L</item>
+        <item>M</item>
+        <item>M</item>
+        <item>J</item>
+        <item>V</item>
+        <item>S</item>
+        <item>D</item>
+    </string-array>
+    <plurals name="reservar_aforo">
+        <item quantity="one">Aforo de %d persona</item>
+        <item quantity="other">Aforo de %d personas</item>
+    </plurals>
+    <plurals name="reservar_maximo">
+        <item quantity="one">Máximo %d persona</item>
+        <item quantity="other">Máximo %d personas</item>
+    </plurals>
+    <plurals name="reservar_aforo_excedido">
+        <item quantity="one">El aforo es de %d persona</item>
+        <item quantity="other">El aforo es de %d personas</item>
+    </plurals>
+    <plurals name="reservar_horas">
+        <item quantity="one">%d hora</item>
+        <item quantity="other">%d horas</item>
+    </plurals>
+    <plurals name="reserva_personas">
+        <item quantity="one">%d persona</item>
+        <item quantity="other">%d personas</item>
+    </plurals>
+    <plurals name="zona_aforo_corto">
+        <item quantity="one">Aforo %d</item>
+        <item quantity="other">Aforo %d</item>
+    </plurals>
+    <string name="zona_editar_titulo">Editar zona</string>
+    <string name="zona_actualizada">Zona actualizada</string>
+    <string name="zona_aforo">Aforo (personas por reserva)</string>
+    <string name="zona_aforo_ayuda">Déjalo vacío si no hay límite</string>
+    <string name="zona_aforo_minimo">Debe ser de al menos una persona</string>
+    <string name="zona_apertura">Se puede reservar desde</string>
+    <string name="zona_cierre">Hasta</string>
+    <string name="zona_horario_ayuda">Sin horario, se puede reservar a cualquier hora</string>
+    <string name="zona_cierre_despues">Debe ser después de la hora de inicio</string>
+    <string name="zona_quitar_hora">Quitar la hora</string>
     <string name="vineta">•  %1$s</string>
 </resources>

@@ -38,16 +38,20 @@ class ReservaAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val (reserva, nombreZona) = getItem(position)
         holder.binding.tvZonaReserva.text = nombreZona
-        holder.binding.tvFechaReserva.text = Formatos.fechaHora(reserva.fecha, reserva.hora)
-        holder.binding.tvEstadoReserva.mostrarEstado(Estados.reserva(reserva.estado))
+        // "25/10/2026 · 2:00 p. m. a 5:00 p. m. · 12 personas"
         val ctx = holder.binding.root.context
+        holder.binding.tvFechaReserva.text = listOfNotNull(
+            Formatos.horario(reserva.fecha, reserva.hora, reserva.horaFin),
+            reserva.asistentes?.let { ctx.resources.getQuantityString(R.plurals.reserva_personas, it, it) }
+        ).joinToString(" · ")
+        holder.binding.tvEstadoReserva.mostrarEstado(Estados.reserva(reserva.estado))
         val esResaltada = resaltada != null && reserva.id == resaltada
         holder.binding.root.strokeWidth = if (esResaltada) (2 * ctx.resources.displayMetrics.density).toInt() else 0
         holder.binding.root.strokeColor = MaterialColors.getColor(holder.binding.root, androidx.appcompat.R.attr.colorPrimary)
 
         if (reserva.estado == "PENDIENTE" && onAprobar != null && onRechazar != null) {
             holder.binding.layoutBotonesReserva.visibility = View.VISIBLE
-            val cuando = Formatos.fechaHora(reserva.fecha, reserva.hora)
+            val cuando = Formatos.horario(reserva.fecha, reserva.hora, reserva.horaFin)
             holder.binding.btnAprobarReserva.contentDescription = ctx.getString(R.string.desc_aprobar_reserva, nombreZona, cuando)
             holder.binding.btnRechazarReserva.contentDescription = ctx.getString(R.string.desc_rechazar_reserva, nombreZona, cuando)
             holder.binding.btnAprobarReserva.setOnClickListener { onAprobar.invoke(reserva) }

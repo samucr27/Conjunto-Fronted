@@ -68,7 +68,8 @@ class MiCarteraFragment : Fragment() {
         }
 
         viewModel.simulacion.observe(viewLifecycleOwner) { evento ->
-            evento.obtenerSiNoManejado()?.let { error ->
+            // null = salió bien (antes ese caso nunca se mostraba)
+            evento.siNoManejado { error ->
                 aviso(error ?: getString(R.string.simulacion_exitosa), Snackbar.LENGTH_LONG).show()
             }
         }

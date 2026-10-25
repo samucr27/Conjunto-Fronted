@@ -9,6 +9,16 @@ class Evento<out T>(private val contenido: T) {
 
     fun obtenerSiNoManejado(): T? =
         if (manejado) null else { manejado = true; contenido }
+
+    /**
+     * Para eventos cuyo contenido puede ser null a propósito (Evento<String?>: null = salió bien):
+     * [obtenerSiNoManejado] no distingue "ya manejado" de "null", así que el éxito nunca se veía.
+     */
+    fun siNoManejado(accion: (T) -> Unit) {
+        if (manejado) return
+        manejado = true
+        accion(contenido)
+    }
 }
 
 /**

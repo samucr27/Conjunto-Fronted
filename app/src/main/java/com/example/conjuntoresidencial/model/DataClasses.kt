@@ -28,8 +28,22 @@ data class CupoVehiculoDTO(val tipo: String, val maximo: Int, val requierePlaca:
 data class EstadoVehiculoRequest(val estado: String, val motivo: String? = null)
 data class ObraDTO(val id: Long?, val descripcionAdecuacion: String, val fechaInicio: String, val fechaFinEstimada: String, val estadoObra: String, val apartamentoId: Long)
 data class PersonalObraDTO(val id: Long?, val nombreTrabajador: String, val cedula: String, val arlEstado: Boolean, val obraId: Long, val torrePiso: String? = null, val aptoNum: String? = null)
-data class ZonaComunDTO(val id: Long?, val nombre: String, val estadoRecibido: String, val descripcionEstado: String, val esReservable: Boolean? = null)
-data class ReservaDTO(val id: Long?, val fecha: String, val hora: String, val estado: String, val zonaComunId: Long, val apartamentoId: Long)
+// aforo (personas por reserva) y horario para reservar ("08:00"); null = sin límite (P4)
+data class ZonaComunDTO(
+    val id: Long?, val nombre: String, val estadoRecibido: String, val descripcionEstado: String, val esReservable: Boolean? = null,
+    val aforo: Int? = null, val horaApertura: String? = null, val horaCierre: String? = null
+)
+// hora = inicio; horaFin y asistentes desde P4 (al leer, horaFin siempre viene)
+data class ReservaDTO(
+    val id: Long?, val fecha: String, val hora: String, val estado: String, val zonaComunId: Long, val apartamentoId: Long,
+    val horaFin: String? = null, val asistentes: Int? = null
+)
+// Lo ocupado de una zona día por día (calendario de reservas); las de otros no dicen de quién son
+data class DisponibilidadDTO(
+    val zonaId: Long, val aforo: Int?, val horaApertura: String?, val horaCierre: String?, val dias: List<DiaDisponibilidadDTO>
+)
+data class DiaDisponibilidadDTO(val fecha: String, val ocupadas: List<FranjaOcupadaDTO>)
+data class FranjaOcupadaDTO(val inicio: String, val fin: String, val estado: String, val propia: Boolean?)
 data class PagoDTO(val id: Long?, val saldoPendiente: Double, val estadoCuenta: String, val observaciones: String, val apartamentoId: Long)
 data class EstadoRequest(val estado: String)
 // tipo: "RESERVA" o "VEHICULO"; fecha en formato ISO, hora de Colombia ("2026-10-20T20:15:00").
