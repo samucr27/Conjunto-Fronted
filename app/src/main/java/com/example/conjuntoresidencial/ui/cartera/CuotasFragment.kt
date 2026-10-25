@@ -189,9 +189,16 @@ class CuotasFragment : Fragment() {
                 }
             }
         }
+        val titulo = getString(R.string.cuota_titulo_apto, c.torre, c.apto, Cuotas.nombreMes(c.periodo))
+        val detalle = Cuotas.detalle(requireContext(), c) + " · " + getString(Cuotas.estado(c).etiqueta)
+        // Pagada y sin comprobante (pago en la oficina): no hay nada que hacer, solo el detalle
+        if (opciones.isEmpty()) {
+            MaterialAlertDialogBuilder(requireContext()).setTitle(titulo).setMessage(detalle)
+                .setPositiveButton(R.string.btn_cerrar, null).show()
+            return
+        }
         // "Torre 1 Apto 101 · Noviembre 2026" y, debajo, valor, vencimiento y estado
-        elegirOpcion(getString(R.string.cuota_titulo_apto, c.torre, c.apto, Cuotas.nombreMes(c.periodo)) + "\n" +
-            Cuotas.detalle(requireContext(), c) + " · " + getString(Cuotas.estado(c).etiqueta), opciones)
+        elegirOpcion("$titulo\n$detalle", opciones)
     }
 
     private fun pedirMotivo(c: CuotaDTO) {
