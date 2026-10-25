@@ -7,6 +7,7 @@ import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.model.NotificacionDTO
 import com.example.conjuntoresidencial.ui.admin.ReservasAdminFragment
 import com.example.conjuntoresidencial.ui.admin.VehiculosAdminFragment
+import com.example.conjuntoresidencial.ui.residentes.ResidentesFragment
 
 /**
  * A dónde lleva una notificación, al tocarla en la pestaña Notificaciones o en el aviso del
@@ -21,10 +22,13 @@ data class DestinoNotificacion(
     val apartamentoId: Long?
 ) {
     /** Las de los residentes empiezan por el tipo de lo que se revisó: VEHICULO_APROBADO... */
-    val esParaAdmin: Boolean get() = tipo == TIPO_RESERVA || tipo == TIPO_VEHICULO
+    val esParaAdmin: Boolean get() = tipo == TIPO_RESERVA || tipo == TIPO_VEHICULO || tipo == TIPO_RESIDENTE
 
     fun abrir(nav: NavController) {
         when {
+            // Arrendatario por aprobar → la lista de pendientes; su aprobación o rechazo → Mi hogar
+            tipo == TIPO_RESIDENTE -> nav.navigate(R.id.residentesFragment, ResidentesFragment.pendientes())
+            tipo.startsWith(TIPO_RESIDENTE) -> nav.navigate(R.id.residentesFragment)
             tipo == TIPO_VEHICULO -> nav.navigate(
                 R.id.vehiculosAdminFragment,
                 referenciaId?.let { bundleOf(VehiculosAdminFragment.ARG_RESALTAR to it) }
@@ -49,6 +53,7 @@ data class DestinoNotificacion(
     companion object {
         const val TIPO_RESERVA = "RESERVA"
         const val TIPO_VEHICULO = "VEHICULO"
+        const val TIPO_RESIDENTE = "RESIDENTE"
         private const val EXTRA_TIPO = "notificacion_tipo"
         private const val EXTRA_NOTIFICACION = "notificacion_id"
         private const val EXTRA_REFERENCIA = "notificacion_referencia"

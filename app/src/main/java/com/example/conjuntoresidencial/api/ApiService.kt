@@ -11,6 +11,9 @@ interface ApiService {
     @POST("api/auth/apartamento/login")
     suspend fun loginApartamento(@Body request: LoginApartamentoRequest): Response<LoginResponse>
 
+    @POST("api/auth/residente/login")
+    suspend fun loginResidente(@Body request: LoginResidenteRequest): Response<LoginResponse>
+
     // Cuenta → Perfil: cambiar la propia contraseña (400 si la actual no coincide)
     @PUT("api/auth/contrasena")
     suspend fun cambiarContrasena(@Body request: CambioPropiaContrasenaRequest): Response<Void>
@@ -41,6 +44,16 @@ interface ApiService {
 
     @DELETE("api/residentes/{id}")
     suspend fun deleteResidente(@Path("id") id: Long): Response<Void>
+
+    // Arrendatarios que agregaron los propietarios (administrador)
+    @GET("api/residentes/pendientes")
+    suspend fun getResidentesPendientes(): Response<List<ResidenteDTO>>
+
+    @PUT("api/residentes/{id}/estado")
+    suspend fun revisarResidente(@Path("id") id: Long, @Body revision: RevisionResidente): Response<ResidenteDTO>
+
+    @PUT("api/residentes/{id}/acceso")
+    suspend fun cambiarAccesoResidente(@Path("id") id: Long, @Body acceso: AccesoResidente): Response<ResidenteDTO>
 
     @GET("api/vehiculos/apartamento/{id}")
     suspend fun getVehiculosPorApartamento(@Path("id") id: Long): Response<List<VehiculoDTO>>

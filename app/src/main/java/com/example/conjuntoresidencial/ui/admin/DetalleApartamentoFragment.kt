@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentDetalleApartamentoBinding
+import com.example.conjuntoresidencial.model.AccesoResidente
 import com.example.conjuntoresidencial.model.CambioContrasenaRequest
 import com.example.conjuntoresidencial.model.ResidenteDTO
 import com.example.conjuntoresidencial.model.VehiculoDTO
@@ -36,7 +37,7 @@ class DetalleApartamentoFragment : Fragment() {
     private var _binding: FragmentDetalleApartamentoBinding? = null
     private val binding get() = _binding!!
     private var aptoId: Long = -1L
-    private val residentesAdapter = ResidenteAdapter()
+    private val residentesAdapter = ResidenteAdapter(onTocar = { opcionesResidente(it) })
     private val vehiculosAdapter = VehiculoAdminAdapter()
 
     private var totalResidentes = 0
@@ -60,7 +61,12 @@ class DetalleApartamentoFragment : Fragment() {
 
         binding.btnAgregarResidente.setOnClickListener { mostrarDialogResidente() }
         binding.btnAgregarVehiculoAdmin.setOnClickListener { mostrarDialogVehiculo() }
-        binding.btnRestablecerContrasena.setOnClickListener { mostrarDialogRestablecerContrasena() }
+        binding.btnRestablecerContrasena.setOnClickListener {
+            pedirContrasena(getString(R.string.titulo_restablecer_contrasena), getString(R.string.contrasena_restablecida),
+                getString(R.string.error_restablecer_contrasena)) { nueva ->
+                RetrofitClient.instance.restablecerContrasena(aptoId, CambioContrasenaRequest(nueva))
+            }
+        }
 
         cargarTodo()
     }
@@ -143,14 +149,61 @@ class DetalleApartamentoFragment : Fragment() {
         }
     }
 
-    private fun mostrarDialogRestablecerContrasena() {
+    /** Tocar un residente: darle acceso con su documento (o cambiarlo), quitárselo o eliminarlo. */
+    private fun opcionesResidente(r: ResidenteDTO) {
+        val conAcceso = r.tieneAcceso == true
+        val opciones = listOfNotNull(
+            R.string.residente_dar_acceso.takeIf { !conAcceso },
+            R.string.residente_cambiar_contrasena.takeIf { conAcceso },
+            R.string.residente_quitar_acceso.takeIf { conAcceso },
+            R.string.residente_eliminar
+        )
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(r.nombreCompleto)
+            .setItems(opciones.map { getString(it) }.toTypedArray()) { _, i ->
+                when (opciones[i]) {
+                    R.string.residente_dar_acceso, R.string.residente_cambiar_contrasena ->
+                        pedirContrasena(getString(R.string.residente_acceso_titulo, r.nombreCompleto),
+                            getString(R.string.residente_acceso_listo), getString(R.string.residente_error_accion)) { nueva ->
+                            RetrofitClient.instance.cambiarAccesoResidente(r.id!!, AccesoResidente(nueva))
+                        }
+                    R.string.residente_quitar_acceso -> accionResidente {
+                        RetrofitClient.instance.cambiarAccesoResidente(r.id!!, AccesoResidente(""))
+                    }
+                    else -> MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(getString(R.string.residente_eliminar_titulo, r.nombreCompleto))
+                        .setPositiveButton(R.string.residente_eliminar_si) { _, _ ->
+                            accionResidente { RetrofitClient.instance.deleteResidente(r.id!!) }
+                        }
+                        .setNegativeButton(R.string.btn_cancelar, null)
+                        .show()
+                }
+            }
+            .show()
+    }
+
+    private fun accionResidente(peticion: suspend () -> retrofit2.Response<*>) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val response = peticion()
+                if (response.isSuccessful) recargarResidentes()
+                else avisar(RetrofitClient.mensajeDeError(response, getString(R.string.residente_error_accion)))
+            } catch (_: Exception) {
+                avisar(getString(R.string.error_red))
+            }
+        }
+    }
+
+    /** Pide una contraseña nueva (mínimo 6) y la guarda con [guardar]; al terminar recarga los residentes. */
+    private fun pedirContrasena(titulo: String, exito: String, error: String,
+                                guardar: suspend (String) -> retrofit2.Response<*>) {
         val dialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_restablecer_contrasena, null)
         val til = dialogView.findViewById<TextInputLayout>(R.id.tilNuevaContrasena)
         val et = dialogView.findViewById<TextInputEditText>(R.id.etNuevaContrasena)
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.titulo_restablecer_contrasena)
+            .setTitle(titulo)
             .setView(dialogView)
             .setPositiveButton(R.string.btn_guardar, null)
             .setNegativeButton(R.string.btn_cancelar, null)
@@ -167,9 +220,9 @@ class DetalleApartamentoFragment : Fragment() {
             boton.isEnabled = false
             viewLifecycleOwner.lifecycleScope.launch {
                 val mensaje = try {
-                    val response = RetrofitClient.instance.restablecerContrasena(aptoId, CambioContrasenaRequest(nueva))
-                    if (response.isSuccessful) getString(R.string.contrasena_restablecida)
-                    else RetrofitClient.mensajeDeError(response, getString(R.string.error_restablecer_contrasena))
+                    val response = guardar(nueva)
+                    if (response.isSuccessful) exito.also { recargarResidentes() }
+                    else RetrofitClient.mensajeDeError(response, error)
                 } catch (_: Exception) {
                     getString(R.string.error_red)
                 }

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.conjuntoresidencial.R
+import com.example.conjuntoresidencial.ui.residentes.ResidentesFragment
 import com.example.conjuntoresidencial.databinding.FragmentAdminDashboardBinding
 import com.example.conjuntoresidencial.ui.comun.NotificacionesViewModel
 import com.example.conjuntoresidencial.ui.comun.configurar
@@ -72,6 +73,10 @@ class AdminDashboardFragment : Fragment() {
         }
         binding.cardVehiculosAdmin.configurar(R.drawable.ic_car, R.string.menu_vehiculos_admin, R.string.menu_vehiculos_admin_sub) {
             nav.navigate(R.id.vehiculosAdminFragment)
+        }
+        binding.cardResidentesPendientes.configurar(R.drawable.ic_people, R.string.menu_residentes_pendientes,
+            R.string.menu_residentes_pendientes_sub) {
+            nav.navigate(R.id.residentesFragment, ResidentesFragment.pendientes())
         }
     }
 

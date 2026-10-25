@@ -40,8 +40,26 @@ class LoginApartamentoFragment : Fragment() {
             (accion == EditorInfo.IME_ACTION_DONE).also { if (it) binding.btnLoginApto.performClick() }
         }
 
-        listOf(binding.tilTorreApto, binding.tilNumApto, binding.tilPassApto).forEach { it.limpiarErrorAlEscribir() }
+        // Con mi documento (cuenta propia) o con los datos del apartamento (contraseña compartida)
+        binding.grupoModo.addOnButtonCheckedListener { _, _, _ -> mostrarModo() }
+        mostrarModo()
+
+        listOf(binding.tilDocumento, binding.tilTorreApto, binding.tilNumApto, binding.tilPassApto)
+            .forEach { it.limpiarErrorAlEscribir() }
         binding.btnLoginApto.setOnClickListener {
+            val pass = binding.etPassApto.text.toString().trim()
+            if (porDocumento()) {
+                val completos = listOf(
+                    binding.tilDocumento.exigirTexto(getString(R.string.login_falta_documento)),
+                    binding.tilPassApto.exigirTexto(getString(R.string.login_falta_contrasena))
+                ).all { it }
+                if (!completos) return@setOnClickListener
+                val documento = binding.etDocumento.text.toString().trim()
+                // El rol real (propietario o arrendatario) lo dice el backend; para la huella basta el documento
+                credenciales = AccesoBiometrico.Credenciales("PROPIETARIO", contrasena = pass, documento = documento)
+                viewModel.loginResidente(documento, pass)
+                return@setOnClickListener
+            }
             val completos = listOf(
                 binding.tilTorreApto.exigirTexto(getString(R.string.login_falta_torre)),
                 binding.tilNumApto.exigirTexto(getString(R.string.login_falta_apartamento)),
@@ -50,7 +68,6 @@ class LoginApartamentoFragment : Fragment() {
             if (!completos) return@setOnClickListener
             val torre = binding.etTorreApto.text.toString().trim()
             val apto = binding.etNumApto.text.toString().trim()
-            val pass = binding.etPassApto.text.toString().trim()
             credenciales = AccesoBiometrico.Credenciales("PROPIETARIO", torre = torre, apto = apto, contrasena = pass)
             viewModel.loginApartamento(torre, apto, pass)
         }
@@ -73,6 +90,16 @@ class LoginApartamentoFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun porDocumento() = binding.grupoModo.checkedButtonId == R.id.btnModoDocumento
+
+    private fun mostrarModo() {
+        val documento = porDocumento()
+        binding.tilDocumento.visibility = if (documento) View.VISIBLE else View.GONE
+        binding.tilTorreApto.visibility = if (documento) View.GONE else View.VISIBLE
+        binding.tilNumApto.visibility = if (documento) View.GONE else View.VISIBLE
+        binding.tvAyudaLogin.setText(if (documento) R.string.login_residente_ayuda_documento else R.string.login_residente_ayuda)
     }
 
     override fun onDestroyView() {

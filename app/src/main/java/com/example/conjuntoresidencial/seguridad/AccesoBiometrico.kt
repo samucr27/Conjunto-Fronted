@@ -41,20 +41,26 @@ object AccesoBiometrico {
     /** Para Cuenta → Permisos: si el celular tiene biometría y si hay alguna registrada. */
     enum class Estado { CONFIGURADA, SIN_REGISTRAR, NO_DISPONIBLE }
 
-    /** Lo que hace falta para iniciar sesión: usuario (admin) o torre y apto (residente). */
+    /**
+     * Lo que hace falta para iniciar sesión: usuario (admin), documento (residente con cuenta
+     * propia, P4) o torre y apto (residente con la contraseña del apartamento).
+     */
     data class Credenciales(
         val rol: String,
         val usuario: String? = null,
         val torre: String? = null,
         val apto: String? = null,
-        val contrasena: String
+        val contrasena: String,
+        val documento: String? = null
     ) {
         val esAdmin get() = rol == ROL_ADMIN
 
-        /** "Administrador · admin" o "Torre 1 · Apto 101": a quién entra la huella. */
-        fun cuenta(context: Context): String =
-            if (esAdmin) context.getString(R.string.biometria_cuenta_admin, usuario)
-            else context.getString(R.string.biometria_cuenta_residente, torre, apto)
+        /** "Administrador · admin", "Documento 1010" o "Torre 1 · Apto 101": a quién entra la huella. */
+        fun cuenta(context: Context): String = when {
+            esAdmin -> context.getString(R.string.biometria_cuenta_admin, usuario)
+            documento != null -> context.getString(R.string.biometria_cuenta_documento, documento)
+            else -> context.getString(R.string.biometria_cuenta_residente, torre, apto)
+        }
     }
 
     private const val ROL_ADMIN = "ADMIN"
