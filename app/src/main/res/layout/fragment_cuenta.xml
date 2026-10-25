@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Pestaña Cuenta (perfil y ajustes juntos): datos de la sesión, tema, versión y cerrar sesión.
-     Encabezado One UI (layout/encabezado_grande.xml) y, debajo, la hoja con las tarjetas. -->
+<!-- Pestaña Cuenta (estilo ajustes de One UI): acceso a Perfil, Ajustes, Permisos, Legal,
+     Ayuda y Acerca de, y el botón para cerrar sesión.
+     Encabezado One UI (layout/encabezado_grande.xml) y, debajo, la hoja con las opciones
+     (ui/comun/FilaOpcion.kt). Generado con el mismo esquema que las demás pantallas de Cuenta. -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -20,6 +22,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
+                android:id="@+id/contenido"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -28,118 +31,52 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="16dp">
 
-                <!-- Perfil -->
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.Material3.CardView.Filled"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:accessibilityHeading="true"
-                            android:text="@string/cuenta_perfil"
-                            android:textAppearance="?attr/textAppearanceTitleMedium"
-                            android:textColor="?attr/colorOnSurface" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:text="@string/cuenta_rol"
-                            android:textAppearance="?attr/textAppearanceLabelLarge"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
-
-                        <TextView
-                            android:id="@+id/tvRol"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?attr/textAppearanceBodyLarge"
-                            android:textColor="?attr/colorOnSurface" />
-
-                        <TextView
-                            android:id="@+id/tvEtiquetaIdentidad"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:textAppearance="?attr/textAppearanceLabelLarge"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
-
-                        <TextView
-                            android:id="@+id/tvIdentidad"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?attr/textAppearanceBodyLarge"
-                            android:textColor="?attr/colorOnSurface" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Apariencia -->
                 <com.google.android.material.card.MaterialCardView
                     style="@style/Widget.Material3.CardView.Filled"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp">
+                    android:layout_marginTop="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:accessibilityHeading="true"
-                            android:text="@string/cuenta_tema"
-                            android:textAppearance="?attr/textAppearanceTitleMedium"
-                            android:textColor="?attr/colorOnSurface" />
-
-                        <com.google.android.material.button.MaterialButtonToggleGroup
-                            android:id="@+id/grupoTema"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp">
+                        <com.example.conjuntoresidencial.ui.comun.FilaOpcion
+                            android:id="@+id/filaPerfil"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            app:selectionRequired="true"
-                            app:singleSelection="true">
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnTemaSistema"
-                                style="@style/Widget.Material3.Button.OutlinedButton"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:minHeight="48dp"
-                                android:text="@string/tema_sistema" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnTemaClaro"
-                                style="@style/Widget.Material3.Button.OutlinedButton"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:minHeight="48dp"
-                                android:text="@string/tema_claro" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnTemaOscuro"
-                                style="@style/Widget.Material3.Button.OutlinedButton"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:minHeight="48dp"
-                                android:text="@string/tema_oscuro" />
-                        </com.google.android.material.button.MaterialButtonToggleGroup>
+                            app:filaIcono="@drawable/ic_person"
+                            app:filaTipo="enlace"
+                            app:filaTitulo="@string/cuenta_perfil"
+                            app:filaSubtitulo="@string/cuenta_perfil_sub" />
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="72dp" />
+                        <com.example.conjuntoresidencial.ui.comun.FilaOpcion
+                            android:id="@+id/filaAjustes"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:filaIcono="@drawable/ic_settings"
+                            app:filaTipo="enlace"
+                            app:filaTitulo="@string/cuenta_ajustes"
+                            app:filaSubtitulo="@string/cuenta_ajustes_sub" />
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="72dp" />
+                        <com.example.conjuntoresidencial.ui.comun.FilaOpcion
+                            android:id="@+id/filaPermisos"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:filaIcono="@drawable/ic_security"
+                            app:filaTipo="enlace"
+                            app:filaTitulo="@string/cuenta_permisos"
+                            app:filaSubtitulo="@string/cuenta_permisos_sub" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
-
-                <!-- Acerca de -->
                 <com.google.android.material.card.MaterialCardView
                     style="@style/Widget.Material3.CardView.Filled"
                     android:layout_width="match_parent"
@@ -150,31 +87,39 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp">
+                        <com.example.conjuntoresidencial.ui.comun.FilaOpcion
+                            android:id="@+id/filaLegal"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:accessibilityHeading="true"
-                            android:text="@string/app_name"
-                            android:textAppearance="?attr/textAppearanceTitleMedium"
-                            android:textColor="?attr/colorOnSurface" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
+                            app:filaIcono="@drawable/ic_description"
+                            app:filaTipo="enlace"
+                            app:filaTitulo="@string/cuenta_legal"
+                            app:filaSubtitulo="@string/cuenta_legal_sub" />
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="@string/app_lema"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
-
-                        <TextView
-                            android:id="@+id/tvVersion"
-                            android:layout_width="wrap_content"
+                            android:layout_marginStart="72dp" />
+                        <com.example.conjuntoresidencial.ui.comun.FilaOpcion
+                            android:id="@+id/filaAyuda"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
+                            app:filaIcono="@drawable/ic_help"
+                            app:filaTipo="enlace"
+                            app:filaTitulo="@string/cuenta_ayuda"
+                            app:filaSubtitulo="@string/cuenta_ayuda_sub" />
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="72dp" />
+                        <com.example.conjuntoresidencial.ui.comun.FilaOpcion
+                            android:id="@+id/filaAcercaDe"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:filaIcono="@drawable/ic_info"
+                            app:filaTipo="enlace"
+                            app:filaTitulo="@string/cuenta_acerca_de" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 

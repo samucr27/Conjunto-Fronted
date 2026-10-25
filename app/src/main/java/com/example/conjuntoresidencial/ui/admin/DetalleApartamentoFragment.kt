@@ -1,5 +1,11 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import androidx.navigation.fragment.findNavController
+import com.example.conjuntoresidencial.model.Apartamento
+import com.example.conjuntoresidencial.model.ApartamentoRequest
+import com.example.conjuntoresidencial.ui.comun.confirmar
+import com.example.conjuntoresidencial.ui.comun.ejecutarAccion
+import com.example.conjuntoresidencial.ui.comun.elegirOpcion
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentDetalleApartamentoBinding
+import com.example.conjuntoresidencial.model.AccesoResidente
 import com.example.conjuntoresidencial.model.CambioContrasenaRequest
 import com.example.conjuntoresidencial.model.ResidenteDTO
 import com.example.conjuntoresidencial.model.VehiculoDTO
@@ -21,6 +28,8 @@ import com.example.conjuntoresidencial.util.comoLista
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.ui.comun.ponerTitulo
+import com.example.conjuntoresidencial.ui.comun.aviso
+import com.example.conjuntoresidencial.ui.comun.pedirVehiculo
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -34,8 +43,21 @@ class DetalleApartamentoFragment : Fragment() {
     private var _binding: FragmentDetalleApartamentoBinding? = null
     private val binding get() = _binding!!
     private var aptoId: Long = -1L
-    private val residentesAdapter = ResidenteAdapter()
-    private val vehiculosAdapter = VehiculoAdminAdapter()
+    private val residentesAdapter = ResidenteAdapter(onTocar = { opcionesResidente(it) })
+    private val vehiculosAdapter = VehiculoAdminAdapter { v ->
+        elegirOpcion(v.placa ?: v.tipo, listOf(
+            R.string.editar to { mostrarDialogVehiculo(v) },
+            R.string.vehiculo_eliminar to {
+                confirmar(getString(R.string.vehiculo_eliminar_titulo),
+                    getString(R.string.vehiculo_eliminar_pregunta, v.placa ?: v.tipo.lowercase()), R.string.vehiculo_eliminar) {
+                    ejecutarAccion(getString(R.string.vehiculo_eliminado), { RetrofitClient.instance.deleteVehiculo(v.id!!) }) {
+                        recargarVehiculos()
+                    }
+                }
+            }
+        ))
+    }
+    private var apartamento: Apartamento? = null
 
     private var totalResidentes = 0
     private var totalVehiculos = 0
@@ -48,7 +70,14 @@ class DetalleApartamentoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         aptoId = arguments?.getLong("aptoId") ?: -1L
-        configurarEncabezado(binding.encabezado, R.string.detalle_titulo, R.string.detalle_subtitulo)
+        configurarEncabezado(binding.encabezado, R.string.detalle_titulo, R.string.detalle_subtitulo,
+            menu = R.menu.menu_detalle_apartamento) { item ->
+            when (item) {
+                R.id.accion_editar_apartamento -> { apartamento?.let { editarApartamento(it) }; true }
+                R.id.accion_eliminar_apartamento -> { apartamento?.let { eliminarApartamento(it) }; true }
+                else -> false
+            }
+        }
 
         binding.rvResidentesApto.layoutManager = LinearLayoutManager(requireContext())
         binding.rvVehiculosApto.layoutManager = LinearLayoutManager(requireContext())
@@ -58,7 +87,12 @@ class DetalleApartamentoFragment : Fragment() {
 
         binding.btnAgregarResidente.setOnClickListener { mostrarDialogResidente() }
         binding.btnAgregarVehiculoAdmin.setOnClickListener { mostrarDialogVehiculo() }
-        binding.btnRestablecerContrasena.setOnClickListener { mostrarDialogRestablecerContrasena() }
+        binding.btnRestablecerContrasena.setOnClickListener {
+            pedirContrasena(getString(R.string.titulo_restablecer_contrasena), getString(R.string.contrasena_restablecida),
+                getString(R.string.error_restablecer_contrasena)) { nueva ->
+                RetrofitClient.instance.restablecerContrasena(aptoId, CambioContrasenaRequest(nueva))
+            }
+        }
 
         cargarTodo()
     }
@@ -85,6 +119,7 @@ class DetalleApartamentoFragment : Fragment() {
                     ) { cargarTodo() }
                     return@launch
                 }
+                apartamento = datos
                 binding.encabezado.ponerTitulo(getString(R.string.apto_item_titulo, datos.torre, datos.apto))
                 mostrarResidentes(if (residentes.isSuccessful) residentes.body().orEmpty() else emptyList())
                 mostrarVehiculos(if (vehiculos.isSuccessful) vehiculos.body().orEmpty() else emptyList())
@@ -141,14 +176,63 @@ class DetalleApartamentoFragment : Fragment() {
         }
     }
 
-    private fun mostrarDialogRestablecerContrasena() {
+    /** Tocar un residente: darle acceso con su documento (o cambiarlo), quitárselo o eliminarlo. */
+    private fun opcionesResidente(r: ResidenteDTO) {
+        val conAcceso = r.tieneAcceso == true
+        val opciones = listOfNotNull(
+            R.string.residente_dar_acceso.takeIf { !conAcceso },
+            R.string.residente_cambiar_contrasena.takeIf { conAcceso },
+            R.string.residente_quitar_acceso.takeIf { conAcceso },
+            R.string.residente_editar,
+            R.string.residente_eliminar
+        )
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(r.nombreCompleto)
+            .setItems(opciones.map { getString(it) }.toTypedArray()) { _, i ->
+                when (opciones[i]) {
+                    R.string.residente_dar_acceso, R.string.residente_cambiar_contrasena ->
+                        pedirContrasena(getString(R.string.residente_acceso_titulo, r.nombreCompleto),
+                            getString(R.string.residente_acceso_listo), getString(R.string.residente_error_accion)) { nueva ->
+                            RetrofitClient.instance.cambiarAccesoResidente(r.id!!, AccesoResidente(nueva))
+                        }
+                    R.string.residente_editar -> mostrarDialogResidente(r)
+                    R.string.residente_quitar_acceso -> accionResidente {
+                        RetrofitClient.instance.cambiarAccesoResidente(r.id!!, AccesoResidente(""))
+                    }
+                    else -> MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(getString(R.string.residente_eliminar_titulo, r.nombreCompleto))
+                        .setPositiveButton(R.string.residente_eliminar_si) { _, _ ->
+                            accionResidente { RetrofitClient.instance.deleteResidente(r.id!!) }
+                        }
+                        .setNegativeButton(R.string.btn_cancelar, null)
+                        .show()
+                }
+            }
+            .show()
+    }
+
+    private fun accionResidente(peticion: suspend () -> retrofit2.Response<*>) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val response = peticion()
+                if (response.isSuccessful) recargarResidentes()
+                else avisar(RetrofitClient.mensajeDeError(response, getString(R.string.residente_error_accion)))
+            } catch (_: Exception) {
+                avisar(getString(R.string.error_red))
+            }
+        }
+    }
+
+    /** Pide una contraseña nueva (mínimo 6) y la guarda con [guardar]; al terminar recarga los residentes. */
+    private fun pedirContrasena(titulo: String, exito: String, error: String,
+                                guardar: suspend (String) -> retrofit2.Response<*>) {
         val dialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_restablecer_contrasena, null)
         val til = dialogView.findViewById<TextInputLayout>(R.id.tilNuevaContrasena)
         val et = dialogView.findViewById<TextInputEditText>(R.id.etNuevaContrasena)
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.titulo_restablecer_contrasena)
+            .setTitle(titulo)
             .setView(dialogView)
             .setPositiveButton(R.string.btn_guardar, null)
             .setNegativeButton(R.string.btn_cancelar, null)
@@ -165,9 +249,9 @@ class DetalleApartamentoFragment : Fragment() {
             boton.isEnabled = false
             viewLifecycleOwner.lifecycleScope.launch {
                 val mensaje = try {
-                    val response = RetrofitClient.instance.restablecerContrasena(aptoId, CambioContrasenaRequest(nueva))
-                    if (response.isSuccessful) getString(R.string.contrasena_restablecida)
-                    else RetrofitClient.mensajeDeError(response, getString(R.string.error_restablecer_contrasena))
+                    val response = guardar(nueva)
+                    if (response.isSuccessful) exito.also { recargarResidentes() }
+                    else RetrofitClient.mensajeDeError(response, error)
                 } catch (_: Exception) {
                     getString(R.string.error_red)
                 }
@@ -177,14 +261,20 @@ class DetalleApartamentoFragment : Fragment() {
         }
     }
 
-    private fun mostrarDialogResidente() {
+    private fun mostrarDialogResidente(editando: ResidenteDTO? = null) {
         val dialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_agregar_residente, null)
         val tipoView = dialogView.findViewById<AutoCompleteTextView>(R.id.etTipoResidente)
         tipoView.comoLista(Opciones.TIPOS_HABITANTE)
         val tilNombre = dialogView.findViewById<TextInputLayout>(R.id.tilNombreResidente)
+        editando?.let {
+            dialogView.findViewById<TextInputEditText>(R.id.etNombreResidente).setText(it.nombreCompleto)
+            dialogView.findViewById<TextInputEditText>(R.id.etTelefonoResidente).setText(it.telefono)
+            dialogView.findViewById<TextInputEditText>(R.id.etIdentificacionResidente).setText(it.identificacion)
+            tipoView.setText(it.tipoHabitante, false)
+        }
         val dialogo = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.residente_nuevo)
+            .setTitle(if (editando == null) R.string.residente_nuevo else R.string.residente_editar)
             .setView(dialogView)
             .setPositiveButton(R.string.btn_guardar, null)
             .setNegativeButton(R.string.btn_cancelar, null)
@@ -203,9 +293,9 @@ class DetalleApartamentoFragment : Fragment() {
             dialogo.dismiss()
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
-                    val response = RetrofitClient.instance.createResidente(
-                        ResidenteDTO(null, nombre, telefono, identificacion, tipo, aptoId)
-                    )
+                    val datos = ResidenteDTO(editando?.id, nombre, telefono, identificacion, tipo, aptoId)
+                    val response = if (editando == null) RetrofitClient.instance.createResidente(datos)
+                        else RetrofitClient.instance.updateResidente(editando.id!!, datos)
                     if (response.isSuccessful) recargarResidentes()
                     else avisar(RetrofitClient.mensajeDeError(response, getString(R.string.residente_error_guardar)))
                 } catch (_: Exception) {
@@ -215,46 +305,55 @@ class DetalleApartamentoFragment : Fragment() {
         }
     }
 
-    private fun mostrarDialogVehiculo() {
-        val dialogView = LayoutInflater.from(requireContext())
-            .inflate(R.layout.dialog_agregar_vehiculo, null)
-        val tipoView = dialogView.findViewById<AutoCompleteTextView>(R.id.etTipo)
-        tipoView.comoLista(Opciones.TIPOS_VEHICULO)
-        val tilPlaca = dialogView.findViewById<TextInputLayout>(R.id.tilPlaca)
-        val dialogo = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.vehiculo_nuevo)
-            .setView(dialogView)
-            .setPositiveButton(R.string.btn_guardar, null)
-            .setNegativeButton(R.string.btn_cancelar, null)
-            .show()
-
-        // Se asigna después de show() para que el diálogo no se cierre si falta la placa
-        dialogo.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            val placa = dialogView.findViewById<TextInputEditText>(R.id.etPlaca).text.toString().trim()
-            if (placa.isBlank()) {
-                tilPlaca.error = getString(R.string.vehiculo_placa_obligatoria)
-                return@setOnClickListener
+    /** El administrador registra directo (aprobado) y puede pasar el cupo del apartamento. */
+    /** Torre y número; la contraseña tiene su propio botón. */
+    private fun editarApartamento(a: Apartamento) {
+        pedirApartamento(a) { torre, apto, _ ->
+            ejecutarAccion(getString(R.string.apartamento_editado),
+                { RetrofitClient.instance.updateApartamento(a.id, ApartamentoRequest(torre, apto)) }) {
+                DirectorioApartamentosFragment.huboCambios()
+                binding.encabezado.ponerTitulo(getString(R.string.apto_item_titulo, torre, apto))
+                apartamento = a.copy(torre = torre, apto = apto)
             }
-            val marca = dialogView.findViewById<TextInputEditText>(R.id.etMarca).text.toString().trim()
-            val color = dialogView.findViewById<TextInputEditText>(R.id.etColor).text.toString().trim()
-            val tipo = tipoView.text.toString()
-            dialogo.dismiss()
-            viewLifecycleOwner.lifecycleScope.launch {
-                try {
-                    val response = RetrofitClient.instance.createVehiculo(
-                        VehiculoDTO(null, placa, marca, color, tipo, aptoId)
-                    )
-                    if (response.isSuccessful) recargarVehiculos()
-                    else avisar(RetrofitClient.mensajeDeError(response, getString(R.string.vehiculo_error_guardar)))
-                } catch (_: Exception) {
-                    avisar(getString(R.string.error_red))
+        }
+    }
+
+    private fun eliminarApartamento(a: Apartamento) {
+        confirmar(getString(R.string.apartamento_eliminar_titulo, a.torre, a.apto),
+            getString(R.string.apartamento_eliminar_mensaje), R.string.residente_eliminar_si) {
+            ejecutarAccion(getString(R.string.apartamento_eliminado), { RetrofitClient.instance.deleteApartamento(a.id) }) {
+                DirectorioApartamentosFragment.huboCambios()
+                findNavController().popBackStack()
+            }
+        }
+    }
+
+    private fun mostrarDialogVehiculo(editando: VehiculoDTO? = null) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val cupos = try {
+                RetrofitClient.instance.getCuposVehiculo().body()
+            } catch (_: Exception) {
+                null // sin conexión se usan los cupos por defecto; el guardado dirá si falla
+            }
+            if (_binding == null) return@launch
+            pedirVehiculo(cupos, vehiculosAdapter.currentList, limitar = false, editando = editando) { nuevo ->
+                viewLifecycleOwner.lifecycleScope.launch {
+                    try {
+                        val datos = VehiculoDTO(editando?.id, nuevo.placa, nuevo.marca, nuevo.color, nuevo.tipo, aptoId)
+                        val response = if (editando == null) RetrofitClient.instance.createVehiculo(datos)
+                            else RetrofitClient.instance.updateVehiculo(editando.id!!, datos)
+                        if (response.isSuccessful) recargarVehiculos()
+                        else avisar(RetrofitClient.mensajeDeError(response, getString(R.string.vehiculo_error_guardar)))
+                    } catch (_: Exception) {
+                        avisar(getString(R.string.error_red))
+                    }
                 }
             }
         }
     }
 
     private fun avisar(mensaje: String) {
-        _binding?.let { Snackbar.make(it.root, mensaje, Snackbar.LENGTH_LONG).show() }
+        _binding?.let { aviso(mensaje, Snackbar.LENGTH_LONG).show() }
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }

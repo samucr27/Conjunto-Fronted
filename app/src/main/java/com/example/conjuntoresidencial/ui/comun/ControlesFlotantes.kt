@@ -6,6 +6,7 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 
 /**
  * Botones redondos "volver" y "⋮" y franja superior difuminada, que flotan sobre todas las
@@ -32,6 +33,18 @@ interface ControlesFlotantes {
      * Devuelve el botón para encogerlo al desplazar o desactivarlo mientras se guarda.
      */
     fun mostrarBotonFlotante(@StringRes texto: Int, @DrawableRes icono: Int, alTocar: () -> Unit): ExtendedFloatingActionButton
+
+    /**
+     * Ejecuta [accion] cuando termina el logo animado de la carga (enseguida si ya terminó):
+     * así lo que se muestre en ese momento (la huella al abrir) no queda detrás del logo.
+     */
+    fun alTerminarCarga(accion: () -> Unit)
+
+    /**
+     * Mensaje breve (Snackbar) en la capa de avisos, justo encima de la barra inferior o del
+     * botón flotante si se muestran. Usar con Fragment.aviso (ui/comun/Avisos.kt).
+     */
+    fun crearAviso(texto: CharSequence, duracion: Int): Snackbar
 
     /**
      * Cuánto ha salido el encabezado grande de la pantalla: 0 = desplegado, 1 = fuera.

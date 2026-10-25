@@ -12,7 +12,9 @@ import com.example.conjuntoresidencial.ui.comun.DiffPorId
 import com.example.conjuntoresidencial.ui.comun.Estados
 import com.example.conjuntoresidencial.ui.comun.mostrarEstado
 
-class PersonalAdapter : ListAdapter<PersonalObraDTO, PersonalAdapter.VH>(DiffPorId { it.id }) {
+class PersonalAdapter(
+    private val onTocar: ((PersonalObraDTO) -> Unit)? = null
+) : ListAdapter<PersonalObraDTO, PersonalAdapter.VH>(DiffPorId { it.id }) {
 
     class VH(val binding: ItemPersonalBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -25,6 +27,7 @@ class PersonalAdapter : ListAdapter<PersonalObraDTO, PersonalAdapter.VH>(DiffPor
         val ctx = h.binding.root.context
         h.binding.tvCedulaPersonal.text = ctx.getString(R.string.personal_cedula, p.cedula)
         h.binding.tvArlPersonal.mostrarEstado(Estados.arl(p.arlEstado))
+        onTocar?.let { tocar -> h.binding.root.setOnClickListener { tocar(p) } }
         if (!p.torrePiso.isNullOrBlank() && !p.aptoNum.isNullOrBlank()) {
             h.binding.tvUbicacionPersonal.text = ctx.getString(R.string.personal_ubicacion, p.torrePiso, p.aptoNum)
             h.binding.tvUbicacionPersonal.visibility = View.VISIBLE

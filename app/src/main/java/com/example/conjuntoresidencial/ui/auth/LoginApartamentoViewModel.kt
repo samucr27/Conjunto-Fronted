@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.model.LoginApartamentoRequest
+import com.example.conjuntoresidencial.model.LoginResidenteRequest
 import com.example.conjuntoresidencial.model.LoginResponse
 import com.example.conjuntoresidencial.util.Resource
 import kotlinx.coroutines.launch
@@ -20,11 +21,19 @@ class LoginApartamentoViewModel : ViewModel() {
             _loginState.value = Resource.Error("Llene todos los datos del apartamento")
             return
         }
+        entrar { RetrofitClient.instance.loginApartamento(LoginApartamentoRequest(torre, apto, contrasena)) }
+    }
 
+    /** Con su documento y su contraseña personal (P4). */
+    fun loginResidente(documento: String, contrasena: String) {
+        entrar { RetrofitClient.instance.loginResidente(LoginResidenteRequest(documento, contrasena)) }
+    }
+
+    private fun entrar(peticion: suspend () -> retrofit2.Response<LoginResponse>) {
         _loginState.value = Resource.Loading
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.instance.loginApartamento(LoginApartamentoRequest(torre, apto, contrasena))
+                val response = peticion()
                 if (response.isSuccessful && response.body() != null) {
                     _loginState.value = Resource.Success(response.body())
                 } else {

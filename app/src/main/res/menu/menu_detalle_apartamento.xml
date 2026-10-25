@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Menú del detalle del apartamento (administrador, P4 bloque 8) -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/accion_editar_apartamento"
+        android:title="@string/apartamento_editar" />
+    <item
+        android:id="@+id/accion_eliminar_apartamento"
+        android:title="@string/apartamento_eliminar" />
+</menu>

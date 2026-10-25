@@ -3,6 +3,12 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+// Avisos en el celular (Firebase Cloud Messaging). Sin app/google-services.json la app compila
+// y funciona igual, solo que no recibe avisos. Cómo obtenerlo: docs/firebase.md
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 android {
     namespace = "com.example.conjuntoresidencial"
     compileSdk = 35
@@ -60,6 +66,8 @@ dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     // Pantalla de inicio con el logo animado (Android 12+; en anteriores, el logo fijo)
     implementation("androidx.core:core-splashscreen:1.0.1")
+    // Entrar con huella o rostro
+    implementation("androidx.biometric:biometric:1.1.0")
     // Desenfoque en vivo del contenido bajo las barras translúcidas (Apache 2.0)
     implementation("com.github.Dimezis:BlurView:version-3.2.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
@@ -72,6 +80,12 @@ dependencies {
 
     // Corrutinas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    // await() sobre las tareas de Firebase
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
+
+    // Avisos en el celular
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    implementation("com.google.firebase:firebase-messaging")
 
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")

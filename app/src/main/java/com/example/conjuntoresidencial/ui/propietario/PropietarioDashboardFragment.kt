@@ -31,7 +31,7 @@ class PropietarioDashboardFragment : Fragment() {
         val sesion = SessionManager(requireContext())
         configurarEncabezado(
             binding.encabezado, getString(R.string.panel_residente_titulo, sesion.getTorre(), sesion.getApto()),
-            R.string.panel_residente_subtitulo, atras = false, menu = R.menu.menu_panel
+            if (sesion.getRol() == "ARRENDATARIO") R.string.panel_arrendatario_subtitulo else R.string.panel_residente_subtitulo, atras = false, menu = R.menu.menu_panel
         ) { item ->
             (item == R.id.accion_cerrar_sesion).also { if (it) confirmarCerrarSesion() }
         }
@@ -60,6 +60,10 @@ class PropietarioDashboardFragment : Fragment() {
         }
         binding.cardMisObras.configurar(R.drawable.ic_build, R.string.menu_mis_obras, R.string.menu_mis_obras_sub) {
             nav.navigate(R.id.action_propietarioDashboardFragment_to_misObrasFragment)
+        }
+        binding.cardMiHogar.configurar(R.drawable.ic_people, R.string.menu_mi_hogar,
+            if (sesion.esPropietario()) R.string.menu_mi_hogar_sub else R.string.menu_mi_hogar_sub_arrendatario) {
+            nav.navigate(R.id.residentesFragment)
         }
     }
 

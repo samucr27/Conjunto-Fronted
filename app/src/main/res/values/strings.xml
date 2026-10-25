@@ -20,6 +20,7 @@
 
     <!-- Paneles -->
     <string name="panel_admin_titulo">Panel del administrador</string>
+    <string name="panel_contador_titulo">Panel del contador</string>
     <string name="panel_admin_subtitulo">Bienvenido</string>
     <string name="panel_residente_subtitulo">Panel del residente</string>
     <string name="panel_residente_titulo">Torre %1$s · Apto %2$s</string>
@@ -46,7 +47,7 @@
     <string name="menu_cartera">Cartera</string>
     <string name="menu_cartera_sub">Estado de cuenta</string>
     <string name="menu_mis_vehiculos">Mis vehículos</string>
-    <string name="menu_mis_vehiculos_sub">Placas registradas</string>
+    <string name="menu_mis_vehiculos_sub">Registro y aprobación</string>
     <string name="menu_zonas_res_sub">Reservar</string>
     <string name="menu_mis_reservas">Mis reservas</string>
     <string name="menu_mis_reservas_sub">Estado de tus solicitudes</string>
@@ -59,16 +60,20 @@
 
     <!-- Administrador: listas -->
     <string name="directorio_titulo">Directorio</string>
-    <string name="directorio_subtitulo">Toca un apartamento para ver su detalle</string>
+    <string name="directorio_subtitulo">Elige una torre para ver sus apartamentos</string>
+    <string name="directorio_torre_titulo">Torre %1$s</string>
+    <string name="directorio_torre_subtitulo">Toca un apartamento para ver su detalle</string>
     <string name="directorio_vacio">No hay apartamentos registrados</string>
+    <string name="directorio_torre_vacia">Esta torre no tiene apartamentos registrados</string>
     <string name="apto_item_titulo">Torre %1$s · Apto %2$s</string>
+    <string name="apto_item_solo">Apartamento %1$s</string>
     <string name="apto_item_detalle">Residentes y vehículos</string>
     <string name="obras_titulo">Obras</string>
     <string name="obras_subtitulo">Adecuaciones y personal asignado</string>
     <string name="obras_vacio">No hay obras registradas</string>
     <string name="obras_finalizar">Finalizar</string>
     <string name="obras_personal_asignado">Personal asignado</string>
-    <string name="obras_sin_personal">Sin personal asignado</string>
+    <string name="obras_sin_personal">No tiene personal asignado</string>
     <string name="personal_titulo">Personal de obra</string>
     <string name="personal_subtitulo">Trabajadores registrados en las obras</string>
     <string name="personal_vacio">No hay personal registrado</string>
@@ -120,11 +125,42 @@
     <string name="vehiculo_marca">Marca</string>
     <string name="vehiculo_color">Color</string>
     <string name="vehiculo_tipo">Tipo</string>
-    <string name="vehiculo_placa_obligatoria">La placa es obligatoria</string>
+    <string name="vehiculo_placa_obligatoria">La placa es obligatoria para carros y motos</string>
+    <string name="vehiculo_cupo_no_permitido">El conjunto no permite registrar este tipo</string>
+    <string name="vehiculo_cupo_lleno">Ya registraste el máximo (%1$d). Elimina uno o pide más cupo a la administración</string>
+    <string name="vehiculo_cupo_admin">Cupo por apartamento: %1$d (como administrador puedes pasarlo)</string>
+    <string name="vehiculo_enviado">Enviado: la administración debe aprobarlo antes de que pueda ingresar</string>
+    <string name="vehiculo_motivo_rechazo">Motivo: %1$s</string>
+    <string name="vehiculo_pendiente_nota">La administración debe aprobarlo antes de que pueda ingresar</string>
+    <string name="vehiculo_aprobar">Aprobar</string>
+    <string name="vehiculo_rechazar">Rechazar</string>
+    <string name="vehiculo_rechazar_titulo">Rechazar %1$s</string>
+    <string name="vehiculo_motivo">Motivo (opcional)</string>
+    <string name="vehiculo_motivo_ayuda">El residente lo verá en Mis vehículos</string>
+    <string name="vehiculo_aprobado_hecho">Vehículo aprobado: el residente recibió un aviso</string>
+    <string name="vehiculo_rechazado_hecho">Vehículo rechazado: el residente recibió un aviso</string>
+    <string name="vehiculo_error_revisar">No se pudo actualizar el vehículo</string>
+    <string name="desc_aprobar_vehiculo">Aprobar vehículo: %1$s</string>
+    <string name="desc_rechazar_vehiculo">Rechazar vehículo: %1$s</string>
+    <string name="vehiculos_admin_titulo">Vehículos</string>
+    <string name="vehiculos_admin_subtitulo">Los que registran los residentes esperan tu aprobación</string>
+    <string name="vehiculos_admin_vacio">No hay vehículos por aprobar</string>
+    <string name="vehiculos_admin_vacio_mensaje">Cuando un residente registre uno, aparecerá aquí. Los cupos por tipo están en el menú ⋮.</string>
+    <string name="vehiculos_admin_error">No se pudieron cargar los vehículos</string>
+    <string name="menu_vehiculos_admin">Vehículos</string>
+    <string name="menu_vehiculos_admin_sub">Por aprobar y cupos</string>
+    <string name="accion_cupos">Cupos por apartamento</string>
+    <string name="cupos_titulo">Cupos por apartamento</string>
+    <string name="cupos_mensaje">Cuántos vehículos de cada tipo puede registrar cada apartamento. 0 = no se permite.</string>
+    <string name="cupos_rango">Entre 0 y %1$d</string>
+    <string name="cupos_guardados">Cupos guardados</string>
+    <string name="cupos_error">No se pudieron cargar o guardar los cupos</string>
+    <string name="notificaciones_descripcion_residente">Respuestas de la administración a tus solicitudes</string>
+    <string name="notificaciones_vacio_mensaje_residente">Aquí verás cuando la administración apruebe o rechace tus vehículos y reservas.</string>
+    <string name="pestana_avisos">Avisos</string>
     <string name="vehiculo_error_guardar">No se pudo guardar el vehículo</string>
     <string name="vehiculo_eliminar">Eliminar</string>
     <!-- Dos datos en una línea: "Mazda · Carro" -->
-    <string name="dos_datos">%1$s · %2$s</string>
 
     <!-- Descripciones para TalkBack: dicen sobre qué elemento actúa cada botón -->
     <string name="desc_aprobar_reserva">Aprobar reserva: %1$s, %2$s</string>
@@ -165,6 +201,14 @@
     <string name="notificaciones_vacio_mensaje">Aquí aparecerán las reservas y vehículos que registren los residentes.</string>
     <string name="notificaciones_limpiar_pregunta">Se borrarán todas las notificaciones. Esta acción no se puede deshacer.</string>
     <string name="notificacion_nueva">Nueva</string>
+    <string name="notificacion_eliminada">Notificación eliminada</string>
+    <string name="notificaciones_marcar_leidas">Marcar todas como leídas</string>
+    <string name="notificaciones_error_marcar">No se pudieron marcar como leídas</string>
+    <string name="notificaciones_error_eliminar">No se pudo eliminar la notificación</string>
+    <string name="deshacer">Deshacer</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="canal_avisos">Avisos</string>
+    <string name="canal_avisos_descripcion">Nuevas reservas, vehículos y otros avisos del conjunto</string>
     <!-- Pestaña Cuenta -->
     <string name="cuenta_descripcion">Perfil y ajustes de la app</string>
     <string name="cuenta_perfil">Perfil</string>
@@ -187,6 +231,9 @@
     <string name="estado_pendiente">Pendiente</string>
     <string name="estado_aprobada">Aprobada</string>
     <string name="estado_rechazada">Rechazada</string>
+    <string name="estado_aprobado">Aprobado</string>
+    <string name="estado_rechazado">Rechazado</string>
+    <string name="estado_pendiente_aprobacion">Por aprobar</string>
     <string name="estado_en_proceso">En proceso</string>
     <string name="estado_finalizada">Finalizada</string>
     <string name="estado_al_dia">Al día</string>
@@ -214,13 +261,6 @@
 
     <string name="zonas_res_subtitulo">Elige una zona para reservarla</string>
     <string name="zonas_res_vacio">No hay zonas comunes registradas</string>
-    <string name="reserva_titulo">Reservar %1$s</string>
-    <string name="reserva_fecha">Fecha</string>
-    <string name="reserva_hora">Hora de inicio</string>
-    <string name="reserva_ayuda">La reserva queda pendiente hasta que la administración la apruebe.</string>
-    <string name="reserva_fecha_obligatoria">Elige la fecha</string>
-    <string name="reserva_hora_obligatoria">Elige la hora</string>
-    <string name="reserva_hora_pasada">Esa hora ya pasó</string>
     <string name="reserva_creada">Reserva enviada. Queda pendiente de aprobación.</string>
     <string name="reserva_error_crear">No se pudo crear la reserva</string>
 
@@ -310,6 +350,10 @@
         <item quantity="one">%d notificación sin leer</item>
         <item quantity="other">%d notificaciones sin leer</item>
     </plurals>
+    <plurals name="resumen_torres">
+        <item quantity="one">%d torre</item>
+        <item quantity="other">%d torres</item>
+    </plurals>
     <plurals name="resumen_apartamentos">
         <item quantity="one">%d apartamento</item>
         <item quantity="other">%d apartamentos</item>
@@ -350,8 +394,381 @@
         <item quantity="one">%d en mora</item>
         <item quantity="other">%d en mora</item>
     </plurals>
+    <plurals name="resumen_por_aprobar">
+        <item quantity="one">%d por aprobar</item>
+        <item quantity="other">%d por aprobar</item>
+    </plurals>
+    <plurals name="vehiculo_cupo_quedan">
+        <item quantity="one">Te queda %1$d de %2$d</item>
+        <item quantity="other">Te quedan %1$d de %2$d</item>
+    </plurals>
     <plurals name="resumen_vehiculos">
         <item quantity="one">%d vehículo</item>
         <item quantity="other">%d vehículos</item>
     </plurals>
+    <!-- P4 bloque 3: Cuenta -->
+    <string name="cuenta_perfil_sub">Tus datos y tu contraseña</string>
+    <string name="cuenta_ajustes">Ajustes</string>
+    <string name="cuenta_ajustes_sub">Tema, avisos y huella o rostro</string>
+    <string name="cuenta_permisos">Permisos</string>
+    <string name="cuenta_permisos_sub">Lo que la app puede usar del celular</string>
+    <string name="cuenta_legal">Legal</string>
+    <string name="cuenta_legal_sub">Términos, privacidad y licencias</string>
+    <string name="cuenta_ayuda">Ayuda</string>
+    <string name="cuenta_ayuda_sub">Preguntas frecuentes</string>
+    <string name="cuenta_acerca_de">Acerca de MiConjunto</string>
+    <string name="acerca_de_mensaje">%1$s\n\n%2$s\n\nApp para administrar el conjunto: directorio, obras, reservas de zonas comunes, vehículos, cartera y avisos.</string>
+
+    <!-- Perfil -->
+    <string name="perfil_descripcion">Tus datos y la seguridad de la cuenta</string>
+    <string name="perfil_datos">Datos</string>
+    <string name="perfil_seguridad">Seguridad</string>
+    <string name="perfil_cambiar_contrasena">Cambiar contraseña</string>
+    <string name="perfil_cambiar_contrasena_sub">Necesitas la contraseña actual</string>
+    <string name="perfil_nota_compartida">La contraseña del apartamento es la misma para todos sus residentes: si la cambias, avísales.</string>
+    <string name="hint_contrasena_actual">Contraseña actual</string>
+    <string name="hint_repetir_contrasena">Repite la nueva contraseña</string>
+    <string name="ayuda_contrasena_propia">Mínimo 6 caracteres</string>
+    <string name="contrasena_falta_actual">Escribe tu contraseña actual</string>
+    <string name="contrasena_muy_corta">Debe tener al menos 6 caracteres</string>
+    <string name="contrasena_no_coinciden">Las contraseñas no coinciden</string>
+    <string name="contrasena_cambiada">Contraseña cambiada</string>
+    <string name="contrasena_error_cambiar">No se pudo cambiar la contraseña</string>
+    <string name="btn_cambiar">Cambiar</string>
+    <string name="btn_confirmar">Confirmar</string>
+
+    <!-- Ajustes -->
+    <string name="ajustes_descripcion">Cómo se ve y se comporta la app en este celular</string>
+    <string name="ajustes_apariencia">Apariencia</string>
+    <string name="ajustes_notificaciones">Notificaciones</string>
+    <string name="ajustes_avisos">Avisos en este celular</string>
+    <string name="ajustes_avisos_sub">Reservas, vehículos y otros avisos en el panel de notificaciones</string>
+    <string name="ajustes_avisos_no_disponibles">No disponibles en esta versión de la app</string>
+    <string name="ajustes_avisos_sistema">Ajustes de notificaciones del sistema</string>
+    <string name="ajustes_avisos_sistema_sub">Sonido, vibración y cómo se muestran</string>
+    <string name="ajustes_seguridad">Seguridad</string>
+    <string name="ajustes_huella">Entrar con huella o rostro</string>
+    <string name="ajustes_huella_sub">Sin escribir la contraseña cada vez</string>
+    <string name="ajustes_huella_otra_cuenta">Ahora entra a %1$s. Al activarla aquí, entrará a esta cuenta.</string>
+    <string name="ajustes_huella_no_disponible">Registra una huella o tu rostro en los ajustes del celular para usarla</string>
+    <string name="ajustes_confirmar_titulo">Confirma tu contraseña</string>
+    <string name="ajustes_confirmar_mensaje">Se guardará cifrada en este celular y solo tu huella o rostro podrán usarla.</string>
+
+    <!-- Permisos -->
+    <string name="permisos_descripcion">Lo que la app usa del celular y su estado</string>
+    <string name="permiso_notificaciones">Notificaciones</string>
+    <string name="permiso_notificaciones_sub">Para mostrar avisos de reservas y vehículos</string>
+    <string name="permiso_biometria">Huella o rostro</string>
+    <string name="permiso_biometria_sub">Para entrar sin escribir la contraseña</string>
+    <string name="permiso_permitido">Permitido</string>
+    <string name="permiso_no_permitido">No permitido</string>
+    <string name="permiso_configurada">Configurada</string>
+    <string name="permiso_sin_registrar">Sin registrar</string>
+    <string name="permiso_no_disponible">No disponible</string>
+    <string name="permisos_nota">MiConjunto no usa la cámara, la ubicación, los contactos ni el micrófono. Cuando puedas subir comprobantes de pago, te pedirá acceso solo a la foto o el archivo que elijas.</string>
+    <string name="permisos_ajustes_app">Ajustes de la app en el celular</string>
+    <string name="permisos_ajustes_app_sub">Todos los permisos, almacenamiento y más</string>
+
+    <!-- Legal -->
+    <string name="legal_descripcion">Las condiciones de uso y cómo se tratan tus datos</string>
+    <string name="legal_terminos">Términos y condiciones</string>
+    <string name="legal_terminos_sub">Las reglas para usar la app</string>
+    <string name="legal_privacidad">Política de privacidad</string>
+    <string name="legal_privacidad_sub">Tratamiento de datos personales (Ley 1581 de 2012)</string>
+    <string name="legal_licencias">Licencias de código abierto</string>
+    <string name="legal_licencias_sub">Librerías que usa la app</string>
+    <string name="legal_nota">Textos de referencia para un proyecto académico. Antes de usar la app en un conjunto real, la administración debe revisarlos con su asesor legal.</string>
+
+    <!-- Ayuda -->
+    <string name="ayuda_descripcion">Respuestas a las dudas más comunes</string>
+    <string name="ayuda_contacto">¿No encuentras lo que buscas? Comunícate con la administración de tu conjunto.</string>
+    <string-array name="ayuda_preguntas">
+        <item>¿Cómo entro a la app?</item>
+        <item>Olvidé la contraseña del apartamento</item>
+        <item>¿Cómo reservo una zona común?</item>
+        <item>¿Por qué no me llegan los avisos?</item>
+        <item>¿Cómo entro con huella o rostro?</item>
+        <item>¿Cómo registro una obra o un vehículo?</item>
+        <item>¿Por qué me pide iniciar sesión otra vez?</item>
+    </string-array>
+    <string-array name="ayuda_respuestas">
+        <item>Elige si eres administrador o residente. Los residentes entran con la torre, el número de apartamento y la contraseña que les entregó la administración.</item>
+        <item>Pídele a la administración que la restablezca: desde el detalle de tu apartamento puede asignarte una nueva. Después podrás cambiarla en Cuenta → Perfil.</item>
+        <item>En tu panel abre Zonas comunes, toca Reservar en la zona que quieras y elige la fecha y la hora. La administración aprueba o rechaza la reserva y lo verás en Mis reservas.</item>
+        <item>Revisa en Cuenta → Ajustes que los avisos estén activados y en Cuenta → Permisos que las notificaciones estén permitidas. También deben estar activadas en los ajustes del celular.</item>
+        <item>Actívalo en Cuenta → Ajustes, o acepta la opción que aparece después de entrar con tu contraseña. Tu celular debe tener una huella o tu rostro registrados.</item>
+        <item>Desde tu panel, en Registrar obra o en Mis vehículos. La administración recibe un aviso con lo que registraste.</item>
+        <item>Por seguridad, la sesión se cierra al salir de la app y al pasar varias horas. Con la huella o el rostro activados vuelves a entrar con un toque.</item>
+    </string-array>
+
+    <!-- Huella o rostro -->
+    <string name="biometria_cuenta_admin">Administrador · %1$s</string>
+    <string name="biometria_cuenta_residente">Torre %1$s · Apto %2$s</string>
+    <string name="biometria_ofrecer_titulo">¿Entrar con huella o rostro?</string>
+    <string name="biometria_ofrecer_mensaje">La próxima vez podrás entrar a %1$s sin escribir la contraseña. Puedes cambiarlo en Cuenta → Ajustes.</string>
+    <string name="biometria_activar">Activar</string>
+    <string name="biometria_activada">Listo: la próxima vez entra con tu huella o rostro</string>
+    <string name="biometria_desactivada">Ya no se entra con huella o rostro</string>
+    <string name="biometria_activar_titulo">Activar el acceso con huella o rostro</string>
+    <string name="biometria_entrar_titulo">Entrar a MiConjunto</string>
+    <string name="biometria_usar_contrasena">Usar contraseña</string>
+    <string name="biometria_entrar">Entrar con huella o rostro</string>
+    <string name="biometria_invalidada">Se registró otra huella en el celular: por seguridad, entra con tu contraseña y vuelve a activarla.</string>
+    <string name="biometria_error_datos">No se pudieron leer los datos guardados: entra con tu contraseña.</string>
+    <string name="biometria_contrasena_cambio">La contraseña de %1$s cambió: entra con la nueva y vuelve a activar la huella.</string>
+    <string name="biometria_reconfirmar">Confirma con tu huella o rostro para seguir entrando con ellos</string>
+    <string name="ahora_no">Ahora no</string>
+    <string name="editar">Editar</string>
+
+    <!-- P4 bloque 5: reservar con calendario -->
+    <string name="reservar_descripcion">Elige el día y el horario; la administración la aprueba</string>
+    <string name="reservar_paso_dia">1. Elige el día</string>
+    <string name="reservar_paso_horario">2. Toca la hora de inicio y luego la de fin</string>
+    <string name="reservar_mes_anterior">Mes anterior</string>
+    <string name="reservar_mes_siguiente">Mes siguiente</string>
+    <string name="reservar_error_disponibilidad">No se pudo cargar la disponibilidad</string>
+    <string name="reservar_franja">%1$s a %2$s</string>
+    <string name="reservar_toca_inicio">Aún no eliges el horario</string>
+    <string name="reservar_resumen">De %1$s a %2$s · %3$s</string>
+    <string name="reservar_horas_minutos">%1$d h %2$d min</string>
+    <string name="reservar_horario">%1$s a %2$s</string>
+    <string name="reservar_asistentes">3. ¿Cuántas personas asisten?</string>
+    <string name="reservar_asistentes_minimo">Escribe cuántas personas asisten</string>
+    <string name="reservar_nota_aprobacion">La reserva queda pendiente hasta que la administración la apruebe. Te llegará un aviso con la respuesta.</string>
+    <string name="franja_libre">Libre</string>
+    <string name="franja_ocupada">Ocupado</string>
+    <string name="franja_propia">Tu reserva</string>
+    <string name="franja_pasada">Ya pasó</string>
+    <string name="franja_elegida">Elegida</string>
+    <string name="dia_libre">Libre</string>
+    <string name="dia_parcial">Parcial</string>
+    <string name="dia_lleno">Lleno</string>
+    <string name="dia_libre_desc">todo el horario libre</string>
+    <string name="dia_parcial_desc">con horas libres</string>
+    <string name="dia_lleno_desc">sin horas libres</string>
+    <string name="dia_pasado_desc">ya no se puede reservar</string>
+    <string name="dia_cargando_desc">cargando disponibilidad</string>
+    <string-array name="dias_semana_iniciales">
+        <item>L</item>
+        <item>M</item>
+        <item>M</item>
+        <item>J</item>
+        <item>V</item>
+        <item>S</item>
+        <item>D</item>
+    </string-array>
+    <plurals name="reservar_aforo">
+        <item quantity="one">Aforo de %d persona</item>
+        <item quantity="other">Aforo de %d personas</item>
+    </plurals>
+    <plurals name="reservar_maximo">
+        <item quantity="one">Máximo %d persona</item>
+        <item quantity="other">Máximo %d personas</item>
+    </plurals>
+    <plurals name="reservar_aforo_excedido">
+        <item quantity="one">El aforo es de %d persona</item>
+        <item quantity="other">El aforo es de %d personas</item>
+    </plurals>
+    <plurals name="reservar_horas">
+        <item quantity="one">%d hora</item>
+        <item quantity="other">%d horas</item>
+    </plurals>
+    <plurals name="reserva_personas">
+        <item quantity="one">%d persona</item>
+        <item quantity="other">%d personas</item>
+    </plurals>
+    <plurals name="zona_aforo_corto">
+        <item quantity="one">Aforo %d</item>
+        <item quantity="other">Aforo %d</item>
+    </plurals>
+    <string name="zona_editar_titulo">Editar zona</string>
+    <string name="zona_actualizada">Zona actualizada</string>
+    <string name="zona_aforo">Aforo (personas por reserva)</string>
+    <string name="zona_aforo_ayuda">Déjalo vacío si no hay límite</string>
+    <string name="zona_aforo_minimo">Debe ser de al menos una persona</string>
+    <string name="zona_apertura">Se puede reservar desde</string>
+    <string name="zona_cierre">Hasta</string>
+    <string name="zona_horario_ayuda">Sin horario, se puede reservar a cualquier hora</string>
+    <string name="zona_cierre_despues">Debe ser después de la hora de inicio</string>
+    <string name="zona_quitar_hora">Quitar la hora</string>
+    <string name="vineta">•  %1$s</string>
+
+    <!-- P4 bloque 6: cuentas de residente y arrendatarios -->
+    <string name="login_por_documento">Mi documento</string>
+    <string name="login_por_apartamento">Apartamento</string>
+    <string name="login_documento">Número de documento</string>
+    <string name="login_falta_documento">Escribe tu número de documento</string>
+    <string name="login_residente_ayuda_documento">Ingresa con tu documento y tu contraseña personal.</string>
+    <string name="biometria_cuenta_documento">Documento %1$s</string>
+    <string name="panel_arrendatario_subtitulo">Panel del arrendatario</string>
+    <string name="menu_mi_hogar">Mi hogar</string>
+    <string name="menu_mi_hogar_sub">Residentes y arrendatarios</string>
+    <string name="menu_mi_hogar_sub_arrendatario">Quiénes viven aquí</string>
+    <string name="menu_residentes_pendientes">Arrendatarios</string>
+    <string name="menu_residentes_pendientes_sub">Por aprobar</string>
+    <string name="residentes_hogar_subtitulo">Quiénes viven en tu apartamento</string>
+    <string name="residentes_pendientes_titulo">Arrendatarios por aprobar</string>
+    <string name="residentes_pendientes_subtitulo">Los agregaron los propietarios</string>
+    <string name="residentes_vacio">No hay residentes registrados</string>
+    <string name="residentes_vacio_mensaje">Agrega a tu arrendatario para que entre con su documento.</string>
+    <string name="residentes_pendientes_vacio">No hay arrendatarios por aprobar</string>
+    <string name="residentes_pendientes_vacio_mensaje">Cuando un propietario agregue uno, aparecerá aquí.</string>
+    <string name="residentes_error_cargar">No se pudieron cargar los residentes</string>
+    <string name="residente_agregar_arrendatario">Agregar arrendatario</string>
+    <string name="residente_contrasena">Contraseña para entrar</string>
+    <string name="residente_contrasena_ayuda">Mínimo 6 caracteres. Con su documento y esta contraseña entrará cuando la administración lo apruebe.</string>
+    <string name="residente_documento_obligatorio">El documento es obligatorio</string>
+    <string name="residente_agregado_pendiente">Arrendatario agregado. La administración debe aprobarlo.</string>
+    <string name="residente_quitar_titulo">¿Quitar a %1$s?</string>
+    <string name="residente_quitar_mensaje">Dejará de aparecer en tu apartamento y ya no podrá entrar con su documento.</string>
+    <string name="residente_quitar">Quitar</string>
+    <string name="residente_quitado">Residente quitado</string>
+    <string name="residente_aprobar">Aprobar</string>
+    <string name="residente_rechazar">Rechazar</string>
+    <string name="residente_aprobado">Arrendatario aprobado</string>
+    <string name="residente_rechazado">Arrendatario rechazado</string>
+    <string name="residente_rechazar_titulo">Rechazar a %1$s</string>
+    <string name="residente_motivo">Motivo (opcional)</string>
+    <string name="residente_revisar_mensaje">%1$s\nDocumento %2$s · Tel. %3$s</string>
+    <string name="residente_dar_acceso">Dar acceso con su documento</string>
+    <string name="residente_cambiar_contrasena">Cambiar su contraseña</string>
+    <string name="residente_quitar_acceso">Quitar el acceso con documento</string>
+    <string name="residente_eliminar">Eliminar residente</string>
+    <string name="residente_eliminar_titulo">¿Eliminar a %1$s?</string>
+    <string name="residente_eliminar_si">Eliminar</string>
+    <string name="residente_acceso_titulo">Contraseña de %1$s</string>
+    <string name="residente_acceso_listo">Listo: ya puede entrar con su documento</string>
+    <string name="residente_error_accion">No se pudo completar la acción</string>
+    <string name="residente_estado_pendiente">Pendiente de aprobación</string>
+    <string name="residente_estado_rechazado">Rechazado</string>
+    <string name="residente_con_acceso">Con acceso</string>
+    <string name="residente_sin_telefono">sin registrar</string>
+
+    <!-- P4 bloque 7: contador, facturación y comprobantes -->
+    <string name="rol_contador">Contador</string>
+    <string name="panel_contador_subtitulo">Cartera y facturación</string>
+    <string name="menu_facturacion">Facturación</string>
+    <string name="menu_facturacion_sub">Cuotas y comprobantes</string>
+    <string name="menu_equipo">Equipo</string>
+    <string name="menu_equipo_sub">Administradores y contador</string>
+    <string name="facturacion_subtitulo">Cuotas de administración</string>
+    <string name="facturacion_por_revisar">Por revisar</string>
+    <string name="facturacion_generar">Generar cuota</string>
+    <string name="facturacion_generar_si">Generar</string>
+    <string name="facturacion_error_generar">No se pudo generar la cuota</string>
+    <string name="facturacion_generada_sin_datos">Cuota generada</string>
+    <string name="facturacion_sin_revisar">No hay comprobantes por revisar</string>
+    <string name="facturacion_sin_revisar_mensaje">Cuando un residente suba el comprobante de su pago, aparecerá aquí.</string>
+    <string name="facturacion_sin_cuotas">Este mes aún no tiene cuotas</string>
+    <string name="facturacion_sin_cuotas_mensaje">Usa “Generar cuota” para crearla en todos los apartamentos.</string>
+    <string name="cuota_mes">Mes</string>
+    <string name="cuota_valor">Valor de la cuota</string>
+    <string name="cuota_valor_obligatorio">Escribe el valor de la cuota</string>
+    <string name="cuota_dia_limite">Día límite de pago</string>
+    <string name="cuota_dia_limite_ayuda">Después de ese día la cuota queda vencida.</string>
+    <string name="cuota_dia_invalido">Escribe un día entre 1 y %1$d</string>
+    <string name="cuota_detalle">%1$s · vence el %2$s</string>
+    <string name="cuota_motivo">Motivo: %1$s</string>
+    <string name="cuota_titulo_apto">Torre %1$s Apto %2$s · %3$s</string>
+    <string name="cuota_pendiente">Pendiente</string>
+    <string name="cuota_vencida">Vencida</string>
+    <string name="cuota_en_revision">Comprobante en revisión</string>
+    <string name="cuota_pagada">Pagada</string>
+    <string name="cuota_rechazada">Comprobante rechazado</string>
+    <string name="cuota_comprobante_subido">Comprobante subido el %1$s</string>
+    <string name="cuota_confirmar_pago">Confirmar pago</string>
+    <string name="cuota_pago_confirmado">Pago confirmado</string>
+    <string name="cuota_rechazar">Rechazar</string>
+    <string name="cuota_rechazar_titulo">Rechazar el comprobante</string>
+    <string name="cuota_motivo_hint">Motivo (le llega al residente)</string>
+    <string name="cuota_comprobante_rechazado">Comprobante rechazado</string>
+    <string name="cuota_error_revisar">No se pudo actualizar la cuota</string>
+    <string name="cuota_ver_comprobante">Ver comprobante</string>
+    <string name="cuota_subir_comprobante">Subir comprobante</string>
+    <string name="cuota_cambiar_comprobante">Cambiar comprobante</string>
+    <string name="cuota_comprobante_enviado">Comprobante enviado. La administración lo revisará.</string>
+    <string name="cuota_error_subir">No se pudo subir el comprobante</string>
+    <string name="cuota_error_leer">No se pudo leer el archivo</string>
+    <string name="cuota_archivo_grande">El comprobante no puede pasar de 5 MB</string>
+    <string name="cuota_error_comprobante">No se pudo abrir el comprobante</string>
+    <string name="cuota_sin_visor">No hay una app para abrir el comprobante</string>
+    <string name="mi_cartera_cuotas">Cuotas</string>
+    <string name="equipo_subtitulo">Cuentas de la administración</string>
+    <string name="equipo_agregar">Agregar cuenta</string>
+    <string name="equipo_rol">Rol</string>
+    <string name="equipo_usuario_corto">El usuario debe tener al menos 3 caracteres</string>
+    <string name="equipo_creada">Cuenta %1$s creada</string>
+    <string name="equipo_eliminada">Cuenta eliminada</string>
+    <string name="equipo_eliminar_titulo">¿Eliminar la cuenta %1$s?</string>
+    <string name="equipo_eliminar_mensaje">Ya no podrá entrar a la app.</string>
+    <string name="equipo_no_propia">No puedes eliminar tu propia cuenta</string>
+    <string name="equipo_vacio">No hay cuentas</string>
+    <string name="equipo_error_cargar">No se pudieron cargar las cuentas</string>
+    <plurals name="resumen_cuotas">
+        <item quantity="one">%d cuota</item>
+        <item quantity="other">%d cuotas</item>
+    </plurals>
+    <plurals name="resumen_pagadas">
+        <item quantity="one">%d pagada</item>
+        <item quantity="other">%d pagadas</item>
+    </plurals>
+    <plurals name="resumen_cuentas">
+        <item quantity="one">%d cuenta</item>
+        <item quantity="other">%d cuentas</item>
+    </plurals>
+    <plurals name="facturacion_generadas">
+        <item quantity="one">%1$d cuota de %2$s generada</item>
+        <item quantity="other">%1$d cuotas de %2$s generadas</item>
+    </plurals>
+
+    <!-- P4 bloque 8: editar y eliminar -->
+    <string name="vehiculo_editar">Editar vehículo</string>
+    <string name="vehiculo_editado">Vehículo actualizado. La administración lo revisará de nuevo.</string>
+    <string name="vehiculo_eliminado">Vehículo eliminado</string>
+    <string name="apartamento_agregar">Agregar apartamento</string>
+    <string name="apartamento_editar">Editar apartamento</string>
+    <string name="apartamento_eliminar">Eliminar apartamento</string>
+    <string name="apartamento_contrasena_ayuda">La comparten sus residentes. Mínimo 6 caracteres.</string>
+    <string name="apartamento_creado">Torre %1$s Apto %2$s creado</string>
+    <string name="apartamento_editado">Apartamento actualizado</string>
+    <string name="apartamento_eliminar_titulo">¿Eliminar Torre %1$s Apto %2$s?</string>
+    <string name="apartamento_eliminar_mensaje">Se borran también su cartera y sus cuotas. Si tiene residentes, vehículos, obras o reservas, primero hay que quitarlos.</string>
+    <string name="apartamento_eliminado">Apartamento eliminado</string>
+    <string name="residente_editar">Editar datos</string>
+    <string name="reserva_cancelar_titulo">¿Cancelar la reserva?</string>
+    <string name="reserva_cancelar_mensaje">%1$s · %2$s</string>
+    <string name="reserva_cancelar">Cancelar reserva</string>
+    <string name="reserva_cancelada">Reserva cancelada</string>
+    <string name="reserva_eliminar_titulo">¿Eliminar la reserva?</string>
+    <string name="reserva_eliminada">Reserva eliminada</string>
+    <string name="obra_eliminar_titulo">¿Eliminar la obra?</string>
+    <string name="obra_eliminar_mensaje">%1$s. Se quita también su personal.</string>
+    <string name="obra_eliminada">Obra eliminada</string>
+    <string name="obra_editar_descripcion">Editar descripción</string>
+    <string name="obra_descripcion_obligatoria">Describe la obra</string>
+    <string name="obra_editada">Obra actualizada</string>
+    <string name="personal_editar">Editar trabajador</string>
+    <string name="personal_eliminar">Quitar de la obra</string>
+    <string name="personal_eliminar_titulo">¿Quitar a %1$s?</string>
+    <string name="personal_eliminado">Trabajador quitado</string>
+    <string name="personal_editado">Trabajador actualizado</string>
+    <string name="personal_arl_vigente">ARL vigente</string>
+    <string name="personal_nombre_obligatorio">Escribe el nombre</string>
+    <string name="personal_cedula_obligatoria">Escribe la cédula</string>
+    <string name="zona_eliminar">Eliminar</string>
+    <string name="zona_eliminar_titulo">¿Eliminar %1$s?</string>
+    <string name="zona_eliminar_mensaje">Si tiene reservas, primero hay que eliminarlas.</string>
+    <string name="zona_eliminada">Zona eliminada</string>
+    <string name="equipo_hacer_contador">Cambiar a contador</string>
+    <string name="equipo_hacer_admin">Cambiar a administrador</string>
+    <string name="equipo_rol_cambiado">%1$s ahora es %2$s</string>
+    <string name="equipo_restablecer">Restablecer contraseña</string>
+    <string name="equipo_restablecer_titulo">Nueva contraseña de %1$s</string>
+    <string name="cuota_editar_valor">Cambiar el valor</string>
+    <string name="cuota_editar_fecha">Cambiar el día límite</string>
+    <string name="cuota_eliminar">Eliminar cuota</string>
+    <string name="cuota_eliminar_titulo">¿Eliminar la cuota?</string>
+    <string name="cuota_eliminar_mensaje">Para una cuota generada por error. Las pagadas no se pueden eliminar.</string>
+    <string name="cuota_eliminada">Cuota eliminada</string>
+    <string name="cuota_actualizada">Cuota actualizada</string>
 </resources>

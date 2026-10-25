@@ -10,7 +10,14 @@ import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.model.ResidenteDTO
 import com.example.conjuntoresidencial.ui.comun.DiffPorId
 
-class ResidenteAdapter : ListAdapter<ResidenteDTO, ResidenteAdapter.VH>(DiffPorId { it.id }) {
+/**
+ * Residentes: "Arrendatario · CC 123 · Con acceso". Con [conApartamento] (pendientes del
+ * administrador) empieza por la torre y el apto; con [onTocar] tocar la fila abre sus opciones.
+ */
+class ResidenteAdapter(
+    private val conApartamento: Boolean = false,
+    private val onTocar: ((ResidenteDTO) -> Unit)? = null
+) : ListAdapter<ResidenteDTO, ResidenteAdapter.VH>(DiffPorId { it.id }) {
 
     class VH(v: View) : RecyclerView.ViewHolder(v) {
         val nombre: TextView = v.findViewById(android.R.id.text1)
@@ -26,6 +33,24 @@ class ResidenteAdapter : ListAdapter<ResidenteDTO, ResidenteAdapter.VH>(DiffPorI
         h.nombre.text = r.nombreCompleto
         // "PROPIETARIO" -> "Propietario"
         val tipo = r.tipoHabitante.lowercase().replaceFirstChar { it.uppercase() }
-        h.detalle.text = h.itemView.context.getString(R.string.residente_detalle, tipo, r.identificacion)
+        val ctx = h.itemView.context
+        h.detalle.text = listOfNotNull(
+            if (conApartamento && r.torre != null) ctx.getString(R.string.apto_item_titulo, r.torre, r.apto) else null,
+            ctx.getString(R.string.residente_detalle, tipo, r.identificacion),
+            when {
+                r.estado == "PENDIENTE" -> ctx.getString(R.string.residente_estado_pendiente)
+                r.estado == "RECHAZADO" -> ctx.getString(R.string.residente_estado_rechazado)
+                r.tieneAcceso == true -> ctx.getString(R.string.residente_con_acceso)
+                else -> null
+            }
+        ).joinToString(" · ")
+        if (onTocar != null) {
+            h.itemView.isClickable = true
+            h.itemView.isFocusable = true
+            h.itemView.setOnClickListener { onTocar.invoke(r) }
+        } else {
+            h.itemView.setOnClickListener(null)
+            h.itemView.isClickable = false
+        }
     }
 }

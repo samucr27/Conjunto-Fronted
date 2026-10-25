@@ -1,5 +1,8 @@
 package com.example.conjuntoresidencial.ui.propietario
 
+import android.text.InputType
+import com.example.conjuntoresidencial.ui.comun.ejecutarAccion
+import com.example.conjuntoresidencial.ui.comun.pedirTexto
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +27,7 @@ import com.example.conjuntoresidencial.ui.comun.accionesDeLista
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.ui.comun.resumen
+import com.example.conjuntoresidencial.ui.comun.aviso
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -72,7 +76,7 @@ class MisObrasFragment : Fragment() {
 
         viewModel.mensaje.observe(viewLifecycleOwner) { evento ->
             evento.obtenerSiNoManejado()?.let {
-                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+                aviso(it, Snackbar.LENGTH_LONG).show()
             }
         }
 
@@ -103,12 +107,24 @@ class MisObrasFragment : Fragment() {
                 }
             }
             vista.tvSinPersonalDetalle.visibility = if (personal.isNullOrEmpty()) View.VISIBLE else View.GONE
+            // Sin personal: solo el mensaje, sin el título de la sección
+            vista.tvTituloPersonalDetalle.visibility = if (personal?.isEmpty() == true) View.GONE else View.VISIBLE
 
-            MaterialAlertDialogBuilder(requireContext())
+            val detalle = MaterialAlertDialogBuilder(requireContext())
                 .setTitle(obra.descripcionAdecuacion)
                 .setView(vista.root)
                 .setPositiveButton(R.string.btn_cerrar, null)
-                .show()
+            if (obra.estadoObra == "EN_PROCESO") detalle.setNeutralButton(R.string.obra_editar_descripcion) { _, _ ->
+                pedirTexto(getString(R.string.obra_editar_descripcion), R.string.registrar_obra_descripcion, obra.descripcionAdecuacion,
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES,
+                    validar = { if (it.isBlank()) getString(R.string.obra_descripcion_obligatoria) else null }) { nueva ->
+                    ejecutarAccion(getString(R.string.obra_editada),
+                        { RetrofitClient.instance.updateObra(obra.id!!, obra.copy(descripcionAdecuacion = nueva)) }) {
+                        viewModel.fetchObras(aptoId)
+                    }
+                }
+            }
+            detalle.show()
         }
     }
 

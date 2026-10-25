@@ -1,13 +1,16 @@
 package com.example.conjuntoresidencial.ui.comun
 
 import android.content.Context
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.annotation.DrawableRes
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.ViewEstadoPantallaBinding
+import kotlin.math.abs
 
 /**
  * Estados de una pantalla con datos remotos: cargando, vacía, error o con contenido.
@@ -28,6 +31,29 @@ class EstadoPantallaView @JvmOverloads constructor(
 
     private val binding = ViewEstadoPantallaBinding.inflate(LayoutInflater.from(context), this)
     private var contenido: View? = null
+
+    // Con el encabezado grande abierto, la hoja sigue por debajo de la pantalla: centrado en
+    // toda su altura, el mensaje quedaba abajo, tapado por el difuminado. Se centra en lo visible
+    private val recentrar = ViewTreeObserver.OnPreDrawListener { centrarEnLoVisible(); true }
+    private val visible = Rect()
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        viewTreeObserver.addOnPreDrawListener(recentrar)
+    }
+
+    override fun onDetachedFromWindow() {
+        viewTreeObserver.removeOnPreDrawListener(recentrar)
+        super.onDetachedFromWindow()
+    }
+
+    private fun centrarEnLoVisible() {
+        if (visibility != VISIBLE || height == 0 || !getLocalVisibleRect(visible)) return
+        val desplazamiento = (visible.top + visible.bottom) / 2f - height / 2f
+        if (abs(binding.bloqueMensaje.translationY - desplazamiento) < 1f) return
+        binding.bloqueMensaje.translationY = desplazamiento
+        binding.progreso.translationY = desplazamiento
+    }
 
     fun vincular(contenido: View) {
         this.contenido = contenido

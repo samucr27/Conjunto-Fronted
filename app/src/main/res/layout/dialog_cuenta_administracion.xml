@@ -1,58 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Diálogo para reservar una zona: fecha y hora se eligen con los selectores del sistema -->
+<!-- Nueva cuenta de la administración: administrador o contador (EquipoFragment) -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingStart="24dp"
-    android:paddingTop="8dp"
+    android:paddingTop="16dp"
     android:paddingEnd="24dp">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilFechaReserva"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:id="@+id/tilUsuarioCuenta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/reserva_fecha"
-        app:startIconContentDescription="@null"
-        app:startIconDrawable="@drawable/ic_event">
-
-        <!-- No editable: al tocarlo se abre el calendario -->
+        android:hint="@string/login_usuario">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etFechaReserva"
+            android:id="@+id/etUsuarioCuenta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:inputType="none" />
+            android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilHoraReserva"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:id="@+id/tilContrasenaCuenta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:hint="@string/reserva_hora"
-        app:startIconContentDescription="@null"
-        app:startIconDrawable="@drawable/ic_schedule">
-
+        android:hint="@string/login_contrasena"
+        app:endIconContentDescription="@string/mostrar_contrasena"
+        app:endIconMode="password_toggle">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etHoraReserva"
+            android:id="@+id/etContrasenaCuenta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:inputType="none" />
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="@string/reserva_ayuda"
-        android:textAppearance="?attr/textAppearanceBodyMedium"
-        android:textColor="?attr/colorOnSurfaceVariant" />
-
+        android:hint="@string/equipo_rol"
+        app:endIconContentDescription="@string/mostrar_opciones">
+        <AutoCompleteTextView
+            android:id="@+id/etRolCuenta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            tools:ignore="LabelFor" />
+    </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

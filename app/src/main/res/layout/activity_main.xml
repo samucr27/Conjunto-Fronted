@@ -99,6 +99,13 @@
         android:layout_marginEnd="16dp"
         android:visibility="gone" />
 
+    <!-- Avisos breves (Snackbar) de todas las pantallas: encima del contenido difuminado, de la
+         barra y del botón flotante. No recibe toques (solo el aviso). Ver ui/comun/Avisos.kt -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/capaAvisos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <!-- Carga inicial: el logo se dibuja sobre el morado de la pantalla de inicio y luego se
          desvanece (MainActivity.mostrarLogoAnimado). Tapa y bloquea todo mientras tanto
          (clickable solo para tragarse los toques; no es un control). -->

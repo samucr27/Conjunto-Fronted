@@ -6,15 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentLoginApartamentoBinding
 import com.example.conjuntoresidencial.util.Resource
-import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.util.exigirTexto
 import com.example.conjuntoresidencial.util.limpiarErrorAlEscribir
+import com.example.conjuntoresidencial.ui.comun.aviso
+import com.example.conjuntoresidencial.seguridad.AccesoBiometrico
 import android.view.inputmethod.EditorInfo
 
 class LoginApartamentoFragment : Fragment() {
@@ -23,6 +23,9 @@ class LoginApartamentoFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: LoginApartamentoViewModel by viewModels()
 
+    // Lo que se escribió en el último intento: se cifra si el usuario activa la huella
+    private var credenciales: AccesoBiometrico.Credenciales? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLoginApartamentoBinding.inflate(inflater, container, false)
         return binding.root
@@ -30,7 +33,6 @@ class LoginApartamentoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val sessionManager = SessionManager(requireContext())
         configurarEncabezado(binding.encabezado, R.string.login_residente_titulo)
 
         // "Listo" en el teclado del campo de contraseña también inicia sesión
@@ -38,8 +40,26 @@ class LoginApartamentoFragment : Fragment() {
             (accion == EditorInfo.IME_ACTION_DONE).also { if (it) binding.btnLoginApto.performClick() }
         }
 
-        listOf(binding.tilTorreApto, binding.tilNumApto, binding.tilPassApto).forEach { it.limpiarErrorAlEscribir() }
+        // Con mi documento (cuenta propia) o con los datos del apartamento (contraseña compartida)
+        binding.grupoModo.addOnButtonCheckedListener { _, _, _ -> mostrarModo() }
+        mostrarModo()
+
+        listOf(binding.tilDocumento, binding.tilTorreApto, binding.tilNumApto, binding.tilPassApto)
+            .forEach { it.limpiarErrorAlEscribir() }
         binding.btnLoginApto.setOnClickListener {
+            val pass = binding.etPassApto.text.toString().trim()
+            if (porDocumento()) {
+                val completos = listOf(
+                    binding.tilDocumento.exigirTexto(getString(R.string.login_falta_documento)),
+                    binding.tilPassApto.exigirTexto(getString(R.string.login_falta_contrasena))
+                ).all { it }
+                if (!completos) return@setOnClickListener
+                val documento = binding.etDocumento.text.toString().trim()
+                // El rol real (propietario o arrendatario) lo dice el backend; para la huella basta el documento
+                credenciales = AccesoBiometrico.Credenciales("PROPIETARIO", contrasena = pass, documento = documento)
+                viewModel.loginResidente(documento, pass)
+                return@setOnClickListener
+            }
             val completos = listOf(
                 binding.tilTorreApto.exigirTexto(getString(R.string.login_falta_torre)),
                 binding.tilNumApto.exigirTexto(getString(R.string.login_falta_apartamento)),
@@ -48,7 +68,7 @@ class LoginApartamentoFragment : Fragment() {
             if (!completos) return@setOnClickListener
             val torre = binding.etTorreApto.text.toString().trim()
             val apto = binding.etNumApto.text.toString().trim()
-            val pass = binding.etPassApto.text.toString().trim()
+            credenciales = AccesoBiometrico.Credenciales("PROPIETARIO", torre = torre, apto = apto, contrasena = pass)
             viewModel.loginApartamento(torre, apto, pass)
         }
 
@@ -60,22 +80,26 @@ class LoginApartamentoFragment : Fragment() {
                 }
                 is Resource.Success -> {
                     binding.progressApto.visibility = View.GONE
-                    resource.data?.let {
-                        sessionManager.saveToken(it.token)
-                        sessionManager.saveApartamentoId(it.id)
-                        sessionManager.saveTorre(it.torre ?: "")
-                        sessionManager.saveApto(it.apto ?: "")
-                        sessionManager.saveRol(it.rol)
-                        findNavController().navigate(R.id.action_loginApartamentoFragment_to_propietarioDashboardFragment)
-                    }
+                    // Guarda la sesión, ofrece entrar con huella la próxima vez y abre el panel
+                    resource.data?.let { completarInicioSesion(it, credenciales) }
                 }
                 is Resource.Error -> {
                     binding.progressApto.visibility = View.GONE
                     binding.btnLoginApto.isEnabled = true
-                    Snackbar.make(binding.root, resource.message, Snackbar.LENGTH_LONG).show()
+                    aviso(resource.message, Snackbar.LENGTH_LONG).show()
                 }
             }
         }
+    }
+
+    private fun porDocumento() = binding.grupoModo.checkedButtonId == R.id.btnModoDocumento
+
+    private fun mostrarModo() {
+        val documento = porDocumento()
+        binding.tilDocumento.visibility = if (documento) View.VISIBLE else View.GONE
+        binding.tilTorreApto.visibility = if (documento) View.GONE else View.VISIBLE
+        binding.tilNumApto.visibility = if (documento) View.GONE else View.VISIBLE
+        binding.tvAyudaLogin.setText(if (documento) R.string.login_residente_ayuda_documento else R.string.login_residente_ayuda)
     }
 
     override fun onDestroyView() {

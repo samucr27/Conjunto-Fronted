@@ -40,8 +40,10 @@
             android:inputType="number"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Lista cerrada: el backend solo acepta PROPIETARIO o ARRENDATARIO -->
+    <!-- Lista cerrada: el backend solo acepta PROPIETARIO o ARRENDATARIO.
+         El propietario solo agrega arrendatarios: ahí se oculta -->
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilTipoResidente"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:hint="@string/residente_tipo"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -51,6 +53,22 @@
             tools:ignore="LabelFor"
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:inputType="none"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Solo cuando lo agrega el propietario: con ella entrará con su documento -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilContrasenaResidente"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="@string/residente_contrasena"
+        android:visibility="gone"
+        app:endIconContentDescription="@string/mostrar_contrasena"
+        app:endIconMode="password_toggle"
+        app:helperText="@string/residente_contrasena_ayuda">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etContrasenaResidente"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

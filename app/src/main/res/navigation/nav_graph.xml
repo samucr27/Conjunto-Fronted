@@ -61,6 +61,9 @@
         tools:layout="@layout/fragment_directorio_apartamentos">
         <action android:id="@+id/action_directorioApartamentosFragment_to_detalleApartamentoFragment"
             app:destination="@id/detalleApartamentoFragment" />
+        <!-- Directorio → apartamentos de una torre (la misma pantalla, con el argumento "torre") -->
+        <action android:id="@+id/action_directorioApartamentosFragment_to_torre"
+            app:destination="@id/directorioApartamentosFragment" />
     </fragment>
 
     <fragment
@@ -145,6 +148,22 @@
         android:name="com.example.conjuntoresidencial.ui.propietario.MisObrasFragment"
         tools:layout="@layout/fragment_mis_obras" />
 
+    <!-- P4 bloque 6: "Mi hogar" del residente y, con pendientes=true, los arrendatarios por aprobar -->
+    <fragment
+        android:id="@+id/residentesFragment"
+        android:name="com.example.conjuntoresidencial.ui.residentes.ResidentesFragment"
+        tools:layout="@layout/fragment_residentes" />
+
+    <!-- P4 bloque 7: facturación (contador y administrador) y cuentas de la administración -->
+    <fragment
+        android:id="@+id/cuotasFragment"
+        android:name="com.example.conjuntoresidencial.ui.cartera.CuotasFragment"
+        tools:layout="@layout/fragment_cuotas" />
+    <fragment
+        android:id="@+id/equipoFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.EquipoFragment"
+        tools:layout="@layout/fragment_equipo" />
+
     <!-- Pestañas de la barra inferior (MainActivity navega a ellas por id) -->
     <fragment
         android:id="@+id/notificacionesFragment"
@@ -155,5 +174,43 @@
         android:id="@+id/cuentaFragment"
         android:name="com.example.conjuntoresidencial.ui.comun.CuentaFragment"
         tools:layout="@layout/fragment_cuenta" />
+
+    <!-- Reservar una zona con el calendario de disponibilidad (residente) -->
+    <fragment
+        android:id="@+id/reservarZonaFragment"
+        android:name="com.example.conjuntoresidencial.ui.reservas.ReservarZonaFragment"
+        tools:layout="@layout/fragment_reservar_zona" />
+
+    <!-- Vehículos por aprobar y cupos (administrador) -->
+    <fragment
+        android:id="@+id/vehiculosAdminFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.VehiculosAdminFragment"
+        tools:layout="@layout/fragment_vehiculos_admin" />
+
+    <!-- Pantallas de Cuenta (se abren por id desde CuentaFragment) -->
+    <fragment
+        android:id="@+id/perfilFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.PerfilFragment"
+        tools:layout="@layout/fragment_perfil" />
+    <fragment
+        android:id="@+id/ajustesFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.AjustesFragment"
+        tools:layout="@layout/fragment_ajustes" />
+    <fragment
+        android:id="@+id/permisosFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.PermisosFragment"
+        tools:layout="@layout/fragment_permisos" />
+    <fragment
+        android:id="@+id/legalFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.LegalFragment"
+        tools:layout="@layout/fragment_legal" />
+    <fragment
+        android:id="@+id/documentoFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.DocumentoFragment"
+        tools:layout="@layout/fragment_documento" />
+    <fragment
+        android:id="@+id/ayudaFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.AyudaFragment"
+        tools:layout="@layout/fragment_ayuda" />
 
 </navigation>

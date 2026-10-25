@@ -1,5 +1,8 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.example.conjuntoresidencial.api.RetrofitClient
+import com.example.conjuntoresidencial.ui.comun.confirmar
+import com.example.conjuntoresidencial.ui.comun.ejecutarAccion
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +17,7 @@ import com.example.conjuntoresidencial.ui.comun.accionesDeLista
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.ui.comun.resumen
+import com.example.conjuntoresidencial.ui.comun.aviso
 import com.google.android.material.snackbar.Snackbar
 
 class ControlObrasFragment : Fragment() {
@@ -34,7 +38,18 @@ class ControlObrasFragment : Fragment() {
         )
 
         // Un solo adaptador: submitList conserva el scroll y solo redibuja lo que cambió
-        val adaptador = ObraConPersonalAdapter { obraId, nuevoEstado -> viewModel.cambiarEstado(obraId, nuevoEstado) }
+        val adaptador = ObraConPersonalAdapter(
+            onCambiarEstado = { obraId, nuevoEstado -> viewModel.cambiarEstado(obraId, nuevoEstado) },
+            onTocarObra = { obra ->
+                confirmar(getString(R.string.obra_eliminar_titulo), getString(R.string.obra_eliminar_mensaje, obra.descripcionAdecuacion),
+                    R.string.residente_eliminar_si) {
+                    ejecutarAccion(getString(R.string.obra_eliminada), { RetrofitClient.instance.deleteObra(obra.id!!) }) {
+                        viewModel.fetchObras()
+                    }
+                }
+            },
+            onTocarPersonal = { p -> opcionesPersonal(p) { viewModel.fetchObras() } }
+        )
         binding.rvObrasEnProceso.layoutManager = LinearLayoutManager(requireContext())
         binding.rvObrasEnProceso.adapter = adaptador
         binding.estado.vincular(binding.rvObrasEnProceso)
@@ -57,7 +72,7 @@ class ControlObrasFragment : Fragment() {
 
         viewModel.mensaje.observe(viewLifecycleOwner) { evento ->
             evento.obtenerSiNoManejado()?.let {
-                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+                aviso(it, Snackbar.LENGTH_LONG).show()
             }
         }
         if (viewModel.obras.value == null) viewModel.fetchObras()

@@ -8,7 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentMiCarteraBinding
+import com.example.conjuntoresidencial.model.CuotaDTO
 import com.example.conjuntoresidencial.model.PagoDTO
+import com.example.conjuntoresidencial.ui.cartera.CuotaAdapter
+import com.example.conjuntoresidencial.ui.cartera.Cuotas
+import com.example.conjuntoresidencial.ui.cartera.abrirComprobante
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.recyclerview.widget.LinearLayoutManager
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import com.example.conjuntoresidencial.ui.comun.Estados
 import com.example.conjuntoresidencial.ui.comun.mostrarEstado
 import com.example.conjuntoresidencial.util.Formatos
@@ -17,6 +26,7 @@ import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.ui.comun.accionesDeLista
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.ui.comun.aviso
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
@@ -67,12 +77,68 @@ class MiCarteraFragment : Fragment() {
         }
 
         viewModel.simulacion.observe(viewLifecycleOwner) { evento ->
-            evento.obtenerSiNoManejado()?.let { error ->
-                Snackbar.make(binding.root, error ?: getString(R.string.simulacion_exitosa), Snackbar.LENGTH_LONG).show()
+            // null = salió bien (antes ese caso nunca se mostraba)
+            evento.siNoManejado { error ->
+                aviso(error ?: getString(R.string.simulacion_exitosa), Snackbar.LENGTH_LONG).show()
             }
         }
 
+        val cuotas = CuotaAdapter(conApartamento = false) { opcionesCuota(it) }
+        binding.rvCuotas.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvCuotas.adapter = cuotas
+        viewModel.cuotas.observe(viewLifecycleOwner) { lista ->
+            cuotas.submitList(lista)
+            binding.tvTituloCuotas.visibility = if (lista.isEmpty()) View.GONE else View.VISIBLE
+        }
+        viewModel.comprobante.observe(viewLifecycleOwner) { evento ->
+            evento.obtenerSiNoManejado()?.let { aviso(it, Snackbar.LENGTH_LONG).show() }
+        }
+
         if (viewModel.pagoState.value == null) cargar()
+    }
+
+    private fun opcionesCuota(c: CuotaDTO) {
+        val dialogo = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(Cuotas.nombreMes(c.periodo))
+            .setMessage(Cuotas.detalle(requireContext(), c) + "\n" + getString(Cuotas.estado(c).etiqueta))
+        if (c.estado != Cuotas.PAGADA) {
+            dialogo.setPositiveButton(
+                if (c.tieneComprobante == true) R.string.cuota_cambiar_comprobante else R.string.cuota_subir_comprobante
+            ) { _, _ ->
+                cuotaPorSubir = c.id
+                elegirArchivo.launch(arrayOf("image/*", "application/pdf"))
+            }
+        }
+        if (c.tieneComprobante == true) dialogo.setNeutralButton(R.string.cuota_ver_comprobante) { _, _ -> abrirComprobante(c) }
+        dialogo.setNegativeButton(R.string.btn_cerrar, null).show()
+    }
+
+    // La cuota elegida sobrevive a que el sistema cierre la app mientras se escoge el archivo
+    private var cuotaPorSubir: Long?
+        get() = arguments?.getLong(ARG_CUOTA)?.takeIf { it > 0 }
+        set(valor) { arguments = (arguments ?: Bundle()).apply { putLong(ARG_CUOTA, valor ?: 0) } }
+
+    private val elegirArchivo = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        val cuotaId = cuotaPorSubir ?: return@registerForActivityResult
+        cuotaPorSubir = null
+        if (uri == null) return@registerForActivityResult
+        val resolver = requireContext().contentResolver
+        val datos = try {
+            resolver.openInputStream(uri)?.use { it.readBytes() }
+        } catch (_: Exception) {
+            null
+        }
+        when {
+            datos == null -> aviso(getString(R.string.cuota_error_leer), Snackbar.LENGTH_LONG).show()
+            datos.size > TAMANO_MAXIMO -> aviso(getString(R.string.cuota_archivo_grande), Snackbar.LENGTH_LONG).show()
+            else -> {
+                val tipo = resolver.getType(uri) ?: "application/octet-stream"
+                val nombre = if (tipo == "application/pdf") "comprobante.pdf" else "comprobante.jpg"
+                val parte = MultipartBody.Part.createFormData("archivo", nombre, RequestBody.create(MediaType.parse(tipo), datos))
+                viewModel.subirComprobante(aptoId, cuotaId, parte, getString(R.string.cuota_comprobante_enviado),
+                    getString(R.string.cuota_error_subir))
+            }
+        }
     }
 
     private fun cargar() = viewModel.fetchPagos(aptoId, getString(R.string.mi_cartera_error))
@@ -112,5 +178,10 @@ class MiCarteraFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val ARG_CUOTA = "cuota_por_subir"
+        private const val TAMANO_MAXIMO = 5 * 1024 * 1024
     }
 }
