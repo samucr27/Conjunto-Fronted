@@ -70,6 +70,9 @@ class AdminDashboardFragment : Fragment() {
         binding.cardCarteraAdmin.configurar(R.drawable.ic_wallet, R.string.menu_cartera, R.string.menu_cartera_sub) {
             nav.navigate(R.id.action_adminDashboardFragment_to_carteraAdminFragment)
         }
+        binding.cardVehiculosAdmin.configurar(R.drawable.ic_car, R.string.menu_vehiculos_admin, R.string.menu_vehiculos_admin_sub) {
+            nav.navigate(R.id.vehiculosAdminFragment)
+        }
     }
 
     override fun onDestroyView() {

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.conjuntoresidencial.api.RetrofitClient
+import com.example.conjuntoresidencial.model.CupoVehiculoDTO
 import com.example.conjuntoresidencial.model.VehiculoDTO
 import com.example.conjuntoresidencial.util.Evento
 import com.example.conjuntoresidencial.util.Resource
@@ -17,6 +18,20 @@ class MisVehiculosViewModel : ViewModel() {
 
     private val _mensaje = MutableLiveData<Evento<String>>()
     val mensaje: LiveData<Evento<String>> get() = _mensaje
+
+    /** Cupos por tipo para el diálogo; null si no cargaron (se usan los de por defecto). */
+    var cupos: List<CupoVehiculoDTO>? = null
+        private set
+
+    fun cargarCupos() {
+        viewModelScope.launch {
+            cupos = try {
+                RetrofitClient.instance.getCuposVehiculo().body()
+            } catch (_: Exception) {
+                null
+            }
+        }
+    }
 
     fun fetchVehiculos(aptoId: Long) {
         _vehiculos.value = Resource.Loading
@@ -34,12 +49,14 @@ class MisVehiculosViewModel : ViewModel() {
         }
     }
 
-    fun agregarVehiculo(vehiculo: VehiculoDTO, errorPorDefecto: String) {
+    /** Lo que registra el residente queda por aprobar: [enviado] lo explica. */
+    fun agregarVehiculo(vehiculo: VehiculoDTO, enviado: String, errorPorDefecto: String) {
         viewModelScope.launch {
             try {
                 val response = RetrofitClient.instance.createVehiculo(vehiculo)
                 if (response.isSuccessful) {
                     // El backend crea la notificación para el admin
+                    _mensaje.value = Evento(enviado)
                     fetchVehiculos(vehiculo.apartamentoId)
                 } else {
                     _mensaje.value = Evento(RetrofitClient.mensajeDeError(response, errorPorDefecto))

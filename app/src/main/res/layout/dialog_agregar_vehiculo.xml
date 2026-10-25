@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Registrar un vehículo (ui/comun/DialogoVehiculo.kt): primero el tipo, con lo que le queda
+     de cupo al apartamento; la placa solo aparece para carros y motos. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,46 +9,66 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Lista cerrada con los tipos que acepta el backend (Catalogo.TIPO_VEHICULO) -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilPlaca"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="@string/vehiculo_placa" android:layout_marginBottom="12dp"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etPlaca"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:inputType="textCapCharacters"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="@string/vehiculo_marca" android:layout_marginBottom="12dp"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etMarca"
-            android:layout_width="match_parent" android:layout_height="wrap_content"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="@string/vehiculo_color" android:layout_marginBottom="12dp"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etColor"
-            android:layout_width="match_parent" android:layout_height="wrap_content"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Lista cerrada: el backend solo acepta Carro o Moto -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:hint="@string/vehiculo_tipo"
+        android:id="@+id/tilTipo"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:hint="@string/vehiculo_tipo"
         app:endIconContentDescription="@string/mostrar_opciones">
+
         <AutoCompleteTextView
             android:id="@+id/etTipo"
-            tools:ignore="LabelFor"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:inputType="none"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            tools:ignore="LabelFor" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilPlaca"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:hint="@string/vehiculo_placa">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPlaca"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapCharacters"
+            android:maxLength="10" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:hint="@string/vehiculo_marca">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etMarca"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapWords"
+            android:maxLength="40" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/vehiculo_color">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapWords"
+            android:maxLength="30" />
+    </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

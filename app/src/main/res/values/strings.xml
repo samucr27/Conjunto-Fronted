@@ -46,7 +46,7 @@
     <string name="menu_cartera">Cartera</string>
     <string name="menu_cartera_sub">Estado de cuenta</string>
     <string name="menu_mis_vehiculos">Mis vehículos</string>
-    <string name="menu_mis_vehiculos_sub">Placas registradas</string>
+    <string name="menu_mis_vehiculos_sub">Registro y aprobación</string>
     <string name="menu_zonas_res_sub">Reservar</string>
     <string name="menu_mis_reservas">Mis reservas</string>
     <string name="menu_mis_reservas_sub">Estado de tus solicitudes</string>
@@ -124,7 +124,39 @@
     <string name="vehiculo_marca">Marca</string>
     <string name="vehiculo_color">Color</string>
     <string name="vehiculo_tipo">Tipo</string>
-    <string name="vehiculo_placa_obligatoria">La placa es obligatoria</string>
+    <string name="vehiculo_placa_obligatoria">La placa es obligatoria para carros y motos</string>
+    <string name="vehiculo_cupo_no_permitido">El conjunto no permite registrar este tipo</string>
+    <string name="vehiculo_cupo_lleno">Ya registraste el máximo (%1$d). Elimina uno o pide más cupo a la administración</string>
+    <string name="vehiculo_cupo_admin">Cupo por apartamento: %1$d (como administrador puedes pasarlo)</string>
+    <string name="vehiculo_enviado">Enviado: la administración debe aprobarlo antes de que pueda ingresar</string>
+    <string name="vehiculo_motivo_rechazo">Motivo: %1$s</string>
+    <string name="vehiculo_pendiente_nota">La administración debe aprobarlo antes de que pueda ingresar</string>
+    <string name="vehiculo_aprobar">Aprobar</string>
+    <string name="vehiculo_rechazar">Rechazar</string>
+    <string name="vehiculo_rechazar_titulo">Rechazar %1$s</string>
+    <string name="vehiculo_motivo">Motivo (opcional)</string>
+    <string name="vehiculo_motivo_ayuda">El residente lo verá en Mis vehículos</string>
+    <string name="vehiculo_aprobado_hecho">Vehículo aprobado: el residente recibió un aviso</string>
+    <string name="vehiculo_rechazado_hecho">Vehículo rechazado: el residente recibió un aviso</string>
+    <string name="vehiculo_error_revisar">No se pudo actualizar el vehículo</string>
+    <string name="desc_aprobar_vehiculo">Aprobar vehículo: %1$s</string>
+    <string name="desc_rechazar_vehiculo">Rechazar vehículo: %1$s</string>
+    <string name="vehiculos_admin_titulo">Vehículos</string>
+    <string name="vehiculos_admin_subtitulo">Los que registran los residentes esperan tu aprobación</string>
+    <string name="vehiculos_admin_vacio">No hay vehículos por aprobar</string>
+    <string name="vehiculos_admin_vacio_mensaje">Cuando un residente registre uno, aparecerá aquí. Los cupos por tipo están en el menú ⋮.</string>
+    <string name="vehiculos_admin_error">No se pudieron cargar los vehículos</string>
+    <string name="menu_vehiculos_admin">Vehículos</string>
+    <string name="menu_vehiculos_admin_sub">Por aprobar y cupos</string>
+    <string name="accion_cupos">Cupos por apartamento</string>
+    <string name="cupos_titulo">Cupos por apartamento</string>
+    <string name="cupos_mensaje">Cuántos vehículos de cada tipo puede registrar cada apartamento. 0 = no se permite.</string>
+    <string name="cupos_rango">Entre 0 y %1$d</string>
+    <string name="cupos_guardados">Cupos guardados</string>
+    <string name="cupos_error">No se pudieron cargar o guardar los cupos</string>
+    <string name="notificaciones_descripcion_residente">Respuestas de la administración a tus solicitudes</string>
+    <string name="notificaciones_vacio_mensaje_residente">Aquí verás cuando la administración apruebe o rechace tus vehículos y reservas.</string>
+    <string name="pestana_avisos">Avisos</string>
     <string name="vehiculo_error_guardar">No se pudo guardar el vehículo</string>
     <string name="vehiculo_eliminar">Eliminar</string>
     <!-- Dos datos en una línea: "Mazda · Carro" -->
@@ -198,6 +230,9 @@
     <string name="estado_pendiente">Pendiente</string>
     <string name="estado_aprobada">Aprobada</string>
     <string name="estado_rechazada">Rechazada</string>
+    <string name="estado_aprobado">Aprobado</string>
+    <string name="estado_rechazado">Rechazado</string>
+    <string name="estado_pendiente_aprobacion">Por aprobar</string>
     <string name="estado_en_proceso">En proceso</string>
     <string name="estado_finalizada">Finalizada</string>
     <string name="estado_al_dia">Al día</string>
@@ -364,6 +399,14 @@
     <plurals name="resumen_en_mora">
         <item quantity="one">%d en mora</item>
         <item quantity="other">%d en mora</item>
+    </plurals>
+    <plurals name="resumen_por_aprobar">
+        <item quantity="one">%d por aprobar</item>
+        <item quantity="other">%d por aprobar</item>
+    </plurals>
+    <plurals name="vehiculo_cupo_quedan">
+        <item quantity="one">Te queda %1$d de %2$d</item>
+        <item quantity="other">Te quedan %1$d de %2$d</item>
     </plurals>
     <plurals name="resumen_vehiculos">
         <item quantity="one">%d vehículo</item>

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.conjuntoresidencial.model.VehiculoDTO
 import com.example.conjuntoresidencial.ui.comun.DiffPorId
+import com.example.conjuntoresidencial.ui.comun.Estados
 
 class VehiculoAdminAdapter : ListAdapter<VehiculoDTO, VehiculoAdminAdapter.VH>(DiffPorId { it.id }) {
 
@@ -22,7 +23,11 @@ class VehiculoAdminAdapter : ListAdapter<VehiculoDTO, VehiculoAdminAdapter.VH>(D
 
     override fun onBindViewHolder(h: VH, pos: Int) {
         val v = getItem(pos)
-        h.placa.text = v.placa
-        h.detalle.text = listOf(v.tipo, v.marca, v.color).filterNot { it.isNullOrBlank() }.joinToString(" · ")
+        // Sin placa (bicicletas, patinetas) el tipo va como título
+        h.placa.text = v.placa ?: v.tipo
+        val estado = Estados.vehiculo(v.estado).takeIf { v.estado != null && v.estado != "APROBADO" }
+            ?.let { h.itemView.context.getString(it.etiqueta) }
+        h.detalle.text = listOf(v.tipo.takeIf { v.placa != null }, v.marca, v.color, estado)
+            .filterNot { it.isNullOrBlank() }.joinToString(" · ")
     }
 }

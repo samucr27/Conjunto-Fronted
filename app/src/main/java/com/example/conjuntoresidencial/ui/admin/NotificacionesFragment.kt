@@ -27,13 +27,15 @@ import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.ui.comun.resumen
 import com.example.conjuntoresidencial.util.Formatos
+import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.ui.comun.aviso
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
 /**
- * Pestaña Notificaciones del administrador: nuevas reservas y vehículos registrados.
+ * Pestaña Notificaciones: del administrador (reservas y vehículos nuevos) o del residente
+ * (respuestas a sus vehículos y reservas); cada uno ve solo las suyas (lo filtra el backend).
  * Las nuevas se ven resaltadas; al tocar una se marca leída y lleva a su pantalla
  * (DestinoNotificacion). Se borran deslizándolas hacia un lado, con opción de deshacer.
  */
@@ -52,8 +54,11 @@ class NotificacionesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val actualizar = accionesDeLista(binding.swipe) { cargar() }
         // Pestaña de la barra inferior: sin botón para volver
+        // La misma pantalla para los dos roles: cambian la descripción y el mensaje sin avisos
+        val esAdmin = SessionManager(requireContext()).esAdmin()
         configurarEncabezado(
-            binding.encabezado, R.string.notificaciones, R.string.notificaciones_descripcion,
+            binding.encabezado, R.string.notificaciones,
+            if (esAdmin) R.string.notificaciones_descripcion else R.string.notificaciones_descripcion_residente,
             atras = false, menu = R.menu.menu_notificaciones
         ) { item ->
             when (item) {
@@ -75,7 +80,7 @@ class NotificacionesFragment : Fragment() {
         viewModel.lista.observe(viewLifecycleOwner) { resource ->
             binding.estado.mostrarRecurso(
                 resource, binding.swipe, R.drawable.ic_notifications, getString(R.string.actividad_vacia),
-                getString(R.string.notificaciones_vacio_mensaje),
+                getString(if (esAdmin) R.string.notificaciones_vacio_mensaje else R.string.notificaciones_vacio_mensaje_residente),
                 reintentar = { cargar() }
             ) { lista ->
                 adaptador.submitList(lista)
@@ -159,7 +164,7 @@ class NotificacionAdapter(
         val ctx = h.binding.root.context
         val nueva = !n.leida
         h.binding.imgTipo.setImageResource(
-            if (n.tipo == DestinoNotificacion.TIPO_VEHICULO) R.drawable.ic_car else R.drawable.ic_event
+            if (n.tipo.startsWith(DestinoNotificacion.TIPO_VEHICULO)) R.drawable.ic_car else R.drawable.ic_event
         )
         h.binding.tvMensaje.text = n.mensaje
         // "2026-10-21T00:37:12" -> "21/10/2026 · 12:37 a. m."

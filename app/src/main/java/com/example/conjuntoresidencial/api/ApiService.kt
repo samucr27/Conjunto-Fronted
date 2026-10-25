@@ -138,6 +138,19 @@ interface ApiService {
     @DELETE("api/notificaciones")
     suspend fun eliminarNotificaciones(): Response<Void>
 
+    // Vehículos (P4): por aprobar, aprobar o rechazar, y cupos por tipo
+    @GET("api/vehiculos")
+    suspend fun getVehiculosPorEstado(@Query("estado") estado: String): Response<List<VehiculoDTO>>
+
+    @PUT("api/vehiculos/{id}/estado")
+    suspend fun cambiarEstadoVehiculo(@Path("id") id: Long, @Body request: EstadoVehiculoRequest): Response<VehiculoDTO>
+
+    @GET("api/vehiculos/cupos")
+    suspend fun getCuposVehiculo(): Response<List<CupoVehiculoDTO>>
+
+    @PUT("api/vehiculos/cupos")
+    suspend fun guardarCuposVehiculo(@Body cupos: List<CupoVehiculoDTO>): Response<List<CupoVehiculoDTO>>
+
     @PUT("api/notificaciones/{id}/leida")
     suspend fun marcarNotificacionLeida(@Path("id") id: Long): Response<Void>
 

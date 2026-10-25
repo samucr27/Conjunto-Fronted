@@ -53,6 +53,22 @@
                     android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="?attr/colorOnSurfaceVariant" />
 
+                <!-- Por aprobar / Aprobado / Rechazado (ChipEstado) y, si se rechazó, el motivo -->
+                <TextView
+                    android:id="@+id/tvEstadoVehiculo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp" />
+
+                <TextView
+                    android:id="@+id/tvNotaVehiculo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="gone" />
+
             </LinearLayout>
 
         <!-- Solo ícono para no quitarle ancho al texto con letra grande;

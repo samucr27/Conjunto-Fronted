@@ -159,6 +159,12 @@
         android:name="com.example.conjuntoresidencial.ui.comun.CuentaFragment"
         tools:layout="@layout/fragment_cuenta" />
 
+    <!-- Vehículos por aprobar y cupos (administrador) -->
+    <fragment
+        android:id="@+id/vehiculosAdminFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.VehiculosAdminFragment"
+        tools:layout="@layout/fragment_vehiculos_admin" />
+
     <!-- Pantallas de Cuenta (se abren por id desde CuentaFragment) -->
     <fragment
         android:id="@+id/perfilFragment"
