@@ -1,5 +1,9 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.example.conjuntoresidencial.api.RetrofitClient
+import com.example.conjuntoresidencial.model.ApartamentoRequest
+import com.example.conjuntoresidencial.ui.comun.controlesFlotantes
+import com.example.conjuntoresidencial.ui.comun.ejecutarAccion
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -57,8 +61,22 @@ class DirectorioApartamentosFragment : Fragment() {
         binding.swipe.setOnRefreshListener { recargar() }
 
         if (torre == null) mostrarTorres() else mostrarApartamentos(torre)
-        // Al volver del detalle o girar la pantalla se reutiliza lo ya cargado
-        if (viewModel.aptos.value == null) recargar()
+        // Al volver del detalle o girar la pantalla se reutiliza lo ya cargado, salvo que algo cambiara
+        if (viewModel.aptos.value == null || viewModel.version != version) {
+            viewModel.version = version
+            recargar()
+        }
+
+        controlesFlotantes?.mostrarBotonFlotante(R.string.apartamento_agregar, R.drawable.ic_add) {
+            pedirApartamento(null, torre) { nuevaTorre, apto, contrasena ->
+                ejecutarAccion(getString(R.string.apartamento_creado, nuevaTorre, apto),
+                    { RetrofitClient.instance.createApartamento(ApartamentoRequest(nuevaTorre, apto, contrasena)) }) {
+                    huboCambios()
+                    viewModel.version = version
+                    recargar()
+                }
+            }
+        }
     }
 
     private fun mostrarTorres() {
@@ -107,6 +125,10 @@ class DirectorioApartamentosFragment : Fragment() {
 
     companion object {
         const val ARG_TORRE = "torre"
+
+        // Sube al crear, editar o eliminar un apartamento: las listas ya abiertas se recargan
+        private var version = 0
+        fun huboCambios() { version++ }
 
         /** Números como números: "Torre 2" antes que "Torre 10"; si no son números, por texto. */
         val ORDEN_NATURAL = Comparator<String> { a, b ->

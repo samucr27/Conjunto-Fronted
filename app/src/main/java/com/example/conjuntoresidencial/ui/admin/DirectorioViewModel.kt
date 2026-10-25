@@ -11,6 +11,9 @@ import kotlinx.coroutines.launch
 
 class DirectorioViewModel : ViewModel() {
 
+    // La versión del directorio que tiene cargada (DirectorioApartamentosFragment.huboCambios)
+    var version = -1
+
     private val _aptos = MutableLiveData<Resource<List<Apartamento>>>()
     val aptos: LiveData<Resource<List<Apartamento>>> get() = _aptos
 

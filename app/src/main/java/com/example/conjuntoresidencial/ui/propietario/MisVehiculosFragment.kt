@@ -49,7 +49,7 @@ class MisVehiculosFragment : Fragment() {
         )
         aptoId = SessionManager(requireContext()).getApartamentoId()
 
-        val adaptador = VehiculoAdapter { vehiculo -> confirmarEliminar(vehiculo) }
+        val adaptador = VehiculoAdapter(onEliminar = { confirmarEliminar(it) }, onEditar = { mostrarDialogEditar(it) })
         binding.rvVehiculos.layoutManager = LinearLayoutManager(requireContext())
         binding.rvVehiculos.adapter = adaptador
         binding.estado.vincular(binding.rvVehiculos)
@@ -95,6 +95,17 @@ class MisVehiculosFragment : Fragment() {
             viewModel.agregarVehiculo(
                 VehiculoDTO(null, nuevo.placa, nuevo.marca, nuevo.color, nuevo.tipo, aptoId),
                 getString(R.string.vehiculo_enviado), getString(R.string.vehiculo_error_guardar)
+            )
+        }
+    }
+
+    /** Lo editado vuelve a esperar la aprobación de la administración. */
+    private fun mostrarDialogEditar(vehiculo: VehiculoDTO) {
+        val actuales = (viewModel.vehiculos.value as? Resource.Success)?.data.orEmpty()
+        pedirVehiculo(viewModel.cupos, actuales, limitar = true, editando = vehiculo) { nuevo ->
+            viewModel.editarVehiculo(
+                vehiculo.copy(placa = nuevo.placa, marca = nuevo.marca, color = nuevo.color, tipo = nuevo.tipo),
+                getString(R.string.vehiculo_editado), getString(R.string.vehiculo_error_guardar)
             )
         }
     }

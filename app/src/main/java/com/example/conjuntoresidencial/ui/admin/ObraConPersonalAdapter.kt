@@ -19,11 +19,13 @@ import com.example.conjuntoresidencial.util.Formatos
 data class ObraConPersonal(val obra: ObraDTO, val personal: List<PersonalObraDTO>)
 
 class ObraConPersonalAdapter(
-    private val onCambiarEstado: (obraId: Long, nuevoEstado: String) -> Unit
+    private val onCambiarEstado: (obraId: Long, nuevoEstado: String) -> Unit,
+    private val onTocarObra: ((ObraDTO) -> Unit)? = null,
+    private val onTocarPersonal: ((PersonalObraDTO) -> Unit)? = null
 ) : ListAdapter<ObraConPersonal, ObraConPersonalAdapter.VH>(DiffPorId { it.obra.id }) {
 
-    class VH(val binding: ItemObraConPersonalBinding) : RecyclerView.ViewHolder(binding.root) {
-        val personalAdapter = PersonalAdapter().also {
+    inner class VH(val binding: ItemObraConPersonalBinding) : RecyclerView.ViewHolder(binding.root) {
+        val personalAdapter = PersonalAdapter(onTocarPersonal).also {
             binding.rvPersonalObra.layoutManager = LinearLayoutManager(binding.root.context)
             binding.rvPersonalObra.adapter = it
         }
@@ -37,6 +39,7 @@ class ObraConPersonalAdapter(
         h.binding.tvDescripcionObraAdmin.text = obra.descripcionAdecuacion
         h.binding.tvFechasObra.text = Formatos.rango(obra.fechaInicio, obra.fechaFinEstimada)
         h.binding.tvEstadoObraAdmin.mostrarEstado(Estados.obra(obra.estadoObra))
+        onTocarObra?.let { tocar -> h.binding.root.setOnClickListener { tocar(obra) } }
 
         // Botón cambiar estado — solo visible si está EN_PROCESO
         if (obra.estadoObra == "EN_PROCESO") {

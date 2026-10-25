@@ -719,4 +719,55 @@
         <item quantity="one">%1$d cuota de %2$s generada</item>
         <item quantity="other">%1$d cuotas de %2$s generadas</item>
     </plurals>
+
+    <!-- P4 bloque 8: editar y eliminar -->
+    <string name="vehiculo_editar">Editar vehículo</string>
+    <string name="vehiculo_editado">Vehículo actualizado. La administración lo revisará de nuevo.</string>
+    <string name="vehiculo_eliminado">Vehículo eliminado</string>
+    <string name="apartamento_agregar">Agregar apartamento</string>
+    <string name="apartamento_editar">Editar apartamento</string>
+    <string name="apartamento_eliminar">Eliminar apartamento</string>
+    <string name="apartamento_contrasena_ayuda">La comparten sus residentes. Mínimo 6 caracteres.</string>
+    <string name="apartamento_creado">Torre %1$s Apto %2$s creado</string>
+    <string name="apartamento_editado">Apartamento actualizado</string>
+    <string name="apartamento_eliminar_titulo">¿Eliminar Torre %1$s Apto %2$s?</string>
+    <string name="apartamento_eliminar_mensaje">Se borran también su cartera y sus cuotas. Si tiene residentes, vehículos, obras o reservas, primero hay que quitarlos.</string>
+    <string name="apartamento_eliminado">Apartamento eliminado</string>
+    <string name="residente_editar">Editar datos</string>
+    <string name="reserva_cancelar_titulo">¿Cancelar la reserva?</string>
+    <string name="reserva_cancelar_mensaje">%1$s · %2$s</string>
+    <string name="reserva_cancelar">Cancelar reserva</string>
+    <string name="reserva_cancelada">Reserva cancelada</string>
+    <string name="reserva_eliminar_titulo">¿Eliminar la reserva?</string>
+    <string name="reserva_eliminada">Reserva eliminada</string>
+    <string name="obra_eliminar_titulo">¿Eliminar la obra?</string>
+    <string name="obra_eliminar_mensaje">%1$s. Se quita también su personal.</string>
+    <string name="obra_eliminada">Obra eliminada</string>
+    <string name="obra_editar_descripcion">Editar descripción</string>
+    <string name="obra_descripcion_obligatoria">Describe la obra</string>
+    <string name="obra_editada">Obra actualizada</string>
+    <string name="personal_editar">Editar trabajador</string>
+    <string name="personal_eliminar">Quitar de la obra</string>
+    <string name="personal_eliminar_titulo">¿Quitar a %1$s?</string>
+    <string name="personal_eliminado">Trabajador quitado</string>
+    <string name="personal_editado">Trabajador actualizado</string>
+    <string name="personal_arl_vigente">ARL vigente</string>
+    <string name="personal_nombre_obligatorio">Escribe el nombre</string>
+    <string name="personal_cedula_obligatoria">Escribe la cédula</string>
+    <string name="zona_eliminar">Eliminar</string>
+    <string name="zona_eliminar_titulo">¿Eliminar %1$s?</string>
+    <string name="zona_eliminar_mensaje">Si tiene reservas, primero hay que eliminarlas.</string>
+    <string name="zona_eliminada">Zona eliminada</string>
+    <string name="equipo_hacer_contador">Cambiar a contador</string>
+    <string name="equipo_hacer_admin">Cambiar a administrador</string>
+    <string name="equipo_rol_cambiado">%1$s ahora es %2$s</string>
+    <string name="equipo_restablecer">Restablecer contraseña</string>
+    <string name="equipo_restablecer_titulo">Nueva contraseña de %1$s</string>
+    <string name="cuota_editar_valor">Cambiar el valor</string>
+    <string name="cuota_editar_fecha">Cambiar el día límite</string>
+    <string name="cuota_eliminar">Eliminar cuota</string>
+    <string name="cuota_eliminar_titulo">¿Eliminar la cuota?</string>
+    <string name="cuota_eliminar_mensaje">Para una cuota generada por error. Las pagadas no se pueden eliminar.</string>
+    <string name="cuota_eliminada">Cuota eliminada</string>
+    <string name="cuota_actualizada">Cuota actualizada</string>
 </resources>

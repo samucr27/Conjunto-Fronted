@@ -31,6 +31,9 @@ interface ApiService {
     @PUT("api/apartamentos/{id}")
     suspend fun updateApartamento(@Path("id") id: Long, @Body apartamento: ApartamentoRequest): Response<Apartamento>
 
+    @DELETE("api/apartamentos/{id}")
+    suspend fun deleteApartamento(@Path("id") id: Long): Response<Void>
+
     @PUT("api/apartamentos/{id}/contrasena")
     suspend fun restablecerContrasena(@Path("id") id: Long, @Body request: CambioContrasenaRequest): Response<Void>
 
@@ -73,6 +76,12 @@ interface ApiService {
     @GET("api/cuotas/{id}/comprobante")
     suspend fun getComprobante(@Path("id") id: Long): Response<EnlaceComprobante>
 
+    @PUT("api/cuotas/{id}")
+    suspend fun updateCuota(@Path("id") id: Long, @Body cambio: CambioCuota): Response<CuotaDTO>
+
+    @DELETE("api/cuotas/{id}")
+    suspend fun deleteCuota(@Path("id") id: Long): Response<Void>
+
     @PUT("api/cuotas/{id}/estado")
     suspend fun revisarCuota(@Path("id") id: Long, @Body revision: RevisionCuota): Response<CuotaDTO>
 
@@ -83,6 +92,9 @@ interface ApiService {
     @POST("api/administradores")
     suspend fun crearCuentaAdministracion(@Body cuenta: CuentaAdministracion): Response<CuentaAdministracion>
 
+    @PUT("api/administradores/{id}")
+    suspend fun updateCuentaAdministracion(@Path("id") id: Long, @Body cuenta: CuentaAdministracion): Response<CuentaAdministracion>
+
     @DELETE("api/administradores/{id}")
     suspend fun eliminarCuentaAdministracion(@Path("id") id: Long): Response<Void>
 
@@ -91,6 +103,9 @@ interface ApiService {
 
     @POST("api/vehiculos")
     suspend fun createVehiculo(@Body vehiculo: VehiculoDTO): Response<VehiculoDTO>
+
+    @PUT("api/vehiculos/{id}")
+    suspend fun updateVehiculo(@Path("id") id: Long, @Body vehiculo: VehiculoDTO): Response<VehiculoDTO>
 
     @DELETE("api/vehiculos/{id}")
     suspend fun deleteVehiculo(@Path("id") id: Long): Response<Void>
@@ -119,6 +134,9 @@ interface ApiService {
     @POST("api/personal-obra")
     suspend fun createPersonalObra(@Body personal: PersonalObraDTO): Response<PersonalObraDTO>
 
+    @PUT("api/personal-obra/{id}")
+    suspend fun updatePersonalObra(@Path("id") id: Long, @Body personal: PersonalObraDTO): Response<PersonalObraDTO>
+
     @DELETE("api/personal-obra/{id}")
     suspend fun deletePersonalObra(@Path("id") id: Long): Response<Void>
 
@@ -135,6 +153,9 @@ interface ApiService {
     suspend fun updateZonaComun(@Path("id") id: Long, @Body zona: ZonaComunDTO): Response<ZonaComunDTO>
 
     // Calendario de reservas (P4): lo ocupado de la zona entre dos fechas (máximo 62 días)
+    @DELETE("api/zonas/{id}")
+    suspend fun deleteZona(@Path("id") id: Long): Response<Void>
+
     @GET("api/zonas/{id}/disponibilidad")
     suspend fun getDisponibilidad(
         @Path("id") zonaId: Long, @Query("desde") desde: String, @Query("hasta") hasta: String
@@ -148,6 +169,10 @@ interface ApiService {
 
     @POST("api/reservas")
     suspend fun createReserva(@Body reserva: ReservaDTO): Response<ReservaDTO>
+
+    // El administrador cualquiera; el residente cancela la suya si aún no empieza
+    @DELETE("api/reservas/{id}")
+    suspend fun deleteReserva(@Path("id") id: Long): Response<Void>
 
     @PUT("api/reservas/{id}/estado")
     suspend fun updateEstadoReserva(@Path("id") id: Long, @Body estado: EstadoRequest): Response<ReservaDTO>
