@@ -31,6 +31,14 @@ object Estados {
         else -> desconocido(estado)
     }
 
+    /** Los vehículos de antes de P4 no traen estado: estaban aprobados. */
+    fun vehiculo(estado: String?): EstadoVisual = when (estado?.uppercase()) {
+        "PENDIENTE" -> EstadoVisual(R.string.estado_pendiente_aprobacion, TonoEstado.ADVERTENCIA)
+        "APROBADO", null -> EstadoVisual(R.string.estado_aprobado, TonoEstado.EXITO)
+        "RECHAZADO" -> EstadoVisual(R.string.estado_rechazado, TonoEstado.ERROR)
+        else -> desconocido(estado)
+    }
+
     fun obra(estado: String?): EstadoVisual = when (estado?.uppercase()) {
         "EN_PROCESO" -> EstadoVisual(R.string.estado_en_proceso, TonoEstado.ADVERTENCIA)
         "FINALIZADA" -> EstadoVisual(R.string.estado_finalizada, TonoEstado.EXITO)

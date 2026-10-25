@@ -23,6 +23,8 @@ import com.example.conjuntoresidencial.ui.comun.controlesFlotantes
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.ui.comun.resumen
 import com.example.conjuntoresidencial.ui.comun.aviso
+import com.example.conjuntoresidencial.ui.comun.pedirVehiculo
+import com.example.conjuntoresidencial.util.Resource
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -60,7 +62,10 @@ class MisVehiculosFragment : Fragment() {
                 reintentar = { viewModel.fetchVehiculos(aptoId) }
             ) { lista ->
                 adaptador.submitList(lista)
-                binding.encabezado.ponerInfo(resumen(R.plurals.resumen_vehiculos, lista.size))
+                binding.encabezado.ponerInfo(resumen(
+                    R.plurals.resumen_vehiculos, lista.size,
+                    R.plurals.resumen_por_aprobar to lista.count { it.estado == "PENDIENTE" }
+                ))
             }
         }
 
@@ -80,41 +85,24 @@ class MisVehiculosFragment : Fragment() {
         }
 
         if (viewModel.vehiculos.value == null) viewModel.fetchVehiculos(aptoId)
+        if (viewModel.cupos == null) viewModel.cargarCupos()
     }
 
+    /** Tipos con lo que le queda de cupo al apartamento; queda por aprobar del administrador. */
     private fun mostrarDialogAgregar() {
-        val vista = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_agregar_vehiculo, null)
-        val tipoView = vista.findViewById<AutoCompleteTextView>(R.id.etTipo)
-        tipoView.comoLista(Opciones.TIPOS_VEHICULO)
-        val tilPlaca = vista.findViewById<TextInputLayout>(R.id.tilPlaca)
-        val dialogo = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.vehiculo_nuevo)
-            .setView(vista)
-            .setPositiveButton(R.string.btn_guardar, null)
-            .setNegativeButton(R.string.btn_cancelar, null)
-            .show()
-
-        // Se asigna después de show() para que el diálogo no se cierre si falta la placa
-        dialogo.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            val placa = vista.findViewById<TextInputEditText>(R.id.etPlaca).text.toString().trim()
-            if (placa.isBlank()) {
-                tilPlaca.error = getString(R.string.vehiculo_placa_obligatoria)
-                return@setOnClickListener
-            }
-            val marca = vista.findViewById<TextInputEditText>(R.id.etMarca).text.toString().trim()
-            val color = vista.findViewById<TextInputEditText>(R.id.etColor).text.toString().trim()
+        val actuales = (viewModel.vehiculos.value as? Resource.Success)?.data.orEmpty()
+        pedirVehiculo(viewModel.cupos, actuales, limitar = true) { nuevo ->
             viewModel.agregarVehiculo(
-                VehiculoDTO(null, placa, marca, color, tipoView.text.toString(), aptoId),
-                getString(R.string.vehiculo_error_guardar)
+                VehiculoDTO(null, nuevo.placa, nuevo.marca, nuevo.color, nuevo.tipo, aptoId),
+                getString(R.string.vehiculo_enviado), getString(R.string.vehiculo_error_guardar)
             )
-            dialogo.dismiss()
         }
     }
 
     private fun confirmarEliminar(vehiculo: VehiculoDTO) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.vehiculo_eliminar_titulo)
-            .setMessage(getString(R.string.vehiculo_eliminar_pregunta, vehiculo.placa))
+            .setMessage(getString(R.string.vehiculo_eliminar_pregunta, vehiculo.placa ?: vehiculo.tipo.lowercase()))
             .setPositiveButton(R.string.vehiculo_eliminar) { _, _ ->
                 viewModel.eliminarVehiculo(vehiculo, aptoId, getString(R.string.vehiculo_error_eliminar))
             }

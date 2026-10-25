@@ -14,8 +14,18 @@ data class LoginResponse(val token: String, val expiraEn: String?, val rol: Stri
 // Cuerpo de los errores del backend: {"mensaje": "..."}
 data class MensajeError(val mensaje: String?)
 data class ResidenteDTO(val id: Long?, val nombreCompleto: String, val telefono: String, val identificacion: String, val tipoHabitante: String, val apartamentoId: Long)
-// marca y color son opcionales en el backend: pueden venir en null
-data class VehiculoDTO(val id: Long?, val placa: String, val marca: String?, val color: String?, val tipo: String, val apartamentoId: Long)
+// marca y color son opcionales; la placa solo la llevan carros y motos. estado (PENDIENTE,
+// APROBADO o RECHAZADO), motivoRechazo, torre y apto los pone el backend (P4)
+data class VehiculoDTO(
+    val id: Long?, val placa: String?, val marca: String?, val color: String?, val tipo: String, val apartamentoId: Long,
+    val estado: String? = null, val motivoRechazo: String? = null, val torre: String? = null, val apto: String? = null
+)
+// Cuántos vehículos de un tipo puede tener cada apartamento
+data class CupoVehiculoDTO(val tipo: String, val maximo: Int, val requierePlaca: Boolean? = null) {
+    val llevaPlaca: Boolean get() = requierePlaca ?: (tipo in com.example.conjuntoresidencial.util.Opciones.TIPOS_CON_PLACA)
+}
+// El administrador aprueba o rechaza un vehículo (motivo opcional, lo ve el residente)
+data class EstadoVehiculoRequest(val estado: String, val motivo: String? = null)
 data class ObraDTO(val id: Long?, val descripcionAdecuacion: String, val fechaInicio: String, val fechaFinEstimada: String, val estadoObra: String, val apartamentoId: Long)
 data class PersonalObraDTO(val id: Long?, val nombreTrabajador: String, val cedula: String, val arlEstado: Boolean, val obraId: Long, val torrePiso: String? = null, val aptoNum: String? = null)
 data class ZonaComunDTO(val id: Long?, val nombre: String, val estadoRecibido: String, val descripcionEstado: String, val esReservable: Boolean? = null)

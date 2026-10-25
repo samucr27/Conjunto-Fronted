@@ -6,11 +6,13 @@ import androidx.navigation.NavController
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.model.NotificacionDTO
 import com.example.conjuntoresidencial.ui.admin.ReservasAdminFragment
+import com.example.conjuntoresidencial.ui.admin.VehiculosAdminFragment
 
 /**
  * A dónde lleva una notificación, al tocarla en la pestaña Notificaciones o en el aviso del
- * celular: una reserva → Reservas, con esa reserva resaltada; un vehículo → el detalle de su
- * apartamento. Las notificaciones viejas (sin referencia) llevan a la lista general.
+ * celular. Administrador: una reserva → Reservas, con esa reserva resaltada; un vehículo → los
+ * vehículos por aprobar. Residente: la respuesta sobre su vehículo o su reserva → Mis vehículos
+ * o Mis reservas. Las notificaciones viejas (sin referencia) llevan a la lista general.
  */
 data class DestinoNotificacion(
     val notificacionId: Long?,
@@ -18,11 +20,17 @@ data class DestinoNotificacion(
     val referenciaId: Long?,
     val apartamentoId: Long?
 ) {
+    /** Las de los residentes empiezan por el tipo de lo que se revisó: VEHICULO_APROBADO... */
+    val esParaAdmin: Boolean get() = tipo == TIPO_RESERVA || tipo == TIPO_VEHICULO
+
     fun abrir(nav: NavController) {
-        when (tipo) {
-            TIPO_VEHICULO ->
-                if (apartamentoId != null) nav.navigate(R.id.detalleApartamentoFragment, bundleOf("aptoId" to apartamentoId))
-                else nav.navigate(R.id.directorioApartamentosFragment)
+        when {
+            tipo == TIPO_VEHICULO -> nav.navigate(
+                R.id.vehiculosAdminFragment,
+                referenciaId?.let { bundleOf(VehiculosAdminFragment.ARG_RESALTAR to it) }
+            )
+            tipo.startsWith(TIPO_VEHICULO) -> nav.navigate(R.id.misVehiculosFragment)
+            tipo.startsWith(TIPO_RESERVA) && !esParaAdmin -> nav.navigate(R.id.misReservasFragment)
             else -> nav.navigate(
                 R.id.reservasAdminFragment,
                 referenciaId?.let { bundleOf(ReservasAdminFragment.ARG_RESALTAR to it) }

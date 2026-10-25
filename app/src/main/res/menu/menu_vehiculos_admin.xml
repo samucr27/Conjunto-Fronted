@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Menú "⋮" de Vehículos (administrador) -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/accion_actualizar"
+        android:title="@string/accion_actualizar" />
+    <item
+        android:id="@+id/accion_cupos"
+        android:title="@string/accion_cupos" />
+</menu>

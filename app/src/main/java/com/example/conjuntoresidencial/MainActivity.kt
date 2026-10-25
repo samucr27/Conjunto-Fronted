@@ -248,21 +248,22 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             avisoActual?.dismiss()
             avisoActual = null
             val menu = when (destino.id) {
-                R.id.adminDashboardFragment, R.id.notificacionesFragment -> R.menu.menu_barra_admin
+                R.id.adminDashboardFragment -> R.menu.menu_barra_admin
                 R.id.propietarioDashboardFragment, R.id.misReservasFragment, R.id.miCarteraFragment ->
                     R.menu.menu_barra_residente
-                R.id.cuentaFragment ->
+                // Las dos barras las tienen: depende de quién inició sesión
+                R.id.notificacionesFragment, R.id.cuentaFragment ->
                     if (SessionManager(this).esAdmin()) R.menu.menu_barra_admin else R.menu.menu_barra_residente
                 else -> null
             }
             mostrarBarra(menu)
             if (menu != null && navInferior.selectedItemId != destino.id) navInferior.selectedItemId = destino.id
-            if (menu == R.menu.menu_barra_admin) notificaciones.actualizarConteo()
+            if (menu != null) notificaciones.actualizarConteo()
             when (destino.id) {
                 R.id.adminDashboardFragment, R.id.propietarioDashboardFragment -> {
                     prepararAvisos()
                     // Después de este cambio de pantalla, no dentro de él
-                    if (destino.id == R.id.adminDashboardFragment) navInferior.post { abrirAvisoPendiente() }
+                    navInferior.post { abrirAvisoPendiente() }
                 }
                 R.id.loginSelectorFragment -> celularRegistrado = false
             }
@@ -274,7 +275,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             true
         }
 
-        // Insignia de no leídas en la pestaña Notificaciones (solo existe en la barra del administrador)
+        // Insignia de no leídas en la pestaña de notificaciones (está en las dos barras)
         notificaciones.noLeidas.observe(this) { ponerInsignia() }
     }
 
@@ -295,7 +296,8 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     private fun abrirAvisoPendiente() {
         val destino = avisoPendiente ?: return
         val sesion = SessionManager(this)
-        if (sesion.getToken() == null || !sesion.esAdmin()) return
+        // Cada aviso es para un rol: el de la sesión tiene que coincidir
+        if (sesion.getToken() == null || sesion.esAdmin() != destino.esParaAdmin) return
         val actual = navController.currentDestination?.id
         if (actual == null || actual in setOf(R.id.loginSelectorFragment, R.id.loginAdminFragment, R.id.loginApartamentoFragment)) return
         avisoPendiente = null
@@ -320,7 +322,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     }
 
     private fun ponerInsignia() {
-        if (menuActual != R.menu.menu_barra_admin) return
+        if (menuActual == null) return
         val noLeidas = notificaciones.noLeidas.value ?: 0
         navInferior.getOrCreateBadge(R.id.notificacionesFragment).apply {
             number = noLeidas
