@@ -37,7 +37,11 @@ class PerfilFragment : Fragment() {
         val sesion = SessionManager(requireContext())
         configurarEncabezado(binding.encabezado, R.string.cuenta_perfil, R.string.perfil_descripcion)
 
-        val rol = getString(if (sesion.esAdmin()) R.string.rol_admin else R.string.rol_residente)
+        val rol = getString(when {
+            sesion.esContador() -> R.string.rol_contador
+            sesion.esAdmin() -> R.string.rol_admin
+            else -> R.string.rol_residente
+        })
         binding.filaRol.estado = rol
         if (sesion.esAdmin()) {
             binding.filaIdentidad.titulo = getString(R.string.cuenta_usuario)

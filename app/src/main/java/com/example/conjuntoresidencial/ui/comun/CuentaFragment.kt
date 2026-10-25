@@ -29,7 +29,11 @@ class CuentaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sesion = SessionManager(requireContext())
-        val rol = getString(if (sesion.esAdmin()) R.string.rol_admin else R.string.rol_residente)
+        val rol = getString(when {
+            sesion.esContador() -> R.string.rol_contador
+            sesion.esAdmin() -> R.string.rol_admin
+            else -> R.string.rol_residente
+        })
         val identidad = if (sesion.esAdmin()) sesion.getUsuario()
             else getString(R.string.panel_residente_titulo, sesion.getTorre(), sesion.getApto())
 

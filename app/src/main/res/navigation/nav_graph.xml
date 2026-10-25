@@ -154,6 +154,16 @@
         android:name="com.example.conjuntoresidencial.ui.residentes.ResidentesFragment"
         tools:layout="@layout/fragment_residentes" />
 
+    <!-- P4 bloque 7: facturación (contador y administrador) y cuentas de la administración -->
+    <fragment
+        android:id="@+id/cuotasFragment"
+        android:name="com.example.conjuntoresidencial.ui.cartera.CuotasFragment"
+        tools:layout="@layout/fragment_cuotas" />
+    <fragment
+        android:id="@+id/equipoFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.EquipoFragment"
+        tools:layout="@layout/fragment_equipo" />
+
     <!-- Pestañas de la barra inferior (MainActivity navega a ellas por id) -->
     <fragment
         android:id="@+id/notificacionesFragment"

@@ -27,6 +27,21 @@ data class ResidenteDTO(
     val contrasena: String? = null
 )
 data class RevisionResidente(val estado: String, val motivo: String? = null)
+// Cuota de administración de un mes (P4 bloque 7): periodo "2026-11"; estado PENDIENTE,
+// EN_REVISION (subió el comprobante), PAGADA o RECHAZADA
+data class CuotaDTO(
+    val id: Long, val apartamentoId: Long, val torre: String?, val apto: String?, val periodo: String,
+    val valor: Double, val fechaLimite: String, val estado: String, val vencida: Boolean? = null,
+    val tieneComprobante: Boolean? = null, val comprobanteTipo: String? = null, val comprobanteSubidoEn: String? = null,
+    val motivoRechazo: String? = null, val pagadaEn: String? = null
+)
+data class GenerarCuotasRequest(val periodo: String, val valor: Double, val fechaLimite: String?)
+data class CuotasGeneradas(val periodo: String, val creadas: Int, val existentes: Int)
+data class RevisionCuota(val estado: String, val motivo: String? = null)
+// Enlace firmado que vence a los 10 minutos
+data class EnlaceComprobante(val url: String, val tipo: String?, val expiraEn: String?)
+// Cuenta de la administración: rol ADMIN o CONTADOR; contrasena solo al crearla
+data class CuentaAdministracion(val id: Long?, val usuario: String, val rol: String, val contrasena: String? = null)
 // Contraseña vacía = quitarle el acceso con documento
 data class AccesoResidente(val contrasena: String)
 // marca y color son opcionales; la placa solo la llevan carros y motos. estado (PENDIENTE,

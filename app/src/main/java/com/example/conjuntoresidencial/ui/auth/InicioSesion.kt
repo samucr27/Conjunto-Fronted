@@ -24,7 +24,8 @@ fun Fragment.completarInicioSesion(respuesta: LoginResponse, credenciales: Acces
     val contexto = requireContext()
     SessionManager(contexto).guardar(respuesta, credenciales?.documento)
     val irAlPanel = {
-        val panel = if (respuesta.rol == ROL_ADMIN) R.id.adminDashboardFragment else R.id.propietarioDashboardFragment
+        val panel = if (respuesta.rol == ROL_ADMIN || respuesta.rol == "CONTADOR") R.id.adminDashboardFragment
+        else R.id.propietarioDashboardFragment
         findNavController().navigate(panel, null, NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build())
     }
     val cuenta = credenciales?.cuenta(contexto)
