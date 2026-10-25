@@ -29,13 +29,20 @@ class SessionManager(context: Context) {
     fun saveRol(rol: String) = prefs.edit { putString("rol", rol) }
     fun getRol(): String? = prefs.getString("rol", null)
     fun esAdmin(): Boolean = getRol() == "ADMIN"
+    // El arrendatario usa la app como residente, pero no gestiona quién vive en el apartamento
+    fun esPropietario(): Boolean = getRol() == "PROPIETARIO"
+
+    // Si entró con su documento (P4): quién es y con qué documento (para la huella)
+    fun getResidenteId(): Long? = prefs.getLong("residente_id", -1L).takeIf { it > 0 }
+    fun getNombre(): String = prefs.getString("nombre", "") ?: ""
+    fun getDocumento(): String? = prefs.getString("documento", null)
 
     // Usuario del administrador (el residente se identifica con torre y apartamento)
     fun saveUsuario(usuario: String) = prefs.edit { putString("usuario", usuario) }
     fun getUsuario(): String = prefs.getString("usuario", "") ?: ""
 
-    /** Guarda lo que devuelve el login (con contraseña o con huella). */
-    fun guardar(respuesta: LoginResponse) {
+    /** Guarda lo que devuelve el login (con contraseña o con huella); [documento] si entró con él. */
+    fun guardar(respuesta: LoginResponse, documento: String? = null) {
         saveToken(respuesta.token)
         saveRol(respuesta.rol)
         if (respuesta.rol == "ADMIN") {
@@ -44,6 +51,15 @@ class SessionManager(context: Context) {
             saveApartamentoId(respuesta.id)
             saveTorre(respuesta.torre ?: "")
             saveApto(respuesta.apto ?: "")
+        }
+        prefs.edit {
+            if (respuesta.residenteId != null && documento != null) {
+                putLong("residente_id", respuesta.residenteId)
+                putString("nombre", respuesta.nombre.orEmpty())
+                putString("documento", documento)
+            } else {
+                remove("residente_id"); remove("nombre"); remove("documento")
+            }
         }
     }
 

@@ -2,6 +2,8 @@ package com.example.conjuntoresidencial.model
 
 data class LoginAdminRequest(val usuario: String, val contrasena: String)
 data class LoginApartamentoRequest(val torre: String, val apto: String, val contrasena: String)
+// Cada residente con su documento y su contraseña personal (P4)
+data class LoginResidenteRequest(val documento: String, val contrasena: String)
 // El backend nunca devuelve la contraseña
 data class Apartamento(val id: Long, val torre: String, val apto: String)
 // Para crear/editar: la contraseña solo se envía (en edición es opcional)
@@ -10,10 +12,23 @@ data class CambioContrasenaRequest(val nuevaContrasena: String)
 // El usuario cambia su propia contraseña (Cuenta → Perfil)
 data class CambioPropiaContrasenaRequest(val contrasenaActual: String, val contrasenaNueva: String)
 // Respuesta de los dos logins: usuario solo viene para el admin; torre y apto solo para el propietario
-data class LoginResponse(val token: String, val expiraEn: String?, val rol: String, val id: Long, val usuario: String?, val torre: String?, val apto: String?)
+// rol: ADMIN, PROPIETARIO o ARRENDATARIO. residenteId y nombre solo si entró con su documento
+data class LoginResponse(
+    val token: String, val expiraEn: String?, val rol: String, val id: Long, val usuario: String?, val torre: String?, val apto: String?,
+    val residenteId: Long? = null, val nombre: String? = null
+)
 // Cuerpo de los errores del backend: {"mensaje": "..."}
 data class MensajeError(val mensaje: String?)
-data class ResidenteDTO(val id: Long?, val nombreCompleto: String, val telefono: String, val identificacion: String, val tipoHabitante: String, val apartamentoId: Long)
+// estado (PENDIENTE, APROBADO o RECHAZADO), tieneAcceso, torre y apto los pone el backend;
+// contrasena solo se envía al crearlo (con ella entra con su documento)
+data class ResidenteDTO(
+    val id: Long?, val nombreCompleto: String, val telefono: String?, val identificacion: String, val tipoHabitante: String, val apartamentoId: Long,
+    val estado: String? = null, val tieneAcceso: Boolean? = null, val torre: String? = null, val apto: String? = null,
+    val contrasena: String? = null
+)
+data class RevisionResidente(val estado: String, val motivo: String? = null)
+// Contraseña vacía = quitarle el acceso con documento
+data class AccesoResidente(val contrasena: String)
 // marca y color son opcionales; la placa solo la llevan carros y motos. estado (PENDIENTE,
 // APROBADO o RECHAZADO), motivoRechazo, torre y apto los pone el backend (P4)
 data class VehiculoDTO(
