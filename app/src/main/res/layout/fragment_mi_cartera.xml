@@ -114,6 +114,27 @@
                             android:minHeight="56dp"
                             android:text="@string/btn_simular_pago"
                             app:icon="@drawable/ic_wallet" />
+
+                        <!-- Cuotas de cada mes (P4): tocar una sube o muestra su comprobante -->
+                        <TextView
+                            android:id="@+id/tvTituloCuotas"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="28dp"
+                            android:layout_marginBottom="4dp"
+                            android:accessibilityHeading="true"
+                            android:text="@string/mi_cartera_cuotas"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:textColor="?attr/colorOnSurface"
+                            android:visibility="gone" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvCuotas"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="-8dp"
+                            android:layout_marginEnd="-8dp"
+                            android:nestedScrollingEnabled="false" />
                     </LinearLayout>
                 </androidx.core.widget.NestedScrollView>
 

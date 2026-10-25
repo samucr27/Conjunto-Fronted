@@ -642,4 +642,81 @@
     <string name="residente_estado_rechazado">Rechazado</string>
     <string name="residente_con_acceso">Con acceso</string>
     <string name="residente_sin_telefono">sin registrar</string>
+
+    <!-- P4 bloque 7: contador, facturación y comprobantes -->
+    <string name="rol_contador">Contador</string>
+    <string name="panel_contador_subtitulo">Cartera y facturación</string>
+    <string name="menu_facturacion">Facturación</string>
+    <string name="menu_facturacion_sub">Cuotas y comprobantes</string>
+    <string name="menu_equipo">Equipo</string>
+    <string name="menu_equipo_sub">Administradores y contador</string>
+    <string name="facturacion_subtitulo">Cuotas de administración</string>
+    <string name="facturacion_por_revisar">Por revisar</string>
+    <string name="facturacion_generar">Generar cuota</string>
+    <string name="facturacion_generar_si">Generar</string>
+    <string name="facturacion_error_generar">No se pudo generar la cuota</string>
+    <string name="facturacion_generada_sin_datos">Cuota generada</string>
+    <string name="facturacion_sin_revisar">No hay comprobantes por revisar</string>
+    <string name="facturacion_sin_revisar_mensaje">Cuando un residente suba el comprobante de su pago, aparecerá aquí.</string>
+    <string name="facturacion_sin_cuotas">Este mes aún no tiene cuotas</string>
+    <string name="facturacion_sin_cuotas_mensaje">Usa “Generar cuota” para crearla en todos los apartamentos.</string>
+    <string name="cuota_mes">Mes</string>
+    <string name="cuota_valor">Valor de la cuota</string>
+    <string name="cuota_valor_obligatorio">Escribe el valor de la cuota</string>
+    <string name="cuota_dia_limite">Día límite de pago</string>
+    <string name="cuota_dia_limite_ayuda">Después de ese día la cuota queda vencida.</string>
+    <string name="cuota_dia_invalido">Escribe un día entre 1 y %1$d</string>
+    <string name="cuota_detalle">%1$s · vence el %2$s</string>
+    <string name="cuota_motivo">Motivo: %1$s</string>
+    <string name="cuota_titulo_apto">Torre %1$s Apto %2$s · %3$s</string>
+    <string name="cuota_pendiente">Pendiente</string>
+    <string name="cuota_vencida">Vencida</string>
+    <string name="cuota_en_revision">Comprobante en revisión</string>
+    <string name="cuota_pagada">Pagada</string>
+    <string name="cuota_rechazada">Comprobante rechazado</string>
+    <string name="cuota_comprobante_subido">Comprobante subido el %1$s</string>
+    <string name="cuota_confirmar_pago">Confirmar pago</string>
+    <string name="cuota_pago_confirmado">Pago confirmado</string>
+    <string name="cuota_rechazar">Rechazar</string>
+    <string name="cuota_rechazar_titulo">Rechazar el comprobante</string>
+    <string name="cuota_motivo_hint">Motivo (le llega al residente)</string>
+    <string name="cuota_comprobante_rechazado">Comprobante rechazado</string>
+    <string name="cuota_error_revisar">No se pudo actualizar la cuota</string>
+    <string name="cuota_ver_comprobante">Ver comprobante</string>
+    <string name="cuota_subir_comprobante">Subir comprobante</string>
+    <string name="cuota_cambiar_comprobante">Cambiar comprobante</string>
+    <string name="cuota_comprobante_enviado">Comprobante enviado. La administración lo revisará.</string>
+    <string name="cuota_error_subir">No se pudo subir el comprobante</string>
+    <string name="cuota_error_leer">No se pudo leer el archivo</string>
+    <string name="cuota_archivo_grande">El comprobante no puede pasar de 5 MB</string>
+    <string name="cuota_error_comprobante">No se pudo abrir el comprobante</string>
+    <string name="cuota_sin_visor">No hay una app para abrir el comprobante</string>
+    <string name="mi_cartera_cuotas">Cuotas</string>
+    <string name="equipo_subtitulo">Cuentas de la administración</string>
+    <string name="equipo_agregar">Agregar cuenta</string>
+    <string name="equipo_rol">Rol</string>
+    <string name="equipo_usuario_corto">El usuario debe tener al menos 3 caracteres</string>
+    <string name="equipo_creada">Cuenta %1$s creada</string>
+    <string name="equipo_eliminada">Cuenta eliminada</string>
+    <string name="equipo_eliminar_titulo">¿Eliminar la cuenta %1$s?</string>
+    <string name="equipo_eliminar_mensaje">Ya no podrá entrar a la app.</string>
+    <string name="equipo_no_propia">No puedes eliminar tu propia cuenta</string>
+    <string name="equipo_vacio">No hay cuentas</string>
+    <string name="equipo_error_cargar">No se pudieron cargar las cuentas</string>
+    <plurals name="resumen_cuotas">
+        <item quantity="one">%d cuota</item>
+        <item quantity="other">%d cuotas</item>
+    </plurals>
+    <plurals name="resumen_pagadas">
+        <item quantity="one">%d pagada</item>
+        <item quantity="other">%d pagadas</item>
+    </plurals>
+    <plurals name="resumen_cuentas">
+        <item quantity="one">%d cuenta</item>
+        <item quantity="other">%d cuentas</item>
+    </plurals>
+    <plurals name="facturacion_generadas">
+        <item quantity="one">%1$d cuota de %2$s generada</item>
+        <item quantity="other">%1$d cuotas de %2$s generadas</item>
+    </plurals>
 </resources>

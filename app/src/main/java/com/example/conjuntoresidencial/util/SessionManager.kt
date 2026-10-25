@@ -28,7 +28,10 @@ class SessionManager(context: Context) {
 
     fun saveRol(rol: String) = prefs.edit { putString("rol", rol) }
     fun getRol(): String? = prefs.getString("rol", null)
-    fun esAdmin(): Boolean = getRol() == "ADMIN"
+    // De la administración: el administrador o el contador (P4), que entra por el mismo login
+    fun esAdmin(): Boolean = getRol() == "ADMIN" || esContador()
+    // El contador solo maneja la cartera y la facturación
+    fun esContador(): Boolean = getRol() == "CONTADOR"
     // El arrendatario usa la app como residente, pero no gestiona quién vive en el apartamento
     fun esPropietario(): Boolean = getRol() == "PROPIETARIO"
 
@@ -45,7 +48,7 @@ class SessionManager(context: Context) {
     fun guardar(respuesta: LoginResponse, documento: String? = null) {
         saveToken(respuesta.token)
         saveRol(respuesta.rol)
-        if (respuesta.rol == "ADMIN") {
+        if (respuesta.rol == "ADMIN" || respuesta.rol == "CONTADOR") {
             respuesta.usuario?.let(::saveUsuario)
         } else {
             saveApartamentoId(respuesta.id)

@@ -1,6 +1,7 @@
 package com.example.conjuntoresidencial.api
 
 import com.example.conjuntoresidencial.model.*
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -54,6 +55,36 @@ interface ApiService {
 
     @PUT("api/residentes/{id}/acceso")
     suspend fun cambiarAccesoResidente(@Path("id") id: Long, @Body acceso: AccesoResidente): Response<ResidenteDTO>
+
+    // Facturación mensual (P4 bloque 7). Contador: por mes y/o estado
+    @GET("api/cuotas")
+    suspend fun getCuotas(@Query("periodo") periodo: String?, @Query("estado") estado: String?): Response<List<CuotaDTO>>
+
+    @GET("api/cuotas/apartamento/{id}")
+    suspend fun getCuotasPorApartamento(@Path("id") id: Long): Response<List<CuotaDTO>>
+
+    @POST("api/cuotas/generar")
+    suspend fun generarCuotas(@Body solicitud: GenerarCuotasRequest): Response<CuotasGeneradas>
+
+    @Multipart
+    @POST("api/cuotas/{id}/comprobante")
+    suspend fun subirComprobante(@Path("id") id: Long, @Part archivo: MultipartBody.Part): Response<CuotaDTO>
+
+    @GET("api/cuotas/{id}/comprobante")
+    suspend fun getComprobante(@Path("id") id: Long): Response<EnlaceComprobante>
+
+    @PUT("api/cuotas/{id}/estado")
+    suspend fun revisarCuota(@Path("id") id: Long, @Body revision: RevisionCuota): Response<CuotaDTO>
+
+    // Cuentas de la administración (solo el administrador)
+    @GET("api/administradores")
+    suspend fun getCuentasAdministracion(): Response<List<CuentaAdministracion>>
+
+    @POST("api/administradores")
+    suspend fun crearCuentaAdministracion(@Body cuenta: CuentaAdministracion): Response<CuentaAdministracion>
+
+    @DELETE("api/administradores/{id}")
+    suspend fun eliminarCuentaAdministracion(@Path("id") id: Long): Response<Void>
 
     @GET("api/vehiculos/apartamento/{id}")
     suspend fun getVehiculosPorApartamento(@Path("id") id: Long): Response<List<VehiculoDTO>>

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.conjuntoresidencial.R
+import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.ui.residentes.ResidentesFragment
 import com.example.conjuntoresidencial.databinding.FragmentAdminDashboardBinding
 import com.example.conjuntoresidencial.ui.comun.NotificacionesViewModel
@@ -32,8 +33,10 @@ class AdminDashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val contador = SessionManager(requireContext()).esContador()
         configurarEncabezado(
-            binding.encabezado, R.string.panel_admin_titulo, R.string.panel_admin_subtitulo,
+            binding.encabezado, R.string.panel_admin_titulo,
+            if (contador) R.string.panel_contador_subtitulo else R.string.panel_admin_subtitulo,
             atras = false, menu = R.menu.menu_panel
         ) { item ->
             (item == R.id.accion_cerrar_sesion).also { if (it) confirmarCerrarSesion() }
@@ -73,6 +76,18 @@ class AdminDashboardFragment : Fragment() {
         }
         binding.cardVehiculosAdmin.configurar(R.drawable.ic_car, R.string.menu_vehiculos_admin, R.string.menu_vehiculos_admin_sub) {
             nav.navigate(R.id.vehiculosAdminFragment)
+        }
+        binding.cardFacturacion.configurar(R.drawable.ic_receipt, R.string.menu_facturacion, R.string.menu_facturacion_sub) {
+            nav.navigate(R.id.cuotasFragment)
+        }
+        binding.cardEquipo.configurar(R.drawable.ic_people, R.string.menu_equipo, R.string.menu_equipo_sub) {
+            nav.navigate(R.id.equipoFragment)
+        }
+        // El contador solo ve la cartera y la facturación (el backend tampoco le deja lo demás)
+        if (contador) {
+            listOf(binding.cardDirectorioAptos, binding.cardControlObras, binding.cardHistorialReservas, binding.cardZonasAdmin,
+                binding.cardPersonalObra, binding.cardVehiculosAdmin, binding.cardResidentesPendientes, binding.cardEquipo)
+                .forEach { it.root.visibility = View.GONE }
         }
         binding.cardResidentesPendientes.configurar(R.drawable.ic_people, R.string.menu_residentes_pendientes,
             R.string.menu_residentes_pendientes_sub) {
