@@ -20,6 +20,7 @@
 
     <!-- Paneles -->
     <string name="panel_admin_titulo">Panel del administrador</string>
+    <string name="panel_contador_titulo">Panel del contador</string>
     <string name="panel_admin_subtitulo">Bienvenido</string>
     <string name="panel_residente_subtitulo">Panel del residente</string>
     <string name="panel_residente_titulo">Torre %1$s · Apto %2$s</string>

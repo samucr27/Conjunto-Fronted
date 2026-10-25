@@ -35,7 +35,7 @@ class AdminDashboardFragment : Fragment() {
 
         val contador = SessionManager(requireContext()).esContador()
         configurarEncabezado(
-            binding.encabezado, R.string.panel_admin_titulo,
+            binding.encabezado, if (contador) R.string.panel_contador_titulo else R.string.panel_admin_titulo,
             if (contador) R.string.panel_contador_subtitulo else R.string.panel_admin_subtitulo,
             atras = false, menu = R.menu.menu_panel
         ) { item ->
