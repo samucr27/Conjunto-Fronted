@@ -32,7 +32,7 @@ class PersonalObraFragment : Fragment() {
             alElegir = accionesDeLista(binding.swipe) { viewModel.fetchPersonal() }
         )
 
-        val adaptador = PersonalAdapter()
+        val adaptador = PersonalAdapter { p -> opcionesPersonal(p) { viewModel.fetchPersonal() } }
         binding.rvPersonalObra.layoutManager = LinearLayoutManager(requireContext())
         binding.rvPersonalObra.adapter = adaptador
         binding.estado.vincular(binding.rvPersonalObra)

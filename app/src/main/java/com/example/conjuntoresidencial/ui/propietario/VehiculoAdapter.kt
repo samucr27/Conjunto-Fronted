@@ -13,7 +13,8 @@ import com.example.conjuntoresidencial.ui.comun.mostrarEstado
 import com.example.conjuntoresidencial.ui.comun.Estados
 
 class VehiculoAdapter(
-    private val onEliminar: (VehiculoDTO) -> Unit
+    private val onEliminar: (VehiculoDTO) -> Unit,
+    private val onEditar: ((VehiculoDTO) -> Unit)? = null
 ) : ListAdapter<VehiculoDTO, VehiculoAdapter.VH>(DiffPorId { it.id }) {
 
     class VH(val binding: ItemVehiculoBinding) : RecyclerView.ViewHolder(binding.root)
@@ -38,6 +39,7 @@ class VehiculoAdapter(
         h.binding.tvNotaVehiculo.visibility = if (nota == null) View.GONE else View.VISIBLE
         h.binding.btnEliminarVehiculo.contentDescription = ctx.getString(R.string.desc_eliminar_vehiculo, v.placa ?: v.tipo)
         h.binding.btnEliminarVehiculo.setOnClickListener { onEliminar(v) }
+        onEditar?.let { editar -> h.binding.root.setOnClickListener { editar(v) } }
     }
 }
 

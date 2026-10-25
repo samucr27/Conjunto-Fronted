@@ -38,6 +38,8 @@ data class CuotaDTO(
 data class GenerarCuotasRequest(val periodo: String, val valor: Double, val fechaLimite: String?)
 data class CuotasGeneradas(val periodo: String, val creadas: Int, val existentes: Int)
 data class RevisionCuota(val estado: String, val motivo: String? = null)
+// Corregir una cuota sin pagar: los dos opcionales
+data class CambioCuota(val valor: Double? = null, val fechaLimite: String? = null)
 // Enlace firmado que vence a los 10 minutos
 data class EnlaceComprobante(val url: String, val tipo: String?, val expiraEn: String?)
 // Cuenta de la administración: rol ADMIN o CONTADOR; contrasena solo al crearla

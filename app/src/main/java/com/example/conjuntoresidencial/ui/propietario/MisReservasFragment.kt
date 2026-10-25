@@ -1,5 +1,9 @@
 package com.example.conjuntoresidencial.ui.propietario
 
+import com.example.conjuntoresidencial.api.RetrofitClient
+import com.example.conjuntoresidencial.util.Formatos
+import com.example.conjuntoresidencial.ui.comun.confirmar
+import com.example.conjuntoresidencial.ui.comun.ejecutarAccion
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,8 +42,17 @@ class MisReservasFragment : Fragment() {
             alElegir = accionesDeLista(binding.swipe) { viewModel.fetchReservas(aptoId) }
         )
 
-        // Sin callbacks: el residente solo ve el estado, no aprueba ni rechaza
-        val adaptador = ReservaAdapter()
+        // El residente no aprueba ni rechaza; tocar una que no ha empezado la cancela
+        val adaptador = ReservaAdapter(onTocar = { (reserva, zona) ->
+            if (reserva.estado == "RECHAZADA") return@ReservaAdapter
+            val cuando = Formatos.horario(reserva.fecha, reserva.hora, reserva.horaFin)
+            confirmar(getString(R.string.reserva_cancelar_titulo), getString(R.string.reserva_cancelar_mensaje, zona, cuando),
+                R.string.reserva_cancelar) {
+                ejecutarAccion(getString(R.string.reserva_cancelada), { RetrofitClient.instance.deleteReserva(reserva.id!!) }) {
+                    viewModel.fetchReservas(aptoId)
+                }
+            }
+        })
         binding.rvReservasPropietario.layoutManager = LinearLayoutManager(requireContext())
         binding.rvReservasPropietario.adapter = adaptador
         binding.estado.vincular(binding.rvReservasPropietario)

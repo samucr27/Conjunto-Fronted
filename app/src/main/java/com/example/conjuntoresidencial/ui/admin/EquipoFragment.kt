@@ -1,5 +1,8 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import android.text.InputType
+import com.example.conjuntoresidencial.ui.comun.elegirOpcion
+import com.example.conjuntoresidencial.ui.comun.pedirTexto
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,7 +41,7 @@ import retrofit2.Response
 class EquipoFragment : Fragment() {
     private var _binding: FragmentEquipoBinding? = null
     private val binding get() = _binding!!
-    private val adaptador = CuentaAdapter { confirmarEliminar(it) }
+    private val adaptador = CuentaAdapter { opciones(it) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentEquipoBinding.inflate(inflater, container, false)
@@ -102,6 +105,27 @@ class EquipoFragment : Fragment() {
                 RetrofitClient.instance.crearCuentaAdministracion(CuentaAdministracion(null, usuario, elegido, contrasena))
             }
         }
+    }
+
+    private fun opciones(c: CuentaAdministracion) {
+        val otroRol = if (c.rol == ROL_CONTADOR) ROL_ADMIN else ROL_CONTADOR
+        elegirOpcion(c.usuario, listOf(
+            (if (otroRol == ROL_CONTADOR) R.string.equipo_hacer_contador else R.string.equipo_hacer_admin) to {
+                ejecutar(getString(R.string.equipo_rol_cambiado, c.usuario, getString(etiquetaRol(otroRol)))) {
+                    RetrofitClient.instance.updateCuentaAdministracion(c.id!!, c.copy(rol = otroRol))
+                }
+            },
+            R.string.equipo_restablecer to {
+                pedirTexto(getString(R.string.equipo_restablecer_titulo, c.usuario), R.string.login_contrasena, null,
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD,
+                    validar = { if (it.length < 6) getString(R.string.error_contrasena_corta) else null }) { nueva ->
+                    ejecutar(getString(R.string.contrasena_restablecida)) {
+                        RetrofitClient.instance.updateCuentaAdministracion(c.id!!, c.copy(rol = c.rol, contrasena = nueva))
+                    }
+                }
+            },
+            R.string.residente_eliminar_si to { confirmarEliminar(c) }
+        ))
     }
 
     private fun confirmarEliminar(c: CuentaAdministracion) {

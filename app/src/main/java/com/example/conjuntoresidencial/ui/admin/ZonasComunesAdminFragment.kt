@@ -1,5 +1,8 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.example.conjuntoresidencial.api.RetrofitClient
+import com.example.conjuntoresidencial.ui.comun.confirmar
+import com.example.conjuntoresidencial.ui.comun.ejecutarAccion
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.LayoutInflater
@@ -114,12 +117,20 @@ class ZonasComunesAdminFragment : Fragment() {
         vista.tilApertura.setEndIconOnClickListener { apertura = null; vista.etApertura.text = null }
         vista.tilCierre.setEndIconOnClickListener { cierre = null; vista.etCierre.text = null }
 
-        val dialogo = MaterialAlertDialogBuilder(requireContext())
+        val constructor = MaterialAlertDialogBuilder(requireContext())
             .setTitle(if (zona == null) R.string.zona_nueva_titulo else R.string.zona_editar_titulo)
             .setView(vista.root)
             .setPositiveButton(if (zona == null) R.string.btn_registrar else R.string.btn_guardar, null)
             .setNegativeButton(R.string.btn_cancelar, null)
-            .show()
+        if (zona != null) constructor.setNeutralButton(R.string.zona_eliminar) { _, _ ->
+            confirmar(getString(R.string.zona_eliminar_titulo, zona.nombre), getString(R.string.zona_eliminar_mensaje),
+                R.string.residente_eliminar_si) {
+                ejecutarAccion(getString(R.string.zona_eliminada), { RetrofitClient.instance.deleteZona(zona.id!!) }) {
+                    viewModel.fetchZonas()
+                }
+            }
+        }
+        val dialogo = constructor.show()
 
         // Se asigna después de show() para que el diálogo no se cierre si falta algo
         dialogo.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {

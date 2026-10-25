@@ -27,7 +27,8 @@ data class ReservaConZona(val reserva: ReservaDTO, val nombreZona: String) {
 class ReservaAdapter(
     private val onAprobar: ((ReservaDTO) -> Unit)? = null,
     private val onRechazar: ((ReservaDTO) -> Unit)? = null,
-    private val resaltada: Long? = null
+    private val resaltada: Long? = null,
+    private val onTocar: ((ReservaConZona) -> Unit)? = null
 ) : ListAdapter<ReservaConZona, ReservaAdapter.ViewHolder>(DiffPorId { it.reserva.id }) {
 
     class ViewHolder(val binding: ItemReservaBinding) : RecyclerView.ViewHolder(binding.root)
@@ -45,6 +46,8 @@ class ReservaAdapter(
             reserva.asistentes?.let { ctx.resources.getQuantityString(R.plurals.reserva_personas, it, it) }
         ).joinToString(" · ")
         holder.binding.tvEstadoReserva.mostrarEstado(Estados.reserva(reserva.estado))
+        val item = getItem(position)
+        onTocar?.let { tocar -> holder.binding.root.setOnClickListener { tocar(item) } }
         val esResaltada = resaltada != null && reserva.id == resaltada
         holder.binding.root.strokeWidth = if (esResaltada) (2 * ctx.resources.displayMetrics.density).toInt() else 0
         holder.binding.root.strokeColor = MaterialColors.getColor(holder.binding.root, androidx.appcompat.R.attr.colorPrimary)

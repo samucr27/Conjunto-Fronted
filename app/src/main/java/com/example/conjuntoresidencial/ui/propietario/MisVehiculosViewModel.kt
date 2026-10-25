@@ -50,6 +50,19 @@ class MisVehiculosViewModel : ViewModel() {
     }
 
     /** Lo que registra el residente queda por aprobar: [enviado] lo explica. */
+    fun editarVehiculo(vehiculo: VehiculoDTO, editado: String, errorPorDefecto: String) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.instance.updateVehiculo(vehiculo.id!!, vehiculo)
+                _mensaje.value = Evento(if (response.isSuccessful) editado
+                    else RetrofitClient.mensajeDeError(response, errorPorDefecto))
+                if (response.isSuccessful) fetchVehiculos(vehiculo.apartamentoId)
+            } catch (e: Exception) {
+                _mensaje.value = Evento(RetrofitClient.mensajeDeExcepcion(e))
+            }
+        }
+    }
+
     fun agregarVehiculo(vehiculo: VehiculoDTO, enviado: String, errorPorDefecto: String) {
         viewModelScope.launch {
             try {

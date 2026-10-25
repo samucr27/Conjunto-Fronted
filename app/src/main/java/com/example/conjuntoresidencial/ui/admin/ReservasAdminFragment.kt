@@ -1,5 +1,9 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.example.conjuntoresidencial.api.RetrofitClient
+import com.example.conjuntoresidencial.util.Formatos
+import com.example.conjuntoresidencial.ui.comun.confirmar
+import com.example.conjuntoresidencial.ui.comun.ejecutarAccion
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,7 +44,16 @@ class ReservasAdminFragment : Fragment() {
         val adaptador = ReservaAdapter(
             onAprobar = { reserva -> viewModel.actualizarEstado(reserva.id!!, "APROBADA") },
             onRechazar = { reserva -> viewModel.actualizarEstado(reserva.id!!, "RECHAZADA") },
-            resaltada = resaltada
+            resaltada = resaltada,
+            onTocar = { (reserva, zona) ->
+                confirmar(getString(R.string.reserva_eliminar_titulo),
+                    getString(R.string.reserva_cancelar_mensaje, zona, Formatos.horario(reserva.fecha, reserva.hora, reserva.horaFin)),
+                    R.string.residente_eliminar_si) {
+                    ejecutarAccion(getString(R.string.reserva_eliminada), { RetrofitClient.instance.deleteReserva(reserva.id!!) }) {
+                        viewModel.fetchReservas()
+                    }
+                }
+            }
         )
         binding.rvReservas.layoutManager = LinearLayoutManager(requireContext())
         binding.rvReservas.adapter = adaptador

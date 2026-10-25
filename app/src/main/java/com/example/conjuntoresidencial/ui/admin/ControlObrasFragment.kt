@@ -1,5 +1,8 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.example.conjuntoresidencial.api.RetrofitClient
+import com.example.conjuntoresidencial.ui.comun.confirmar
+import com.example.conjuntoresidencial.ui.comun.ejecutarAccion
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,7 +38,18 @@ class ControlObrasFragment : Fragment() {
         )
 
         // Un solo adaptador: submitList conserva el scroll y solo redibuja lo que cambió
-        val adaptador = ObraConPersonalAdapter { obraId, nuevoEstado -> viewModel.cambiarEstado(obraId, nuevoEstado) }
+        val adaptador = ObraConPersonalAdapter(
+            onCambiarEstado = { obraId, nuevoEstado -> viewModel.cambiarEstado(obraId, nuevoEstado) },
+            onTocarObra = { obra ->
+                confirmar(getString(R.string.obra_eliminar_titulo), getString(R.string.obra_eliminar_mensaje, obra.descripcionAdecuacion),
+                    R.string.residente_eliminar_si) {
+                    ejecutarAccion(getString(R.string.obra_eliminada), { RetrofitClient.instance.deleteObra(obra.id!!) }) {
+                        viewModel.fetchObras()
+                    }
+                }
+            },
+            onTocarPersonal = { p -> opcionesPersonal(p) { viewModel.fetchObras() } }
+        )
         binding.rvObrasEnProceso.layoutManager = LinearLayoutManager(requireContext())
         binding.rvObrasEnProceso.adapter = adaptador
         binding.estado.vincular(binding.rvObrasEnProceso)

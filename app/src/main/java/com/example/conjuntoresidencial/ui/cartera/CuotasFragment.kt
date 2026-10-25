@@ -1,5 +1,10 @@
 package com.example.conjuntoresidencial.ui.cartera
 
+import android.text.InputType
+import com.example.conjuntoresidencial.model.CambioCuota
+import com.example.conjuntoresidencial.ui.comun.confirmar
+import com.example.conjuntoresidencial.ui.comun.elegirOpcion
+import com.example.conjuntoresidencial.ui.comun.pedirTexto
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -141,25 +146,52 @@ class CuotasFragment : Fragment() {
     }
 
     private fun revisar(c: CuotaDTO) {
-        val mensaje = listOfNotNull(
-            Cuotas.detalle(requireContext(), c),
-            getString(Cuotas.estado(c).etiqueta),
-            c.comprobanteSubidoEn?.let { getString(R.string.cuota_comprobante_subido, Formatos.fecha(it)) }
-        ).joinToString("\n")
-        val dialogo = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.cuota_titulo_apto, c.torre, c.apto, Cuotas.nombreMes(c.periodo)))
-            .setMessage(mensaje)
+        val opciones = mutableListOf<Pair<Int, () -> Unit>>()
+        if (c.tieneComprobante == true) opciones += R.string.cuota_ver_comprobante to { abrirComprobante(c) }
         if (c.estado != Cuotas.PAGADA) {
-            dialogo.setPositiveButton(R.string.cuota_confirmar_pago) { _, _ ->
+            opciones += R.string.cuota_confirmar_pago to {
                 viewModel.ejecutar(getString(R.string.cuota_error_revisar),
                     { RetrofitClient.instance.revisarCuota(c.id, RevisionCuota(Cuotas.PAGADA)) }) {
                     getString(R.string.cuota_pago_confirmado)
                 }
             }
         }
-        if (c.estado == Cuotas.EN_REVISION) dialogo.setNegativeButton(R.string.cuota_rechazar) { _, _ -> pedirMotivo(c) }
-        if (c.tieneComprobante == true) dialogo.setNeutralButton(R.string.cuota_ver_comprobante) { _, _ -> abrirComprobante(c) }
-        dialogo.show()
+        if (c.estado == Cuotas.EN_REVISION) opciones += R.string.cuota_rechazar to { pedirMotivo(c) }
+        if (c.estado != Cuotas.PAGADA) {
+            opciones += R.string.cuota_editar_valor to {
+                pedirTexto(getString(R.string.cuota_editar_valor), R.string.cuota_valor, c.valor.toLong().toString(),
+                    InputType.TYPE_CLASS_NUMBER,
+                    validar = { if ((it.toDoubleOrNull() ?: 0.0) <= 0) getString(R.string.cuota_valor_obligatorio) else null }) { v ->
+                    viewModel.ejecutar(getString(R.string.cuota_error_revisar),
+                        { RetrofitClient.instance.updateCuota(c.id, CambioCuota(valor = v.toDouble())) }) {
+                        getString(R.string.cuota_actualizada)
+                    }
+                }
+            }
+            opciones += R.string.cuota_editar_fecha to {
+                val maximo = Cuotas.diasDelMes(c.periodo)
+                pedirTexto(getString(R.string.cuota_editar_fecha), R.string.cuota_dia_limite, c.fechaLimite.takeLast(2),
+                    InputType.TYPE_CLASS_NUMBER,
+                    validar = { if (it.toIntOrNull() !in 1..maximo) getString(R.string.cuota_dia_invalido, maximo) else null }) { d ->
+                    val fecha = "${c.periodo}-${d.padStart(2, '0')}"
+                    viewModel.ejecutar(getString(R.string.cuota_error_revisar),
+                        { RetrofitClient.instance.updateCuota(c.id, CambioCuota(fechaLimite = fecha)) }) {
+                        getString(R.string.cuota_actualizada)
+                    }
+                }
+            }
+            opciones += R.string.cuota_eliminar to {
+                confirmar(getString(R.string.cuota_eliminar_titulo), getString(R.string.cuota_eliminar_mensaje),
+                    R.string.residente_eliminar_si) {
+                    viewModel.ejecutar(getString(R.string.cuota_error_revisar), { RetrofitClient.instance.deleteCuota(c.id) }) {
+                        getString(R.string.cuota_eliminada)
+                    }
+                }
+            }
+        }
+        // "Torre 1 Apto 101 · Noviembre 2026" y, debajo, valor, vencimiento y estado
+        elegirOpcion(getString(R.string.cuota_titulo_apto, c.torre, c.apto, Cuotas.nombreMes(c.periodo)) + "\n" +
+            Cuotas.detalle(requireContext(), c) + " · " + getString(Cuotas.estado(c).etiqueta), opciones)
     }
 
     private fun pedirMotivo(c: CuotaDTO) {

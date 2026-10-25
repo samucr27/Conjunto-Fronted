@@ -28,6 +28,7 @@ fun Fragment.pedirVehiculo(
     cupos: List<CupoVehiculoDTO>?,
     vehiculos: List<VehiculoDTO>,
     limitar: Boolean,
+    editando: VehiculoDTO? = null,
     alGuardar: (VehiculoNuevo) -> Unit
 ) {
     val lista = cupos?.takeIf { it.isNotEmpty() } ?: Opciones.CUPOS_POR_DEFECTO
@@ -36,7 +37,9 @@ fun Fragment.pedirVehiculo(
     vista.tilPlaca.limpiarErrorAlEscribir()
 
     // Lo que ocupa cupo: pendientes y aprobados (los de antes de P4 no traen estado: aprobados)
-    fun ocupados(tipo: String) = vehiculos.count { it.tipo == tipo && it.estado != ESTADO_RECHAZADO }
+    // El que se edita no cuenta: su cupo es el mismo que va a usar
+    fun ocupados(tipo: String) =
+        vehiculos.count { it.tipo == tipo && it.estado != ESTADO_RECHAZADO && (editando == null || it.id != editando.id) }
 
     var elegido = lista.first()
     fun elegir(cupo: CupoVehiculoDTO) {
@@ -53,11 +56,17 @@ fun Fragment.pedirVehiculo(
         }
     }
     vista.etTipo.setOnItemClickListener { _, _, posicion, _ -> elegir(lista[posicion]) }
-    // Empieza en el primer tipo que todavía tenga cupo
-    elegir(lista.firstOrNull { !limitar || ocupados(it.tipo) < it.maximo } ?: lista.first())
+    // Empieza en el tipo del que se edita o en el primero que todavía tenga cupo
+    elegir(lista.firstOrNull { it.tipo == editando?.tipo }
+        ?: lista.firstOrNull { !limitar || ocupados(it.tipo) < it.maximo } ?: lista.first())
+    editando?.let {
+        vista.etPlaca.setText(it.placa)
+        vista.etMarca.setText(it.marca)
+        vista.etColor.setText(it.color)
+    }
 
     val dialogo = MaterialAlertDialogBuilder(requireContext())
-        .setTitle(R.string.vehiculo_nuevo)
+        .setTitle(if (editando == null) R.string.vehiculo_nuevo else R.string.vehiculo_editar)
         .setView(vista.root)
         .setPositiveButton(R.string.btn_guardar, null)
         .setNegativeButton(R.string.btn_cancelar, null)
