@@ -66,6 +66,20 @@ interface ApiService {
     @PUT("api/residentes/{id}/aprobacion-propietario")
     suspend fun aprobarArrendatario(@Path("id") id: Long, @Body aprobacion: AprobacionPropietario): Response<ResidenteDTO>
 
+    // Feed de publicaciones (P5): lo ven todos; publica la administración
+    @GET("api/publicaciones")
+    suspend fun getPublicaciones(@Query("pagina") pagina: Int): Response<PaginaPublicaciones>
+
+    @Multipart
+    @POST("api/publicaciones")
+    suspend fun publicar(@Part("texto") texto: okhttp3.RequestBody?, @Part archivos: List<MultipartBody.Part>): Response<PublicacionDTO>
+
+    @PUT("api/publicaciones/{id}")
+    suspend fun editarPublicacion(@Path("id") id: Long, @Body edicion: EdicionPublicacion): Response<PublicacionDTO>
+
+    @DELETE("api/publicaciones/{id}")
+    suspend fun eliminarPublicacion(@Path("id") id: Long): Response<Void>
+
     // Visitantes frecuentes (Mi hogar)
     @GET("api/visitantes/apartamento/{id}")
     suspend fun getVisitantes(@Path("id") apartamentoId: Long): Response<List<VisitanteDTO>>

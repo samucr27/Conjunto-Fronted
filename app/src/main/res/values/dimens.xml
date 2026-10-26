@@ -4,4 +4,6 @@
     <dimen name="separacion_barra_inferior">12dp</dimen>
     <!-- Fila de los botones redondos de arriba (volver, más opciones), bajo la barra de estado -->
     <dimen name="alto_botones_superiores">72dp</dimen>
+    <!-- Alto de las imágenes del feed (P5) -->
+    <dimen name="feed_alto_imagen">200dp</dimen>
 </resources>

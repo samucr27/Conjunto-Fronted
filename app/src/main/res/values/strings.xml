@@ -866,4 +866,28 @@
     <string name="cuenta_apto_arrendado">Arrendado</string>
     <string name="cuenta_apto_propietario">Lo habita el propietario</string>
     <string name="apto_item_detalle_arrendado">Arrendado · Residentes y vehículos</string>
+
+    <!-- P5 bloque 3: feed de publicaciones -->
+    <string name="feed_editada">editada</string>
+    <string name="feed_opciones">Opciones de la publicación</string>
+    <string name="feed_desc_imagen">Imagen %1$s. Toca para abrirla</string>
+    <string name="feed_publicacion">Publicación</string>
+    <string name="feed_editar_texto">Editar el texto</string>
+    <string name="feed_editada_ok">Publicación actualizada</string>
+    <string name="feed_eliminar">Eliminar publicación</string>
+    <string name="feed_eliminar_titulo">¿Eliminar la publicación?</string>
+    <string name="feed_eliminar_mensaje">Desaparece del feed de todos los residentes.</string>
+    <string name="feed_eliminada">Publicación eliminada</string>
+    <string name="publicar_titulo">Publicar</string>
+    <string name="publicar_descripcion">Anuncio para todos los residentes</string>
+    <string name="publicar_texto">¿Qué quieres contarles?</string>
+    <string name="publicar_adjuntos_ayuda">Puedes adjuntar hasta 6 imágenes o archivos (PDF, Word, Excel) de 10 MB.</string>
+    <string name="publicar_adjuntar">Adjuntar imagen o archivo</string>
+    <string name="publicar_boton">Publicar</string>
+    <string name="publicar_vacia">Escribe algo o adjunta una imagen o un archivo</string>
+    <string name="publicar_maximo">Máximo %1$d adjuntos</string>
+    <string name="publicar_muy_grande">%1$s pesa más de 10 MB</string>
+    <string name="publicar_quitar_adjunto">%1$s · Toca para quitarlo</string>
+    <string name="publicar_error">No se pudo publicar</string>
+    <string name="publicar_listo">Publicado. A los residentes les llega el aviso.</string>
 </resources>

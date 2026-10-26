@@ -180,6 +180,12 @@
         android:name="com.example.conjuntoresidencial.ui.residentes.ArrendatarioFragment"
         tools:layout="@layout/fragment_arrendatario" />
 
+    <!-- P5 bloque 3: nueva publicación (administración) -->
+    <fragment
+        android:id="@+id/publicarFragment"
+        android:name="com.example.conjuntoresidencial.ui.feed.PublicarFragment"
+        tools:layout="@layout/fragment_publicar" />
+
     <!-- Pestañas de la barra inferior (MainActivity navega a ellas por id) -->
     <fragment
         android:id="@+id/inicioFragment"

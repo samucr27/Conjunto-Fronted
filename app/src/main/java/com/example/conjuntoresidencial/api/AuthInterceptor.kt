@@ -15,7 +15,7 @@ class AuthInterceptor(private val sessionManager: SessionManager) : Interceptor 
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        val ruta = request.url().encodedPath()
+        val ruta = request.url.encodedPath
         val esLogin = ruta.startsWith("/api/auth/") && ruta.endsWith("/login")
         val token = sessionManager.getToken()
 
@@ -26,7 +26,7 @@ class AuthInterceptor(private val sessionManager: SessionManager) : Interceptor 
         val response = chain.proceed(conToken)
 
         if (!esLogin) {
-            when (response.code()) {
+            when (response.code) {
                 401 -> {
                     sessionManager.clearSession()
                     SesionEventos.notificarExpirada()

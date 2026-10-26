@@ -28,6 +28,8 @@ data class DestinoNotificacion(
 
     fun abrir(nav: NavController) {
         when {
+            // Nueva publicación → el feed de Inicio
+            tipo == TIPO_PUBLICACION -> nav.navigate(R.id.inicioFragment)
             // Comprobante por revisar → Facturación; cuota nueva o revisada → Mi cartera
             tipo == TIPO_COMPROBANTE -> nav.navigate(R.id.cuotasFragment)
             tipo.startsWith(TIPO_CUOTA) -> nav.navigate(R.id.miCarteraFragment)
@@ -63,6 +65,7 @@ data class DestinoNotificacion(
         const val TIPO_RESIDENTE = "RESIDENTE"
         const val TIPO_CUOTA = "CUOTA"
         const val TIPO_REGISTRO = "REGISTRO"
+        const val TIPO_PUBLICACION = "PUBLICACION"
         const val TIPO_SOLICITUD_ARRENDATARIO = "SOLICITUD_ARRENDATARIO"
         const val TIPO_COMPROBANTE = "COMPROBANTE"
         private const val EXTRA_TIPO = "notificacion_tipo"

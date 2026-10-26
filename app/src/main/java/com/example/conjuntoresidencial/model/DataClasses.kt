@@ -25,6 +25,14 @@ data class Apartamento(
     val citofono1: String? = null, val citofono2: String? = null, val arrendado: Boolean? = null
 )
 data class CitofonosRequest(val citofono1: String?, val citofono2: String?)
+// Feed de publicaciones (P5): cada url es un enlace firmado que vence en una hora
+data class AdjuntoPublicacion(val id: Long, val tipo: String, val nombre: String, val mime: String, val tamano: Long, val url: String?)
+data class PublicacionDTO(
+    val id: Long, val texto: String, val autor: String, val creadaEn: String, val editadaEn: String?,
+    val adjuntos: List<AdjuntoPublicacion>
+)
+data class PaginaPublicaciones(val publicaciones: List<PublicacionDTO>, val hayMas: Boolean)
+data class EdicionPublicacion(val texto: String)
 // Visitante frecuente del apartamento (P5)
 data class VisitanteDTO(val id: Long?, val nombreCompleto: String, val identificacion: String?, val telefono: String?, val apartamentoId: Long)
 // El propietario acepta o rechaza a su arrendatario

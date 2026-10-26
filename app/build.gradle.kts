@@ -95,6 +95,9 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 
+    // Imágenes del feed (P5) desde enlaces firmados: carga, caché y crossfade (Apache 2.0)
+    implementation("io.coil-kt:coil:2.6.0")
+
     // Corrutinas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     // await() sobre las tareas de Firebase
