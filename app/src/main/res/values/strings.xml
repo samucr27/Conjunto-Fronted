@@ -890,4 +890,62 @@
     <string name="publicar_quitar_adjunto">%1$s · Toca para quitarlo</string>
     <string name="publicar_error">No se pudo publicar</string>
     <string name="publicar_listo">Publicado. A los residentes les llega el aviso.</string>
+
+    <!-- P5 bloque 4: parqueaderos y vehículos -->
+    <string name="vehiculos_categoria">%1$s · %2$d de %3$d</string>
+    <string name="vehiculos_no_asignado">No asignado</string>
+    <string name="vehiculo_parqueadero">Parqueadero %1$s</string>
+    <string name="vehiculo_pendiente_parqueadero">La administración debe aprobarlo y asignarle el parqueadero.</string>
+    <string name="vehiculo_sin_parqueadero">Aprobado sin parqueadero asignado.</string>
+    <string name="parqueaderos_titulo">Parqueaderos</string>
+    <string name="parqueaderos_descripcion">Por categoría y de invitados</string>
+    <string name="parqueaderos_tarjeta_sub">Asignación y disponibilidad</string>
+    <string name="parqueaderos_libres">Libres</string>
+    <string name="parqueaderos_asignados">Asignados</string>
+    <string name="parqueaderos_invitados">Invitados</string>
+    <string name="parqueaderos_todos">Todos</string>
+    <string name="parqueaderos_error">No se pudieron cargar los parqueaderos</string>
+    <string name="parqueaderos_vacio">Aún no hay parqueaderos</string>
+    <string name="parqueaderos_vacio_mensaje">Usa “Crear parqueaderos” para registrarlos por categoría.</string>
+    <string name="parqueaderos_vacio_filtro">No hay parqueaderos con este filtro</string>
+    <string name="parqueaderos_crear">Crear parqueaderos</string>
+    <string name="parqueaderos_crear_si">Crear</string>
+    <string name="parqueaderos_tipo">Categoría</string>
+    <string name="parqueaderos_cantidad">Cantidad</string>
+    <string name="parqueaderos_cantidad_rango">Entre 1 y 200</string>
+    <string name="parqueaderos_prefijo">Prefijo (opcional)</string>
+    <string name="parqueaderos_prefijo_ayuda">Por ejemplo C para C-01, C-02… Si lo dejas vacío se pone solo.</string>
+    <string name="parqueadero_titulo">%1$s · %2$s</string>
+    <string name="parqueadero_sin_asignar">Sin asignar</string>
+    <string name="parqueadero_de_invitados">Para invitados</string>
+    <string name="parqueadero_estado_libre">Libre</string>
+    <string name="parqueadero_estado_asignado">Asignado</string>
+    <string name="parqueadero_asignar">Asignar parqueadero</string>
+    <string name="parqueadero_reasignar">Reasignar a otro apartamento</string>
+    <string name="parqueadero_cambiar">Cambiar parqueadero</string>
+    <string name="parqueadero_liberar">Liberar</string>
+    <string name="parqueadero_liberar_titulo">¿Liberar el parqueadero %1$s?</string>
+    <string name="parqueadero_liberado">Parqueadero liberado</string>
+    <string name="parqueadero_eliminar_titulo">¿Eliminar el parqueadero %1$s?</string>
+    <string name="parqueadero_eliminado">Parqueadero eliminado</string>
+    <string name="parqueadero_asignar_titulo">Asignar %1$s a</string>
+    <string name="parqueadero_asignado">Parqueadero %1$s asignado</string>
+    <string name="parqueadero_asignado_vehiculo">Parqueadero asignado</string>
+    <string name="parqueadero_al_aprobar">Parqueadero para %1$s</string>
+    <string name="parqueadero_ninguno">Sin parqueadero</string>
+    <string name="parqueadero_sin_libres">No hay parqueaderos libres de %1$s</string>
+    <string name="parqueadero_sin_candidatos">No hay vehículos de %1$s aprobados sin parqueadero</string>
+    <string name="cupos_boton">Cupos</string>
+    <string name="cupos_apto_titulo">Cupos de este apartamento</string>
+    <string name="cupos_apto_mensaje">Cuántos vehículos de cada tipo puede tener. Vacío = el cupo general del conjunto.</string>
+    <string name="cupos_propio">Cupo propio</string>
+    <string name="cupos_general">General: %1$d</string>
+    <plurals name="resumen_parqueaderos">
+        <item quantity="one">%d parqueadero</item>
+        <item quantity="other">%d parqueaderos</item>
+    </plurals>
+    <plurals name="parqueaderos_creados">
+        <item quantity="one">%d parqueadero creado</item>
+        <item quantity="other">%d parqueaderos creados</item>
+    </plurals>
 </resources>

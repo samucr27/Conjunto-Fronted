@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.model.VehiculoDTO
 import com.example.conjuntoresidencial.ui.comun.DiffPorId
 import com.example.conjuntoresidencial.ui.comun.Estados
@@ -29,7 +30,8 @@ class VehiculoAdminAdapter(
         h.placa.text = v.placa ?: v.tipo
         val estado = Estados.vehiculo(v.estado).takeIf { v.estado != null && v.estado != "APROBADO" }
             ?.let { h.itemView.context.getString(it.etiqueta) }
-        h.detalle.text = listOf(v.tipo.takeIf { v.placa != null }, v.marca, v.color, estado)
+        val parqueadero = v.parqueadero?.let { h.itemView.context.getString(R.string.vehiculo_parqueadero, it) }
+        h.detalle.text = listOf(v.tipo.takeIf { v.placa != null }, v.marca, v.color, estado, parqueadero)
             .filterNot { it.isNullOrBlank() }.joinToString(" · ")
         onTocar?.let { tocar -> h.itemView.setOnClickListener { tocar(v) } }
     }

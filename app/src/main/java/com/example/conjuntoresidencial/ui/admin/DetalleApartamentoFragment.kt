@@ -1,5 +1,7 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.example.conjuntoresidencial.model.AsignacionParqueadero
+import com.example.conjuntoresidencial.model.CupoApartamentoRequest
 import androidx.navigation.fragment.findNavController
 import com.example.conjuntoresidencial.model.Apartamento
 import com.example.conjuntoresidencial.model.ApartamentoRequest
@@ -45,8 +47,19 @@ class DetalleApartamentoFragment : Fragment() {
     private var aptoId: Long = -1L
     private val residentesAdapter = ResidenteAdapter(onTocar = { opcionesResidente(it) })
     private val vehiculosAdapter = VehiculoAdminAdapter { v ->
-        elegirOpcion(v.placa ?: v.tipo, listOf(
+        elegirOpcion(v.placa ?: v.tipo, listOfNotNull<Pair<Int, () -> Unit>>(
             R.string.editar to { mostrarDialogVehiculo(v) },
+            // P5: el parqueadero (solo vehículos aprobados)
+            ((if (v.parqueaderoId == null) R.string.parqueadero_asignar else R.string.parqueadero_cambiar) to {
+                elegirParqueadero(v.tipo, getString(R.string.parqueadero_al_aprobar, v.placa ?: v.tipo)) { id ->
+                    if (id != null) ejecutarAccion(getString(R.string.parqueadero_asignado_vehiculo),
+                        { RetrofitClient.instance.asignarParqueadero(id, AsignacionParqueadero(v.id)) }) { recargarVehiculos() }
+                }
+            }).takeIf { v.estado == null || v.estado == "APROBADO" },
+            (R.string.parqueadero_liberar to {
+                ejecutarAccion(getString(R.string.parqueadero_liberado),
+                    { RetrofitClient.instance.asignarParqueadero(v.parqueaderoId!!, AsignacionParqueadero(null)) }) { recargarVehiculos() }
+            }).takeIf { v.parqueaderoId != null },
             R.string.vehiculo_eliminar to {
                 confirmar(getString(R.string.vehiculo_eliminar_titulo),
                     getString(R.string.vehiculo_eliminar_pregunta, v.placa ?: v.tipo.lowercase()), R.string.vehiculo_eliminar) {
@@ -87,6 +100,7 @@ class DetalleApartamentoFragment : Fragment() {
 
         binding.btnAgregarResidente.setOnClickListener { mostrarDialogResidente() }
         binding.btnAgregarVehiculoAdmin.setOnClickListener { mostrarDialogVehiculo() }
+        binding.btnCuposApto.setOnClickListener { editarCuposApto() }
         binding.btnRestablecerContrasena.setOnClickListener {
             pedirContrasena(getString(R.string.titulo_restablecer_contrasena), getString(R.string.contrasena_restablecida),
                 getString(R.string.error_restablecer_contrasena)) { nueva ->
@@ -325,6 +339,46 @@ class DetalleApartamentoFragment : Fragment() {
                 DirectorioApartamentosFragment.huboCambios()
                 findNavController().popBackStack()
             }
+        }
+    }
+
+    /** Cupos propios del apartamento por tipo (P5); vacío = el cupo general del conjunto. */
+    private fun editarCuposApto() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val cupos = try {
+                RetrofitClient.instance.getCuposVehiculo(aptoId).body().orEmpty()
+            } catch (_: Exception) {
+                emptyList()
+            }
+            if (_binding == null || cupos.isEmpty()) return@launch
+            val dp = resources.displayMetrics.density
+            val columna = android.widget.LinearLayout(requireContext()).apply {
+                orientation = android.widget.LinearLayout.VERTICAL
+                setPadding((24 * dp).toInt(), (8 * dp).toInt(), (24 * dp).toInt(), 0)
+            }
+            val campos = cupos.map { cupo ->
+                TextInputLayout(requireContext()).apply {
+                    hint = cupo.tipo
+                    helperText = if (cupo.personalizado == true) getString(R.string.cupos_propio) else getString(R.string.cupos_general, cupo.maximo)
+                    addView(TextInputEditText(context).apply {
+                        inputType = android.text.InputType.TYPE_CLASS_NUMBER
+                        setText(if (cupo.personalizado == true) cupo.maximo.toString() else null)
+                    })
+                    columna.addView(this)
+                }
+            }
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.cupos_apto_titulo)
+                .setMessage(R.string.cupos_apto_mensaje)
+                .setView(android.widget.ScrollView(requireContext()).apply { addView(columna) })
+                .setPositiveButton(R.string.btn_guardar) { _, _ ->
+                    val nuevos = cupos.zip(campos).map { (c, campo) ->
+                        CupoApartamentoRequest(c.tipo, campo.editText?.text?.toString()?.toIntOrNull()?.coerceIn(0, 20))
+                    }
+                    ejecutarAccion(getString(R.string.cupos_guardados), { RetrofitClient.instance.guardarCuposApartamento(aptoId, nuevos) })
+                }
+                .setNegativeButton(R.string.btn_cancelar, null)
+                .show()
         }
     }
 

@@ -19,14 +19,15 @@ class MisVehiculosViewModel : ViewModel() {
     private val _mensaje = MutableLiveData<Evento<String>>()
     val mensaje: LiveData<Evento<String>> get() = _mensaje
 
-    /** Cupos por tipo para el diálogo; null si no cargaron (se usan los de por defecto). */
-    var cupos: List<CupoVehiculoDTO>? = null
-        private set
+    /** Cupos que rigen para el apartamento (P5: los suyos o los generales); null si no cargaron. */
+    private val _cupos = MutableLiveData<List<CupoVehiculoDTO>?>()
+    val cuposCargados: LiveData<List<CupoVehiculoDTO>?> get() = _cupos
+    val cupos: List<CupoVehiculoDTO>? get() = _cupos.value
 
-    fun cargarCupos() {
+    fun cargarCupos(aptoId: Long) {
         viewModelScope.launch {
-            cupos = try {
-                RetrofitClient.instance.getCuposVehiculo().body()
+            _cupos.value = try {
+                RetrofitClient.instance.getCuposVehiculo(aptoId).body()
             } catch (_: Exception) {
                 null
             }

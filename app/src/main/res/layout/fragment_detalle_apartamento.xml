@@ -179,6 +179,15 @@
                                     android:textAppearance="?attr/textAppearanceTitleMedium"
                                     android:textColor="?attr/colorOnSurface" />
 
+                                <!-- P5: cupos propios del apartamento -->
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnCuposApto"
+                                    style="@style/Widget.Material3.Button.TextButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:minHeight="48dp"
+                                    android:text="@string/cupos_boton" />
+
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/btnAgregarVehiculoAdmin"
                                     style="@style/Widget.Material3.Button.TextButton.Icon"

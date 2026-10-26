@@ -186,6 +186,12 @@
         android:name="com.example.conjuntoresidencial.ui.feed.PublicarFragment"
         tools:layout="@layout/fragment_publicar" />
 
+    <!-- P5 bloque 4: parqueaderos (administración) -->
+    <fragment
+        android:id="@+id/parqueaderosFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.ParqueaderosFragment"
+        tools:layout="@layout/fragment_parqueaderos" />
+
     <!-- Pestañas de la barra inferior (MainActivity navega a ellas por id) -->
     <fragment
         android:id="@+id/inicioFragment"

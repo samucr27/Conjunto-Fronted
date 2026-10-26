@@ -82,14 +82,27 @@ data class AccesoResidente(val contrasena: String)
 // APROBADO o RECHAZADO), motivoRechazo, torre y apto los pone el backend (P4)
 data class VehiculoDTO(
     val id: Long?, val placa: String?, val marca: String?, val color: String?, val tipo: String, val apartamentoId: Long,
-    val estado: String? = null, val motivoRechazo: String? = null, val torre: String? = null, val apto: String? = null
+    val estado: String? = null, val motivoRechazo: String? = null, val torre: String? = null, val apto: String? = null,
+    // P5: el parqueadero asignado (null = sin parqueadero)
+    val parqueaderoId: Long? = null, val parqueadero: String? = null
 )
 // Cuántos vehículos de un tipo puede tener cada apartamento
-data class CupoVehiculoDTO(val tipo: String, val maximo: Int, val requierePlaca: Boolean? = null) {
+// personalizado (P5): el cupo propio del apartamento y no el general
+data class CupoVehiculoDTO(val tipo: String, val maximo: Int, val requierePlaca: Boolean? = null, val personalizado: Boolean? = null) {
     val llevaPlaca: Boolean get() = requierePlaca ?: (tipo in com.example.conjuntoresidencial.util.Opciones.TIPOS_CON_PLACA)
 }
 // El administrador aprueba o rechaza un vehículo (motivo opcional, lo ve el residente)
-data class EstadoVehiculoRequest(val estado: String, val motivo: String? = null)
+data class EstadoVehiculoRequest(val estado: String, val motivo: String? = null, val parqueaderoId: Long? = null)
+// Parqueaderos (P5): estado LIBRE o ASIGNADO; tipo de vehículo o "Invitados"
+data class ParqueaderoDTO(
+    val id: Long, val numero: String, val tipo: String, val estado: String, val vehiculoId: Long?, val placa: String?,
+    val vehiculo: String?, val apartamentoId: Long?, val torre: String?, val apto: String?
+)
+data class ResumenParqueaderos(val total: Int, val asignados: Int, val libres: Int, val invitados: Int)
+data class GenerarParqueaderos(val tipo: String, val cantidad: Int, val prefijo: String?)
+data class AsignacionParqueadero(val vehiculoId: Long?)
+// Cupo propio de un apartamento; maximo null = vuelve al cupo general
+data class CupoApartamentoRequest(val tipo: String, val maximo: Int?)
 data class ObraDTO(val id: Long?, val descripcionAdecuacion: String, val fechaInicio: String, val fechaFinEstimada: String, val estadoObra: String, val apartamentoId: Long)
 data class PersonalObraDTO(val id: Long?, val nombreTrabajador: String, val cedula: String, val arlEstado: Boolean, val obraId: Long, val torrePiso: String? = null, val aptoNum: String? = null)
 // aforo (personas por reserva) y horario para reservar ("08:00"); null = sin límite (P4)

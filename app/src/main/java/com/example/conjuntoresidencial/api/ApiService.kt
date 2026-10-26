@@ -264,8 +264,28 @@ interface ApiService {
     @PUT("api/vehiculos/{id}/estado")
     suspend fun cambiarEstadoVehiculo(@Path("id") id: Long, @Body request: EstadoVehiculoRequest): Response<VehiculoDTO>
 
+    // Con apartamentoId: los cupos que rigen para ese apartamento (P5)
     @GET("api/vehiculos/cupos")
-    suspend fun getCuposVehiculo(): Response<List<CupoVehiculoDTO>>
+    suspend fun getCuposVehiculo(@Query("apartamentoId") apartamentoId: Long? = null): Response<List<CupoVehiculoDTO>>
+
+    @PUT("api/vehiculos/cupos/apartamento/{id}")
+    suspend fun guardarCuposApartamento(@Path("id") apartamentoId: Long, @Body cupos: List<CupoApartamentoRequest>): Response<List<CupoVehiculoDTO>>
+
+    // Parqueaderos (administrador, P5)
+    @GET("api/parqueaderos")
+    suspend fun getParqueaderos(@Query("tipo") tipo: String?, @Query("estado") estado: String?): Response<List<ParqueaderoDTO>>
+
+    @GET("api/parqueaderos/resumen")
+    suspend fun getResumenParqueaderos(): Response<ResumenParqueaderos>
+
+    @POST("api/parqueaderos/generar")
+    suspend fun generarParqueaderos(@Body pedido: GenerarParqueaderos): Response<List<ParqueaderoDTO>>
+
+    @PUT("api/parqueaderos/{id}/asignacion")
+    suspend fun asignarParqueadero(@Path("id") id: Long, @Body asignacion: AsignacionParqueadero): Response<ParqueaderoDTO>
+
+    @DELETE("api/parqueaderos/{id}")
+    suspend fun eliminarParqueadero(@Path("id") id: Long): Response<Void>
 
     @PUT("api/vehiculos/cupos")
     suspend fun guardarCuposVehiculo(@Body cupos: List<CupoVehiculoDTO>): Response<List<CupoVehiculoDTO>>

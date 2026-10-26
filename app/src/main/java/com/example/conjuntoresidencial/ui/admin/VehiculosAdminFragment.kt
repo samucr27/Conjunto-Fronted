@@ -60,8 +60,12 @@ class VehiculosAdminFragment : Fragment() {
         val resaltado = arguments?.takeIf { it.containsKey(ARG_RESALTAR) }?.getLong(ARG_RESALTAR)
         val adaptador = VehiculoPendienteAdapter(
             resaltado = resaltado,
+            // P5: se aprueba asignándole un parqueadero libre de su categoría (o sin parqueadero)
             onAprobar = { v ->
-                viewModel.revisar(v, true, null, getString(R.string.vehiculo_aprobado_hecho), getString(R.string.vehiculo_error_revisar))
+                elegirParqueadero(v.tipo, getString(R.string.parqueadero_al_aprobar, v.placa ?: v.tipo)) { parqueaderoId ->
+                    viewModel.revisar(v, true, null, getString(R.string.vehiculo_aprobado_hecho),
+                        getString(R.string.vehiculo_error_revisar), parqueaderoId)
+                }
             },
             onRechazar = ::pedirMotivo
         )

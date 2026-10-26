@@ -65,6 +65,9 @@ class AdminDashboardFragment : Fragment() {
         binding.cardCarteraAdmin.configurar(R.drawable.ic_wallet, R.string.menu_cartera, R.string.menu_cartera_sub) {
             nav.navigate(R.id.action_adminDashboardFragment_to_carteraAdminFragment)
         }
+        binding.cardParqueaderos.configurar(R.drawable.ic_car, R.string.parqueaderos_titulo, R.string.parqueaderos_tarjeta_sub) {
+            nav.navigate(R.id.parqueaderosFragment)
+        }
         binding.cardVehiculosAdmin.configurar(R.drawable.ic_car, R.string.menu_vehiculos_admin, R.string.menu_vehiculos_admin_sub) {
             nav.navigate(R.id.vehiculosAdminFragment)
         }
@@ -77,7 +80,7 @@ class AdminDashboardFragment : Fragment() {
         // El contador solo ve la cartera y la facturación (el backend tampoco le deja lo demás)
         if (contador) {
             listOf(binding.cardDirectorioAptos, binding.cardControlObras, binding.cardHistorialReservas, binding.cardZonasAdmin,
-                binding.cardPersonalObra, binding.cardVehiculosAdmin, binding.cardResidentesPendientes, binding.cardEquipo)
+                binding.cardPersonalObra, binding.cardVehiculosAdmin, binding.cardParqueaderos, binding.cardResidentesPendientes, binding.cardEquipo)
                 .forEach { it.root.visibility = View.GONE }
         }
         binding.cardResidentesPendientes.configurar(R.drawable.ic_people, R.string.menu_residentes_pendientes,
