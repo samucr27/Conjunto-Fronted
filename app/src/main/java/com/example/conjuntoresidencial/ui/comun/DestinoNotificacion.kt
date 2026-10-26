@@ -23,7 +23,8 @@ data class DestinoNotificacion(
 ) {
     /** Las de los residentes empiezan por el tipo de lo que se revisó: VEHICULO_APROBADO... */
     val esParaAdmin: Boolean get() =
-        tipo == TIPO_RESERVA || tipo == TIPO_VEHICULO || tipo == TIPO_RESIDENTE || tipo == TIPO_COMPROBANTE
+        tipo == TIPO_RESERVA || tipo == TIPO_VEHICULO || tipo == TIPO_RESIDENTE || tipo == TIPO_COMPROBANTE ||
+            tipo == TIPO_REGISTRO
 
     fun abrir(nav: NavController) {
         when {
@@ -31,7 +32,9 @@ data class DestinoNotificacion(
             tipo == TIPO_COMPROBANTE -> nav.navigate(R.id.cuotasFragment)
             tipo.startsWith(TIPO_CUOTA) -> nav.navigate(R.id.miCarteraFragment)
             // Arrendatario por aprobar → la lista de pendientes; su aprobación o rechazo → Mi hogar
-            tipo == TIPO_RESIDENTE -> nav.navigate(R.id.residentesFragment, ResidentesFragment.pendientes())
+            tipo == TIPO_RESIDENTE || tipo == TIPO_REGISTRO -> nav.navigate(R.id.residentesFragment, ResidentesFragment.pendientes())
+            // Un arrendatario pidió registrarse: el propietario lo revisa en Mi hogar
+            tipo == TIPO_SOLICITUD_ARRENDATARIO -> nav.navigate(R.id.residentesFragment)
             tipo.startsWith(TIPO_RESIDENTE) -> nav.navigate(R.id.residentesFragment)
             tipo == TIPO_VEHICULO -> nav.navigate(
                 R.id.vehiculosAdminFragment,
@@ -59,6 +62,8 @@ data class DestinoNotificacion(
         const val TIPO_VEHICULO = "VEHICULO"
         const val TIPO_RESIDENTE = "RESIDENTE"
         const val TIPO_CUOTA = "CUOTA"
+        const val TIPO_REGISTRO = "REGISTRO"
+        const val TIPO_SOLICITUD_ARRENDATARIO = "SOLICITUD_ARRENDATARIO"
         const val TIPO_COMPROBANTE = "COMPROBANTE"
         private const val EXTRA_TIPO = "notificacion_tipo"
         private const val EXTRA_NOTIFICACION = "notificacion_id"

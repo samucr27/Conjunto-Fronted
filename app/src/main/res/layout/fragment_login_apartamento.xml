@@ -51,7 +51,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="16dp"
-                            android:text="@string/login_residente_ayuda_documento"
+                            android:text="@string/login_residente_ayuda"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:textColor="?attr/colorOnSurfaceVariant" />
 
@@ -60,41 +60,27 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="20dp"
-                            app:checkedButton="@id/btnModoDocumento"
+                            app:checkedButton="@id/btnPropietario"
                             app:selectionRequired="true"
                             app:singleSelection="true">
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnModoDocumento"
+                                android:id="@+id/btnPropietario"
                                 style="?attr/materialButtonOutlinedStyle"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="@string/login_por_documento" />
+                                android:text="@string/login_propietario" />
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnModoApartamento"
+                                android:id="@+id/btnArrendatario"
                                 style="?attr/materialButtonOutlinedStyle"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="@string/login_por_apartamento" />
+                                android:text="@string/login_arrendatario" />
                         </com.google.android.material.button.MaterialButtonToggleGroup>
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/tilDocumento"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:hint="@string/login_documento">
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etDocumento"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:autofillHints="username"
-                                android:imeOptions="actionNext"
-                                android:inputType="number" />
-                        </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/tilTorreApto"
@@ -157,6 +143,16 @@
                             android:contentDescription="@string/cargando"
                             android:indeterminate="true"
                             android:visibility="gone" />
+
+                        <!-- P5: quien aún no tiene cuenta se registra -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnRegistrarse"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:minHeight="48dp"
+                            android:text="@string/login_registrarse" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>

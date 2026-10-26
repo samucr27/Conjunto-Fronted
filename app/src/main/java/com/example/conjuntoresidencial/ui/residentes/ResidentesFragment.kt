@@ -155,7 +155,10 @@ class ResidentesFragment : Fragment() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(r.nombreCompleto)
             .setMessage(getString(R.string.residente_revisar_mensaje, getString(R.string.apto_item_titulo, r.torre, r.apto),
-                r.identificacion, r.telefono?.takeIf { it.isNotBlank() } ?: getString(R.string.residente_sin_telefono)))
+                r.identificacion, r.telefono?.takeIf { it.isNotBlank() } ?: getString(R.string.residente_sin_telefono))
+                + (r.correo?.let { "\n" + getString(R.string.residente_correo, it) } ?: "")
+                + "\n" + getString(if (r.tipoHabitante == "ARRENDATARIO") R.string.residente_registro_arrendatario
+                    else R.string.residente_registro_propietario))
             .setPositiveButton(R.string.residente_aprobar) { _, _ ->
                 viewModel.ejecutar(getString(R.string.residente_aprobado), getString(R.string.residente_error_accion)) {
                     RetrofitClient.instance.revisarResidente(r.id!!, RevisionResidente(APROBADO))

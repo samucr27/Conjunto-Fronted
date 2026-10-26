@@ -3,7 +3,21 @@ package com.example.conjuntoresidencial.model
 data class LoginAdminRequest(val usuario: String, val contrasena: String)
 data class LoginApartamentoRequest(val torre: String, val apto: String, val contrasena: String)
 // Cada residente con su documento y su contraseña personal (P4)
-data class LoginResidenteRequest(val documento: String, val contrasena: String)
+// P5: el titular entra con torre, apto y rol; el documento (P4) sigue funcionando
+data class LoginResidenteRequest(
+    val documento: String? = null, val contrasena: String,
+    val torre: String? = null, val apto: String? = null, val rol: String? = null
+)
+// Registro desde la app (P5): paso 1 dice si queda como PROPIETARIO o ARRENDATARIO
+data class VerificarRegistroRequest(val torre: String, val apto: String)
+data class RegistroVerificado(val rol: String)
+data class PersonaRegistro(val nombreCompleto: String, val identificacion: String?, val telefono: String?)
+data class RegistroRequest(
+    val torre: String, val apto: String, val nombres: String, val apellidos: String, val cedula: String,
+    val telefono: String, val correo: String, val contrasena: String, val aceptaDatos: Boolean, val aceptaTerminos: Boolean,
+    val personas: List<PersonaRegistro> = emptyList(), val visitantes: List<PersonaRegistro> = emptyList()
+)
+data class RegistroRecibido(val rol: String, val estado: String, val requierePropietario: Boolean)
 // El backend nunca devuelve la contraseña
 data class Apartamento(val id: Long, val torre: String, val apto: String)
 // Para crear/editar: la contraseña solo se envía (en edición es opcional)
@@ -24,7 +38,8 @@ data class MensajeError(val mensaje: String?)
 data class ResidenteDTO(
     val id: Long?, val nombreCompleto: String, val telefono: String?, val identificacion: String, val tipoHabitante: String, val apartamentoId: Long,
     val estado: String? = null, val tieneAcceso: Boolean? = null, val torre: String? = null, val apto: String? = null,
-    val contrasena: String? = null
+    val contrasena: String? = null,
+    val correo: String? = null, val titular: Boolean? = null, val aprobadoPropietario: Boolean? = null
 )
 data class RevisionResidente(val estado: String, val motivo: String? = null)
 // Cuota de administración de un mes (P4 bloque 7): periodo "2026-11"; estado PENDIENTE,

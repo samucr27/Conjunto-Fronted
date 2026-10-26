@@ -15,6 +15,13 @@ interface ApiService {
     @POST("api/auth/residente/login")
     suspend fun loginResidente(@Body request: LoginResidenteRequest): Response<LoginResponse>
 
+    // Registro del residente (P5): sin sesión
+    @POST("api/auth/registro/verificar")
+    suspend fun verificarRegistro(@Body request: VerificarRegistroRequest): Response<RegistroVerificado>
+
+    @POST("api/auth/registro")
+    suspend fun registrar(@Body request: RegistroRequest): Response<RegistroRecibido>
+
     // Cuenta → Perfil: cambiar la propia contraseña (400 si la actual no coincide)
     @PUT("api/auth/contrasena")
     suspend fun cambiarContrasena(@Body request: CambioPropiaContrasenaRequest): Response<Void>

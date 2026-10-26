@@ -56,6 +56,10 @@ suspend fun iniciarSesion(credenciales: AccesoBiometrico.Credenciales): Response
         RetrofitClient.instance.loginAdmin(LoginAdminRequest(credenciales.usuario.orEmpty(), credenciales.contrasena))
     } else if (credenciales.documento != null) {
         RetrofitClient.instance.loginResidente(LoginResidenteRequest(credenciales.documento, credenciales.contrasena))
+    } else if (credenciales.torre != null) {
+        // P5: el titular con torre, apto y rol
+        RetrofitClient.instance.loginResidente(LoginResidenteRequest(
+            contrasena = credenciales.contrasena, torre = credenciales.torre, apto = credenciales.apto, rol = credenciales.rol))
     } else {
         RetrofitClient.instance.loginApartamento(
             LoginApartamentoRequest(credenciales.torre.orEmpty(), credenciales.apto.orEmpty(), credenciales.contrasena)

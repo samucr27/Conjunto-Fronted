@@ -164,6 +164,12 @@
         android:name="com.example.conjuntoresidencial.ui.admin.EquipoFragment"
         tools:layout="@layout/fragment_equipo" />
 
+    <!-- P5 bloque 1: registro del residente (desde su login) -->
+    <fragment
+        android:id="@+id/registroFragment"
+        android:name="com.example.conjuntoresidencial.ui.auth.RegistroFragment"
+        tools:layout="@layout/fragment_registro" />
+
     <!-- Pestañas de la barra inferior (MainActivity navega a ellas por id) -->
     <fragment
         android:id="@+id/inicioFragment"

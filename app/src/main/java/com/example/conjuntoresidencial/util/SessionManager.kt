@@ -56,13 +56,13 @@ class SessionManager(context: Context) {
             saveApto(respuesta.apto ?: "")
         }
         prefs.edit {
-            if (respuesta.residenteId != null && documento != null) {
+            if (respuesta.residenteId != null) {
                 putLong("residente_id", respuesta.residenteId)
                 putString("nombre", respuesta.nombre.orEmpty())
-                putString("documento", documento)
             } else {
-                remove("residente_id"); remove("nombre"); remove("documento")
+                remove("residente_id"); remove("nombre")
             }
+            if (documento != null) putString("documento", documento) else remove("documento")
         }
     }
 
