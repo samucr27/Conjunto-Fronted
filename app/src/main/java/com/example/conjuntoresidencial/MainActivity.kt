@@ -249,10 +249,9 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             avisoActual = null
             val menu = when (destino.id) {
                 R.id.adminDashboardFragment -> R.menu.menu_barra_admin
-                R.id.propietarioDashboardFragment, R.id.misReservasFragment, R.id.miCarteraFragment ->
-                    R.menu.menu_barra_residente
+                R.id.propietarioDashboardFragment -> R.menu.menu_barra_residente
                 // Las dos barras las tienen: depende de quién inició sesión
-                R.id.notificacionesFragment, R.id.cuentaFragment ->
+                R.id.inicioFragment, R.id.notificacionesFragment, R.id.cuentaFragment ->
                     if (SessionManager(this).esAdmin()) R.menu.menu_barra_admin else R.menu.menu_barra_residente
                 else -> null
             }
@@ -260,7 +259,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             if (menu != null && navInferior.selectedItemId != destino.id) navInferior.selectedItemId = destino.id
             if (menu != null) notificaciones.actualizarConteo()
             when (destino.id) {
-                R.id.adminDashboardFragment, R.id.propietarioDashboardFragment -> {
+                R.id.inicioFragment -> {
                     prepararAvisos()
                     // Después de este cambio de pantalla, no dentro de él
                     navInferior.post { abrirAvisoPendiente() }

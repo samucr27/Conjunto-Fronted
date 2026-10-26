@@ -44,10 +44,9 @@ class MiCarteraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Pestaña de la barra inferior: sin botón para volver
         configurarEncabezado(
             binding.encabezado, R.string.mi_cartera_titulo, R.string.mi_cartera_subtitulo,
-            atras = false, menu = R.menu.menu_lista, alElegir = accionesDeLista(binding.swipe) { cargar() }
+            menu = R.menu.menu_lista, alElegir = accionesDeLista(binding.swipe) { cargar() }
         )
         aptoId = SessionManager(requireContext()).getApartamentoId()
         binding.estado.vincular(binding.contenido)

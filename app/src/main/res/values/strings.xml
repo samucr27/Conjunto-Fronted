@@ -1,5 +1,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">MiConjunto</string>
     <string name="app_lema">Administración de tu conjunto residencial</string>
     <string name="version">Versión %1$s</string>
 
@@ -771,4 +770,15 @@
     <string name="cuota_eliminar_mensaje">Para una cuota generada por error. Las pagadas no se pueden eliminar.</string>
     <string name="cuota_eliminada">Cuota eliminada</string>
     <string name="cuota_actualizada">Cuota actualizada</string>
+
+    <!-- P5 bloque 0: dos apps y nueva barra inferior -->
+    <string name="pestana_herramientas">Herramientas</string>
+    <string name="herramientas_admin_subtitulo">Administración del conjunto</string>
+    <string name="inicio_hola">Hola</string>
+    <string name="inicio_hola_nombre">Hola, %1$s</string>
+    <string name="inicio_descripcion">Novedades del conjunto</string>
+    <string name="inicio_subtitulo_admin">Administración</string>
+    <string name="inicio_sin_publicaciones">Aún no hay publicaciones</string>
+    <string name="inicio_sin_publicaciones_residente">Aquí verás los anuncios de la administración.</string>
+    <string name="inicio_sin_publicaciones_admin">Aquí aparecerán los anuncios que publiques para los residentes.</string>
 </resources>

@@ -23,6 +23,23 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // Dos apps del mismo código (P5): residentes y administración. Lo común está en src/main;
+    // R.bool.app_admin dice en cuál se está. Compilar: assembleResidenteDebug / assembleAdministracionDebug
+    flavorDimensions += "app"
+    productFlavors {
+        create("residente") {
+            dimension = "app"
+            resValue("string", "app_name", "MiConjunto")
+            resValue("bool", "app_admin", "false")
+        }
+        create("administracion") {
+            dimension = "app"
+            applicationIdSuffix = ".admin"
+            resValue("string", "app_name", "MiConjunto Admin")
+            resValue("bool", "app_admin", "true")
+        }
+    }
+
     // URL del backend en Render. Va como recurso (R.string.api_url) y no en BuildConfig:
     // Kotlin copia las constantes de BuildConfig dentro de cada clase al compilar, y la
     // compilación incremental podía dejar en el APK la URL anterior.

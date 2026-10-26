@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -16,7 +15,6 @@ import com.example.conjuntoresidencial.ui.comun.NotificacionesViewModel
 import com.example.conjuntoresidencial.ui.comun.configurar
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
-import com.example.conjuntoresidencial.util.confirmarCerrarSesion
 
 class AdminDashboardFragment : Fragment() {
 
@@ -35,12 +33,10 @@ class AdminDashboardFragment : Fragment() {
 
         val contador = SessionManager(requireContext()).esContador()
         configurarEncabezado(
-            binding.encabezado, if (contador) R.string.panel_contador_titulo else R.string.panel_admin_titulo,
-            if (contador) R.string.panel_contador_subtitulo else R.string.panel_admin_subtitulo,
-            atras = false, menu = R.menu.menu_panel
-        ) { item ->
-            (item == R.id.accion_cerrar_sesion).also { if (it) confirmarCerrarSesion() }
-        }
+            binding.encabezado, R.string.pestana_herramientas,
+            if (contador) R.string.panel_contador_subtitulo else R.string.herramientas_admin_subtitulo,
+            atras = false
+        )
         // Las notificaciones están en la barra inferior; aquí, el resumen de las no leídas
         notificaciones.noLeidas.observe(viewLifecycleOwner) { noLeidas ->
             binding.encabezado.ponerInfo(
@@ -49,11 +45,6 @@ class AdminDashboardFragment : Fragment() {
             )
         }
 
-        // "Atrás" en el panel pregunta si se quiere cerrar sesión
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() = confirmarCerrarSesion()
-            })
 
         val nav = findNavController()
         binding.cardDirectorioAptos.configurar(R.drawable.ic_apartment, R.string.menu_directorio, R.string.menu_directorio_sub) {

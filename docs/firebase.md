@@ -16,6 +16,8 @@ Hay que hacerlo una sola vez y toma unos 15 minutos.
 
 1. En el proyecto: **Agregar app → Android**.
 2. Nombre del paquete: **`com.example.residencial`** (tiene que ser exactamente ese).
+   Desde P5 hay dos apps: registra también **`com.example.residencial.admin`** (app de
+   administración). El `google-services.json` descargado trae las dos.
 3. Apodo: `MiConjunto` (opcional). La huella SHA-1 no hace falta.
 4. Descarga **`google-services.json`** y cópialo en la carpeta **`app/`** del proyecto
    (junto a `app/build.gradle.kts`).

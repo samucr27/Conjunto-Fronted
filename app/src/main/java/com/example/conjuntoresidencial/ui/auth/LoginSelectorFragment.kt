@@ -50,6 +50,11 @@ class LoginSelectorFragment : Fragment() {
             findNavController().navigate(R.id.action_loginSelectorFragment_to_loginApartamentoFragment)
         }
 
+        // Cada app tiene su entrada: la de administración o la de residentes (P5)
+        val esAppAdmin = resources.getBoolean(R.bool.app_admin)
+        binding.btnSoyAdmin.visibility = if (esAppAdmin) View.VISIBLE else View.GONE
+        binding.btnSoyResidente.visibility = if (esAppAdmin) View.GONE else View.VISIBLE
+
         binding.btnEntrarHuella.setOnClickListener { entrarConHuella() }
         mostrarHuella()
         if (AccesoBiometrico.activado(requireContext()) && !huellaOfrecida) {

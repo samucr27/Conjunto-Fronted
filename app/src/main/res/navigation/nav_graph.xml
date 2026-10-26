@@ -166,6 +166,10 @@
 
     <!-- Pestañas de la barra inferior (MainActivity navega a ellas por id) -->
     <fragment
+        android:id="@+id/inicioFragment"
+        android:name="com.example.conjuntoresidencial.ui.comun.InicioFragment"
+        tools:layout="@layout/fragment_inicio" />
+    <fragment
         android:id="@+id/notificacionesFragment"
         android:name="com.example.conjuntoresidencial.ui.admin.NotificacionesFragment"
         tools:layout="@layout/fragment_notificaciones" />
