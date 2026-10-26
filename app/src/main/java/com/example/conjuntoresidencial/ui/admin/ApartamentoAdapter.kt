@@ -26,6 +26,7 @@ class ApartamentoAdapter(
         holder.binding.tvTorreApto.text =
             if (soloNumero) contexto.getString(R.string.apto_item_solo, apto.apto)
             else contexto.getString(R.string.apto_item_titulo, apto.torre, apto.apto)
+        holder.binding.tvDetalleApto.setText(if (apto.arrendado == true) R.string.apto_item_detalle_arrendado else R.string.apto_item_detalle)
         holder.binding.root.setOnClickListener { onClick(apto) }
     }
 }

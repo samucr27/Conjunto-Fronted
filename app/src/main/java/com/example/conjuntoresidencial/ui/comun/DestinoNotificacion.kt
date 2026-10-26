@@ -34,8 +34,8 @@ data class DestinoNotificacion(
             // Arrendatario por aprobar → la lista de pendientes; su aprobación o rechazo → Mi hogar
             tipo == TIPO_RESIDENTE || tipo == TIPO_REGISTRO -> nav.navigate(R.id.residentesFragment, ResidentesFragment.pendientes())
             // Un arrendatario pidió registrarse: el propietario lo revisa en Mi hogar
-            tipo == TIPO_SOLICITUD_ARRENDATARIO -> nav.navigate(R.id.residentesFragment)
-            tipo.startsWith(TIPO_RESIDENTE) -> nav.navigate(R.id.residentesFragment)
+            tipo == TIPO_SOLICITUD_ARRENDATARIO -> nav.navigate(R.id.arrendatarioFragment)
+            tipo.startsWith(TIPO_RESIDENTE) -> nav.navigate(R.id.miHogarFragment)
             tipo == TIPO_VEHICULO -> nav.navigate(
                 R.id.vehiculosAdminFragment,
                 referenciaId?.let { bundleOf(VehiculosAdminFragment.ARG_RESALTAR to it) }

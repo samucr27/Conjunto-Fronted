@@ -1,5 +1,8 @@
 package com.example.conjuntoresidencial.ui.propietario
 
+import androidx.lifecycle.lifecycleScope
+import com.example.conjuntoresidencial.api.RetrofitClient
+import kotlinx.coroutines.launch
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -54,10 +57,34 @@ class PropietarioDashboardFragment : Fragment() {
         binding.cardMisObras.configurar(R.drawable.ic_build, R.string.menu_mis_obras, R.string.menu_mis_obras_sub) {
             nav.navigate(R.id.action_propietarioDashboardFragment_to_misObrasFragment)
         }
-        binding.cardMiHogar.configurar(R.drawable.ic_people, R.string.menu_mi_hogar,
-            if (sesion.esPropietario()) R.string.menu_mi_hogar_sub else R.string.menu_mi_hogar_sub_arrendatario) {
-            nav.navigate(R.id.residentesFragment)
+        binding.cardMiHogar.configurar(R.drawable.ic_people, R.string.menu_mi_hogar, R.string.menu_mi_hogar_sub) {
+            nav.navigate(R.id.miHogarFragment)
         }
+        binding.cardArrendatario.configurar(R.drawable.ic_key, R.string.arrendatario_titulo, R.string.arrendatario_tarjeta_sub) {
+            nav.navigate(R.id.arrendatarioFragment)
+        }
+        mostrarSegunRol(sesion.esPropietario(), arrendado = false)
+        // Si está arrendado, el propietario solo conserva lo suyo (lo dice el backend)
+        if (sesion.esPropietario()) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                val arrendado = runCatching {
+                    RetrofitClient.instance.getApartamentoById(sesion.getApartamentoId()).body()?.arrendado
+                }.getOrNull() == true
+                if (_binding != null) mostrarSegunRol(true, arrendado)
+            }
+        }
+    }
+
+    /**
+     * El arrendatario no ve lo que solo maneja el propietario (cartera, obras, su arrendatario);
+     * el propietario de un apartamento arrendado no ve lo de quien vive ahí.
+     */
+    private fun mostrarSegunRol(propietario: Boolean, arrendado: Boolean) {
+        val soloQuienVive = listOf(binding.cardMisVehiculos, binding.cardZonasPropietario, binding.cardMisReservas, binding.cardMiHogar)
+        val soloPropietario = listOf(binding.cardMiCartera, binding.cardRegistrarObra, binding.cardMisObras, binding.cardArrendatario)
+        soloQuienVive.forEach { it.root.visibility = if (propietario && arrendado) View.GONE else View.VISIBLE }
+        soloPropietario.forEach { it.root.visibility = if (propietario) View.VISIBLE else View.GONE }
+        binding.tvAvisoArrendado.visibility = if (propietario && arrendado) View.VISIBLE else View.GONE
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }

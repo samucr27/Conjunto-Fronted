@@ -19,7 +19,16 @@ data class RegistroRequest(
 )
 data class RegistroRecibido(val rol: String, val estado: String, val requierePropietario: Boolean)
 // El backend nunca devuelve la contraseña
-data class Apartamento(val id: Long, val torre: String, val apto: String)
+// citófonos y arrendado (arrendatario activo) los pone el backend (P5)
+data class Apartamento(
+    val id: Long, val torre: String, val apto: String,
+    val citofono1: String? = null, val citofono2: String? = null, val arrendado: Boolean? = null
+)
+data class CitofonosRequest(val citofono1: String?, val citofono2: String?)
+// Visitante frecuente del apartamento (P5)
+data class VisitanteDTO(val id: Long?, val nombreCompleto: String, val identificacion: String?, val telefono: String?, val apartamentoId: Long)
+// El propietario acepta o rechaza a su arrendatario
+data class AprobacionPropietario(val aprobado: Boolean, val motivo: String? = null)
 // Para crear/editar: la contraseña solo se envía (en edición es opcional)
 data class ApartamentoRequest(val torre: String, val apto: String, val contrasena: String? = null)
 data class CambioContrasenaRequest(val nuevaContrasena: String)

@@ -1,5 +1,8 @@
 package com.example.conjuntoresidencial.ui.comun
 
+import androidx.lifecycle.lifecycleScope
+import com.example.conjuntoresidencial.api.RetrofitClient
+import kotlinx.coroutines.launch
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,6 +43,17 @@ class CuentaFragment : Fragment() {
         // Pestaña de la barra inferior: sin botón para volver
         configurarEncabezado(binding.encabezado, R.string.pestana_cuenta, R.string.cuenta_descripcion, atras = false)
         binding.encabezado.ponerInfo(listOf(rol, identidad).filter { it.isNotBlank() }.joinToString(" · "))
+        // P5: el residente ve si su apartamento está arrendado
+        if (!sesion.esAdmin()) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                val arrendado = runCatching {
+                    RetrofitClient.instance.getApartamentoById(sesion.getApartamentoId()).body()?.arrendado
+                }.getOrNull() ?: return@launch
+                if (_binding == null) return@launch
+                val estado = getString(if (arrendado) R.string.cuenta_apto_arrendado else R.string.cuenta_apto_propietario)
+                binding.encabezado.ponerInfo(listOf(rol, identidad, estado).filter { it.isNotBlank() }.joinToString(" · "))
+            }
+        }
 
         val nav = findNavController()
         binding.filaPerfil.setOnClickListener { nav.navigate(R.id.perfilFragment) }

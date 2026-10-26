@@ -596,8 +596,7 @@
     <string name="biometria_cuenta_documento">Documento %1$s</string>
     <string name="panel_arrendatario_subtitulo">Panel del arrendatario</string>
     <string name="menu_mi_hogar">Mi hogar</string>
-    <string name="menu_mi_hogar_sub">Residentes y arrendatarios</string>
-    <string name="menu_mi_hogar_sub_arrendatario">Quiénes viven aquí</string>
+    <string name="menu_mi_hogar_sub">Personas, visitantes y citófonos</string>
     <string name="menu_residentes_pendientes">Registros</string>
     <string name="menu_residentes_pendientes_sub">Por aprobar</string>
     <string name="residentes_hogar_subtitulo">Quiénes viven en tu apartamento</string>
@@ -829,4 +828,42 @@
     <string name="residente_correo">Correo: %1$s</string>
     <string name="residente_registro_propietario">Se registró como propietario</string>
     <string name="residente_registro_arrendatario">Se registró como arrendatario (también lo aprueba el propietario)</string>
+
+    <!-- P5 bloque 2: Mi hogar y arrendatario -->
+    <string name="hogar_citofonos">Citófonos</string>
+    <string name="hogar_citofonos_ayuda">Los teléfonos a los que llama la portería.</string>
+    <string name="hogar_citofono1">Teléfono 1</string>
+    <string name="hogar_citofono2">Teléfono 2</string>
+    <string name="hogar_sin_configurar">Sin configurar</string>
+    <string name="hogar_citofonos_guardados">Citófonos actualizados</string>
+    <string name="hogar_personas">Personas del hogar</string>
+    <string name="hogar_personas_ayuda">Quiénes viven en el apartamento. Toca a alguien para editarlo o quitarlo.</string>
+    <string name="hogar_visitantes">Visitantes frecuentes</string>
+    <string name="hogar_visitantes_ayuda">La portería los deja pasar sin preguntar cada vez.</string>
+    <string name="hogar_titular">Titular</string>
+    <string name="hogar_guardado">Guardado</string>
+    <string name="hogar_visitante_quitado">Visitante quitado</string>
+    <string name="hogar_editar_visitante">Editar visitante</string>
+    <string name="arrendatario_titulo">Arrendatario</string>
+    <string name="arrendatario_descripcion">Quién vive en tu apartamento</string>
+    <string name="arrendatario_tarjeta_sub">Solicitud y acceso</string>
+    <string name="arrendatario_vacio">No tienes arrendatario</string>
+    <string name="arrendatario_vacio_mensaje">Cuando un arrendatario se registre en tu apartamento desde la app, su solicitud aparecerá aquí.</string>
+    <string name="arrendatario_espera_tu_aprobacion">Espera tu aprobación</string>
+    <string name="arrendatario_espera_administracion">Espera la aprobación de la administración</string>
+    <string name="arrendatario_activo">Activo</string>
+    <string name="arrendatario_nota_pendiente">Mientras no esté activo, tú sigues gestionando todo el apartamento.</string>
+    <string name="arrendatario_nota_activo">Mientras viva aquí, él gestiona reservas, vehículos y Mi hogar; tú sigues con la cartera y las obras. Para recuperar todo, quítalo.</string>
+    <string name="arrendatario_aceptar">Aceptar</string>
+    <string name="arrendatario_aceptado">Arrendatario aceptado</string>
+    <string name="arrendatario_rechazado">Solicitud rechazada</string>
+    <string name="arrendatario_rechazar_titulo">Rechazar la solicitud</string>
+    <string name="arrendatario_quitar">Quitar arrendatario</string>
+    <string name="arrendatario_quitar_titulo">¿Quitar a %1$s?</string>
+    <string name="arrendatario_quitar_mensaje">Ya no podrá entrar a la app y se quitan también las personas de su hogar. Recuperas reservas, vehículos y Mi hogar.</string>
+    <string name="arrendatario_quitado">Arrendatario quitado</string>
+    <string name="herramientas_arrendado">Tu apartamento está arrendado: el arrendatario gestiona reservas, vehículos y Mi hogar.</string>
+    <string name="cuenta_apto_arrendado">Arrendado</string>
+    <string name="cuenta_apto_propietario">Lo habita el propietario</string>
+    <string name="apto_item_detalle_arrendado">Arrendado · Residentes y vehículos</string>
 </resources>

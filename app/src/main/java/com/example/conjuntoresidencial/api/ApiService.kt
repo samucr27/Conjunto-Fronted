@@ -41,6 +41,9 @@ interface ApiService {
     @DELETE("api/apartamentos/{id}")
     suspend fun deleteApartamento(@Path("id") id: Long): Response<Void>
 
+    @PUT("api/apartamentos/{id}/citofonos")
+    suspend fun cambiarCitofonos(@Path("id") id: Long, @Body citofonos: CitofonosRequest): Response<Apartamento>
+
     @PUT("api/apartamentos/{id}/contrasena")
     suspend fun restablecerContrasena(@Path("id") id: Long, @Body request: CambioContrasenaRequest): Response<Void>
 
@@ -55,6 +58,26 @@ interface ApiService {
 
     @DELETE("api/residentes/{id}")
     suspend fun deleteResidente(@Path("id") id: Long): Response<Void>
+
+    // P5: el arrendatario del apartamento (204 = no tiene) y la decisión de su propietario
+    @GET("api/residentes/apartamento/{id}/arrendatario")
+    suspend fun getArrendatario(@Path("id") apartamentoId: Long): Response<ResidenteDTO>
+
+    @PUT("api/residentes/{id}/aprobacion-propietario")
+    suspend fun aprobarArrendatario(@Path("id") id: Long, @Body aprobacion: AprobacionPropietario): Response<ResidenteDTO>
+
+    // Visitantes frecuentes (Mi hogar)
+    @GET("api/visitantes/apartamento/{id}")
+    suspend fun getVisitantes(@Path("id") apartamentoId: Long): Response<List<VisitanteDTO>>
+
+    @POST("api/visitantes")
+    suspend fun createVisitante(@Body visitante: VisitanteDTO): Response<VisitanteDTO>
+
+    @PUT("api/visitantes/{id}")
+    suspend fun updateVisitante(@Path("id") id: Long, @Body visitante: VisitanteDTO): Response<VisitanteDTO>
+
+    @DELETE("api/visitantes/{id}")
+    suspend fun deleteVisitante(@Path("id") id: Long): Response<Void>
 
     // Arrendatarios que agregaron los propietarios (administrador)
     @GET("api/residentes/pendientes")
