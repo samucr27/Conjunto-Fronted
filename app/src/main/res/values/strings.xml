@@ -985,6 +985,57 @@
         <item>Sábado</item>
         <item>Domingo</item>
     </string-array>
+    <!-- P5 bloque 7: equipo y cartera de la administración -->
+    <string name="facturacion_en_aprobacion">La facturación de %1$s se envió al administrador para que la apruebe</string>
+    <string name="cuota_pago_en_aprobacion">Pago enviado al administrador para que lo apruebe</string>
+    <string name="cuota_pago_por_aprobar">Pago por aprobar</string>
+    <string name="cartera_resumen_tarjeta_sub">Estadísticas y lo que envió el contador</string>
+    <string name="cartera_resumen_titulo">Cartera</string>
+    <string name="cartera_resumen_subtitulo">Estadísticas del mes y aprobaciones</string>
+    <string name="cartera_mes_anterior">Mes anterior</string>
+    <string name="cartera_mes_siguiente">Mes siguiente</string>
+    <string name="cartera_recaudo">Recaudo del mes</string>
+    <string name="cartera_recaudo_valor">%1$s de %2$s (%3$d %%)</string>
+    <string name="cartera_por_cobrar">Por cobrar: %1$s</string>
+    <string name="cartera_cuotas_estados">Pagadas: %1$d · En revisión: %2$d · Pendientes: %3$d · Vencidas: %4$d</string>
+    <string name="cartera_apartamentos">Apartamentos</string>
+    <string name="cartera_apartamentos_valor">Al día: %1$d · En mora: %2$d de %3$d</string>
+    <string name="cartera_total">Cartera total por cobrar: %1$s</string>
+    <string name="cartera_sin_cuotas">No hay cuotas generadas este mes</string>
+    <string name="cartera_solicitudes">Por aprobar</string>
+    <string name="cartera_sin_solicitudes">El contador no ha enviado nada por aprobar</string>
+    <string name="cartera_solicitud_facturacion">Facturación de %1$s</string>
+    <string name="cartera_solicitud_facturacion_detalle">%1$s por apartamento · vence el %2$s</string>
+    <string name="cartera_solicitud_pago">Pago en efectivo · Torre %1$s Apto %2$s</string>
+    <string name="cartera_solicitud_pago_detalle">%1$s de %2$s</string>
+    <string name="cartera_solicitud_por">Enviado por %1$s</string>
+    <string name="cartera_aprobar">Aprobar</string>
+    <string name="cartera_rechazar">Rechazar</string>
+    <string name="cartera_aprobada">Aprobado</string>
+    <string name="cartera_rechazada">Rechazado</string>
+    <string name="cartera_error">No se pudo cargar la cartera</string>
+    <string name="equipo_nombre">Nombre completo</string>
+    <string name="equipo_documento">Documento</string>
+    <string name="equipo_telefono">Teléfono</string>
+    <string name="equipo_correo">Correo</string>
+    <string name="equipo_dato_obligatorio">Este dato es obligatorio</string>
+    <string name="equipo_correo_invalido">Escribe un correo válido</string>
+    <string name="equipo_editar_datos">Editar datos</string>
+    <string name="equipo_datos_guardados">Datos guardados</string>
+    <string name="equipo_cupos">Cupos del equipo</string>
+    <string name="equipo_cupos_ayuda">Cuántas cuentas puedes crear de cada tipo. Vacío = sin límite.</string>
+    <string name="equipo_cupo_asistentes">Asistentes (usados: %1$d)</string>
+    <string name="equipo_cupo_contadores">Contadores (usados: %1$d)</string>
+    <string name="equipo_cupos_guardados">Cupos guardados</string>
+    <string name="equipo_principal">Administrador principal</string>
+    <string name="rol_asistente">Asistente de administración</string>
+    <string name="equipo_fila_detalle">%1$s · usuario %2$s</string>
+    <string name="equipo_hacer_asistente">Convertir en asistente</string>
+    <plurals name="cartera_por_aprobar">
+        <item quantity="one">%d por aprobar</item>
+        <item quantity="other">%d por aprobar</item>
+    </plurals>
+
     <!-- P5 bloque 6: obras con ARL y aprobación -->
     <string name="obra_detalle_subtitulo">Detalles, estado y personal externo</string>
     <string name="obra_del_conjunto">Obra del conjunto</string>

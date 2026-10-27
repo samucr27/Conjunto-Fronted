@@ -137,6 +137,7 @@ class CuotasFragment : Fragment() {
             viewModel.ejecutar(getString(R.string.facturacion_error_generar),
                 { RetrofitClient.instance.generarCuotas(GenerarCuotasRequest(periodo, valor!!, limite)) }) { g ->
                 if (g == null) getString(R.string.facturacion_generada_sin_datos)
+                else if (g.enAprobacion == true) getString(R.string.facturacion_en_aprobacion, Cuotas.nombreMes(g.periodo))
                 else resources.getQuantityString(R.plurals.facturacion_generadas, g.creadas, g.creadas, Cuotas.nombreMes(g.periodo))
             }
             // Muestra el mes recién generado
@@ -152,7 +153,8 @@ class CuotasFragment : Fragment() {
             opciones += R.string.cuota_confirmar_pago to {
                 viewModel.ejecutar(getString(R.string.cuota_error_revisar),
                     { RetrofitClient.instance.revisarCuota(c.id, RevisionCuota(Cuotas.PAGADA)) }) {
-                    getString(R.string.cuota_pago_confirmado)
+                    // P5: el pago sin comprobante del contador queda esperando al administrador
+                    getString(if (it?.pagoPorAprobar == true) R.string.cuota_pago_en_aprobacion else R.string.cuota_pago_confirmado)
                 }
             }
         }

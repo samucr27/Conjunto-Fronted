@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Menú de Mi equipo (P5): actualizar y cupos por rol -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/accion_actualizar"
+        android:title="@string/accion_actualizar" />
+    <item
+        android:id="@+id/accion_cupos"
+        android:title="@string/equipo_cupos" />
+</menu>

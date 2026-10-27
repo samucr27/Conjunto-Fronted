@@ -34,7 +34,8 @@ class CuentaFragment : Fragment() {
         val sesion = SessionManager(requireContext())
         val rol = getString(when {
             sesion.esContador() -> R.string.rol_contador
-            sesion.esAdmin() -> R.string.rol_admin
+            sesion.esPrincipal() -> R.string.equipo_principal
+            sesion.esAdmin() -> R.string.rol_asistente
             else -> R.string.rol_residente
         })
         val identidad = if (sesion.esAdmin()) sesion.getUsuario()

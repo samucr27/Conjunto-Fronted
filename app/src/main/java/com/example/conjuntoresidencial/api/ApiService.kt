@@ -110,6 +110,22 @@ interface ApiService {
     @GET("api/cuotas/apartamento/{id}")
     suspend fun getCuotasPorApartamento(@Path("id") id: Long): Response<List<CuotaDTO>>
 
+    // P5 bloque 7: cartera de la administración y cupos del equipo
+    @GET("api/cartera/estadisticas")
+    suspend fun getEstadisticasCartera(@Query("periodo") periodo: String?): Response<EstadisticasCartera>
+
+    @GET("api/cartera/solicitudes")
+    suspend fun getSolicitudesContables(@Query("estado") estado: String?): Response<List<SolicitudContable>>
+
+    @PUT("api/cartera/solicitudes/{id}")
+    suspend fun revisarSolicitudContable(@Path("id") id: Long, @Body revision: RevisionSolicitud): Response<SolicitudContable>
+
+    @GET("api/administradores/cupos")
+    suspend fun getCuposEquipo(): Response<List<CupoEquipo>>
+
+    @PUT("api/administradores/cupos")
+    suspend fun fijarCuposEquipo(@Body cupos: List<CupoEquipo>): Response<List<CupoEquipo>>
+
     @POST("api/cuotas/generar")
     suspend fun generarCuotas(@Body solicitud: GenerarCuotasRequest): Response<CuotasGeneradas>
 

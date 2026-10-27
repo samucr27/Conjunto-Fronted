@@ -138,6 +138,12 @@
         android:name="com.example.conjuntoresidencial.ui.propietario.MiCarteraFragment"
         tools:layout="@layout/fragment_mi_cartera" />
 
+    <!-- P5: cartera de la administración (estadísticas y solicitudes del contador) -->
+    <fragment
+        android:id="@+id/carteraResumenFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.CarteraResumenFragment"
+        tools:layout="@layout/fragment_cartera_resumen" />
+
     <!-- P5: detalle de una obra (las dos apps) -->
     <fragment
         android:id="@+id/obraDetalleFragment"

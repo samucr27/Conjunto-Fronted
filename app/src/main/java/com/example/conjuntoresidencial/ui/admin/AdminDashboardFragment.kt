@@ -31,7 +31,8 @@ class AdminDashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val contador = SessionManager(requireContext()).esContador()
+        val sesion = SessionManager(requireContext())
+        val contador = sesion.esContador()
         configurarEncabezado(
             binding.encabezado, R.string.pestana_herramientas,
             if (contador) R.string.panel_contador_subtitulo else R.string.herramientas_admin_subtitulo,
@@ -62,8 +63,11 @@ class AdminDashboardFragment : Fragment() {
         binding.cardPersonalObra.configurar(R.drawable.ic_people, R.string.menu_personal, R.string.menu_personal_sub) {
             nav.navigate(R.id.action_adminDashboardFragment_to_personalObraFragment)
         }
-        binding.cardCarteraAdmin.configurar(R.drawable.ic_wallet, R.string.menu_cartera, R.string.menu_cartera_sub) {
-            nav.navigate(R.id.action_adminDashboardFragment_to_carteraAdminFragment)
+        // P5: la administración ve en la cartera estadísticas y lo que mandó el contador; el contador, cada apartamento
+        binding.cardCarteraAdmin.configurar(R.drawable.ic_wallet, R.string.menu_cartera,
+            if (contador) R.string.menu_cartera_sub else R.string.cartera_resumen_tarjeta_sub) {
+            if (contador) nav.navigate(R.id.action_adminDashboardFragment_to_carteraAdminFragment)
+            else nav.navigate(R.id.carteraResumenFragment)
         }
         binding.cardParqueaderos.configurar(R.drawable.ic_car, R.string.parqueaderos_titulo, R.string.parqueaderos_tarjeta_sub) {
             nav.navigate(R.id.parqueaderosFragment)
@@ -82,6 +86,10 @@ class AdminDashboardFragment : Fragment() {
             listOf(binding.cardDirectorioAptos, binding.cardControlObras, binding.cardHistorialReservas, binding.cardZonasAdmin,
                 binding.cardPersonalObra, binding.cardVehiculosAdmin, binding.cardParqueaderos, binding.cardResidentesPendientes, binding.cardEquipo)
                 .forEach { it.root.visibility = View.GONE }
+        } else {
+            // La facturación es del contador; el equipo, solo del administrador principal
+            binding.cardFacturacion.root.visibility = View.GONE
+            if (!sesion.esPrincipal()) binding.cardEquipo.root.visibility = View.GONE
         }
         binding.cardResidentesPendientes.configurar(R.drawable.ic_people, R.string.menu_residentes_pendientes,
             R.string.menu_residentes_pendientes_sub) {

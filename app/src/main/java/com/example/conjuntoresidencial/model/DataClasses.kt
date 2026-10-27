@@ -46,7 +46,9 @@ data class CambioPropiaContrasenaRequest(val contrasenaActual: String, val contr
 // rol: ADMIN, PROPIETARIO o ARRENDATARIO. residenteId y nombre solo si entró con su documento
 data class LoginResponse(
     val token: String, val expiraEn: String?, val rol: String, val id: Long, val usuario: String?, val torre: String?, val apto: String?,
-    val residenteId: Long? = null, val nombre: String? = null
+    val residenteId: Long? = null, val nombre: String? = null,
+    // P5: solo administradores; el principal es el único que maneja el equipo
+    val principal: Boolean? = null
 )
 // Cuerpo de los errores del backend: {"mensaje": "..."}
 data class MensajeError(val mensaje: String?)
@@ -65,17 +67,41 @@ data class CuotaDTO(
     val id: Long, val apartamentoId: Long, val torre: String?, val apto: String?, val periodo: String,
     val valor: Double, val fechaLimite: String, val estado: String, val vencida: Boolean? = null,
     val tieneComprobante: Boolean? = null, val comprobanteTipo: String? = null, val comprobanteSubidoEn: String? = null,
-    val motivoRechazo: String? = null, val pagadaEn: String? = null
+    val motivoRechazo: String? = null, val pagadaEn: String? = null,
+    // P5: el contador registró el pago sin comprobante y espera al administrador
+    val pagoPorAprobar: Boolean? = null
 )
 data class GenerarCuotasRequest(val periodo: String, val valor: Double, val fechaLimite: String?)
-data class CuotasGeneradas(val periodo: String, val creadas: Int, val existentes: Int)
+// enAprobacion (P5): la mandó el contador y espera al administrador (creadas = 0)
+data class CuotasGeneradas(val periodo: String, val creadas: Int, val existentes: Int, val enAprobacion: Boolean? = null)
+// P5: lo que manda el contador a aprobar: FACTURACION (periodo, valor, fecha límite) o PAGO_MANUAL (de una cuota)
+data class SolicitudContable(
+    val id: Long, val tipo: String, val estado: String, val periodo: String?, val valor: Double?, val fechaLimite: String?,
+    val cuotaId: Long?, val torre: String?, val apto: String?, val solicitadaPor: String, val creadaEn: String,
+    val revisadaEn: String?, val motivoRechazo: String?
+)
+data class RevisionSolicitud(val aprobada: Boolean, val motivo: String? = null)
+// P5: resumen de la cartera de un mes
+data class EstadisticasCartera(
+    val periodo: String, val cuotas: Int, val pagadas: Int, val enRevision: Int, val pendientes: Int, val vencidas: Int,
+    val rechazadas: Int, val facturado: Double, val recaudado: Double, val porCobrar: Double, val porcentajeRecaudo: Int,
+    val apartamentos: Int, val apartamentosAlDia: Int, val apartamentosEnMora: Int, val carteraTotal: Double,
+    val solicitudesPendientes: Long
+)
 data class RevisionCuota(val estado: String, val motivo: String? = null)
 // Corregir una cuota sin pagar: los dos opcionales
 data class CambioCuota(val valor: Double? = null, val fechaLimite: String? = null)
 // Enlace firmado que vence a los 10 minutos
 data class EnlaceComprobante(val url: String, val tipo: String?, val expiraEn: String?)
 // Cuenta de la administración: rol ADMIN o CONTADOR; contrasena solo al crearla
-data class CuentaAdministracion(val id: Long?, val usuario: String, val rol: String, val contrasena: String? = null)
+// P5: datos personales (obligatorios al crearla) y principal (el que maneja el equipo, lo pone el backend)
+data class CuentaAdministracion(
+    val id: Long?, val usuario: String, val rol: String, val contrasena: String? = null,
+    val nombreCompleto: String? = null, val documento: String? = null, val telefono: String? = null, val correo: String? = null,
+    val principal: Boolean? = null
+)
+// Cuántas cuentas de un rol puede crear el principal; maximo null = sin límite
+data class CupoEquipo(val rol: String, val maximo: Int?, val usados: Long? = null)
 // Contraseña vacía = quitarle el acceso con documento
 data class AccesoResidente(val contrasena: String)
 // marca y color son opcionales; la placa solo la llevan carros y motos. estado (PENDIENTE,
