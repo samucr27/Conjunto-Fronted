@@ -38,7 +38,9 @@ class LoginApartamentoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarEncabezado(binding.encabezado, R.string.login_residente_titulo)
+        // Sin flecha cuando es la primera pantalla (P5: sin el selector de entrada)
+        configurarEncabezado(binding.encabezado, R.string.login_residente_titulo,
+            atras = androidx.navigation.fragment.NavHostFragment.findNavController(this).previousBackStackEntry != null)
 
         // "Listo" en el teclado del campo de contraseña también inicia sesión
         binding.etPassApto.setOnEditorActionListener { _, accion, _ ->

@@ -1045,7 +1045,7 @@
     <string name="cartera_mes_anterior">Mes anterior</string>
     <string name="cartera_mes_siguiente">Mes siguiente</string>
     <string name="cartera_recaudo">Recaudo del mes</string>
-    <string name="cartera_recaudo_valor">%1$s de %2$s (%3$d %%)</string>
+    <string name="cartera_recaudo_valor">%1$s de %2$s (%3$d %%)</string>
     <string name="cartera_por_cobrar">Por cobrar: %1$s</string>
     <string name="cartera_cuotas_estados">Pagadas: %1$d · En revisión: %2$d · Pendientes: %3$d · Vencidas: %4$d</string>
     <string name="cartera_apartamentos">Apartamentos</string>

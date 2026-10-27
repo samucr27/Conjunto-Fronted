@@ -19,6 +19,20 @@
         app:behavior_overlapTop="28dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <!-- Con quién es el chat: el encabezado grande va plegado (el campo de abajo debe verse con el teclado) -->
+        <TextView
+            android:id="@+id/tvConQuien"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:accessibilityHeading="true"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="4dp"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?attr/colorOnSurface" />
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"

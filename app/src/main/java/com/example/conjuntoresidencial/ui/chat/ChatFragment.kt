@@ -30,6 +30,7 @@ import com.example.conjuntoresidencial.model.MensajeNuevo
 import com.example.conjuntoresidencial.ui.comun.DiffPorId
 import com.example.conjuntoresidencial.ui.comun.aviso
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.controlesFlotantes
 import com.example.conjuntoresidencial.ui.comun.ponerTitulo
 import com.example.conjuntoresidencial.util.Formatos
 import com.google.android.material.color.MaterialColors
@@ -77,9 +78,29 @@ class ChatFragment : Fragment() {
             binding.encabezado, if (esAdmin) R.string.chat_titulo else R.string.chat_con_administracion,
             if (esAdmin) R.string.chat_admin_subtitulo else R.string.chat_residente_subtitulo
         )
+        // El encabezado grande queda plegado y quieto: desplegado, la hoja con el campo para escribir
+        // se saldría de la pantalla (sobre todo con el teclado abierto)
+        binding.encabezado.root.setExpanded(false, false)
+        (binding.encabezado.root.layoutParams as androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams).behavior =
+            com.google.android.material.appbar.AppBarLayout.Behavior().apply {
+                setDragCallback(object : com.google.android.material.appbar.AppBarLayout.Behavior.DragCallback() {
+                    override fun canDrag(appBarLayout: com.google.android.material.appbar.AppBarLayout) = false
+                })
+            }
+        binding.rvMensajes.isNestedScrollingEnabled = false
+        binding.tvConQuien.setText(if (esAdmin) R.string.chat_titulo else R.string.chat_con_administracion)
+        // Plegado, la hoja empieza arriba del todo: el título va debajo de la barra de estado y los botones
+        // (MainActivity ya consume los insets: se leen de la ventana cuando la vista está puesta)
+        binding.tvConQuien.post {
+            val vista = _binding?.tvConQuien ?: return@post
+            val arriba = ViewCompat.getRootWindowInsets(vista)?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
+            vista.updatePadding(top = arriba + resources.getDimensionPixelSize(R.dimen.alto_botones_superiores))
+        }
         binding.rvMensajes.layoutManager = LinearLayoutManager(requireContext()).apply { stackFromEnd = true }
         binding.rvMensajes.adapter = adaptador
         binding.estado.vincular(binding.rvMensajes)
+        // El campo para escribir va pegado abajo: sin el difuminado de las demás pantallas
+        controlesFlotantes?.sinDifuminadoAbajo()
         // El campo sube con el teclado (y no queda debajo de la barra de navegación)
         ViewCompat.setOnApplyWindowInsetsListener(binding.barraEscribir) { v, insets ->
             val abajo = insets.getInsets(WindowInsetsCompat.Type.ime() or WindowInsetsCompat.Type.navigationBars()).bottom
@@ -94,7 +115,10 @@ class ChatFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             val c = conversacion() ?: return@launch
             conversacionId = c.id
-            if (esAdmin) binding.encabezado.ponerTitulo(titulo(c))
+            if (esAdmin) {
+                binding.encabezado.ponerTitulo(titulo(c))
+                binding.tvConQuien.text = titulo(c)
+            }
             // Mientras se ve la pantalla: los nuevos cada 5 segundos
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 while (true) {

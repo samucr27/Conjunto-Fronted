@@ -86,8 +86,9 @@ class PropietarioDashboardFragment : Fragment() {
     private fun mostrarSegunRol(propietario: Boolean, arrendado: Boolean) {
         val soloQuienVive = listOf(binding.cardMisVehiculos, binding.cardZonasPropietario, binding.cardMisReservas, binding.cardMiHogar)
         val soloPropietario = listOf(binding.cardMiCartera, binding.cardRegistrarObra, binding.cardMisObras, binding.cardArrendatario)
-        soloQuienVive.forEach { it.root.visibility = if (propietario && arrendado) View.GONE else View.VISIBLE }
-        soloPropietario.forEach { it.root.visibility = if (propietario) View.VISIBLE else View.GONE }
+        // GridLayout deja vacía la celda de una tarjeta GONE: las que no aplican se quitan del todo
+        val ocultas = (if (propietario && arrendado) soloQuienVive else emptyList()) + (if (propietario) emptyList() else soloPropietario)
+        ocultas.forEach { (it.root.parent as? android.view.ViewGroup)?.removeView(it.root) }
         binding.tvAvisoArrendado.visibility = if (propietario && arrendado) View.VISIBLE else View.GONE
     }
 

@@ -88,16 +88,21 @@ class AdminDashboardFragment : Fragment() {
         if (contador) {
             listOf(binding.cardDirectorioAptos, binding.cardControlObras, binding.cardHistorialReservas, binding.cardZonasAdmin,
                 binding.cardPersonalObra, binding.cardVehiculosAdmin, binding.cardParqueaderos, binding.cardResidentesPendientes, binding.cardEquipo, binding.cardMensajes)
-                .forEach { it.root.visibility = View.GONE }
+                .forEach { quitar(it.root) }
         } else {
             // La facturación es del contador; el equipo, solo del administrador principal
-            binding.cardFacturacion.root.visibility = View.GONE
-            if (!sesion.esPrincipal()) binding.cardEquipo.root.visibility = View.GONE
+            quitar(binding.cardFacturacion.root)
+            if (!sesion.esPrincipal()) quitar(binding.cardEquipo.root)
         }
         binding.cardResidentesPendientes.configurar(R.drawable.ic_people, R.string.menu_residentes_pendientes,
             R.string.menu_residentes_pendientes_sub) {
             nav.navigate(R.id.residentesFragment, ResidentesFragment.pendientes())
         }
+    }
+
+    /** GridLayout deja vacía la celda de una tarjeta GONE: las que no aplican se quitan del todo. */
+    private fun quitar(tarjeta: View) {
+        (tarjeta.parent as? ViewGroup)?.removeView(tarjeta)
     }
 
     override fun onDestroyView() {

@@ -133,7 +133,7 @@ class ObraDetalleFragment : Fragment() {
         binding.encabezado.ponerTitulo(
             if (o.torre == null) getString(R.string.obra_del_conjunto) else getString(R.string.apto_item_titulo, o.torre, o.apto)
         )
-        binding.tvDescripcion.text = o.descripcionAdecuacion
+        binding.tvTextoObra.text = o.descripcionAdecuacion
         binding.tvFechas.text = Formatos.rango(o.fechaInicio, o.fechaFinEstimada)
         binding.tvEstado.mostrarEstado(Estados.obra(o.estadoObra))
         binding.tvAprobacion.mostrarEstado(Estados.aprobacion(o.aprobacion))
