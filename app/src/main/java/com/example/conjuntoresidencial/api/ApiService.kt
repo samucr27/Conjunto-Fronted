@@ -214,6 +214,23 @@ interface ApiService {
     @POST("api/reservas")
     suspend fun createReserva(@Body reserva: ReservaDTO): Response<ReservaDTO>
 
+    // P5: el residente edita su reserva pendiente
+    @PUT("api/reservas/{id}")
+    suspend fun updateReserva(@Path("id") id: Long, @Body reserva: ReservaDTO): Response<ReservaDTO>
+
+    // Horario semanal y fechas bloqueadas de una zona (P5)
+    @GET("api/zonas/{id}/horario")
+    suspend fun getHorarioZona(@Path("id") id: Long): Response<HorarioZona>
+
+    @PUT("api/zonas/{id}/horario")
+    suspend fun guardarHorarioZona(@Path("id") id: Long, @Body semanal: HorarioSemanal): Response<HorarioZona>
+
+    @POST("api/zonas/{id}/bloqueos")
+    suspend fun bloquearFecha(@Path("id") id: Long, @Body bloqueo: BloqueoZona): Response<BloqueoZona>
+
+    @DELETE("api/zonas/{id}/bloqueos/{bloqueoId}")
+    suspend fun desbloquearFecha(@Path("id") id: Long, @Path("bloqueoId") bloqueoId: Long): Response<Void>
+
     // El administrador cualquiera; el residente cancela la suya si aún no empieza
     @DELETE("api/reservas/{id}")
     suspend fun deleteReserva(@Path("id") id: Long): Response<Void>

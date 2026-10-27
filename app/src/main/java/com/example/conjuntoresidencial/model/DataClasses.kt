@@ -119,7 +119,16 @@ data class ReservaDTO(
 data class DisponibilidadDTO(
     val zonaId: Long, val aforo: Int?, val horaApertura: String?, val horaCierre: String?, val dias: List<DiaDisponibilidadDTO>
 )
-data class DiaDisponibilidadDTO(val fecha: String, val ocupadas: List<FranjaOcupadaDTO>)
+// abierta/apertura/cierre/motivo (P5): el horario de ese día (semanal o general) o por qué está cerrada
+data class DiaDisponibilidadDTO(
+    val fecha: String, val ocupadas: List<FranjaOcupadaDTO>,
+    val abierta: Boolean? = null, val apertura: String? = null, val cierre: String? = null, val motivo: String? = null
+)
+// Horario de una zona por día de la semana (1 = lunes) y fechas bloqueadas (P5)
+data class DiaHorarioZona(val diaSemana: Int, val apertura: String, val cierre: String)
+data class BloqueoZona(val id: Long?, val fecha: String, val motivo: String?)
+data class HorarioZona(val semanal: List<DiaHorarioZona>, val bloqueos: List<BloqueoZona>)
+data class HorarioSemanal(val semanal: List<DiaHorarioZona>)
 data class FranjaOcupadaDTO(val inicio: String, val fin: String, val estado: String, val propia: Boolean?)
 data class PagoDTO(val id: Long?, val saldoPendiente: Double, val estadoCuenta: String, val observaciones: String, val apartamentoId: Long)
 data class EstadoRequest(val estado: String)

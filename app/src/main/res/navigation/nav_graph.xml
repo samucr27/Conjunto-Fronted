@@ -192,6 +192,12 @@
         android:name="com.example.conjuntoresidencial.ui.admin.ParqueaderosFragment"
         tools:layout="@layout/fragment_parqueaderos" />
 
+    <!-- P5 bloque 5: editor visual de zonas comunes -->
+    <fragment
+        android:id="@+id/editarZonaFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.EditarZonaFragment"
+        tools:layout="@layout/fragment_editar_zona" />
+
     <!-- Pestañas de la barra inferior (MainActivity navega a ellas por id) -->
     <fragment
         android:id="@+id/inicioFragment"

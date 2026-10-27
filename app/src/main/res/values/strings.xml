@@ -948,4 +948,41 @@
         <item quantity="one">%d parqueadero creado</item>
         <item quantity="other">%d parqueaderos creados</item>
     </plurals>
+
+    <!-- P5 bloque 5: reservas y zonas -->
+    <string name="reservas_historial">Historial de reservas</string>
+    <string name="reservas_historial_sub">Las que ya pasaron</string>
+    <string name="reservas_historial_vacio">Aún no tienes reservas pasadas</string>
+    <string name="reserva_guardar_cambios">Guardar cambios</string>
+    <string name="reserva_actualizada">Reserva actualizada</string>
+    <string name="reserva_aprobar">Aprobar</string>
+    <string name="reserva_rechazar">Rechazar</string>
+    <string name="reservas_todas">Todas</string>
+    <string name="reservas_pendientes">Pendientes</string>
+    <string name="reservas_aprobadas">Aprobadas</string>
+    <string name="reservas_rechazadas">Rechazadas</string>
+    <string name="zona_editor_descripcion">Datos, horario y fechas bloqueadas</string>
+    <string name="zona_editor_datos">Datos de la zona</string>
+    <string name="zona_editor_por_dia">Horario por día</string>
+    <string name="zona_editor_por_dia_ayuda">Actívalo para elegir qué días abre y a qué hora. Si no, rige el horario general.</string>
+    <string name="zona_editor_bloqueos">Fechas bloqueadas</string>
+    <string name="zona_editor_sin_bloqueos">No hay fechas bloqueadas.</string>
+    <string name="zona_editor_bloquear">Bloquear una fecha</string>
+    <string name="zona_editor_motivo_titulo">Motivo del bloqueo del %1$s</string>
+    <string name="zona_editor_bloqueada">Fecha bloqueada</string>
+    <string name="zona_editor_desbloquear">Desbloquear</string>
+    <string name="zona_editor_desbloquear_titulo">¿Desbloquear el %1$s?</string>
+    <string name="zona_editor_desbloqueada">Fecha desbloqueada</string>
+    <string name="zona_editor_tocar_desbloquear">Toca para desbloquearla</string>
+    <string name="zona_editor_dia_mal">En cada día abierto, el cierre debe ser después de la apertura</string>
+    <string name="zona_eliminar_boton">Eliminar zona</string>
+    <string-array name="dias_semana">
+        <item>Lunes</item>
+        <item>Martes</item>
+        <item>Miércoles</item>
+        <item>Jueves</item>
+        <item>Viernes</item>
+        <item>Sábado</item>
+        <item>Domingo</item>
+    </string-array>
 </resources>

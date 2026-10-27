@@ -19,6 +19,11 @@ class ReservasAdminViewModel : ViewModel() {
     private val _reservas = MutableLiveData<Resource<List<ReservaDTO>>>()
     val reservas: LiveData<Resource<List<ReservaDTO>>> get() = _reservas
 
+    /** Vuelve a entregar la lista que ya hay (al cambiar el filtro de la pantalla). */
+    fun repintar() {
+        _reservas.value = _reservas.value
+    }
+
     // Mensajes de una sola vez (por ejemplo, "no se pudo aprobar: choca con otra reserva")
     private val _mensaje = MutableLiveData<Evento<String>>()
     val mensaje: LiveData<Evento<String>> get() = _mensaje
