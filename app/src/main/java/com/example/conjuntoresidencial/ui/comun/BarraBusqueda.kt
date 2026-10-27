@@ -77,9 +77,14 @@ class BarraBusqueda(
         return palabras.all { en.contains(it) }
     }
 
-    /** La lista no es hija directa del swipe: solo se actualiza al jalar desde arriba de la lista. */
+    /**
+     * La lista no es hija directa del swipe: solo se actualiza al jalar desde arriba de la lista.
+     * Y la barra no se desplaza con la lista: al plegarse el encabezado baja para no quedar
+     * debajo de los botones de arriba y del difuminado.
+     */
     fun vincular(swipe: SwipeRefreshLayout, lista: RecyclerView) {
         swipe.setOnChildScrollUpCallback { _, _ -> lista.canScrollVertically(-1) }
+        fragment.debajoDeLosBotones(vista.root)
     }
 
     private fun argumentos(): Bundle = fragment.arguments ?: Bundle().also { fragment.arguments = it }
@@ -90,6 +95,27 @@ class BarraBusqueda(
 
         fun normal(s: String): String =
             Normalizer.normalize(s.lowercase(Locale.ROOT), Normalizer.Form.NFD).replace(Regex("\\p{M}"), "")
+    }
+}
+
+/**
+ * Para lo que queda fijo arriba de la hoja (búsqueda, filtros): a medida que se pliega el
+ * encabezado grande, [vista] gana padding arriba hasta quedar debajo de la barra de estado y los
+ * botones flotantes, fuera del difuminado. Busca el encabezado (id "encabezado") en el fragment.
+ */
+fun Fragment.debajoDeLosBotones(vista: View) {
+    val encabezado = view?.findViewById<com.google.android.material.appbar.AppBarLayout>(com.example.conjuntoresidencial.R.id.encabezado)
+        ?: return
+    val base = vista.paddingTop
+    val botones = resources.getDimensionPixelSize(com.example.conjuntoresidencial.R.dimen.alto_botones_superiores)
+    encabezado.addOnOffsetChangedListener { barra, desplazamiento ->
+        val rango = barra.totalScrollRange
+        if (rango <= 0) return@addOnOffsetChangedListener
+        val fraccion = -desplazamiento.toFloat() / rango
+        val arriba = androidx.core.view.ViewCompat.getRootWindowInsets(vista)
+            ?.getInsets(androidx.core.view.WindowInsetsCompat.Type.statusBars())?.top ?: 0
+        val nuevo = base + ((arriba + botones) * fraccion).toInt()
+        if (vista.paddingTop != nuevo) vista.setPadding(vista.paddingLeft, nuevo, vista.paddingRight, vista.paddingBottom)
     }
 }
 

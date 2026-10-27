@@ -985,6 +985,8 @@
         <item>Sábado</item>
         <item>Domingo</item>
     </string-array>
+    <string name="biometria_entrar_cuenta">Entrar con huella · %1$s</string>
+
     <!-- P5 bloque 9: búsqueda con filtros -->
     <string name="busqueda_sin_resultados">Ninguno coincide con la búsqueda</string>
     <string name="busqueda_todos">Todos</string>

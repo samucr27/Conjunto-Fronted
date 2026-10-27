@@ -170,14 +170,16 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         barraInferior.updateLayoutParams<android.widget.FrameLayout.LayoutParams> {
             bottomMargin = margenInferiorSistema + separacion
         }
+        // En las pestañas el botón va encima de la barra inferior, no sobre ella
+        val sobreBarra = if (barraInferior.visibility == View.VISIBLE) barraInferior.height + separacion else 0
         botonFlotante.updateLayoutParams<android.widget.FrameLayout.LayoutParams> {
-            bottomMargin = margenInferiorSistema + margenBoton
+            bottomMargin = margenInferiorSistema + margenBoton + sobreBarra
         }
         findViewById<View>(R.id.nav_host_fragment).setPadding(0, 0, 0, margenInferiorSistema)
         // Los avisos quedan sobre la barra de navegación del sistema (o el teclado)
         capaAvisos.setPadding(0, 0, 0, margenInferiorSistema)
         espacioBarra = if (barraInferior.visibility == View.VISIBLE) barraInferior.height + 2 * separacion else 0
-        val espacioBoton = if (botonFlotante.visibility == View.VISIBLE) botonFlotante.height + 2 * margenBoton else 0
+        val espacioBoton = if (botonFlotante.visibility == View.VISIBLE) botonFlotante.height + 2 * margenBoton + sobreBarra else 0
         val espacio = maxOf(espacioBarra, espacioBoton, zonaAbajo) + separacion
         if (_espacioInferior.value != espacio) _espacioInferior.value = espacio
         actualizarZonasDifuminadas()

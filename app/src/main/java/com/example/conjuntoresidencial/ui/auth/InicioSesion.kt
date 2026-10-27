@@ -14,6 +14,10 @@ import com.example.conjuntoresidencial.seguridad.AccesoBiometrico
 import com.example.conjuntoresidencial.util.SessionManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import retrofit2.Response
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import com.example.conjuntoresidencial.ui.comun.aviso
+import com.example.conjuntoresidencial.ui.comun.controlesFlotantes
 
 /**
  * Lo común al entrar (con contraseña o con huella): guarda la sesión y va al panel del rol,
@@ -75,3 +79,55 @@ fun SessionManager.credenciales(contrasena: String) =
     }
 
 private const val ROL_ADMIN = "ADMIN"
+
+/** La huella se pide sola una vez por apertura de la app; después, con el botón. */
+private object HuellaOfrecida { var valor = false }
+
+/**
+ * P5: la huella va en la pantalla de inicio de sesión (ya no hay selector de entrada). [boton]
+ * solo se ve si hay una cuenta guardada; [cargando] bloquea el formulario mientras entra.
+ */
+fun Fragment.ofrecerHuella(boton: com.google.android.material.button.MaterialButton, cargando: (Boolean) -> Unit) {
+    val cuenta = AccesoBiometrico.cuentaGuardada(requireContext())
+    boton.visibility = if (cuenta != null) android.view.View.VISIBLE else android.view.View.GONE
+    if (cuenta == null) return
+    boton.text = getString(R.string.biometria_entrar_cuenta, cuenta)
+    boton.setOnClickListener { entrarConHuella(boton, cargando) }
+    if (!HuellaOfrecida.valor) {
+        HuellaOfrecida.valor = true
+        controlesFlotantes?.alTerminarCarga { if (view != null) entrarConHuella(boton, cargando) }
+    }
+}
+
+private fun Fragment.entrarConHuella(boton: com.google.android.material.button.MaterialButton, cargando: (Boolean) -> Unit) {
+    AccesoBiometrico.entrar(this, alObtener = { credenciales ->
+        cargando(true)
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val respuesta = iniciarSesion(credenciales)
+                val datos = respuesta.body()
+                when {
+                    respuesta.isSuccessful && datos != null -> {
+                        completarInicioSesion(datos, null)
+                        return@launch
+                    }
+                    // La contraseña cambió desde otro celular o la restableció la administración
+                    respuesta.code() == 401 -> {
+                        val cuentaVieja = credenciales.cuenta(requireContext())
+                        AccesoBiometrico.desactivar(requireContext())
+                        aviso(getString(R.string.biometria_contrasena_cambio, cuentaVieja)).show()
+                        boton.visibility = android.view.View.GONE
+                    }
+                    else -> aviso(RetrofitClient.mensajeDeError(respuesta, getString(R.string.biometria_error_datos))).show()
+                }
+            } catch (e: Exception) {
+                aviso(RetrofitClient.mensajeDeExcepcion(e)).show()
+            }
+            cargando(false)
+        }
+    }, alFallar = { mensaje ->
+        if (view == null) return@entrar
+        mensaje?.let { aviso(it).show() }
+        if (AccesoBiometrico.cuentaGuardada(requireContext()) == null) boton.visibility = android.view.View.GONE
+    })
+}

@@ -93,6 +93,19 @@
                             android:minHeight="52dp"
                             android:text="@string/login_ingresar" />
 
+                        <!-- P5: entrar con la huella (si se activó); antes estaba en el selector de entrada -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnHuella"
+                            style="@style/Widget.Material3.Button.TonalButton.Icon"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:minHeight="52dp"
+                            android:text="@string/biometria_entrar"
+                            android:visibility="gone"
+                            app:icon="@drawable/ic_lock"
+                            app:iconGravity="textStart" />
+
                         <com.google.android.material.progressindicator.CircularProgressIndicator
                             android:id="@+id/progressAdmin"
                             android:layout_width="wrap_content"

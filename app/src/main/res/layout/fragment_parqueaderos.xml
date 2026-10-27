@@ -20,7 +20,9 @@
             app:behavior_overlapTop="28dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+            <!-- Métricas y filtros fijos: bajan al plegarse el encabezado (debajoDeLosBotones) -->
             <LinearLayout
+                android:id="@+id/contenidoParqueaderos"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
