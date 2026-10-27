@@ -3,6 +3,7 @@ package com.example.conjuntoresidencial.ui.admin
 import com.example.conjuntoresidencial.model.AsignacionParqueadero
 import com.example.conjuntoresidencial.model.CupoApartamentoRequest
 import androidx.navigation.fragment.findNavController
+import com.example.conjuntoresidencial.ui.comun.mostrarEstado
 import com.example.conjuntoresidencial.model.Apartamento
 import com.example.conjuntoresidencial.model.ApartamentoRequest
 import com.example.conjuntoresidencial.ui.comun.confirmar
@@ -124,7 +125,9 @@ class DetalleApartamentoFragment : Fragment() {
                     val a = async { RetrofitClient.instance.getApartamentoById(aptoId) }
                     val r = async { RetrofitClient.instance.getResidentesPorApartamento(aptoId) }
                     val v = async { RetrofitClient.instance.getVehiculosPorApartamento(aptoId) }
-                    Triple(a.await(), r.await(), v.await())
+                    // P5: sus obras en curso (si falla, la tarjeta queda vacía)
+                    val o = async { runCatching { RetrofitClient.instance.getObrasPorApartamento(aptoId) }.getOrNull() }
+                    Triple(a.await(), r.await(), v.await()).also { obras = o.await()?.body().orEmpty() }
                 }
                 val datos = apto.body()
                 if (!apto.isSuccessful || datos == null) {
@@ -137,11 +140,39 @@ class DetalleApartamentoFragment : Fragment() {
                 binding.encabezado.ponerTitulo(getString(R.string.apto_item_titulo, datos.torre, datos.apto))
                 mostrarResidentes(if (residentes.isSuccessful) residentes.body().orEmpty() else emptyList())
                 mostrarVehiculos(if (vehiculos.isSuccessful) vehiculos.body().orEmpty() else emptyList())
+                mostrarObras()
                 binding.estado.mostrarContenido()
             } catch (e: Exception) {
                 binding.estado.mostrarError(RetrofitClient.mensajeDeExcepcion(e)) { cargarTodo() }
             }
         }
+    }
+
+    private var obras: List<com.example.conjuntoresidencial.model.ObraDTO> = emptyList()
+
+    /** Obras en curso: descripción, fechas y aprobación; al tocar una, su detalle. */
+    private fun mostrarObras() {
+        binding.contenedorObrasApto.removeAllViews()
+        val enCurso = obras.filter { it.estadoObra == "EN_PROCESO" }
+        val fondo = android.util.TypedValue().also {
+            requireContext().theme.resolveAttribute(android.R.attr.selectableItemBackground, it, true)
+        }.resourceId
+        val margen = (16 * resources.displayMetrics.density).toInt()
+        enCurso.forEach { o ->
+            val fila = com.example.conjuntoresidencial.databinding.ItemPersonalFilaBinding.inflate(layoutInflater, binding.contenedorObrasApto, true)
+            fila.tvNombreFila.text = o.descripcionAdecuacion
+            fila.tvCedulaFila.text = com.example.conjuntoresidencial.util.Formatos.rango(o.fechaInicio, o.fechaFinEstimada)
+            fila.tvArlFila.mostrarEstado(com.example.conjuntoresidencial.ui.comun.Estados.aprobacion(o.aprobacion))
+            fila.root.setPadding(margen, fila.root.paddingTop, margen, fila.root.paddingBottom)
+            fila.root.setBackgroundResource(fondo)
+            fila.root.isClickable = true
+            fila.root.isFocusable = true
+            fila.root.setOnClickListener {
+                findNavController().navigate(R.id.obraDetalleFragment,
+                    androidx.core.os.bundleOf(com.example.conjuntoresidencial.ui.obras.ObraDetalleFragment.ARG_OBRA to o.id))
+            }
+        }
+        binding.tvSinObras.visibility = if (enCurso.isEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun mostrarResidentes(lista: List<ResidenteDTO>) {

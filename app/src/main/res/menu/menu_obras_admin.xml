@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Menú de Obras (administración): actualizar, obra del conjunto y finalizadas (P5) -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/accion_actualizar"
+        android:title="@string/accion_actualizar" />
+    <item
+        android:id="@+id/accion_obra_conjunto"
+        android:title="@string/obras_nueva_conjunto" />
+    <item
+        android:id="@+id/accion_finalizadas"
+        android:title="@string/obras_finalizadas" />
+</menu>

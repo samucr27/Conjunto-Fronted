@@ -45,6 +45,15 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
+                <!-- P5: torre y apto (lista de la administración) -->
+                <TextView
+                    android:id="@+id/tvLugarObra"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="?attr/colorPrimary"
+                    android:visibility="gone" />
+
                 <TextView
                     android:id="@+id/tvDescripcionObra"
                     android:layout_width="wrap_content"
@@ -60,6 +69,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp" />
+
+                <!-- P5: aprobación (solo si no está aprobada) y personal por aprobar -->
+                <TextView
+                    android:id="@+id/tvAprobacionObra"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tvPendientesObra"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="gone" />
 
             </LinearLayout>
 

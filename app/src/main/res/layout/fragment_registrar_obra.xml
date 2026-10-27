@@ -141,6 +141,7 @@
 
                 <!-- Personal externo -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardPersonalObra"
                     style="@style/Widget.Material3.CardView.Filled"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -198,14 +199,16 @@
                                 android:inputType="number" />
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/switchArlPersonalExterno"
-                            android:layout_width="match_parent"
+                        <!-- P5: certificado ARL del trabajador (foto o PDF) -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnArlPersonalExterno"
+                            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:minHeight="48dp"
-                            android:text="@string/registrar_obra_arl"
-                            android:textAppearance="?attr/textAppearanceBodyLarge" />
+                            android:text="@string/arl_adjuntar"
+                            app:icon="@drawable/ic_add" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnAgregarPersonal"

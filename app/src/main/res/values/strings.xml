@@ -985,4 +985,71 @@
         <item>Sábado</item>
         <item>Domingo</item>
     </string-array>
+    <!-- P5 bloque 6: obras con ARL y aprobación -->
+    <string name="obra_detalle_subtitulo">Detalles, estado y personal externo</string>
+    <string name="obra_del_conjunto">Obra del conjunto</string>
+    <string name="obra_error_cargar">No se pudo cargar la obra</string>
+    <string name="obra_motivo">Motivo: %1$s</string>
+    <string name="obra_ayuda_pendiente">La administración está revisando la obra y la ARL de su personal. Mientras tanto puedes editar todos sus datos.</string>
+    <string name="obra_ayuda_rechazada">La administración rechazó la obra. Corrige los datos y se enviará otra vez a revisión.</string>
+    <string name="obra_ayuda_aprobada">Obra aprobada: puedes cambiar su estado y añadir o quitar personal. Las personas nuevas también esperan aprobación.</string>
+    <string name="obra_ayuda_admin">Revisa el certificado ARL de cada trabajador antes de aprobar la obra.</string>
+    <string name="obra_editar">Editar obra</string>
+    <string name="obra_cambiar_estado">Cambiar estado</string>
+    <string name="obra_aprobar">Aprobar obra</string>
+    <string name="obra_rechazar">Rechazar obra</string>
+    <string name="obra_eliminar">Eliminar obra</string>
+    <string name="obra_aprobar_titulo">¿Aprobar la obra?</string>
+    <string name="obra_aprobar_mensaje">También se aprobará el personal que está pendiente.</string>
+    <string name="obra_aprobada_ok">Obra aprobada</string>
+    <string name="obra_rechazada_ok">Obra rechazada</string>
+    <string name="obra_motivo_hint">Motivo</string>
+    <string name="obra_motivo_obligatorio">Escribe el motivo</string>
+    <string name="obra_estado_cambiado">Estado actualizado</string>
+    <string name="obra_personal_titulo">Personal externo</string>
+    <string name="obra_guardada">Obra actualizada</string>
+    <string name="obra_editar_titulo">Editar obra</string>
+    <string name="obra_editar_subtitulo">Corrige los datos mientras se aprueba</string>
+    <string name="obra_conjunto_titulo">Obra del conjunto</string>
+    <string name="obra_conjunto_subtitulo">Obras en las zonas comunes</string>
+    <string name="personal_nuevo">Añadir trabajador</string>
+    <string name="personal_agregado">Trabajador añadido</string>
+    <string name="personal_agregado_pendiente">Trabajador añadido: queda pendiente de aprobación</string>
+    <string name="personal_error_guardar">No se pudo guardar el trabajador</string>
+    <string name="personal_aprobar">Aprobar trabajador</string>
+    <string name="personal_rechazar">Rechazar trabajador</string>
+    <string name="personal_aprobado_ok">Trabajador aprobado</string>
+    <string name="personal_rechazado_ok">Trabajador rechazado</string>
+    <string name="arl_adjuntar">Adjuntar certificado ARL</string>
+    <string name="arl_subir">Subir certificado ARL</string>
+    <string name="arl_cambiar">Cambiar certificado ARL</string>
+    <string name="arl_ver">Ver certificado ARL</string>
+    <string name="arl_adjunto">Certificado ARL adjunto</string>
+    <string name="arl_sin_adjunto">Sin certificado ARL</string>
+    <string name="arl_elegido">Certificado ARL listo</string>
+    <string name="arl_subido">Certificado ARL enviado</string>
+    <string name="arl_error_subir">No se pudo subir el certificado ARL</string>
+    <string name="arl_error_leer">No se pudo leer el archivo</string>
+    <string name="arl_archivo_grande">El certificado no puede pasar de 5 MB</string>
+    <string name="arl_error_ver">No se pudo abrir el certificado</string>
+    <string name="registrar_obra_exito_pendiente">Obra enviada. La administración la revisará junto con la ARL del personal</string>
+    <string name="registrar_obra_arl_fallo">no se pudo subir el certificado ARL</string>
+    <string name="obras_apartamentos">Apartamentos</string>
+    <string name="obras_conjunto">Conjunto</string>
+    <string name="obras_finalizadas">Obras finalizadas</string>
+    <string name="obras_finalizadas_sub">Las que ya terminaron</string>
+    <string name="obras_finalizadas_vacio">No hay obras finalizadas</string>
+    <string name="obras_buscar">Buscar por torre, apto o descripción</string>
+    <string name="obras_nueva_conjunto">Nueva obra del conjunto</string>
+    <string name="obras_sin_resultados">Ninguna obra coincide con la búsqueda</string>
+    <string name="detalle_obras">Obras en curso</string>
+    <string name="detalle_sin_obras">No tiene obras en curso</string>
+    <plurals name="obras_personal_pendiente">
+        <item quantity="one">%d trabajador por aprobar</item>
+        <item quantity="other">%d trabajadores por aprobar</item>
+    </plurals>
+    <plurals name="obra_resumen_personal">
+        <item quantity="one">%d trabajador</item>
+        <item quantity="other">%d trabajadores</item>
+    </plurals>
 </resources>

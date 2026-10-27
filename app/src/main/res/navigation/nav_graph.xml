@@ -138,6 +138,12 @@
         android:name="com.example.conjuntoresidencial.ui.propietario.MiCarteraFragment"
         tools:layout="@layout/fragment_mi_cartera" />
 
+    <!-- P5: detalle de una obra (las dos apps) -->
+    <fragment
+        android:id="@+id/obraDetalleFragment"
+        android:name="com.example.conjuntoresidencial.ui.obras.ObraDetalleFragment"
+        tools:layout="@layout/fragment_obra_detalle" />
+
     <fragment
         android:id="@+id/registrarObraFragment"
         android:name="com.example.conjuntoresidencial.ui.propietario.RegistrarObraFragment"

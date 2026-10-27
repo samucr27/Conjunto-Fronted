@@ -1,6 +1,11 @@
 package com.example.conjuntoresidencial.ui.propietario
 
 import android.app.DatePickerDialog
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
+import com.example.conjuntoresidencial.ui.comun.ponerTitulo
+import com.example.conjuntoresidencial.ui.obras.CertificadoArl
+import com.example.conjuntoresidencial.ui.obras.leerCertificado
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -44,6 +49,17 @@ class RegistrarObraFragment : Fragment() {
     // Valores que acepta el backend; en pantalla se muestran con su etiqueta ("En proceso")
     private val estados = listOf("EN_PROCESO", "FINALIZADA")
 
+    // P5: editar una obra (sin la sección de personal, que se maneja en el detalle) o registrar una del conjunto
+    private val obraEditada get() = arguments?.getLong(ARG_OBRA)?.takeIf { it > 0 }
+    private val delConjunto get() = arguments?.getBoolean(ARG_CONJUNTO) == true
+    private val esAdmin get() = resources.getBoolean(R.bool.app_admin)
+
+    private val elegirCertificado = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        val certificado = uri?.let { leerCertificado(it) } ?: return@registerForActivityResult
+        viewModel.certificadoPendiente = certificado
+        mostrarCertificadoPendiente()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRegistrarObraBinding.inflate(inflater, container, false)
         return binding.root
@@ -51,8 +67,14 @@ class RegistrarObraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarEncabezado(binding.encabezado, R.string.registrar_obra_titulo, R.string.registrar_obra_subtitulo)
-        val aptoId = SessionManager(requireContext()).getApartamentoId()
+        when {
+            obraEditada != null -> configurarEncabezado(binding.encabezado, R.string.obra_editar_titulo, R.string.obra_editar_subtitulo)
+            delConjunto -> configurarEncabezado(binding.encabezado, R.string.obra_conjunto_titulo, R.string.obra_conjunto_subtitulo)
+            else -> configurarEncabezado(binding.encabezado, R.string.registrar_obra_titulo, R.string.registrar_obra_subtitulo)
+        }
+        val aptoId: Long? = if (delConjunto) null else SessionManager(requireContext()).getApartamentoId()
+        binding.cardPersonalObra.isVisible = obraEditada == null
+        obraEditada?.let { if (viewModel.original == null) cargarObra(it) }
 
         val etiquetas = estados.map { getString(Estados.obra(it).etiqueta) }
         binding.spinnerEstadoObra.setAdapter(
@@ -80,6 +102,8 @@ class RegistrarObraFragment : Fragment() {
 
         mostrarPersonal()
         binding.btnAgregarPersonal.setOnClickListener { agregarPersonalDesdeCampos() }
+        binding.btnArlPersonalExterno.setOnClickListener { elegirCertificado.launch(CertificadoArl.TIPOS) }
+        mostrarCertificadoPendiente()
         listOf(binding.tilDescripcionObra, binding.tilNombrePersonalExterno, binding.tilCcPersonalExterno)
             .forEach { it.limpiarErrorAlEscribir() }
 
@@ -106,16 +130,52 @@ class RegistrarObraFragment : Fragment() {
                 is Resource.Loading -> Unit
                 is Resource.Success -> {
                     val obraId = resource.data?.id
-                    if (obraId != null && viewModel.personal.isNotEmpty()) {
+                    if (obraId != null && viewModel.personal.isNotEmpty() && obraEditada == null) {
                         guardarPersonalYSalir(obraId)
                     } else {
-                        Toast.makeText(requireContext(), R.string.registrar_obra_exito, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), when {
+                            obraEditada != null -> R.string.obra_guardada
+                            esAdmin -> R.string.registrar_obra_exito
+                            else -> R.string.registrar_obra_exito_pendiente
+                        }, Toast.LENGTH_LONG).show()
                         findNavController().popBackStack()
                     }
                 }
                 is Resource.Error -> aviso(resource.message, Snackbar.LENGTH_LONG).show()
             }
         }
+    }
+
+    /** Editar: trae la obra y llena el formulario (una sola vez; al girar la pantalla queda en el ViewModel). */
+    private fun cargarObra(id: Long) {
+        binding.progressRegistrarObra.visibility = View.VISIBLE
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val r = RetrofitClient.instance.getObra(id)
+                val obra = r.body()
+                if (!r.isSuccessful || obra == null) {
+                    aviso(RetrofitClient.mensajeDeError(r, getString(R.string.obra_error_cargar)), Snackbar.LENGTH_LONG).show()
+                    return@launch
+                }
+                viewModel.original = obra
+                viewModel.fechaInicio = obra.fechaInicio
+                viewModel.fechaFin = obra.fechaFinEstimada
+                viewModel.estado = obra.estadoObra
+                binding.etDescripcionObra.setText(obra.descripcionAdecuacion)
+                binding.spinnerEstadoObra.setText(getString(Estados.obra(obra.estadoObra).etiqueta), false)
+                mostrarFechas()
+            } catch (e: Exception) {
+                aviso(RetrofitClient.mensajeDeExcepcion(e), Snackbar.LENGTH_LONG).show()
+            } finally {
+                binding.progressRegistrarObra.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun mostrarCertificadoPendiente() {
+        val listo = viewModel.certificadoPendiente != null
+        binding.btnArlPersonalExterno.setText(if (listo) R.string.arl_elegido else R.string.arl_adjuntar)
+        binding.btnArlPersonalExterno.setIconResource(if (listo) R.drawable.ic_check_circle else R.drawable.ic_add)
     }
 
     private fun mostrarFechas() {
@@ -134,10 +194,12 @@ class RegistrarObraFragment : Fragment() {
             if (cc.isEmpty()) getString(R.string.registrar_obra_cedula_obligatoria) else null
         if (nombre.isEmpty() || cc.isEmpty()) return
 
-        viewModel.personal += PersonalObraDTO(null, nombre, cc, binding.switchArlPersonalExterno.isChecked, 0L)
+        val certificado = viewModel.certificadoPendiente
+        viewModel.personal += TrabajadorNuevo(PersonalObraDTO(null, nombre, cc, certificado != null, 0L), certificado)
+        viewModel.certificadoPendiente = null
+        mostrarCertificadoPendiente()
         binding.etNombrePersonalExterno.text?.clear()
         binding.etCcPersonalExterno.text?.clear()
-        binding.switchArlPersonalExterno.isChecked = false
         binding.etNombrePersonalExterno.requestFocus()
         mostrarPersonal()
     }
@@ -145,7 +207,8 @@ class RegistrarObraFragment : Fragment() {
     /** Un chip por trabajador agregado; la "x" lo quita de la lista. */
     private fun mostrarPersonal() {
         binding.chipsPersonal.removeAllViews()
-        viewModel.personal.forEach { p ->
+        viewModel.personal.forEach { t ->
+            val p = t.dto
             binding.chipsPersonal.addView(Chip(requireContext()).apply {
                 text = getString(R.string.registrar_obra_trabajador_fila, p.nombreTrabajador, p.cedula)
                 chipIcon = AppCompatResources.getDrawable(
@@ -157,7 +220,7 @@ class RegistrarObraFragment : Fragment() {
                 isCloseIconVisible = true
                 closeIconContentDescription = getString(R.string.registrar_obra_quitar, p.nombreTrabajador)
                 setOnCloseIconClickListener {
-                    viewModel.personal.remove(p)
+                    viewModel.personal.remove(t)
                     mostrarPersonal()
                 }
             })
@@ -176,11 +239,15 @@ class RegistrarObraFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             // "Nombre: motivo" de los trabajadores que no se pudieron guardar
             val fallidos = mutableListOf<String>()
-            viewModel.personal.forEach { dto ->
+            viewModel.personal.forEach { (dto, certificado) ->
                 try {
                     val response = RetrofitClient.instance.createPersonalObra(dto.copy(obraId = obraId))
-                    if (!response.isSuccessful) {
+                    val id = response.body()?.id
+                    if (!response.isSuccessful || id == null) {
                         fallidos += "${dto.nombreTrabajador}: ${RetrofitClient.mensajeDeError(response, getString(R.string.registrar_obra_error))}"
+                    } else if (certificado != null &&
+                        !RetrofitClient.instance.subirCertificadoArl(id, certificado.parte()).isSuccessful) {
+                        fallidos += "${dto.nombreTrabajador}: ${getString(R.string.registrar_obra_arl_fallo)}"
                     }
                 } catch (_: Exception) {
                     fallidos += "${dto.nombreTrabajador}: ${getString(R.string.registrar_obra_sin_conexion)}"
@@ -189,7 +256,9 @@ class RegistrarObraFragment : Fragment() {
             binding.progressRegistrarObra.visibility = View.GONE
 
             if (fallidos.isEmpty()) {
-                Toast.makeText(requireContext(), R.string.registrar_obra_exito_personal, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    if (esAdmin) R.string.registrar_obra_exito_personal else R.string.registrar_obra_exito_pendiente,
+                    Toast.LENGTH_LONG).show()
                 findNavController().popBackStack()
             } else {
                 MaterialAlertDialogBuilder(requireContext())
@@ -224,4 +293,9 @@ class RegistrarObraFragment : Fragment() {
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null; btnGuardar = null }
+
+    companion object {
+        const val ARG_OBRA = "obraId"
+        const val ARG_CONJUNTO = "conjunto"
+    }
 }

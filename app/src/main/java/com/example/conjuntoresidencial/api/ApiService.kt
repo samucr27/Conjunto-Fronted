@@ -169,6 +169,26 @@ interface ApiService {
     @DELETE("api/obras/{id}")
     suspend fun deleteObra(@Path("id") id: Long): Response<Void>
 
+    // P5 bloque 6: detalle, búsqueda y aprobación de obras; certificado ARL de cada trabajador
+    @GET("api/obras/{id}")
+    suspend fun getObra(@Path("id") id: Long): Response<ObraDTO>
+
+    @GET("api/obras")
+    suspend fun buscarObras(@Query("alcance") alcance: String, @Query("estado") estado: String): Response<List<ObraDTO>>
+
+    @PUT("api/obras/{id}/aprobacion")
+    suspend fun revisarObra(@Path("id") id: Long, @Body revision: RevisionObra): Response<ObraDTO>
+
+    @PUT("api/personal-obra/{id}/aprobacion")
+    suspend fun revisarPersonal(@Path("id") id: Long, @Body revision: RevisionPersonal): Response<PersonalObraDTO>
+
+    @Multipart
+    @POST("api/personal-obra/{id}/arl")
+    suspend fun subirCertificadoArl(@Path("id") id: Long, @Part archivo: MultipartBody.Part): Response<PersonalObraDTO>
+
+    @GET("api/personal-obra/{id}/arl")
+    suspend fun getCertificadoArl(@Path("id") id: Long): Response<EnlaceComprobante>
+
     @GET("api/personal-obra")
     suspend fun getTodoElPersonal(): Response<List<PersonalObraDTO>>
 

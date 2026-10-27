@@ -103,8 +103,22 @@ data class GenerarParqueaderos(val tipo: String, val cantidad: Int, val prefijo:
 data class AsignacionParqueadero(val vehiculoId: Long?)
 // Cupo propio de un apartamento; maximo null = vuelve al cupo general
 data class CupoApartamentoRequest(val tipo: String, val maximo: Int?)
-data class ObraDTO(val id: Long?, val descripcionAdecuacion: String, val fechaInicio: String, val fechaFinEstimada: String, val estadoObra: String, val apartamentoId: Long)
-data class PersonalObraDTO(val id: Long?, val nombreTrabajador: String, val cedula: String, val arlEstado: Boolean, val obraId: Long, val torrePiso: String? = null, val aptoNum: String? = null)
+// P5: apartamentoId null = obra del conjunto. aprobacion (PENDIENTE, APROBADA o RECHAZADA), motivoRechazo,
+// torre, apto y personalPendiente (trabajadores por aprobar) los pone el backend
+data class ObraDTO(
+    val id: Long?, val descripcionAdecuacion: String, val fechaInicio: String, val fechaFinEstimada: String, val estadoObra: String,
+    val apartamentoId: Long?, val aprobacion: String? = null, val motivoRechazo: String? = null,
+    val torre: String? = null, val apto: String? = null, val personalPendiente: Int? = null
+)
+// P5: aprobacion (PENDIENTE, APROBADO o RECHAZADO) y si tiene certificado ARL adjunto
+data class PersonalObraDTO(
+    val id: Long?, val nombreTrabajador: String, val cedula: String, val arlEstado: Boolean, val obraId: Long,
+    val torrePiso: String? = null, val aptoNum: String? = null, val aprobacion: String? = null, val motivoRechazo: String? = null,
+    val tieneCertificado: Boolean? = null, val certificadoSubidoEn: String? = null
+)
+// Revisión de la administración; el motivo solo al rechazar
+data class RevisionObra(val aprobada: Boolean, val motivo: String? = null)
+data class RevisionPersonal(val aprobado: Boolean, val motivo: String? = null)
 // aforo (personas por reserva) y horario para reservar ("08:00"); null = sin límite (P4)
 data class ZonaComunDTO(
     val id: Long?, val nombre: String, val estadoRecibido: String, val descripcionEstado: String, val esReservable: Boolean? = null,
