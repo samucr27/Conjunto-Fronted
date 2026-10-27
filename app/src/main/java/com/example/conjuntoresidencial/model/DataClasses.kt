@@ -142,6 +142,17 @@ data class PersonalObraDTO(
     val torrePiso: String? = null, val aptoNum: String? = null, val aprobacion: String? = null, val motivoRechazo: String? = null,
     val tieneCertificado: Boolean? = null, val certificadoSubidoEn: String? = null
 )
+// P5 bloque 8: chat administración ⇄ residente. participante: PROPIETARIO o ARRENDATARIO;
+// noLeidos: los del otro lado que no he visto; propio: lo escribí yo (burbuja a la derecha)
+data class ConversacionDTO(
+    val id: Long, val apartamentoId: Long, val torre: String, val apto: String, val participante: String,
+    val ultimoMensaje: String?, val ultimoMensajeEn: String?, val noLeidos: Int
+)
+data class MensajeChatDTO(
+    val id: Long, val autor: String, val autorNombre: String, val texto: String, val enviadoEn: String, val propio: Boolean
+)
+data class AbrirChat(val apartamentoId: Long? = null, val participante: String? = null)
+data class MensajeNuevo(val texto: String)
 // Revisión de la administración; el motivo solo al rechazar
 data class RevisionObra(val aprobada: Boolean, val motivo: String? = null)
 data class RevisionPersonal(val aprobado: Boolean, val motivo: String? = null)

@@ -24,10 +24,20 @@ data class DestinoNotificacion(
     /** Las de los residentes empiezan por el tipo de lo que se revisó: VEHICULO_APROBADO... */
     val esParaAdmin: Boolean get() =
         tipo == TIPO_RESERVA || tipo == TIPO_VEHICULO || tipo == TIPO_RESIDENTE || tipo == TIPO_COMPROBANTE ||
-            tipo == TIPO_REGISTRO
+            tipo == TIPO_REGISTRO || tipo == TIPO_OBRA || tipo == TIPO_PERSONAL_OBRA || tipo == TIPO_SOLICITUD_CONTABLE
 
     fun abrir(nav: NavController) {
         when {
+            // P5: mensaje de chat → esa conversación
+            tipo == TIPO_CHAT -> nav.navigate(R.id.chatFragment,
+                referenciaId?.let { bundleOf(com.example.conjuntoresidencial.ui.chat.ChatFragment.ARG_CONVERSACION to it) })
+            // P5: obra por aprobar o revisada → su detalle; trabajador → la lista de obras
+            tipo == TIPO_OBRA || tipo.startsWith("${TIPO_OBRA}_") -> nav.navigate(R.id.obraDetalleFragment,
+                referenciaId?.let { bundleOf(com.example.conjuntoresidencial.ui.obras.ObraDetalleFragment.ARG_OBRA to it) })
+            tipo == TIPO_PERSONAL_OBRA -> nav.navigate(R.id.controlObrasFragment)
+            tipo.startsWith(TIPO_PERSONAL_OBRA) -> nav.navigate(R.id.misObrasFragment)
+            // P5: lo que mandó el contador → la cartera de la administración
+            tipo == TIPO_SOLICITUD_CONTABLE -> nav.navigate(R.id.carteraResumenFragment)
             // Nueva publicación → el feed de Inicio
             tipo == TIPO_PUBLICACION -> nav.navigate(R.id.inicioFragment)
             // Comprobante por revisar → Facturación; cuota nueva o revisada → Mi cartera
@@ -68,6 +78,10 @@ data class DestinoNotificacion(
         const val TIPO_PUBLICACION = "PUBLICACION"
         const val TIPO_SOLICITUD_ARRENDATARIO = "SOLICITUD_ARRENDATARIO"
         const val TIPO_COMPROBANTE = "COMPROBANTE"
+        const val TIPO_CHAT = "CHAT"
+        const val TIPO_OBRA = "OBRA"
+        const val TIPO_PERSONAL_OBRA = "PERSONAL_OBRA"
+        const val TIPO_SOLICITUD_CONTABLE = "SOLICITUD_CONTABLE"
         private const val EXTRA_TIPO = "notificacion_tipo"
         private const val EXTRA_NOTIFICACION = "notificacion_id"
         private const val EXTRA_REFERENCIA = "notificacion_referencia"

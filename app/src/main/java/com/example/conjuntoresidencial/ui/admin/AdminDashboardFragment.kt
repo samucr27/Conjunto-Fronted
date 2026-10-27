@@ -78,13 +78,16 @@ class AdminDashboardFragment : Fragment() {
         binding.cardFacturacion.configurar(R.drawable.ic_receipt, R.string.menu_facturacion, R.string.menu_facturacion_sub) {
             nav.navigate(R.id.cuotasFragment)
         }
+        binding.cardMensajes.configurar(R.drawable.ic_chat, R.string.chat_mensajes, R.string.chat_mensajes_sub) {
+            nav.navigate(R.id.conversacionesFragment)
+        }
         binding.cardEquipo.configurar(R.drawable.ic_people, R.string.menu_equipo, R.string.menu_equipo_sub) {
             nav.navigate(R.id.equipoFragment)
         }
         // El contador solo ve la cartera y la facturación (el backend tampoco le deja lo demás)
         if (contador) {
             listOf(binding.cardDirectorioAptos, binding.cardControlObras, binding.cardHistorialReservas, binding.cardZonasAdmin,
-                binding.cardPersonalObra, binding.cardVehiculosAdmin, binding.cardParqueaderos, binding.cardResidentesPendientes, binding.cardEquipo)
+                binding.cardPersonalObra, binding.cardVehiculosAdmin, binding.cardParqueaderos, binding.cardResidentesPendientes, binding.cardEquipo, binding.cardMensajes)
                 .forEach { it.root.visibility = View.GONE }
         } else {
             // La facturación es del contador; el equipo, solo del administrador principal

@@ -138,6 +138,17 @@
         android:name="com.example.conjuntoresidencial.ui.propietario.MiCarteraFragment"
         tools:layout="@layout/fragment_mi_cartera" />
 
+    <!-- P5: chat con la administración (residente) o con un residente (administración) -->
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.example.conjuntoresidencial.ui.chat.ChatFragment"
+        tools:layout="@layout/fragment_chat" />
+
+    <fragment
+        android:id="@+id/conversacionesFragment"
+        android:name="com.example.conjuntoresidencial.ui.chat.ConversacionesFragment"
+        tools:layout="@layout/fragment_equipo" />
+
     <!-- P5: cartera de la administración (estadísticas y solicitudes del contador) -->
     <fragment
         android:id="@+id/carteraResumenFragment"

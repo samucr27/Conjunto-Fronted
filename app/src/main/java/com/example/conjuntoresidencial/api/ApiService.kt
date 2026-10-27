@@ -110,6 +110,22 @@ interface ApiService {
     @GET("api/cuotas/apartamento/{id}")
     suspend fun getCuotasPorApartamento(@Path("id") id: Long): Response<List<CuotaDTO>>
 
+    // P5 bloque 8: chat
+    @GET("api/chat/conversaciones")
+    suspend fun getConversaciones(): Response<List<ConversacionDTO>>
+
+    @POST("api/chat/conversaciones")
+    suspend fun abrirChat(@Body pedido: AbrirChat): Response<ConversacionDTO>
+
+    @GET("api/chat/conversaciones/{id}/mensajes")
+    suspend fun getMensajes(@Path("id") id: Long, @Query("despuesDe") despuesDe: Long?): Response<List<MensajeChatDTO>>
+
+    @POST("api/chat/conversaciones/{id}/mensajes")
+    suspend fun enviarMensaje(@Path("id") id: Long, @Body mensaje: MensajeNuevo): Response<MensajeChatDTO>
+
+    @PUT("api/chat/conversaciones/{id}/leido")
+    suspend fun marcarChatLeido(@Path("id") id: Long): Response<ConversacionDTO>
+
     // P5 bloque 7: cartera de la administración y cupos del equipo
     @GET("api/cartera/estadisticas")
     suspend fun getEstadisticasCartera(@Query("periodo") periodo: String?): Response<EstadisticasCartera>

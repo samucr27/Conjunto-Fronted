@@ -3,6 +3,7 @@ package com.example.conjuntoresidencial.ui.admin
 import com.example.conjuntoresidencial.model.AsignacionParqueadero
 import com.example.conjuntoresidencial.model.CupoApartamentoRequest
 import androidx.navigation.fragment.findNavController
+import com.example.conjuntoresidencial.ui.chat.abrirChatCon
 import com.example.conjuntoresidencial.ui.comun.mostrarEstado
 import com.example.conjuntoresidencial.model.Apartamento
 import com.example.conjuntoresidencial.model.ApartamentoRequest
@@ -87,6 +88,12 @@ class DetalleApartamentoFragment : Fragment() {
         configurarEncabezado(binding.encabezado, R.string.detalle_titulo, R.string.detalle_subtitulo,
             menu = R.menu.menu_detalle_apartamento) { item ->
             when (item) {
+                R.id.accion_chat_propietario -> {
+                    abrirChatCon(aptoId, "PROPIETARIO"); true
+                }
+                R.id.accion_chat_arrendatario -> {
+                    abrirChatCon(aptoId, "ARRENDATARIO"); true
+                }
                 R.id.accion_editar_apartamento -> { apartamento?.let { editarApartamento(it) }; true }
                 R.id.accion_eliminar_apartamento -> { apartamento?.let { eliminarApartamento(it) }; true }
                 else -> false

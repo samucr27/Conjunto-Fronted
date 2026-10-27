@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Menú del detalle del apartamento (administrador, P4 bloque 8) -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- P5: chat con el residente -->
+    <item
+        android:id="@+id/accion_chat_propietario"
+        android:title="@string/chat_escribir_propietario" />
+    <item
+        android:id="@+id/accion_chat_arrendatario"
+        android:title="@string/chat_escribir_arrendatario" />
     <item
         android:id="@+id/accion_editar_apartamento"
         android:title="@string/apartamento_editar" />

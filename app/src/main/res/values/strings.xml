@@ -985,6 +985,36 @@
         <item>Sábado</item>
         <item>Domingo</item>
     </string-array>
+    <!-- P5 bloque 8: chat -->
+    <string name="chat_titulo">Chat</string>
+    <string name="chat_con_administracion">Administración</string>
+    <string name="chat_residente_subtitulo">Escríbele a la administración del conjunto</string>
+    <string name="chat_admin_subtitulo">Conversación con el residente</string>
+    <string name="chat_tarjeta">Chat con la administración</string>
+    <string name="chat_tarjeta_sub">Escribe tus dudas o solicitudes</string>
+    <string name="chat_mensajes">Mensajes</string>
+    <string name="chat_mensajes_sub">Chats con propietarios y arrendatarios</string>
+    <string name="chat_conversaciones_subtitulo">Propietarios y arrendatarios</string>
+    <string name="chat_escribir">Escribe un mensaje</string>
+    <string name="chat_enviar">Enviar</string>
+    <string name="chat_vacio">Aún no hay mensajes</string>
+    <string name="chat_vacio_residente">Escríbele a la administración: te responderán por aquí</string>
+    <string name="chat_conversaciones_vacio">Aún no hay conversaciones</string>
+    <string name="chat_error">No se pudo cargar el chat</string>
+    <string name="chat_error_enviar">No se pudo enviar el mensaje</string>
+    <string name="chat_nuevo">Nuevo chat</string>
+    <string name="chat_con">Escribir a</string>
+    <string name="chat_propietario">Propietario</string>
+    <string name="chat_arrendatario">Arrendatario</string>
+    <string name="chat_titulo_apto">Torre %1$s · Apto %2$s · %3$s</string>
+    <string name="chat_apto_no_existe">No existe ese apartamento</string>
+    <string name="chat_escribir_propietario">Escribir al propietario</string>
+    <string name="chat_escribir_arrendatario">Escribir al arrendatario</string>
+    <plurals name="chat_no_leidos">
+        <item quantity="one">%d sin leer</item>
+        <item quantity="other">%d sin leer</item>
+    </plurals>
+
     <!-- P5 bloque 7: equipo y cartera de la administración -->
     <string name="facturacion_en_aprobacion">La facturación de %1$s se envió al administrador para que la apruebe</string>
     <string name="cuota_pago_en_aprobacion">Pago enviado al administrador para que lo apruebe</string>

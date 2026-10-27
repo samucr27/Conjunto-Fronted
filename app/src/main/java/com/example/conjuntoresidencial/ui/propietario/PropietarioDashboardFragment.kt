@@ -60,6 +60,10 @@ class PropietarioDashboardFragment : Fragment() {
         binding.cardMiHogar.configurar(R.drawable.ic_people, R.string.menu_mi_hogar, R.string.menu_mi_hogar_sub) {
             nav.navigate(R.id.miHogarFragment)
         }
+        // P5: el chat lo tienen el propietario y el arrendatario (cada uno el suyo)
+        binding.cardChat.configurar(R.drawable.ic_chat, R.string.chat_tarjeta, R.string.chat_tarjeta_sub) {
+            findNavController().navigate(R.id.chatFragment)
+        }
         binding.cardArrendatario.configurar(R.drawable.ic_key, R.string.arrendatario_titulo, R.string.arrendatario_tarjeta_sub) {
             nav.navigate(R.id.arrendatarioFragment)
         }
