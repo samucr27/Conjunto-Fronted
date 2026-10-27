@@ -1,6 +1,10 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.example.conjuntoresidencial.model.AsignacionParqueadero
+import com.example.conjuntoresidencial.model.CupoApartamentoRequest
 import androidx.navigation.fragment.findNavController
+import com.example.conjuntoresidencial.ui.chat.abrirChatCon
+import com.example.conjuntoresidencial.ui.comun.mostrarEstado
 import com.example.conjuntoresidencial.model.Apartamento
 import com.example.conjuntoresidencial.model.ApartamentoRequest
 import com.example.conjuntoresidencial.ui.comun.confirmar
@@ -45,8 +49,19 @@ class DetalleApartamentoFragment : Fragment() {
     private var aptoId: Long = -1L
     private val residentesAdapter = ResidenteAdapter(onTocar = { opcionesResidente(it) })
     private val vehiculosAdapter = VehiculoAdminAdapter { v ->
-        elegirOpcion(v.placa ?: v.tipo, listOf(
+        elegirOpcion(v.placa ?: v.tipo, listOfNotNull<Pair<Int, () -> Unit>>(
             R.string.editar to { mostrarDialogVehiculo(v) },
+            // P5: el parqueadero (solo vehículos aprobados)
+            ((if (v.parqueaderoId == null) R.string.parqueadero_asignar else R.string.parqueadero_cambiar) to {
+                elegirParqueadero(v.tipo, getString(R.string.parqueadero_al_aprobar, v.placa ?: v.tipo)) { id ->
+                    if (id != null) ejecutarAccion(getString(R.string.parqueadero_asignado_vehiculo),
+                        { RetrofitClient.instance.asignarParqueadero(id, AsignacionParqueadero(v.id)) }) { recargarVehiculos() }
+                }
+            }).takeIf { v.estado == null || v.estado == "APROBADO" },
+            (R.string.parqueadero_liberar to {
+                ejecutarAccion(getString(R.string.parqueadero_liberado),
+                    { RetrofitClient.instance.asignarParqueadero(v.parqueaderoId!!, AsignacionParqueadero(null)) }) { recargarVehiculos() }
+            }).takeIf { v.parqueaderoId != null },
             R.string.vehiculo_eliminar to {
                 confirmar(getString(R.string.vehiculo_eliminar_titulo),
                     getString(R.string.vehiculo_eliminar_pregunta, v.placa ?: v.tipo.lowercase()), R.string.vehiculo_eliminar) {
@@ -73,6 +88,12 @@ class DetalleApartamentoFragment : Fragment() {
         configurarEncabezado(binding.encabezado, R.string.detalle_titulo, R.string.detalle_subtitulo,
             menu = R.menu.menu_detalle_apartamento) { item ->
             when (item) {
+                R.id.accion_chat_propietario -> {
+                    abrirChatCon(aptoId, "PROPIETARIO"); true
+                }
+                R.id.accion_chat_arrendatario -> {
+                    abrirChatCon(aptoId, "ARRENDATARIO"); true
+                }
                 R.id.accion_editar_apartamento -> { apartamento?.let { editarApartamento(it) }; true }
                 R.id.accion_eliminar_apartamento -> { apartamento?.let { eliminarApartamento(it) }; true }
                 else -> false
@@ -87,6 +108,7 @@ class DetalleApartamentoFragment : Fragment() {
 
         binding.btnAgregarResidente.setOnClickListener { mostrarDialogResidente() }
         binding.btnAgregarVehiculoAdmin.setOnClickListener { mostrarDialogVehiculo() }
+        binding.btnCuposApto.setOnClickListener { editarCuposApto() }
         binding.btnRestablecerContrasena.setOnClickListener {
             pedirContrasena(getString(R.string.titulo_restablecer_contrasena), getString(R.string.contrasena_restablecida),
                 getString(R.string.error_restablecer_contrasena)) { nueva ->
@@ -110,7 +132,9 @@ class DetalleApartamentoFragment : Fragment() {
                     val a = async { RetrofitClient.instance.getApartamentoById(aptoId) }
                     val r = async { RetrofitClient.instance.getResidentesPorApartamento(aptoId) }
                     val v = async { RetrofitClient.instance.getVehiculosPorApartamento(aptoId) }
-                    Triple(a.await(), r.await(), v.await())
+                    // P5: sus obras en curso (si falla, la tarjeta queda vacía)
+                    val o = async { runCatching { RetrofitClient.instance.getObrasPorApartamento(aptoId) }.getOrNull() }
+                    Triple(a.await(), r.await(), v.await()).also { obras = o.await()?.body().orEmpty() }
                 }
                 val datos = apto.body()
                 if (!apto.isSuccessful || datos == null) {
@@ -123,11 +147,39 @@ class DetalleApartamentoFragment : Fragment() {
                 binding.encabezado.ponerTitulo(getString(R.string.apto_item_titulo, datos.torre, datos.apto))
                 mostrarResidentes(if (residentes.isSuccessful) residentes.body().orEmpty() else emptyList())
                 mostrarVehiculos(if (vehiculos.isSuccessful) vehiculos.body().orEmpty() else emptyList())
+                mostrarObras()
                 binding.estado.mostrarContenido()
             } catch (e: Exception) {
                 binding.estado.mostrarError(RetrofitClient.mensajeDeExcepcion(e)) { cargarTodo() }
             }
         }
+    }
+
+    private var obras: List<com.example.conjuntoresidencial.model.ObraDTO> = emptyList()
+
+    /** Obras en curso: descripción, fechas y aprobación; al tocar una, su detalle. */
+    private fun mostrarObras() {
+        binding.contenedorObrasApto.removeAllViews()
+        val enCurso = obras.filter { it.estadoObra == "EN_PROCESO" }
+        val fondo = android.util.TypedValue().also {
+            requireContext().theme.resolveAttribute(android.R.attr.selectableItemBackground, it, true)
+        }.resourceId
+        val margen = (16 * resources.displayMetrics.density).toInt()
+        enCurso.forEach { o ->
+            val fila = com.example.conjuntoresidencial.databinding.ItemPersonalFilaBinding.inflate(layoutInflater, binding.contenedorObrasApto, true)
+            fila.tvNombreFila.text = o.descripcionAdecuacion
+            fila.tvCedulaFila.text = com.example.conjuntoresidencial.util.Formatos.rango(o.fechaInicio, o.fechaFinEstimada)
+            fila.tvArlFila.mostrarEstado(com.example.conjuntoresidencial.ui.comun.Estados.aprobacion(o.aprobacion))
+            fila.root.setPadding(margen, fila.root.paddingTop, margen, fila.root.paddingBottom)
+            fila.root.setBackgroundResource(fondo)
+            fila.root.isClickable = true
+            fila.root.isFocusable = true
+            fila.root.setOnClickListener {
+                findNavController().navigate(R.id.obraDetalleFragment,
+                    androidx.core.os.bundleOf(com.example.conjuntoresidencial.ui.obras.ObraDetalleFragment.ARG_OBRA to o.id))
+            }
+        }
+        binding.tvSinObras.visibility = if (enCurso.isEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun mostrarResidentes(lista: List<ResidenteDTO>) {
@@ -325,6 +377,46 @@ class DetalleApartamentoFragment : Fragment() {
                 DirectorioApartamentosFragment.huboCambios()
                 findNavController().popBackStack()
             }
+        }
+    }
+
+    /** Cupos propios del apartamento por tipo (P5); vacío = el cupo general del conjunto. */
+    private fun editarCuposApto() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val cupos = try {
+                RetrofitClient.instance.getCuposVehiculo(aptoId).body().orEmpty()
+            } catch (_: Exception) {
+                emptyList()
+            }
+            if (_binding == null || cupos.isEmpty()) return@launch
+            val dp = resources.displayMetrics.density
+            val columna = android.widget.LinearLayout(requireContext()).apply {
+                orientation = android.widget.LinearLayout.VERTICAL
+                setPadding((24 * dp).toInt(), (8 * dp).toInt(), (24 * dp).toInt(), 0)
+            }
+            val campos = cupos.map { cupo ->
+                TextInputLayout(requireContext()).apply {
+                    hint = cupo.tipo
+                    helperText = if (cupo.personalizado == true) getString(R.string.cupos_propio) else getString(R.string.cupos_general, cupo.maximo)
+                    addView(TextInputEditText(context).apply {
+                        inputType = android.text.InputType.TYPE_CLASS_NUMBER
+                        setText(if (cupo.personalizado == true) cupo.maximo.toString() else null)
+                    })
+                    columna.addView(this)
+                }
+            }
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.cupos_apto_titulo)
+                .setMessage(R.string.cupos_apto_mensaje)
+                .setView(android.widget.ScrollView(requireContext()).apply { addView(columna) })
+                .setPositiveButton(R.string.btn_guardar) { _, _ ->
+                    val nuevos = cupos.zip(campos).map { (c, campo) ->
+                        CupoApartamentoRequest(c.tipo, campo.editText?.text?.toString()?.toIntOrNull()?.coerceIn(0, 20))
+                    }
+                    ejecutarAccion(getString(R.string.cupos_guardados), { RetrofitClient.instance.guardarCuposApartamento(aptoId, nuevos) })
+                }
+                .setNegativeButton(R.string.btn_cancelar, null)
+                .show()
         }
     }
 

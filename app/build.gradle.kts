@@ -23,6 +23,23 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // Dos apps del mismo código (P5): residentes y administración. Lo común está en src/main;
+    // R.bool.app_admin dice en cuál se está. Compilar: assembleResidenteDebug / assembleAdministracionDebug
+    flavorDimensions += "app"
+    productFlavors {
+        create("residente") {
+            dimension = "app"
+            resValue("string", "app_name", "MiConjunto")
+            resValue("bool", "app_admin", "false")
+        }
+        create("administracion") {
+            dimension = "app"
+            applicationIdSuffix = ".admin"
+            resValue("string", "app_name", "MiConjunto Admin")
+            resValue("bool", "app_admin", "true")
+        }
+    }
+
     // URL del backend en Render. Va como recurso (R.string.api_url) y no en BuildConfig:
     // Kotlin copia las constantes de BuildConfig dentro de cada clase al compilar, y la
     // compilación incremental podía dejar en el APK la URL anterior.
@@ -77,6 +94,9 @@ dependencies {
     // Retrofit & Gson
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+
+    // Imágenes del feed (P5) desde enlaces firmados: carga, caché y crossfade (Apache 2.0)
+    implementation("io.coil-kt:coil:2.6.0")
 
     // Corrutinas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")

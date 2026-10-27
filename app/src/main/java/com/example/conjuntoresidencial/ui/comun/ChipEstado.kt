@@ -45,6 +45,16 @@ object Estados {
         else -> desconocido(estado)
     }
 
+    /** Aprobación de una obra (APROBADA) o de un trabajador (APROBADO); sin valor = de antes de P5, aprobada. */
+    fun aprobacion(estado: String?): EstadoVisual = when (estado?.uppercase()) {
+        "PENDIENTE" -> EstadoVisual(R.string.estado_pendiente_aprobacion, TonoEstado.ADVERTENCIA)
+        "APROBADA", null -> EstadoVisual(R.string.estado_aprobada, TonoEstado.EXITO)
+        "APROBADO" -> EstadoVisual(R.string.estado_aprobado, TonoEstado.EXITO)
+        "RECHAZADA" -> EstadoVisual(R.string.estado_rechazada, TonoEstado.ERROR)
+        "RECHAZADO" -> EstadoVisual(R.string.estado_rechazado, TonoEstado.ERROR)
+        else -> desconocido(estado)
+    }
+
     /** "Al día" si no hay saldo pendiente o el backend lo marca así; si no, "Debe $X". */
     fun cuenta(saldo: Double?, estadoCuenta: String?): EstadoVisual {
         val alDia = (saldo ?: 0.0) <= 0.0 || sinTildes(estadoCuenta).equals("al dia", ignoreCase = true)

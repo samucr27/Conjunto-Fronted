@@ -40,11 +40,12 @@ class VehiculosAdminViewModel : ViewModel() {
     }
 
     /** Aprueba o rechaza; al terminar, el vehículo sale de la lista y el residente recibe un aviso. */
-    fun revisar(vehiculo: VehiculoDTO, aprobar: Boolean, motivo: String?, hecho: String, errorPorDefecto: String) {
+    fun revisar(vehiculo: VehiculoDTO, aprobar: Boolean, motivo: String?, hecho: String, errorPorDefecto: String,
+                parqueaderoId: Long? = null) {
         viewModelScope.launch {
             try {
                 val response = RetrofitClient.instance.cambiarEstadoVehiculo(
-                    vehiculo.id!!, EstadoVehiculoRequest(if (aprobar) "APROBADO" else "RECHAZADO", motivo)
+                    vehiculo.id!!, EstadoVehiculoRequest(if (aprobar) "APROBADO" else "RECHAZADO", motivo, parqueaderoId)
                 )
                 if (response.isSuccessful) {
                     val actuales = (_pendientes.value as? Resource.Success)?.data.orEmpty()

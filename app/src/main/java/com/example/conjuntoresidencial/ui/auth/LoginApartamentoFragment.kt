@@ -4,19 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.google.android.material.snackbar.Snackbar
+import androidx.navigation.fragment.findNavController
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentLoginApartamentoBinding
-import com.example.conjuntoresidencial.util.Resource
+import com.example.conjuntoresidencial.seguridad.AccesoBiometrico
+import com.example.conjuntoresidencial.ui.comun.aviso
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.util.Resource
 import com.example.conjuntoresidencial.util.exigirTexto
 import com.example.conjuntoresidencial.util.limpiarErrorAlEscribir
-import com.example.conjuntoresidencial.ui.comun.aviso
-import com.example.conjuntoresidencial.seguridad.AccesoBiometrico
-import android.view.inputmethod.EditorInfo
+import com.google.android.material.snackbar.Snackbar
 
+/**
+ * Acceso del residente (P5): arriba se elige propietario o arrendatario; se entra con la torre,
+ * el apartamento y la contraseña personal. Abajo, el registro para quien aún no tiene cuenta.
+ */
 class LoginApartamentoFragment : Fragment() {
 
     private var _binding: FragmentLoginApartamentoBinding? = null
@@ -33,33 +38,17 @@ class LoginApartamentoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarEncabezado(binding.encabezado, R.string.login_residente_titulo)
+        // Sin flecha cuando es la primera pantalla (P5: sin el selector de entrada)
+        configurarEncabezado(binding.encabezado, R.string.login_residente_titulo,
+            atras = androidx.navigation.fragment.NavHostFragment.findNavController(this).previousBackStackEntry != null)
 
         // "Listo" en el teclado del campo de contraseña también inicia sesión
         binding.etPassApto.setOnEditorActionListener { _, accion, _ ->
             (accion == EditorInfo.IME_ACTION_DONE).also { if (it) binding.btnLoginApto.performClick() }
         }
 
-        // Con mi documento (cuenta propia) o con los datos del apartamento (contraseña compartida)
-        binding.grupoModo.addOnButtonCheckedListener { _, _, _ -> mostrarModo() }
-        mostrarModo()
-
-        listOf(binding.tilDocumento, binding.tilTorreApto, binding.tilNumApto, binding.tilPassApto)
-            .forEach { it.limpiarErrorAlEscribir() }
+        listOf(binding.tilTorreApto, binding.tilNumApto, binding.tilPassApto).forEach { it.limpiarErrorAlEscribir() }
         binding.btnLoginApto.setOnClickListener {
-            val pass = binding.etPassApto.text.toString().trim()
-            if (porDocumento()) {
-                val completos = listOf(
-                    binding.tilDocumento.exigirTexto(getString(R.string.login_falta_documento)),
-                    binding.tilPassApto.exigirTexto(getString(R.string.login_falta_contrasena))
-                ).all { it }
-                if (!completos) return@setOnClickListener
-                val documento = binding.etDocumento.text.toString().trim()
-                // El rol real (propietario o arrendatario) lo dice el backend; para la huella basta el documento
-                credenciales = AccesoBiometrico.Credenciales("PROPIETARIO", contrasena = pass, documento = documento)
-                viewModel.loginResidente(documento, pass)
-                return@setOnClickListener
-            }
             val completos = listOf(
                 binding.tilTorreApto.exigirTexto(getString(R.string.login_falta_torre)),
                 binding.tilNumApto.exigirTexto(getString(R.string.login_falta_apartamento)),
@@ -68,9 +57,12 @@ class LoginApartamentoFragment : Fragment() {
             if (!completos) return@setOnClickListener
             val torre = binding.etTorreApto.text.toString().trim()
             val apto = binding.etNumApto.text.toString().trim()
-            credenciales = AccesoBiometrico.Credenciales("PROPIETARIO", torre = torre, apto = apto, contrasena = pass)
-            viewModel.loginApartamento(torre, apto, pass)
+            val pass = binding.etPassApto.text.toString().trim()
+            val rol = if (binding.grupoModo.checkedButtonId == R.id.btnArrendatario) "ARRENDATARIO" else "PROPIETARIO"
+            credenciales = AccesoBiometrico.Credenciales(rol, torre = torre, apto = apto, contrasena = pass)
+            viewModel.loginTitular(torre, apto, rol, pass)
         }
+        binding.btnRegistrarse.setOnClickListener { findNavController().navigate(R.id.registroFragment) }
 
         viewModel.loginState.observe(viewLifecycleOwner) { resource ->
             when (resource) {
@@ -80,7 +72,7 @@ class LoginApartamentoFragment : Fragment() {
                 }
                 is Resource.Success -> {
                     binding.progressApto.visibility = View.GONE
-                    // Guarda la sesión, ofrece entrar con huella la próxima vez y abre el panel
+                    // Guarda la sesión, ofrece entrar con huella la próxima vez y abre Inicio
                     resource.data?.let { completarInicioSesion(it, credenciales) }
                 }
                 is Resource.Error -> {
@@ -90,16 +82,6 @@ class LoginApartamentoFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun porDocumento() = binding.grupoModo.checkedButtonId == R.id.btnModoDocumento
-
-    private fun mostrarModo() {
-        val documento = porDocumento()
-        binding.tilDocumento.visibility = if (documento) View.VISIBLE else View.GONE
-        binding.tilTorreApto.visibility = if (documento) View.GONE else View.VISIBLE
-        binding.tilNumApto.visibility = if (documento) View.GONE else View.VISIBLE
-        binding.tvAyudaLogin.setText(if (documento) R.string.login_residente_ayuda_documento else R.string.login_residente_ayuda)
     }
 
     override fun onDestroyView() {

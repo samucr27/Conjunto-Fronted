@@ -55,7 +55,7 @@ fun Fragment.opcionesPersonal(p: PersonalObraDTO, recargar: () -> Unit) {
     ))
 }
 
-private fun Fragment.editarPersonal(p: PersonalObraDTO, recargar: () -> Unit) {
+fun Fragment.editarPersonal(p: PersonalObraDTO, recargar: () -> Unit) {
     val vista = DialogPersonalBinding.inflate(layoutInflater)
     vista.etNombrePersonal.setText(p.nombreTrabajador)
     vista.etCedulaPersonal.setText(p.cedula)

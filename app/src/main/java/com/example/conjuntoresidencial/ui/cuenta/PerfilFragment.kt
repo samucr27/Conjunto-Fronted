@@ -39,7 +39,8 @@ class PerfilFragment : Fragment() {
 
         val rol = getString(when {
             sesion.esContador() -> R.string.rol_contador
-            sesion.esAdmin() -> R.string.rol_admin
+            sesion.esPrincipal() -> R.string.equipo_principal
+            sesion.esAdmin() -> R.string.rol_asistente
             else -> R.string.rol_residente
         })
         binding.filaRol.estado = rol

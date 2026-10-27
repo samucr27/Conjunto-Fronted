@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- Registro del residente en 4 pasos (RegistroFragment). Un solo layout: cada paso es un
+         bloque que se muestra u oculta -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorSurface">
+
+        <include
+            android:id="@+id/encabezado"
+            layout="@layout/encabezado_grande" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/fondo_hoja"
+            android:fillViewport="true"
+            app:behavior_overlapTop="28dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <LinearLayout
+                    android:id="@+id/grupoProgreso"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tvPaso"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?attr/textAppearanceLabelLarge"
+                        android:textColor="?attr/colorPrimary" />
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progresoPasos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:max="100"
+                        app:trackCornerRadius="4dp" />
+                </LinearLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardElevation="2dp"
+                    app:shapeAppearance="@style/ShapeAppearance.App.Large">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="24dp">
+                        <LinearLayout
+                            android:id="@+id/paso1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:accessibilityHeading="true"
+                                android:text="@string/registro_paso1_titulo"
+                                android:textAppearance="?attr/textAppearanceTitleLarge"
+                                android:textColor="?attr/colorOnSurface" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="@string/registro_paso1_ayuda"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilTorreReg"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:hint="@string/login_torre">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etTorreReg"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="textCapCharacters" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilAptoReg"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:hint="@string/login_apartamento">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etAptoReg"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="number" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/paso2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:accessibilityHeading="true"
+                                android:text="@string/registro_paso2_titulo"
+                                android:textAppearance="?attr/textAppearanceTitleLarge"
+                                android:textColor="?attr/colorOnSurface" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:id="@+id/tvRolRegistro"
+                                android:text="@string/registro_paso2_ayuda"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilNombres"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:hint="@string/registro_nombres">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etNombres"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="textPersonName|textCapWords" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilApellidos"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:hint="@string/registro_apellidos">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etApellidos"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="textPersonName|textCapWords" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilCedula"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:hint="@string/registro_cedula">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etCedula"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="number" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilTelefonoReg"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:hint="@string/residente_telefono">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etTelefonoReg"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="phone" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilCorreo"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:hint="@string/registro_correo">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etCorreo"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="textEmailAddress" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilContrasenaReg"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:hint="@string/login_contrasena"
+                                app:endIconMode="password_toggle"
+                                app:helperText="@string/registro_contrasena_ayuda">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etContrasenaReg"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="textPassword" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilConfirmarReg"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:hint="@string/registro_confirmar"
+                                app:endIconMode="password_toggle">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etConfirmarReg"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="textPassword" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+                                <com.google.android.material.checkbox.MaterialCheckBox
+                                    android:id="@+id/cbDatos"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:minHeight="48dp"
+                                    android:text="@string/registro_acepto_datos" />
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnLeerDatos"
+                                    style="@style/Widget.Material3.Button.TextButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:minHeight="48dp"
+                                    android:text="@string/registro_leer" />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+                                <com.google.android.material.checkbox.MaterialCheckBox
+                                    android:id="@+id/cbTerminos"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:minHeight="48dp"
+                                    android:text="@string/registro_acepto_terminos" />
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnLeerTerminos"
+                                    style="@style/Widget.Material3.Button.TextButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:minHeight="48dp"
+                                    android:text="@string/registro_leer" />
+                            </LinearLayout>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/paso3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:accessibilityHeading="true"
+                                android:text="@string/registro_paso3_titulo"
+                                android:textAppearance="?attr/textAppearanceTitleLarge"
+                                android:textColor="?attr/colorOnSurface" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="@string/registro_paso3_ayuda"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                            <TextView
+                                android:id="@+id/tvSinPersonas"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="@string/registro_sin_personas"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                            <LinearLayout
+                                android:id="@+id/listaPersonas"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:orientation="vertical" />
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnAgregarPersona"
+                                style="@style/Widget.Material3.Button.TonalButton.Icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:minHeight="48dp"
+                                android:text="@string/registro_agregar_persona"
+                                app:icon="@drawable/ic_add" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/paso4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:accessibilityHeading="true"
+                                android:text="@string/registro_paso4_titulo"
+                                android:textAppearance="?attr/textAppearanceTitleLarge"
+                                android:textColor="?attr/colorOnSurface" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="@string/registro_paso4_ayuda"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                            <TextView
+                                android:id="@+id/tvSinVisitantes"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="@string/registro_sin_visitantes"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                            <LinearLayout
+                                android:id="@+id/listaVisitantes"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:orientation="vertical" />
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnAgregarVisitante"
+                                style="@style/Widget.Material3.Button.TonalButton.Icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:minHeight="48dp"
+                                android:text="@string/registro_agregar_visitante"
+                                app:icon="@drawable/ic_add" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/paso5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+                            <ImageView
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                android:layout_gravity="center_horizontal"
+                                android:importantForAccessibility="no"
+                                android:src="@drawable/ic_check_circle"
+                                app:tint="?attr/colorPrimary" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:accessibilityHeading="true"
+                                android:gravity="center"
+                                android:text="@string/registro_listo_titulo"
+                                android:textAppearance="?attr/textAppearanceTitleLarge"
+                                android:textColor="?attr/colorOnSurface" />
+                            <TextView
+                                android:id="@+id/tvMensajeFinal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:gravity="center"
+                                android:textAppearance="?attr/textAppearanceBodyLarge"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnIrLogin"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="24dp"
+                                android:minHeight="52dp"
+                                android:text="@string/registro_ir_login" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <LinearLayout
+                    android:id="@+id/barraBotones"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAtrasPaso"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="52dp"
+                        android:text="@string/registro_atras" />
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnOmitir"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="52dp"
+                        android:text="@string/registro_omitir" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSiguiente"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="52dp"
+                        android:text="@string/registro_siguiente" />
+                </LinearLayout>
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/progresoRegistro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:contentDescription="@string/cargando"
+                    android:indeterminate="true"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

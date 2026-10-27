@@ -59,7 +59,8 @@ object Cuotas {
         PAGADA -> EstadoVisual(R.string.cuota_pagada, TonoEstado.EXITO)
         EN_REVISION -> EstadoVisual(R.string.cuota_en_revision, TonoEstado.ADVERTENCIA)
         RECHAZADA -> EstadoVisual(R.string.cuota_rechazada, TonoEstado.ERROR)
-        else -> if (c.vencida == true) EstadoVisual(R.string.cuota_vencida, TonoEstado.ERROR)
+        else -> if (c.pagoPorAprobar == true) EstadoVisual(R.string.cuota_pago_por_aprobar, TonoEstado.ADVERTENCIA)
+        else if (c.vencida == true) EstadoVisual(R.string.cuota_vencida, TonoEstado.ERROR)
         else EstadoVisual(R.string.cuota_pendiente, TonoEstado.ADVERTENCIA)
     }
 

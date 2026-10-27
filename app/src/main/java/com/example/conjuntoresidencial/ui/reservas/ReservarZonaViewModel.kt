@@ -25,6 +25,15 @@ class ReservarZonaViewModel : ViewModel() {
     var mes: Int = Calendar.getInstance().get(Calendar.MONTH)
         private set
 
+    /** La reserva que se edita (P5); null al crear una nueva. */
+    var reservaId: Long? = null
+
+    /** Muestra un mes sin cargarlo (al abrir para editar). */
+    fun irA(anio: Int, mes: Int) {
+        this.anio = anio
+        this.mes = mes
+    }
+
     /** Día elegido ("2026-10-25") y franjas elegidas de ese día (índices). */
     var diaElegido: String? = null
     var seleccion: IntRange? = null
@@ -77,7 +86,9 @@ class ReservarZonaViewModel : ViewModel() {
         _enviando.value = true
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.instance.createReserva(reserva)
+                val id = reservaId
+                val response = if (id == null) RetrofitClient.instance.createReserva(reserva)
+                    else RetrofitClient.instance.updateReserva(id, reserva)
                 // 409 si mientras tanto otro reservó esa franja; 400 si no cabe en el horario o el aforo
                 _resultado.value = Evento(if (response.isSuccessful) null else RetrofitClient.mensajeDeError(response, errorPorDefecto))
             } catch (e: Exception) {

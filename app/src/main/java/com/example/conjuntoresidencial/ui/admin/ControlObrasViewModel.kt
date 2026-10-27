@@ -5,65 +5,58 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.conjuntoresidencial.api.RetrofitClient
-import com.example.conjuntoresidencial.model.EstadoRequest
 import com.example.conjuntoresidencial.model.ObraDTO
-import com.example.conjuntoresidencial.model.PersonalObraDTO
-import com.example.conjuntoresidencial.util.Evento
 import com.example.conjuntoresidencial.util.Resource
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import java.text.Normalizer
+import java.util.Locale
 
+/**
+ * Obras de la administración (P5): de los apartamentos o del conjunto, en curso o finalizadas.
+ * La búsqueda por torre, apto o descripción filtra lo ya cargado, sin otra petición por cada letra.
+ */
 class ControlObrasViewModel : ViewModel() {
     private val _obras = MutableLiveData<Resource<List<ObraDTO>>>()
     val obras: LiveData<Resource<List<ObraDTO>>> get() = _obras
 
-    // obraId -> personal; se carga junto con las obras (una sola petición para todo el personal)
-    var personalPorObra: Map<Long, List<PersonalObraDTO>> = emptyMap()
-        private set
+    var alcance = APARTAMENTOS
+    var texto = ""
+    private var cargadas: List<ObraDTO> = emptyList()
 
-    private val _mensaje = MutableLiveData<Evento<String>>()
-    val mensaje: LiveData<Evento<String>> get() = _mensaje
-
-    fun fetchObras() {
+    fun fetchObras(finalizadas: Boolean) {
         _obras.value = Resource.Loading
         viewModelScope.launch {
             try {
-                // Trae TODAS las obras (en proceso y finalizadas) y todo el personal en paralelo.
-                // coroutineScope: si una petición falla, el error llega al catch en vez de cerrar la app
-                val (response, personal) = coroutineScope {
-                    val obrasAsync = async { RetrofitClient.instance.getAllObras() }
-                    val personalAsync = async { RetrofitClient.instance.getTodoElPersonal() }
-                    obrasAsync.await() to personalAsync.await()
-                }
-                personalPorObra = if (personal.isSuccessful) personal.body().orEmpty().groupBy { it.obraId } else emptyMap()
-                if (response.isSuccessful && response.body() != null)
-                    _obras.value = Resource.Success(response.body()!!)
-                else _obras.value = Resource.Error("Error al cargar obras")
+                val response = RetrofitClient.instance.buscarObras(alcance, if (finalizadas) "FINALIZADA" else "EN_PROCESO")
+                if (response.isSuccessful && response.body() != null) {
+                    // Primero las que esperan aprobación (de la obra o de su personal)
+                    cargadas = response.body()!!.sortedByDescending {
+                        it.aprobacion == "PENDIENTE" || (it.personalPendiente ?: 0) > 0
+                    }
+                    filtrar()
+                } else _obras.value = Resource.Error(RetrofitClient.mensajeDeError(response, "Error al cargar obras"))
             } catch (e: Exception) {
                 _obras.value = Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
         }
     }
 
-    fun cambiarEstado(obraId: Long, nuevoEstado: String) {
-        viewModelScope.launch {
-            try {
-                val response = RetrofitClient.instance.cambiarEstadoObra(obraId, EstadoRequest(nuevoEstado))
-                if (response.isSuccessful) {
-                    // Actualizar solo ese item sin recargar toda la lista
-                    val listaActual = (_obras.value as? Resource.Success)?.data?.toMutableList() ?: return@launch
-                    val idx = listaActual.indexOfFirst { it.id == obraId }
-                    if (idx != -1) {
-                        listaActual[idx] = listaActual[idx].copy(estadoObra = nuevoEstado)
-                        _obras.value = Resource.Success(listaActual)
-                    }
-                } else {
-                    _mensaje.value = Evento(RetrofitClient.mensajeDeError(response, "No se pudo cambiar el estado de la obra"))
-                }
-            } catch (e: Exception) {
-                _mensaje.value = Evento(RetrofitClient.mensajeDeExcepcion(e))
-            }
-        }
+    /** "1 101", "torre 2", "cocina": todas las palabras deben aparecer en la torre, el apto o la descripción. */
+    fun filtrar() {
+        val palabras = normal(texto).split(Regex("\\s+")).filter { it.isNotBlank() }
+        _obras.value = Resource.Success(cargadas.filter { o ->
+            val en = normal("torre ${o.torre.orEmpty()} apto ${o.apto.orEmpty()} ${o.descripcionAdecuacion}")
+            palabras.all { en.contains(it) }
+        })
+    }
+
+    val hayBusqueda get() = texto.isNotBlank()
+
+    private fun normal(s: String) =
+        Normalizer.normalize(s.lowercase(Locale.ROOT), Normalizer.Form.NFD).replace(Regex("\\p{M}"), "")
+
+    companion object {
+        const val APARTAMENTOS = "APARTAMENTOS"
+        const val CONJUNTO = "CONJUNTO"
     }
 }

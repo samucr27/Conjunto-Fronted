@@ -80,7 +80,17 @@ class ReservarZonaFragment : Fragment() {
             actualizarBoton()
         }
 
-        boton = controlesFlotantes?.mostrarBotonFlotante(R.string.zona_reservar, R.drawable.ic_event) { reservar() }
+        boton = controlesFlotantes?.mostrarBotonFlotante(
+            if (editando) R.string.reserva_guardar_cambios else R.string.zona_reservar, R.drawable.ic_event) { reservar() }
+        // Al editar se abre en el día de la reserva, con sus asistentes
+        if (editando && viewModel.reservaId == null) {
+            viewModel.reservaId = requireArguments().getLong(ARG_RESERVA)
+            fechaOriginal?.let { f ->
+                viewModel.irA(f.substring(0, 4).toInt(), f.substring(5, 7).toInt() - 1)
+                viewModel.diaElegido = f
+            }
+            requireArguments().getInt(ARG_ASISTENTES).takeIf { it > 0 }?.let { binding.etAsistentes.setText(it.toString()) }
+        }
 
         viewModel.disponibilidad.observe(viewLifecycleOwner) { resource ->
             binding.progresoDisponibilidad.visibility = if (resource is Resource.Loading) View.VISIBLE else View.GONE
@@ -94,7 +104,8 @@ class ReservarZonaFragment : Fragment() {
             evento.siNoManejado { mensaje ->
                 if (mensaje == null) {
                     // Toast: se ve mientras se vuelve a la lista de zonas
-                    Toast.makeText(requireContext(), R.string.reserva_creada, Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), if (editando) R.string.reserva_actualizada else R.string.reserva_creada,
+                        Toast.LENGTH_LONG).show()
                     findNavController().navigateUp()
                 } else {
                     aviso(mensaje).show()
@@ -148,13 +159,26 @@ class ReservarZonaFragment : Fragment() {
     }
 
     private fun franjasDe(d: DisponibilidadDTO, fecha: String, ahora: Int?): List<Agenda.Franja> {
-        val ocupadas = d.dias.firstOrNull { it.fecha == fecha }?.ocupadas.orEmpty().mapNotNull { f ->
-            val inicio = Agenda.minutos(f.inicio) ?: return@mapNotNull null
-            val fin = Agenda.minutos(f.fin) ?: return@mapNotNull null
-            Agenda.Ocupada(inicio, fin, f.propia == true)
-        }
-        return Agenda.franjas(Agenda.minutos(d.horaApertura), Agenda.minutos(d.horaCierre), ocupadas, ahora)
+        val dia = d.dias.firstOrNull { it.fecha == fecha }
+        // P5: cerrada (fecha bloqueada o no abre ese día de la semana): sin franjas, en gris
+        if (dia?.abierta == false) return emptyList()
+        val ocupadas = dia?.ocupadas.orEmpty()
+            // Al editar, la franja de la propia reserva no cuenta como ocupada
+            .filterNot { f -> editando && fecha == fechaOriginal && f.propia == true && f.inicio.take(5) == horaOriginal }
+            .mapNotNull { f ->
+                val inicio = Agenda.minutos(f.inicio) ?: return@mapNotNull null
+                val fin = Agenda.minutos(f.fin) ?: return@mapNotNull null
+                Agenda.Ocupada(inicio, fin, f.propia == true)
+            }
+        val apertura = dia?.apertura ?: d.horaApertura
+        val cierre = dia?.cierre ?: d.horaCierre
+        return Agenda.franjas(Agenda.minutos(apertura), Agenda.minutos(cierre), ocupadas, ahora)
     }
+
+    // Modo edición (P5): la reserva pendiente que se cambia
+    private val editando get() = arguments?.getLong(ARG_RESERVA)?.takeIf { it > 0 } != null
+    private val fechaOriginal get() = arguments?.getString(ARG_FECHA)
+    private val horaOriginal get() = arguments?.getString(ARG_HORA)?.take(5)
 
     private fun elegirDia(dia: DiaCalendario) {
         if (viewModel.diaElegido == dia.fecha) return
@@ -297,5 +321,16 @@ class ReservarZonaFragment : Fragment() {
         private const val MAXIMO_FRANJAS = 8
 
         fun argumentos(zonaId: Long, nombre: String) = bundleOf(ARG_ZONA to zonaId, ARG_NOMBRE to nombre)
+
+        private const val ARG_RESERVA = "reservaId"
+        private const val ARG_FECHA = "fecha"
+        private const val ARG_HORA = "hora"
+        private const val ARG_ASISTENTES = "asistentes"
+
+        /** Para editar una reserva pendiente (P5). */
+        fun argumentosEditar(r: ReservaDTO, nombreZona: String) = bundleOf(
+            ARG_ZONA to r.zonaComunId, ARG_NOMBRE to nombreZona, ARG_RESERVA to (r.id ?: 0L),
+            ARG_FECHA to r.fecha, ARG_HORA to r.hora, ARG_ASISTENTES to (r.asistentes ?: 0)
+        )
     }
 }

@@ -15,9 +15,9 @@ import com.example.conjuntoresidencial.ui.cartera.Cuotas
 import com.example.conjuntoresidencial.ui.cartera.abrirComprobante
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import com.example.conjuntoresidencial.ui.comun.Estados
 import com.example.conjuntoresidencial.ui.comun.mostrarEstado
 import com.example.conjuntoresidencial.util.Formatos
@@ -44,10 +44,9 @@ class MiCarteraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Pestaña de la barra inferior: sin botón para volver
         configurarEncabezado(
             binding.encabezado, R.string.mi_cartera_titulo, R.string.mi_cartera_subtitulo,
-            atras = false, menu = R.menu.menu_lista, alElegir = accionesDeLista(binding.swipe) { cargar() }
+            menu = R.menu.menu_lista, alElegir = accionesDeLista(binding.swipe) { cargar() }
         )
         aptoId = SessionManager(requireContext()).getApartamentoId()
         binding.estado.vincular(binding.contenido)
@@ -134,7 +133,7 @@ class MiCarteraFragment : Fragment() {
             else -> {
                 val tipo = resolver.getType(uri) ?: "application/octet-stream"
                 val nombre = if (tipo == "application/pdf") "comprobante.pdf" else "comprobante.jpg"
-                val parte = MultipartBody.Part.createFormData("archivo", nombre, RequestBody.create(MediaType.parse(tipo), datos))
+                val parte = MultipartBody.Part.createFormData("archivo", nombre, datos.toRequestBody(tipo.toMediaTypeOrNull()))
                 viewModel.subirComprobante(aptoId, cuotaId, parte, getString(R.string.cuota_comprobante_enviado),
                     getString(R.string.cuota_error_subir))
             }

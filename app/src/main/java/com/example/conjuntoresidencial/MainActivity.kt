@@ -74,6 +74,8 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     // Difuminado progresivo de los bordes (Android 13+); null en versiones anteriores
     private var difuminado: DifuminadoProgresivo? = null
     private var tecladoAbierto = false
+    // P5: la pantalla actual tiene un campo fijo abajo (el chat): ahí no se difumina
+    private var campoAbajo = false
     // Alto que tapa la barra inferior (0 si no se muestra); el difuminado de abajo la cubre
     private var espacioBarra = 0
     private var modoOscuro = false
@@ -196,7 +198,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         val arriba = margenSuperior + if (botonesSuperiores.visibility == View.VISIBLE) altoBotones else 0
         val (abajo, fin) = when {
             // Con el teclado abierto no se difumina abajo: ahí está el campo en el que se escribe
-            tecladoAbierto -> 0 to 0
+            tecladoAbierto || campoAbajo -> 0 to 0
             // Pestañas: el contenido pasa bajo la barra translúcida hasta el borde
             espacioBarra > 0 -> espacioBarra + margenInferiorSistema to contenedor.height
             // Resto: hasta donde termina el contenido (encima de la barra de navegación del sistema)
@@ -232,6 +234,11 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             avisoActual = this
         }
 
+    override fun sinDifuminadoAbajo() {
+        campoAbajo = true
+        actualizarZonasDifuminadas()
+    }
+
     private fun ocultarBotonFlotante() {
         if (botonFlotante.visibility == View.GONE) return
         botonFlotante.visibility = View.GONE
@@ -245,14 +252,20 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             // Cada pantalla vuelve a pedir sus botones de arriba (configurarEncabezado)
             ocultarControles()
             ocultarBotonFlotante()
+            campoAbajo = false
+            // Al cambiar de pantalla no queda el teclado de la anterior (al iniciar sesión, al guardar)
+            currentFocus?.let { foco ->
+                getSystemService(android.view.inputmethod.InputMethodManager::class.java)
+                    ?.hideSoftInputFromWindow(foco.windowToken, 0)
+                foco.clearFocus()
+            }
             avisoActual?.dismiss()
             avisoActual = null
             val menu = when (destino.id) {
                 R.id.adminDashboardFragment -> R.menu.menu_barra_admin
-                R.id.propietarioDashboardFragment, R.id.misReservasFragment, R.id.miCarteraFragment ->
-                    R.menu.menu_barra_residente
+                R.id.propietarioDashboardFragment -> R.menu.menu_barra_residente
                 // Las dos barras las tienen: depende de quién inició sesión
-                R.id.notificacionesFragment, R.id.cuentaFragment ->
+                R.id.inicioFragment, R.id.notificacionesFragment, R.id.cuentaFragment ->
                     if (SessionManager(this).esAdmin()) R.menu.menu_barra_admin else R.menu.menu_barra_residente
                 else -> null
             }
@@ -260,7 +273,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             if (menu != null && navInferior.selectedItemId != destino.id) navInferior.selectedItemId = destino.id
             if (menu != null) notificaciones.actualizarConteo()
             when (destino.id) {
-                R.id.adminDashboardFragment, R.id.propietarioDashboardFragment -> {
+                R.id.inicioFragment -> {
                     prepararAvisos()
                     // Después de este cambio de pantalla, no dentro de él
                     navInferior.post { abrirAvisoPendiente() }

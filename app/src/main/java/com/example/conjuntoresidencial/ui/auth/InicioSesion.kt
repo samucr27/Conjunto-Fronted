@@ -24,9 +24,7 @@ fun Fragment.completarInicioSesion(respuesta: LoginResponse, credenciales: Acces
     val contexto = requireContext()
     SessionManager(contexto).guardar(respuesta, credenciales?.documento)
     val irAlPanel = {
-        val panel = if (respuesta.rol == ROL_ADMIN || respuesta.rol == "CONTADOR") R.id.adminDashboardFragment
-        else R.id.propietarioDashboardFragment
-        findNavController().navigate(panel, null, NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build())
+        findNavController().navigate(R.id.inicioFragment, null, NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build())
     }
     val cuenta = credenciales?.cuenta(contexto)
     if (credenciales == null || cuenta == null || !AccesoBiometrico.conviene(contexto, cuenta)) {
@@ -58,6 +56,10 @@ suspend fun iniciarSesion(credenciales: AccesoBiometrico.Credenciales): Response
         RetrofitClient.instance.loginAdmin(LoginAdminRequest(credenciales.usuario.orEmpty(), credenciales.contrasena))
     } else if (credenciales.documento != null) {
         RetrofitClient.instance.loginResidente(LoginResidenteRequest(credenciales.documento, credenciales.contrasena))
+    } else if (credenciales.torre != null) {
+        // P5: el titular con torre, apto y rol
+        RetrofitClient.instance.loginResidente(LoginResidenteRequest(
+            contrasena = credenciales.contrasena, torre = credenciales.torre, apto = credenciales.apto, rol = credenciales.rol))
     } else {
         RetrofitClient.instance.loginApartamento(
             LoginApartamentoRequest(credenciales.torre.orEmpty(), credenciales.apto.orEmpty(), credenciales.contrasena)

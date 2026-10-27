@@ -59,6 +59,7 @@ object AccesoBiometrico {
         fun cuenta(context: Context): String = when {
             esAdmin -> context.getString(R.string.biometria_cuenta_admin, usuario)
             documento != null -> context.getString(R.string.biometria_cuenta_documento, documento)
+            rol == "ARRENDATARIO" -> context.getString(R.string.biometria_cuenta_arrendatario, torre, apto)
             else -> context.getString(R.string.biometria_cuenta_residente, torre, apto)
         }
     }

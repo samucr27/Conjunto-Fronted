@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- Parqueaderos (P5 bloque 4): métricas, filtros y la lista.
+         Misma estructura de las pantallas de lista, ver ui/comun/PantallaLista.kt -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorSurface">
+
+        <include
+            android:id="@+id/encabezado"
+            layout="@layout/encabezado_grande" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/fondo_hoja"
+            app:behavior_overlapTop="28dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="12dp">
+
+                <!-- Métricas: libres, asignados e invitados -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp">
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.Material3.CardView.Filled"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+                            <TextView
+                                android:id="@+id/tvLibres"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="—"
+                                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                                android:textColor="?attr/colorOnSurface" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/parqueaderos_libres"
+                                android:textAppearance="?attr/textAppearanceLabelMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.Material3.CardView.Filled"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+                            <TextView
+                                android:id="@+id/tvAsignados"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="—"
+                                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                                android:textColor="?attr/colorOnSurface" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/parqueaderos_asignados"
+                                android:textAppearance="?attr/textAppearanceLabelMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.Material3.CardView.Filled"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+                            <TextView
+                                android:id="@+id/tvInvitados"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="—"
+                                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                                android:textColor="?attr/colorOnSurface" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/parqueaderos_invitados"
+                                android:textAppearance="?attr/textAppearanceLabelMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:scrollbars="none">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chipsFiltro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:selectionRequired="true"
+                        app:singleLine="true"
+                        app:singleSelection="true" />
+                </HorizontalScrollView>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvParqueaderos"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToPadding="false"
+                        android:paddingStart="8dp"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="16dp" />
+
+                    <com.example.conjuntoresidencial.ui.comun.EstadoPantallaView
+                        android:id="@+id/estado"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </FrameLayout>
+            </LinearLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

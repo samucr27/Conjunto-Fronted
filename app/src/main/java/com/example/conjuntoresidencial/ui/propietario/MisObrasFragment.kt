@@ -1,27 +1,19 @@
 package com.example.conjuntoresidencial.ui.propietario
 
-import android.text.InputType
-import com.example.conjuntoresidencial.ui.comun.ejecutarAccion
-import com.example.conjuntoresidencial.ui.comun.pedirTexto
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.conjuntoresidencial.ui.obras.ObraDetalleFragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.R
-import com.example.conjuntoresidencial.api.RetrofitClient
-import com.example.conjuntoresidencial.databinding.DialogDetalleObraBinding
 import com.example.conjuntoresidencial.databinding.FragmentMisObrasBinding
-import com.example.conjuntoresidencial.databinding.ItemPersonalFilaBinding
 import com.example.conjuntoresidencial.model.ObraDTO
-import com.example.conjuntoresidencial.model.PersonalObraDTO
-import com.example.conjuntoresidencial.ui.comun.Estados
-import com.example.conjuntoresidencial.ui.comun.mostrarEstado
 import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
-import com.example.conjuntoresidencial.util.Formatos
 import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.ui.comun.accionesDeLista
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
@@ -30,7 +22,6 @@ import com.example.conjuntoresidencial.ui.comun.resumen
 import com.example.conjuntoresidencial.ui.comun.aviso
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.launch
 
 class MisObrasFragment : Fragment() {
     private var _binding: FragmentMisObrasBinding? = null
@@ -52,7 +43,9 @@ class MisObrasFragment : Fragment() {
         aptoId = SessionManager(requireContext()).getApartamentoId()
 
         val adaptador = MisObrasAdapter(
-            onDetalle = { obra -> mostrarDetalleObra(obra) },
+            onDetalle = { obra ->
+                findNavController().navigate(R.id.obraDetalleFragment, bundleOf(ObraDetalleFragment.ARG_OBRA to obra.id))
+            },
             onFinalizar = { obra -> confirmarFinalizar(obra) }
         )
         binding.rvMisObras.layoutManager = LinearLayoutManager(requireContext())
@@ -80,52 +73,8 @@ class MisObrasFragment : Fragment() {
             }
         }
 
-        if (viewModel.obras.value == null) viewModel.fetchObras(aptoId)
-    }
-
-    /** Carga el personal de la obra y muestra el detalle; se cancela si el usuario sale de la pantalla. */
-    private fun mostrarDetalleObra(obra: ObraDTO) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            val personal: List<PersonalObraDTO>? = try {
-                val response = RetrofitClient.instance.getPersonalPorObra(obra.id!!)
-                if (response.isSuccessful) response.body().orEmpty() else null
-            } catch (_: Exception) {
-                null
-            }
-
-            val vista = DialogDetalleObraBinding.inflate(layoutInflater)
-            vista.tvEstadoDetalle.mostrarEstado(Estados.obra(obra.estadoObra))
-            vista.tvFechasDetalle.text = Formatos.rango(obra.fechaInicio, obra.fechaFinEstimada)
-            when {
-                personal == null -> vista.tvSinPersonalDetalle.setText(R.string.obra_error_personal)
-                personal.isEmpty() -> vista.tvSinPersonalDetalle.setText(R.string.obras_sin_personal)
-                else -> personal.forEach { p ->
-                    val fila = ItemPersonalFilaBinding.inflate(layoutInflater, vista.contenedorPersonal, true)
-                    fila.tvNombreFila.text = p.nombreTrabajador
-                    fila.tvCedulaFila.text = getString(R.string.personal_cedula, p.cedula)
-                    fila.tvArlFila.mostrarEstado(Estados.arl(p.arlEstado))
-                }
-            }
-            vista.tvSinPersonalDetalle.visibility = if (personal.isNullOrEmpty()) View.VISIBLE else View.GONE
-            // Sin personal: solo el mensaje, sin el título de la sección
-            vista.tvTituloPersonalDetalle.visibility = if (personal?.isEmpty() == true) View.GONE else View.VISIBLE
-
-            val detalle = MaterialAlertDialogBuilder(requireContext())
-                .setTitle(obra.descripcionAdecuacion)
-                .setView(vista.root)
-                .setPositiveButton(R.string.btn_cerrar, null)
-            if (obra.estadoObra == "EN_PROCESO") detalle.setNeutralButton(R.string.obra_editar_descripcion) { _, _ ->
-                pedirTexto(getString(R.string.obra_editar_descripcion), R.string.registrar_obra_descripcion, obra.descripcionAdecuacion,
-                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES,
-                    validar = { if (it.isBlank()) getString(R.string.obra_descripcion_obligatoria) else null }) { nueva ->
-                    ejecutarAccion(getString(R.string.obra_editada),
-                        { RetrofitClient.instance.updateObra(obra.id!!, obra.copy(descripcionAdecuacion = nueva)) }) {
-                        viewModel.fetchObras(aptoId)
-                    }
-                }
-            }
-            detalle.show()
-        }
+        // También al volver del detalle (la vista se crea otra vez): la obra pudo cambiar
+        viewModel.fetchObras(aptoId)
     }
 
     private fun confirmarFinalizar(obra: ObraDTO) {

@@ -15,6 +15,13 @@ interface ApiService {
     @POST("api/auth/residente/login")
     suspend fun loginResidente(@Body request: LoginResidenteRequest): Response<LoginResponse>
 
+    // Registro del residente (P5): sin sesión
+    @POST("api/auth/registro/verificar")
+    suspend fun verificarRegistro(@Body request: VerificarRegistroRequest): Response<RegistroVerificado>
+
+    @POST("api/auth/registro")
+    suspend fun registrar(@Body request: RegistroRequest): Response<RegistroRecibido>
+
     // Cuenta → Perfil: cambiar la propia contraseña (400 si la actual no coincide)
     @PUT("api/auth/contrasena")
     suspend fun cambiarContrasena(@Body request: CambioPropiaContrasenaRequest): Response<Void>
@@ -34,6 +41,9 @@ interface ApiService {
     @DELETE("api/apartamentos/{id}")
     suspend fun deleteApartamento(@Path("id") id: Long): Response<Void>
 
+    @PUT("api/apartamentos/{id}/citofonos")
+    suspend fun cambiarCitofonos(@Path("id") id: Long, @Body citofonos: CitofonosRequest): Response<Apartamento>
+
     @PUT("api/apartamentos/{id}/contrasena")
     suspend fun restablecerContrasena(@Path("id") id: Long, @Body request: CambioContrasenaRequest): Response<Void>
 
@@ -48,6 +58,40 @@ interface ApiService {
 
     @DELETE("api/residentes/{id}")
     suspend fun deleteResidente(@Path("id") id: Long): Response<Void>
+
+    // P5: el arrendatario del apartamento (204 = no tiene) y la decisión de su propietario
+    @GET("api/residentes/apartamento/{id}/arrendatario")
+    suspend fun getArrendatario(@Path("id") apartamentoId: Long): Response<ResidenteDTO>
+
+    @PUT("api/residentes/{id}/aprobacion-propietario")
+    suspend fun aprobarArrendatario(@Path("id") id: Long, @Body aprobacion: AprobacionPropietario): Response<ResidenteDTO>
+
+    // Feed de publicaciones (P5): lo ven todos; publica la administración
+    @GET("api/publicaciones")
+    suspend fun getPublicaciones(@Query("pagina") pagina: Int): Response<PaginaPublicaciones>
+
+    @Multipart
+    @POST("api/publicaciones")
+    suspend fun publicar(@Part("texto") texto: okhttp3.RequestBody?, @Part archivos: List<MultipartBody.Part>): Response<PublicacionDTO>
+
+    @PUT("api/publicaciones/{id}")
+    suspend fun editarPublicacion(@Path("id") id: Long, @Body edicion: EdicionPublicacion): Response<PublicacionDTO>
+
+    @DELETE("api/publicaciones/{id}")
+    suspend fun eliminarPublicacion(@Path("id") id: Long): Response<Void>
+
+    // Visitantes frecuentes (Mi hogar)
+    @GET("api/visitantes/apartamento/{id}")
+    suspend fun getVisitantes(@Path("id") apartamentoId: Long): Response<List<VisitanteDTO>>
+
+    @POST("api/visitantes")
+    suspend fun createVisitante(@Body visitante: VisitanteDTO): Response<VisitanteDTO>
+
+    @PUT("api/visitantes/{id}")
+    suspend fun updateVisitante(@Path("id") id: Long, @Body visitante: VisitanteDTO): Response<VisitanteDTO>
+
+    @DELETE("api/visitantes/{id}")
+    suspend fun deleteVisitante(@Path("id") id: Long): Response<Void>
 
     // Arrendatarios que agregaron los propietarios (administrador)
     @GET("api/residentes/pendientes")
@@ -65,6 +109,38 @@ interface ApiService {
 
     @GET("api/cuotas/apartamento/{id}")
     suspend fun getCuotasPorApartamento(@Path("id") id: Long): Response<List<CuotaDTO>>
+
+    // P5 bloque 8: chat
+    @GET("api/chat/conversaciones")
+    suspend fun getConversaciones(): Response<List<ConversacionDTO>>
+
+    @POST("api/chat/conversaciones")
+    suspend fun abrirChat(@Body pedido: AbrirChat): Response<ConversacionDTO>
+
+    @GET("api/chat/conversaciones/{id}/mensajes")
+    suspend fun getMensajes(@Path("id") id: Long, @Query("despuesDe") despuesDe: Long?): Response<List<MensajeChatDTO>>
+
+    @POST("api/chat/conversaciones/{id}/mensajes")
+    suspend fun enviarMensaje(@Path("id") id: Long, @Body mensaje: MensajeNuevo): Response<MensajeChatDTO>
+
+    @PUT("api/chat/conversaciones/{id}/leido")
+    suspend fun marcarChatLeido(@Path("id") id: Long): Response<ConversacionDTO>
+
+    // P5 bloque 7: cartera de la administración y cupos del equipo
+    @GET("api/cartera/estadisticas")
+    suspend fun getEstadisticasCartera(@Query("periodo") periodo: String?): Response<EstadisticasCartera>
+
+    @GET("api/cartera/solicitudes")
+    suspend fun getSolicitudesContables(@Query("estado") estado: String?): Response<List<SolicitudContable>>
+
+    @PUT("api/cartera/solicitudes/{id}")
+    suspend fun revisarSolicitudContable(@Path("id") id: Long, @Body revision: RevisionSolicitud): Response<SolicitudContable>
+
+    @GET("api/administradores/cupos")
+    suspend fun getCuposEquipo(): Response<List<CupoEquipo>>
+
+    @PUT("api/administradores/cupos")
+    suspend fun fijarCuposEquipo(@Body cupos: List<CupoEquipo>): Response<List<CupoEquipo>>
 
     @POST("api/cuotas/generar")
     suspend fun generarCuotas(@Body solicitud: GenerarCuotasRequest): Response<CuotasGeneradas>
@@ -125,6 +201,26 @@ interface ApiService {
     @DELETE("api/obras/{id}")
     suspend fun deleteObra(@Path("id") id: Long): Response<Void>
 
+    // P5 bloque 6: detalle, búsqueda y aprobación de obras; certificado ARL de cada trabajador
+    @GET("api/obras/{id}")
+    suspend fun getObra(@Path("id") id: Long): Response<ObraDTO>
+
+    @GET("api/obras")
+    suspend fun buscarObras(@Query("alcance") alcance: String, @Query("estado") estado: String): Response<List<ObraDTO>>
+
+    @PUT("api/obras/{id}/aprobacion")
+    suspend fun revisarObra(@Path("id") id: Long, @Body revision: RevisionObra): Response<ObraDTO>
+
+    @PUT("api/personal-obra/{id}/aprobacion")
+    suspend fun revisarPersonal(@Path("id") id: Long, @Body revision: RevisionPersonal): Response<PersonalObraDTO>
+
+    @Multipart
+    @POST("api/personal-obra/{id}/arl")
+    suspend fun subirCertificadoArl(@Path("id") id: Long, @Part archivo: MultipartBody.Part): Response<PersonalObraDTO>
+
+    @GET("api/personal-obra/{id}/arl")
+    suspend fun getCertificadoArl(@Path("id") id: Long): Response<EnlaceComprobante>
+
     @GET("api/personal-obra")
     suspend fun getTodoElPersonal(): Response<List<PersonalObraDTO>>
 
@@ -169,6 +265,23 @@ interface ApiService {
 
     @POST("api/reservas")
     suspend fun createReserva(@Body reserva: ReservaDTO): Response<ReservaDTO>
+
+    // P5: el residente edita su reserva pendiente
+    @PUT("api/reservas/{id}")
+    suspend fun updateReserva(@Path("id") id: Long, @Body reserva: ReservaDTO): Response<ReservaDTO>
+
+    // Horario semanal y fechas bloqueadas de una zona (P5)
+    @GET("api/zonas/{id}/horario")
+    suspend fun getHorarioZona(@Path("id") id: Long): Response<HorarioZona>
+
+    @PUT("api/zonas/{id}/horario")
+    suspend fun guardarHorarioZona(@Path("id") id: Long, @Body semanal: HorarioSemanal): Response<HorarioZona>
+
+    @POST("api/zonas/{id}/bloqueos")
+    suspend fun bloquearFecha(@Path("id") id: Long, @Body bloqueo: BloqueoZona): Response<BloqueoZona>
+
+    @DELETE("api/zonas/{id}/bloqueos/{bloqueoId}")
+    suspend fun desbloquearFecha(@Path("id") id: Long, @Path("bloqueoId") bloqueoId: Long): Response<Void>
 
     // El administrador cualquiera; el residente cancela la suya si aún no empieza
     @DELETE("api/reservas/{id}")
@@ -220,8 +333,28 @@ interface ApiService {
     @PUT("api/vehiculos/{id}/estado")
     suspend fun cambiarEstadoVehiculo(@Path("id") id: Long, @Body request: EstadoVehiculoRequest): Response<VehiculoDTO>
 
+    // Con apartamentoId: los cupos que rigen para ese apartamento (P5)
     @GET("api/vehiculos/cupos")
-    suspend fun getCuposVehiculo(): Response<List<CupoVehiculoDTO>>
+    suspend fun getCuposVehiculo(@Query("apartamentoId") apartamentoId: Long? = null): Response<List<CupoVehiculoDTO>>
+
+    @PUT("api/vehiculos/cupos/apartamento/{id}")
+    suspend fun guardarCuposApartamento(@Path("id") apartamentoId: Long, @Body cupos: List<CupoApartamentoRequest>): Response<List<CupoVehiculoDTO>>
+
+    // Parqueaderos (administrador, P5)
+    @GET("api/parqueaderos")
+    suspend fun getParqueaderos(@Query("tipo") tipo: String?, @Query("estado") estado: String?): Response<List<ParqueaderoDTO>>
+
+    @GET("api/parqueaderos/resumen")
+    suspend fun getResumenParqueaderos(): Response<ResumenParqueaderos>
+
+    @POST("api/parqueaderos/generar")
+    suspend fun generarParqueaderos(@Body pedido: GenerarParqueaderos): Response<List<ParqueaderoDTO>>
+
+    @PUT("api/parqueaderos/{id}/asignacion")
+    suspend fun asignarParqueadero(@Path("id") id: Long, @Body asignacion: AsignacionParqueadero): Response<ParqueaderoDTO>
+
+    @DELETE("api/parqueaderos/{id}")
+    suspend fun eliminarParqueadero(@Path("id") id: Long): Response<Void>
 
     @PUT("api/vehiculos/cupos")
     suspend fun guardarCuposVehiculo(@Body cupos: List<CupoVehiculoDTO>): Response<List<CupoVehiculoDTO>>

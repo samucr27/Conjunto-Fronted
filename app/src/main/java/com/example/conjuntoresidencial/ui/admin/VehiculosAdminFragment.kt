@@ -1,5 +1,8 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.example.conjuntoresidencial.ui.comun.BarraBusqueda
+import com.example.conjuntoresidencial.ui.comun.repetir
+import com.example.conjuntoresidencial.util.map
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
@@ -60,8 +63,12 @@ class VehiculosAdminFragment : Fragment() {
         val resaltado = arguments?.takeIf { it.containsKey(ARG_RESALTAR) }?.getLong(ARG_RESALTAR)
         val adaptador = VehiculoPendienteAdapter(
             resaltado = resaltado,
+            // P5: se aprueba asignándole un parqueadero libre de su categoría (o sin parqueadero)
             onAprobar = { v ->
-                viewModel.revisar(v, true, null, getString(R.string.vehiculo_aprobado_hecho), getString(R.string.vehiculo_error_revisar))
+                elegirParqueadero(v.tipo, getString(R.string.parqueadero_al_aprobar, v.placa ?: v.tipo)) { parqueaderoId ->
+                    viewModel.revisar(v, true, null, getString(R.string.vehiculo_aprobado_hecho),
+                        getString(R.string.vehiculo_error_revisar), parqueaderoId)
+                }
             },
             onRechazar = ::pedirMotivo
         )
@@ -71,10 +78,16 @@ class VehiculosAdminFragment : Fragment() {
         binding.swipe.setOnRefreshListener { cargar() }
 
         var desplazado = false
-        viewModel.pendientes.observe(viewLifecycleOwner) { resource ->
+        val barra = BarraBusqueda(this, binding.busqueda, R.string.busqueda_vehiculos) { viewModel.pendientes.repetir() }
+        barra.vincular(binding.swipe, binding.rvVehiculosPendientes)
+        viewModel.pendientes.observe(viewLifecycleOwner) { todo ->
+            val resource = todo.map { lista ->
+                lista.filter { v -> barra.coincide(v.placa, v.marca, v.color, v.tipo, v.torre, v.apto, "torre ${v.torre} apto ${v.apto}") }
+            }
             binding.estado.mostrarRecurso(
-                resource, binding.swipe, R.drawable.ic_car, getString(R.string.vehiculos_admin_vacio),
-                getString(R.string.vehiculos_admin_vacio_mensaje), reintentar = { cargar() }
+                resource, binding.swipe, R.drawable.ic_car,
+                if (barra.activa) getString(R.string.busqueda_sin_resultados) else getString(R.string.vehiculos_admin_vacio),
+                if (barra.activa) null else getString(R.string.vehiculos_admin_vacio_mensaje), reintentar = { cargar() }
             ) { lista ->
                 adaptador.submitList(lista) {
                     val posicion = lista.indexOfFirst { it.id == resaltado }

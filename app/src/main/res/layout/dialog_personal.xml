@@ -39,4 +39,16 @@
         android:layout_marginTop="12dp"
         android:minHeight="48dp"
         android:text="@string/personal_arl_vigente" />
+
+    <!-- P5: certificado ARL (foto o PDF); al añadir un trabajador reemplaza al interruptor -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnArlPersonal"
+        style="@style/Widget.Material3.Button.TonalButton.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:minHeight="48dp"
+        android:text="@string/arl_adjuntar"
+        android:visibility="gone"
+        app:icon="@drawable/ic_add" />
 </LinearLayout>

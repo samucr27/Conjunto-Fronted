@@ -78,6 +78,32 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_margin="6dp" />
+                <include
+                    android:id="@+id/cardChat"
+                    layout="@layout/item_tarjeta_menu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp" />
+                <include
+                    android:id="@+id/cardArrendatario"
+                    layout="@layout/item_tarjeta_menu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp" />
+                <!-- P5: el propietario de un apartamento arrendado -->
+                <TextView
+                    android:id="@+id/tvAvisoArrendado"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnSpan="2"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="12dp"
+                    android:text="@string/herramientas_arrendado"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="gone" />
             </GridLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

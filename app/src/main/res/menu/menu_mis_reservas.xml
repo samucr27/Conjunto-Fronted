@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Menú de Mis reservas: actualizar e historial (P5) -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/accion_actualizar"
+        android:title="@string/accion_actualizar" />
+    <item
+        android:id="@+id/accion_historial"
+        android:title="@string/reservas_historial" />
+</menu>

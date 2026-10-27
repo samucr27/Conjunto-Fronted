@@ -49,7 +49,13 @@ class MisVehiculosFragment : Fragment() {
         )
         aptoId = SessionManager(requireContext()).getApartamentoId()
 
-        val adaptador = VehiculoAdapter(onEliminar = { confirmarEliminar(it) }, onEditar = { mostrarDialogEditar(it) })
+        // Por categoría: cada tipo con lo que tiene o "No asignado" (P5)
+        val adaptador = VehiculosPorTipoAdapter(onEliminar = { confirmarEliminar(it) }, onEditar = { mostrarDialogEditar(it) })
+        fun pintar(lista: List<VehiculoDTO>) =
+            adaptador.submitList(FilaVehiculo.de(viewModel.cupos ?: Opciones.CUPOS_POR_DEFECTO, lista))
+        viewModel.cuposCargados.observe(viewLifecycleOwner) {
+            (viewModel.vehiculos.value as? Resource.Success)?.data?.let { lista -> pintar(lista) }
+        }
         binding.rvVehiculos.layoutManager = LinearLayoutManager(requireContext())
         binding.rvVehiculos.adapter = adaptador
         binding.estado.vincular(binding.rvVehiculos)
@@ -61,7 +67,7 @@ class MisVehiculosFragment : Fragment() {
                 getString(R.string.vehiculos_vacio_mensaje),
                 reintentar = { viewModel.fetchVehiculos(aptoId) }
             ) { lista ->
-                adaptador.submitList(lista)
+                pintar(lista)
                 binding.encabezado.ponerInfo(resumen(
                     R.plurals.resumen_vehiculos, lista.size,
                     R.plurals.resumen_por_aprobar to lista.count { it.estado == "PENDIENTE" }
@@ -85,7 +91,7 @@ class MisVehiculosFragment : Fragment() {
         }
 
         if (viewModel.vehiculos.value == null) viewModel.fetchVehiculos(aptoId)
-        if (viewModel.cupos == null) viewModel.cargarCupos()
+        if (viewModel.cupos == null) viewModel.cargarCupos(aptoId)
     }
 
     /** Tipos con lo que le queda de cupo al apartamento; queda por aprobar del administrador. */

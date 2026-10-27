@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Nueva cuenta de la administración: administrador o contador (EquipoFragment) -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Cuenta de la administración: asistente o contador, con sus datos personales (EquipoFragment).
+     Va dentro de un ScrollView: con letra grande no cabe en la pantalla -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<LinearLayout
+    android:id="@+id/camposCuenta"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -11,9 +16,61 @@
     android:paddingEnd="24dp">
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilNombreCuenta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+                android:hint="@string/equipo_nombre">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etNombreCuenta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName|textCapWords" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilDocumentoCuenta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="@string/equipo_documento">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDocumentoCuenta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilTelefonoCuenta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="@string/equipo_telefono">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etTelefonoCuenta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilCorreoCuenta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="@string/equipo_correo">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etCorreoCuenta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilUsuarioCuenta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:hint="@string/login_usuario">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etUsuarioCuenta"
@@ -38,6 +95,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilRolCuenta"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,3 +110,4 @@
             tools:ignore="LabelFor" />
     </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>
+</ScrollView>

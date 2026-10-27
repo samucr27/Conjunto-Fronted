@@ -21,10 +21,39 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <!-- paddingTop: la lista no se dibuja sobre las esquinas redondeadas de la hoja -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            <!-- P5: búsqueda con filtros -->
+            <include
+                android:id="@+id/busqueda"
+                layout="@layout/barra_busqueda" />
+
+
+                <!-- P5: filtro por estado -->
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:clipToPadding="false"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:scrollbars="none">
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chipsEstado"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:selectionRequired="true"
+                        app:singleLine="true"
+                        app:singleSelection="true" />
+                </HorizontalScrollView>
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="12dp">
+                android:paddingTop="4dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvReservas"
@@ -40,6 +69,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </FrameLayout>
+            </LinearLayout>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

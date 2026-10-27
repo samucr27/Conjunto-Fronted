@@ -25,8 +25,9 @@ class LoginApartamentoViewModel : ViewModel() {
     }
 
     /** Con su documento y su contraseña personal (P4). */
-    fun loginResidente(documento: String, contrasena: String) {
-        entrar { RetrofitClient.instance.loginResidente(LoginResidenteRequest(documento, contrasena)) }
+    /** El titular (P5): torre, apto, PROPIETARIO o ARRENDATARIO y su contraseña. */
+    fun loginTitular(torre: String, apto: String, rol: String, contrasena: String) {
+        entrar { RetrofitClient.instance.loginResidente(LoginResidenteRequest(contrasena = contrasena, torre = torre, apto = apto, rol = rol)) }
     }
 
     private fun entrar(peticion: suspend () -> retrofit2.Response<LoginResponse>) {

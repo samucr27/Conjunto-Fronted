@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Imagen de una publicación (PublicacionAdapter fija el alto; una sola ocupa el ancho) -->
+<com.google.android.material.imageview.ShapeableImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="260dp"
+    android:layout_height="200dp"
+    android:layout_marginEnd="8dp"
+    android:background="?attr/selectableItemBackground"
+    android:scaleType="centerCrop"
+    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium" />

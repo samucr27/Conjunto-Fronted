@@ -32,6 +32,9 @@ class SessionManager(context: Context) {
     fun esAdmin(): Boolean = getRol() == "ADMIN" || esContador()
     // El contador solo maneja la cartera y la facturación
     fun esContador(): Boolean = getRol() == "CONTADOR"
+
+    // P5: el administrador principal maneja el equipo; los asistentes no
+    fun esPrincipal(): Boolean = getRol() == "ADMIN" && prefs.getBoolean("principal", false)
     // El arrendatario usa la app como residente, pero no gestiona quién vive en el apartamento
     fun esPropietario(): Boolean = getRol() == "PROPIETARIO"
 
@@ -50,19 +53,20 @@ class SessionManager(context: Context) {
         saveRol(respuesta.rol)
         if (respuesta.rol == "ADMIN" || respuesta.rol == "CONTADOR") {
             respuesta.usuario?.let(::saveUsuario)
+            prefs.edit { putBoolean("principal", respuesta.principal == true) }
         } else {
             saveApartamentoId(respuesta.id)
             saveTorre(respuesta.torre ?: "")
             saveApto(respuesta.apto ?: "")
         }
         prefs.edit {
-            if (respuesta.residenteId != null && documento != null) {
+            if (respuesta.residenteId != null) {
                 putLong("residente_id", respuesta.residenteId)
                 putString("nombre", respuesta.nombre.orEmpty())
-                putString("documento", documento)
             } else {
-                remove("residente_id"); remove("nombre"); remove("documento")
+                remove("residente_id"); remove("nombre")
             }
+            if (documento != null) putString("documento", documento) else remove("documento")
         }
     }
 

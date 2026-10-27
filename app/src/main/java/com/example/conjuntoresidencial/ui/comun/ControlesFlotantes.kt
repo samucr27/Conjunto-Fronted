@@ -51,6 +51,12 @@ interface ControlesFlotantes {
      * La franja difuminada aparece al final, cuando el contenido empieza a pasar por debajo.
      */
     fun ponerPlegado(fraccion: Float)
+
+    /**
+     * P5: sin difuminado abajo, para pantallas con un campo fijo al borde (el chat). Al cambiar
+     * de pantalla vuelve a ser como siempre.
+     */
+    fun sinDifuminadoAbajo()
 }
 
 val Fragment.controlesFlotantes: ControlesFlotantes?
