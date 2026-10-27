@@ -3,6 +3,7 @@ package com.example.conjuntoresidencial.util
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import com.example.conjuntoresidencial.ConfigApp
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.push.AvisosCelular
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -20,7 +21,7 @@ fun Fragment.confirmarCerrarSesion() {
             AvisosCelular.darDeBaja(requireContext())
             SessionManager(requireContext()).clearSession()
             findNavController().navigate(
-                R.id.loginSelectorFragment,
+                ConfigApp.destinoLogin,
                 null,
                 NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build()
             )

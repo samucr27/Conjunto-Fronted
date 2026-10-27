@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginApartamentoFragment">
+
+        <!-- P5: chat con la administración (residente) o con un residente (administración) -->
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.example.conjuntoresidencial.ui.chat.ChatFragment"
+        tools:layout="@layout/fragment_chat" />
+
+    <!-- P5: detalle de una obra (las dos apps) -->
+    <fragment
+        android:id="@+id/obraDetalleFragment"
+        android:name="com.example.conjuntoresidencial.ui.obras.ObraDetalleFragment"
+        tools:layout="@layout/fragment_obra_detalle" />
+
+    <fragment
+        android:id="@+id/registrarObraFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.RegistrarObraFragment"
+        tools:layout="@layout/fragment_registrar_obra" />
+
+    <fragment
+        android:id="@+id/misObrasFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.MisObrasFragment"
+        tools:layout="@layout/fragment_mis_obras" />
+
+    <!-- P4 bloque 6: "Mi hogar" del residente y, con pendientes=true, los arrendatarios por aprobar -->
+    <fragment
+        android:id="@+id/residentesFragment"
+        android:name="com.example.conjuntoresidencial.ui.residentes.ResidentesFragment"
+        tools:layout="@layout/fragment_residentes" />
+
+    <!-- P4 bloque 7: facturación (contador y administrador) y cuentas de la administración -->
+    <fragment
+        android:id="@+id/cuotasFragment"
+        android:name="com.example.conjuntoresidencial.ui.cartera.CuotasFragment"
+        tools:layout="@layout/fragment_cuotas" />
+
+    <!-- P5 bloque 3: nueva publicación (administración) -->
+    <fragment
+        android:id="@+id/publicarFragment"
+        android:name="com.example.conjuntoresidencial.ui.feed.PublicarFragment"
+        tools:layout="@layout/fragment_publicar" />
+
+    <!-- Pestañas de la barra inferior (MainActivity navega a ellas por id) -->
+    <fragment
+        android:id="@+id/inicioFragment"
+        android:name="com.example.conjuntoresidencial.ui.comun.InicioFragment"
+        tools:layout="@layout/fragment_inicio" />
+
+    <fragment
+        android:id="@+id/notificacionesFragment"
+        android:name="com.example.conjuntoresidencial.ui.comun.NotificacionesFragment"
+        tools:layout="@layout/fragment_notificaciones" />
+
+    <fragment
+        android:id="@+id/cuentaFragment"
+        android:name="com.example.conjuntoresidencial.ui.comun.CuentaFragment"
+        tools:layout="@layout/fragment_cuenta" />
+
+    <!-- Reservar una zona con el calendario de disponibilidad (residente) -->
+    <fragment
+        android:id="@+id/reservarZonaFragment"
+        android:name="com.example.conjuntoresidencial.ui.reservas.ReservarZonaFragment"
+        tools:layout="@layout/fragment_reservar_zona" />
+
+    <!-- Pantallas de Cuenta (se abren por id desde CuentaFragment) -->
+    <fragment
+        android:id="@+id/perfilFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.PerfilFragment"
+        tools:layout="@layout/fragment_perfil" />
+
+    <fragment
+        android:id="@+id/ajustesFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.AjustesFragment"
+        tools:layout="@layout/fragment_ajustes" />
+
+    <fragment
+        android:id="@+id/permisosFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.PermisosFragment"
+        tools:layout="@layout/fragment_permisos" />
+
+    <fragment
+        android:id="@+id/legalFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.LegalFragment"
+        tools:layout="@layout/fragment_legal" />
+
+    <fragment
+        android:id="@+id/documentoFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.DocumentoFragment"
+        tools:layout="@layout/fragment_documento" />
+
+    <fragment
+        android:id="@+id/ayudaFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.AyudaFragment"
+        tools:layout="@layout/fragment_ayuda" />
+
+    <fragment
+        android:id="@+id/loginApartamentoFragment"
+        android:name="com.example.conjuntoresidencial.ui.auth.LoginApartamentoFragment"
+        tools:layout="@layout/fragment_login_apartamento">
+        <action android:id="@+id/action_loginApartamentoFragment_to_propietarioDashboardFragment"
+            app:destination="@id/propietarioDashboardFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <!-- SECCIÓN PROPIETARIOS -->
+    <fragment
+        android:id="@+id/propietarioDashboardFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.PropietarioDashboardFragment"
+        tools:layout="@layout/fragment_propietario_dashboard">
+        <action android:id="@+id/action_propietarioDashboardFragment_to_misVehiculosFragment"
+            app:destination="@id/misVehiculosFragment" />
+        <action android:id="@+id/action_propietarioDashboardFragment_to_zonasComunesPropietarioFragment"
+            app:destination="@id/zonasComunesPropietarioFragment" />
+        <action android:id="@+id/action_propietarioDashboardFragment_to_misReservasFragment"
+            app:destination="@id/misReservasFragment" />
+        <action android:id="@+id/action_propietarioDashboardFragment_to_miCarteraFragment"
+            app:destination="@id/miCarteraFragment" />
+        <action android:id="@+id/action_propietarioDashboardFragment_to_registrarObraFragment"
+            app:destination="@id/registrarObraFragment" />
+        <action android:id="@+id/action_propietarioDashboardFragment_to_misObrasFragment"
+            app:destination="@id/misObrasFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/misVehiculosFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.MisVehiculosFragment"
+        tools:layout="@layout/fragment_mis_vehiculos" />
+
+    <fragment
+        android:id="@+id/zonasComunesPropietarioFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.ZonasComunesPropietarioFragment"
+        tools:layout="@layout/fragment_zonas_comunes_propietario" />
+
+    <fragment
+        android:id="@+id/misReservasFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.MisReservasFragment"
+        tools:layout="@layout/fragment_mis_reservas" />
+
+    <fragment
+        android:id="@+id/miCarteraFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.MiCarteraFragment"
+        tools:layout="@layout/fragment_mi_cartera" />
+
+    <!-- P5 bloque 1: registro del residente (desde su login) -->
+    <fragment
+        android:id="@+id/registroFragment"
+        android:name="com.example.conjuntoresidencial.ui.auth.RegistroFragment"
+        tools:layout="@layout/fragment_registro" />
+
+    <!-- P5 bloque 2: Mi hogar y administrar arrendatario -->
+    <fragment
+        android:id="@+id/miHogarFragment"
+        android:name="com.example.conjuntoresidencial.ui.residentes.MiHogarFragment"
+        tools:layout="@layout/fragment_mi_hogar" />
+
+    <fragment
+        android:id="@+id/arrendatarioFragment"
+        android:name="com.example.conjuntoresidencial.ui.residentes.ArrendatarioFragment"
+        tools:layout="@layout/fragment_arrendatario" />
+
+</navigation>

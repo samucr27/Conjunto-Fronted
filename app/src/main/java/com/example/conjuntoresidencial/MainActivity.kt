@@ -280,7 +280,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
                     // Después de este cambio de pantalla, no dentro de él
                     navInferior.post { abrirAvisoPendiente() }
                 }
-                R.id.loginSelectorFragment -> celularRegistrado = false
+                ConfigApp.destinoLogin -> celularRegistrado = false
             }
         }
 
@@ -314,7 +314,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         // Cada aviso es para un rol: el de la sesión tiene que coincidir
         if (sesion.getToken() == null || sesion.esAdmin() != destino.esParaAdmin) return
         val actual = navController.currentDestination?.id
-        if (actual == null || actual in setOf(R.id.loginSelectorFragment, R.id.loginAdminFragment, R.id.loginApartamentoFragment)) return
+        if (actual == null || actual in setOf(R.id.loginAdminFragment, R.id.loginApartamentoFragment)) return
         avisoPendiente = null
         destino.notificacionId?.let(notificaciones::marcarLeida)
         destino.abrir(navController)
@@ -499,10 +499,10 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     /** Vuelve al selector de login y vacía la pila para que "atrás" no regrese a pantallas protegidas. */
     private fun irAlLogin() {
         val actual = navController.currentDestination?.id
-        val pantallasLogin = setOf(R.id.loginSelectorFragment, R.id.loginAdminFragment, R.id.loginApartamentoFragment)
+        val pantallasLogin = setOf(R.id.loginAdminFragment, R.id.loginApartamentoFragment)
         if (actual in pantallasLogin) return
         navController.navigate(
-            R.id.loginSelectorFragment,
+            ConfigApp.destinoLogin,
             null,
             NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build()
         )

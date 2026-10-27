@@ -32,8 +32,8 @@ class ResidentesViewModel : ViewModel() {
         _residentes.value = Resource.Loading
         viewModelScope.launch {
             try {
-                val response = if (pendientes) RetrofitClient.instance.getResidentesPendientes()
-                else RetrofitClient.instance.getResidentesPorApartamento(aptoId)
+                val response = if (pendientes) RetrofitClient.comun.getResidentesPendientes()
+                else RetrofitClient.comun.getResidentesPorApartamento(aptoId)
                 _residentes.value = if (response.isSuccessful) Resource.Success(response.body().orEmpty())
                 else Resource.Error(RetrofitClient.mensajeDeError(response, "No se pudieron cargar los residentes"))
             } catch (e: Exception) {

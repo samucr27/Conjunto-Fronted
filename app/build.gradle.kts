@@ -31,12 +31,14 @@ android {
             dimension = "app"
             resValue("string", "app_name", "MiConjunto")
             resValue("bool", "app_admin", "false")
+            buildConfigField("String", "TIPO_APP", "\"RESIDENTE\"")
         }
         create("administracion") {
             dimension = "app"
             applicationIdSuffix = ".admin"
             resValue("string", "app_name", "MiConjunto Admin")
             resValue("bool", "app_admin", "true")
+            buildConfigField("String", "TIPO_APP", "\"ADMIN\"")
         }
     }
 

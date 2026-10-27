@@ -91,7 +91,7 @@ class PublicarFragment : Fragment() {
                         MultipartBody.Part.createFormData("archivos", a.nombre, datos.toRequestBody(tipo.toMediaTypeOrNull()))
                     }
                 }
-                val r = RetrofitClient.instance.publicar(
+                val r = RetrofitClient.comun.publicar(
                     texto.takeIf { it.isNotEmpty() }?.let { it.toRequestBody("text/plain; charset=utf-8".toMediaTypeOrNull()) },
                     partes
                 )

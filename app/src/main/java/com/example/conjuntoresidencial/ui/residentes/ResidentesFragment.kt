@@ -19,7 +19,7 @@ import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentResidentesBinding
 import com.example.conjuntoresidencial.model.ResidenteDTO
 import com.example.conjuntoresidencial.model.RevisionResidente
-import com.example.conjuntoresidencial.ui.admin.ResidenteAdapter
+import com.example.conjuntoresidencial.ui.comun.ResidenteAdapter
 import com.example.conjuntoresidencial.ui.comun.accionesDeLista
 import com.example.conjuntoresidencial.ui.comun.aviso
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
@@ -146,7 +146,7 @@ class ResidentesFragment : Fragment() {
             val nuevo = ResidenteDTO(null, nombre, texto(R.id.etTelefonoResidente).ifBlank { null }, documento,
                 ARRENDATARIO, aptoId, contrasena = contrasena)
             viewModel.ejecutar(getString(R.string.residente_agregado_pendiente), getString(R.string.residente_error_guardar)) {
-                RetrofitClient.instance.createResidente(nuevo)
+                RetrofitClient.comun.createResidente(nuevo)
             }
         }
     }
@@ -157,7 +157,7 @@ class ResidentesFragment : Fragment() {
             .setMessage(R.string.residente_quitar_mensaje)
             .setPositiveButton(R.string.residente_quitar) { _, _ ->
                 viewModel.ejecutar(getString(R.string.residente_quitado), getString(R.string.residente_error_accion)) {
-                    RetrofitClient.instance.deleteResidente(r.id!!)
+                    RetrofitClient.comun.deleteResidente(r.id!!)
                 }
             }
             .setNegativeButton(R.string.btn_cancelar, null)
@@ -175,7 +175,7 @@ class ResidentesFragment : Fragment() {
                     else R.string.residente_registro_propietario))
             .setPositiveButton(R.string.residente_aprobar) { _, _ ->
                 viewModel.ejecutar(getString(R.string.residente_aprobado), getString(R.string.residente_error_accion)) {
-                    RetrofitClient.instance.revisarResidente(r.id!!, RevisionResidente(APROBADO))
+                    RetrofitClient.comun.revisarResidente(r.id!!, RevisionResidente(APROBADO))
                 }
             }
             .setNegativeButton(R.string.residente_rechazar) { _, _ -> pedirMotivo(r) }
@@ -197,7 +197,7 @@ class ResidentesFragment : Fragment() {
             .setPositiveButton(R.string.residente_rechazar) { _, _ ->
                 val motivo = campo.text?.toString()?.trim()?.ifBlank { null }
                 viewModel.ejecutar(getString(R.string.residente_rechazado), getString(R.string.residente_error_accion)) {
-                    RetrofitClient.instance.revisarResidente(r.id!!, RevisionResidente(RECHAZADO, motivo))
+                    RetrofitClient.comun.revisarResidente(r.id!!, RevisionResidente(RECHAZADO, motivo))
                 }
             }
             .setNegativeButton(R.string.btn_cancelar, null)

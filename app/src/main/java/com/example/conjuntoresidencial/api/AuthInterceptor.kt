@@ -1,5 +1,6 @@
 package com.example.conjuntoresidencial.api
 
+import com.example.conjuntoresidencial.BuildConfig
 import com.example.conjuntoresidencial.util.SesionEventos
 import com.example.conjuntoresidencial.util.SessionManager
 import okhttp3.Interceptor
@@ -19,9 +20,11 @@ class AuthInterceptor(private val sessionManager: SessionManager) : Interceptor 
         val esLogin = ruta.startsWith("/api/auth/") && ruta.endsWith("/login")
         val token = sessionManager.getToken()
 
+        // X-App-Tipo: qué app hace la petición (RESIDENTE o ADMIN); el servidor lo contrasta con el rol
+        val conTipo = request.newBuilder().header("X-App-Tipo", BuildConfig.TIPO_APP)
         val conToken = if (!esLogin && token != null) {
-            request.newBuilder().header("Authorization", "Bearer $token").build()
-        } else request
+            conTipo.header("Authorization", "Bearer $token").build()
+        } else conTipo.build()
 
         val response = chain.proceed(conToken)
 

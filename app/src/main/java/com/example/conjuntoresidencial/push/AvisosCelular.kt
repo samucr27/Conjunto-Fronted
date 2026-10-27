@@ -77,7 +77,7 @@ object AvisosCelular {
         if (!activados(context)) return
         alcance.launch {
             try {
-                RetrofitClient.instance.registrarDispositivo(DispositivoRequest(token))
+                RetrofitClient.comun.registrarDispositivo(DispositivoRequest(token))
             } catch (e: Exception) {
                 Log.w(TAG, "No se pudo registrar el celular para avisos", e)
             }
@@ -90,7 +90,7 @@ object AvisosCelular {
         alcance.launch {
             try {
                 val token = FirebaseMessaging.getInstance().token.await()
-                RetrofitClient.instance.darDeBajaDispositivo(DispositivoRequest(token))
+                RetrofitClient.comun.darDeBajaDispositivo(DispositivoRequest(token))
             } catch (e: Exception) {
                 Log.w(TAG, "No se pudo dar de baja el celular", e)
             }

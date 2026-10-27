@@ -36,7 +36,7 @@ class FeedViewModel : ViewModel() {
         cargando = true
         viewModelScope.launch {
             try {
-                val r = RetrofitClient.instance.getPublicaciones(pagina)
+                val r = RetrofitClient.comun.getPublicaciones(pagina)
                 val cuerpo = r.body()
                 if (r.isSuccessful && cuerpo != null) {
                     cargadas += cuerpo.publicaciones

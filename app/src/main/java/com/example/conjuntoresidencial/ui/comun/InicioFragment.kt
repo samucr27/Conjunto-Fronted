@@ -124,12 +124,12 @@ class InicioFragment : Fragment() {
                     InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES,
                     validar = { if (it.isBlank() && p.adjuntos.isEmpty()) getString(R.string.publicar_vacia) else null }) { texto ->
                     ejecutarAccion(getString(R.string.feed_editada_ok),
-                        { RetrofitClient.instance.editarPublicacion(p.id, EdicionPublicacion(texto)) }) { viewModel.recargar() }
+                        { RetrofitClient.comun.editarPublicacion(p.id, EdicionPublicacion(texto)) }) { viewModel.recargar() }
                 }
             },
             R.string.feed_eliminar to {
                 confirmar(getString(R.string.feed_eliminar_titulo), getString(R.string.feed_eliminar_mensaje), R.string.residente_eliminar_si) {
-                    ejecutarAccion(getString(R.string.feed_eliminada), { RetrofitClient.instance.eliminarPublicacion(p.id) }) {
+                    ejecutarAccion(getString(R.string.feed_eliminada), { RetrofitClient.comun.eliminarPublicacion(p.id) }) {
                         viewModel.recargar()
                     }
                 }

@@ -87,7 +87,7 @@ class PerfilFragment : Fragment() {
         dialogo.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
         viewLifecycleOwner.lifecycleScope.launch {
             val error = try {
-                val respuesta = RetrofitClient.instance.cambiarContrasena(CambioPropiaContrasenaRequest(actual, nueva))
+                val respuesta = RetrofitClient.comun.cambiarContrasena(CambioPropiaContrasenaRequest(actual, nueva))
                 if (respuesta.isSuccessful) null
                 else RetrofitClient.mensajeDeError(respuesta, getString(R.string.contrasena_error_cambiar))
             } catch (e: Exception) {

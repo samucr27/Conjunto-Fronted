@@ -75,7 +75,7 @@ object Cuotas {
 fun Fragment.abrirComprobante(cuota: CuotaDTO) {
     viewLifecycleOwner.lifecycleScope.launch {
         try {
-            val r = RetrofitClient.instance.getComprobante(cuota.id)
+            val r = RetrofitClient.comun.getComprobante(cuota.id)
             val enlace = r.body()
             if (!r.isSuccessful || enlace == null) {
                 aviso(RetrofitClient.mensajeDeError(r, getString(R.string.cuota_error_comprobante)), Snackbar.LENGTH_LONG).show()

@@ -5,8 +5,6 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.model.NotificacionDTO
-import com.example.conjuntoresidencial.ui.admin.ReservasAdminFragment
-import com.example.conjuntoresidencial.ui.admin.VehiculosAdminFragment
 import com.example.conjuntoresidencial.ui.residentes.ResidentesFragment
 
 /**
@@ -50,13 +48,13 @@ data class DestinoNotificacion(
             tipo.startsWith(TIPO_RESIDENTE) -> nav.navigate(R.id.miHogarFragment)
             tipo == TIPO_VEHICULO -> nav.navigate(
                 R.id.vehiculosAdminFragment,
-                referenciaId?.let { bundleOf(VehiculosAdminFragment.ARG_RESALTAR to it) }
+                referenciaId?.let { bundleOf(ARG_VEHICULO_RESALTADO to it) }
             )
             tipo.startsWith(TIPO_VEHICULO) -> nav.navigate(R.id.misVehiculosFragment)
             tipo.startsWith(TIPO_RESERVA) && !esParaAdmin -> nav.navigate(R.id.misReservasFragment)
             else -> nav.navigate(
                 R.id.reservasAdminFragment,
-                referenciaId?.let { bundleOf(ReservasAdminFragment.ARG_RESALTAR to it) }
+                referenciaId?.let { bundleOf(ARG_RESERVA_RESALTADA to it) }
             )
         }
     }
@@ -70,6 +68,9 @@ data class DestinoNotificacion(
     }
 
     companion object {
+        // Los mismos textos que usan VehiculosAdminFragment y ReservasAdminFragment (solo en la app de administración)
+        const val ARG_VEHICULO_RESALTADO = "vehiculoResaltado"
+        const val ARG_RESERVA_RESALTADA = "reservaResaltada"
         const val TIPO_RESERVA = "RESERVA"
         const val TIPO_VEHICULO = "VEHICULO"
         const val TIPO_RESIDENTE = "RESIDENTE"

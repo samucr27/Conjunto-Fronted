@@ -48,7 +48,7 @@ class CuentaFragment : Fragment() {
         if (!sesion.esAdmin()) {
             viewLifecycleOwner.lifecycleScope.launch {
                 val arrendado = runCatching {
-                    RetrofitClient.instance.getApartamentoById(sesion.getApartamentoId()).body()?.arrendado
+                    RetrofitClient.comun.getApartamentoById(sesion.getApartamentoId()).body()?.arrendado
                 }.getOrNull() ?: return@launch
                 if (_binding == null) return@launch
                 val estado = getString(if (arrendado) R.string.cuenta_apto_arrendado else R.string.cuenta_apto_propietario)
