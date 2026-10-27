@@ -67,13 +67,15 @@ class PropietarioDashboardFragment : Fragment() {
         binding.cardArrendatario.configurar(R.drawable.ic_key, R.string.arrendatario_titulo, R.string.arrendatario_tarjeta_sub) {
             nav.navigate(R.id.arrendatarioFragment)
         }
-        mostrarSegunRol(sesion.esPropietario(), arrendado = false)
-        // Si está arrendado, el propietario solo conserva lo suyo (lo dice el backend)
+        // Si está arrendado, el propietario solo conserva lo suyo (lo dice el backend). Se pinta con el
+        // último valor conocido para no mostrar tarjetas que luego desaparecen; la primera vez, las
+        // que dependen de eso esperan la respuesta
+        mostrarSegunRol(sesion.esPropietario(), sesion.getArrendado())
         if (sesion.esPropietario()) {
             viewLifecycleOwner.lifecycleScope.launch {
-                val arrendado = runCatching {
-                    RetrofitClient.instance.getApartamentoById(sesion.getApartamentoId()).body()?.arrendado
-                }.getOrNull() == true
+                val respuesta = runCatching { RetrofitClient.instance.getApartamentoById(sesion.getApartamentoId()) }.getOrNull()
+                val arrendado = if (respuesta?.isSuccessful == true) respuesta.body()?.arrendado == true else sesion.getArrendado() ?: false
+                sesion.saveArrendado(arrendado)
                 if (_binding != null) mostrarSegunRol(true, arrendado)
             }
         }
@@ -83,13 +85,20 @@ class PropietarioDashboardFragment : Fragment() {
      * El arrendatario no ve lo que solo maneja el propietario (cartera, obras, su arrendatario);
      * el propietario de un apartamento arrendado no ve lo de quien vive ahí.
      */
-    private fun mostrarSegunRol(propietario: Boolean, arrendado: Boolean) {
+    private fun mostrarSegunRol(propietario: Boolean, arrendado: Boolean?) {
         val soloQuienVive = listOf(binding.cardMisVehiculos, binding.cardZonasPropietario, binding.cardMisReservas, binding.cardMiHogar)
         val soloPropietario = listOf(binding.cardMiCartera, binding.cardRegistrarObra, binding.cardMisObras, binding.cardArrendatario)
-        // GridLayout deja vacía la celda de una tarjeta GONE: las que no aplican se quitan del todo
-        val ocultas = (if (propietario && arrendado) soloQuienVive else emptyList()) + (if (propietario) emptyList() else soloPropietario)
-        ocultas.forEach { (it.root.parent as? android.view.ViewGroup)?.removeView(it.root) }
-        binding.tvAvisoArrendado.visibility = if (propietario && arrendado) View.VISIBLE else View.GONE
+        val todas = listOf(binding.cardMisVehiculos, binding.cardZonasPropietario, binding.cardMisReservas, binding.cardMiCartera,
+            binding.cardRegistrarObra, binding.cardMisObras, binding.cardMiHogar, binding.cardChat, binding.cardArrendatario)
+        // Sin saber aún si está arrendado, lo de quien vive ahí espera (no aparece y desaparece)
+        val ocultas = (if (propietario && arrendado != false) soloQuienVive else emptyList()) +
+            (if (propietario) emptyList() else soloPropietario)
+        // GridLayout deja vacía la celda de una tarjeta GONE: se arma otra vez solo con las que aplican,
+        // en su orden (así una tarjeta quitada puede volver si cambia el estado)
+        val grid = binding.cardChat.root.parent as android.view.ViewGroup
+        todas.forEach { grid.removeView(it.root) }
+        todas.filter { it !in ocultas }.forEachIndexed { i, tarjeta -> grid.addView(tarjeta.root, i) }
+        binding.tvAvisoArrendado.visibility = if (propietario && arrendado == true) View.VISIBLE else View.GONE
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }

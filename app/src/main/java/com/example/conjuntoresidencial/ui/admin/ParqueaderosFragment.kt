@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.conjuntoresidencial.R
+import com.example.conjuntoresidencial.ui.comun.debajoDeLosBotones
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentParqueaderosBinding
 import com.example.conjuntoresidencial.databinding.ItemCuotaBinding
@@ -54,6 +55,9 @@ class ParqueaderosFragment : Fragment() {
         binding.rvParqueaderos.adapter = adaptador
         binding.estado.vincular(binding.rvParqueaderos)
         binding.swipe.setOnRefreshListener { cargar() }
+        // La lista no es hija directa del swipe: solo se actualiza al jalar desde arriba de la lista
+        binding.swipe.setOnChildScrollUpCallback { _, _ -> binding.rvParqueaderos.canScrollVertically(-1) }
+        debajoDeLosBotones(binding.contenidoParqueaderos)
         controlesFlotantes?.mostrarBotonFlotante(R.string.parqueaderos_crear, R.drawable.ic_add) { crear() }
         cargar()
     }

@@ -70,6 +70,10 @@ class SessionManager(context: Context) {
         }
     }
 
+    /** P5: si el apartamento está arrendado (último valor conocido); null = aún no se sabe. */
+    fun getArrendado(): Boolean? = if (prefs.contains("apto_arrendado")) prefs.getBoolean("apto_arrendado", false) else null
+    fun saveArrendado(arrendado: Boolean) = prefs.edit { putBoolean("apto_arrendado", arrendado) }
+
     fun clearSession() = prefs.edit { clear() }
 
     companion object {

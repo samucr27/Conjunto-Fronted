@@ -46,6 +46,10 @@ class LoginAdminFragment : Fragment() {
 
         binding.tilUsuarioAdmin.limpiarErrorAlEscribir()
         binding.tilPassAdmin.limpiarErrorAlEscribir()
+        ofrecerHuella(binding.btnHuella) { si ->
+            binding.progressAdmin.visibility = if (si) View.VISIBLE else View.GONE
+            listOf(binding.btnIngresarAdmin, binding.btnHuella).forEach { it.isEnabled = !si }
+        }
         binding.btnIngresarAdmin.setOnClickListener {
             val completos = listOf(
                 binding.tilUsuarioAdmin.exigirTexto(getString(R.string.login_falta_usuario)),

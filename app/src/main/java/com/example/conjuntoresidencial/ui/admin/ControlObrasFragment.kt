@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentControlObrasBinding
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.debajoDeLosBotones
 import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.ui.comun.resumen
@@ -69,6 +70,7 @@ class ControlObrasFragment : Fragment() {
         binding.swipe.setOnRefreshListener { cargar() }
         // La lista no es hija directa del swipe: solo se actualiza al jalar desde arriba de la lista
         binding.swipe.setOnChildScrollUpCallback { _, _ -> binding.rvObrasEnProceso.canScrollVertically(-1) }
+        debajoDeLosBotones(binding.cabeceraObras)
 
         mostrarAlcances()
         binding.etBuscarObra.setText(viewModel.texto)
