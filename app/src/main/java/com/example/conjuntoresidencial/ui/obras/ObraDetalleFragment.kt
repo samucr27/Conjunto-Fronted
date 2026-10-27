@@ -37,6 +37,7 @@ import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.ui.comun.ponerTitulo
 import com.example.conjuntoresidencial.ui.propietario.RegistrarObraFragment
 import com.example.conjuntoresidencial.util.Formatos
+import com.example.conjuntoresidencial.util.SessionManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -176,6 +177,10 @@ class ObraDetalleFragment : Fragment() {
             fila.root.isFocusable = true
             fila.root.setOnClickListener { opcionesTrabajador(p) }
         }
+        // El arrendatario solo mira: sin personal que ver ni poder añadirlo, la tarjeta no aparece
+        val puedeAnadir = esAdmin || SessionManager(requireContext()).getRol() != "ARRENDATARIO"
+        binding.btnAnadirTrabajador.isVisible = puedeAnadir
+        binding.cardPersonal.isVisible = personal.isNotEmpty() || puedeAnadir
         binding.tvSinPersonal.isVisible = personal.isEmpty()
         binding.encabezado.ponerInfo(
             resources.getQuantityString(R.plurals.obra_resumen_personal, personal.size, personal.size)

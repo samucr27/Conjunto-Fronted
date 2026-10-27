@@ -148,12 +148,25 @@ class DetalleApartamentoFragment : Fragment() {
                 }
                 apartamento = datos
                 binding.encabezado.ponerTitulo(getString(R.string.apto_item_titulo, datos.torre, datos.apto))
+                mostrarOcupacion(datos)
                 mostrarResidentes(if (residentes.isSuccessful) residentes.body().orEmpty() else emptyList())
                 mostrarVehiculos(if (vehiculos.isSuccessful) vehiculos.body().orEmpty() else emptyList())
                 mostrarObras()
                 binding.estado.mostrarContenido()
             } catch (e: Exception) {
                 binding.estado.mostrarError(RetrofitClient.mensajeDeExcepcion(e)) { cargarTodo() }
+            }
+        }
+    }
+
+    /** Chip con cómo está ocupado y, al tocar "Cambiar", el diálogo de ocupación y banderas del arrendatario. */
+    private fun mostrarOcupacion(a: Apartamento) {
+        binding.chipOcupacion.text = textoOcupacion(requireContext(), a.tipoOcupacion, a.arrendado == true)
+            ?: getString(R.string.ocupacion_propietario)
+        binding.btnOcupacion.setOnClickListener {
+            pedirOcupacion(a) { cambio ->
+                ejecutarAccion(getString(R.string.ocupacion_guardada),
+                    { RetrofitClient.instance.cambiarOcupacionYBanderas(a.id, cambio) }) { cargarTodo() }
             }
         }
     }

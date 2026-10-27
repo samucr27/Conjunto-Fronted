@@ -60,15 +60,28 @@ class SessionManager(context: Context) {
             saveApto(respuesta.apto ?: "")
         }
         prefs.edit {
-            if (respuesta.residenteId != null) {
-                putLong("residente_id", respuesta.residenteId)
-                putString("nombre", respuesta.nombre.orEmpty())
-            } else {
-                remove("residente_id"); remove("nombre")
-            }
+            if (respuesta.residenteId != null) putLong("residente_id", respuesta.residenteId) else remove("residente_id")
+            // El saludo nunca se borra por entrar sin documento: si el servidor manda el nombre, se guarda
+            if (!respuesta.nombre.isNullOrBlank()) putString("nombre", respuesta.nombre) else remove("nombre")
             if (documento != null) putString("documento", documento) else remove("documento")
+            // P6: lo que la administración le deja ver al arrendatario y los ajustes del conjunto
+            putString("tipo_ocupacion", respuesta.tipoOcupacion)
+            putBoolean("arr_ve_cartera", respuesta.arrendatarioVeCartera == true)
+            putBoolean("arr_puede_pagar", respuesta.arrendatarioPuedePagar == true)
+            putBoolean("arr_ve_obras", respuesta.arrendatarioVeObras == true)
+            putBoolean("vehiculos_solo_admin", respuesta.vehiculosAltaSoloAdmin == true)
+            putBoolean("consentimientos_pendientes", respuesta.consentimientosPendientes == true)
         }
     }
+
+    fun esArrendatario(): Boolean = getRol() == "ARRENDATARIO"
+    fun getTipoOcupacion(): String? = prefs.getString("tipo_ocupacion", null)
+    fun arrendatarioVeCartera(): Boolean = !esArrendatario() || prefs.getBoolean("arr_ve_cartera", false)
+    fun arrendatarioPuedePagar(): Boolean = !esArrendatario() || prefs.getBoolean("arr_puede_pagar", false)
+    fun arrendatarioVeObras(): Boolean = !esArrendatario() || prefs.getBoolean("arr_ve_obras", false)
+    /** El propietario gestiona los vehículos salvo que el conjunto lo deje solo a la administración. */
+    fun puedeGestionarVehiculos(): Boolean = !esArrendatario() && !prefs.getBoolean("vehiculos_solo_admin", false)
+    fun consentimientosPendientes(): Boolean = prefs.getBoolean("consentimientos_pendientes", false)
 
     /** P5: si el apartamento está arrendado (último valor conocido); null = aún no se sabe. */
     fun getArrendado(): Boolean? = if (prefs.contains("apto_arrendado")) prefs.getBoolean("apto_arrendado", false) else null

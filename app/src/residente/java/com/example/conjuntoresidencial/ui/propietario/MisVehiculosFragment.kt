@@ -50,7 +50,10 @@ class MisVehiculosFragment : Fragment() {
         aptoId = SessionManager(requireContext()).getApartamentoId()
 
         // Por categoría: cada tipo con lo que tiene o "No asignado" (P5)
-        val adaptador = VehiculosPorTipoAdapter(onEliminar = { confirmarEliminar(it) }, onEditar = { mostrarDialogEditar(it) })
+        val puedeGestionar = SessionManager(requireContext()).puedeGestionarVehiculos()
+        val adaptador = VehiculosPorTipoAdapter(
+            onEliminar = { confirmarEliminar(it) }, onEditar = { mostrarDialogEditar(it) }, puedeGestionar = puedeGestionar
+        )
         fun pintar(lista: List<VehiculoDTO>) =
             adaptador.submitList(FilaVehiculo.de(viewModel.cupos ?: Opciones.CUPOS_POR_DEFECTO, lista))
         viewModel.cuposCargados.observe(viewLifecycleOwner) {
@@ -82,7 +85,8 @@ class MisVehiculosFragment : Fragment() {
         }
 
         // Botón flotante (encima del difuminado); se encoge a solo ícono al desplazar hacia abajo
-        controlesFlotantes?.mostrarBotonFlotante(R.string.vehiculos_agregar, R.drawable.ic_add) { mostrarDialogAgregar() }?.let { boton ->
+        // Sin botón de agregar para quien solo consulta (arrendatario, o conjunto que lo deja a la administración)
+        (if (puedeGestionar) controlesFlotantes?.mostrarBotonFlotante(R.string.vehiculos_agregar, R.drawable.ic_add) { mostrarDialogAgregar() } else null)?.let { boton ->
             binding.rvVehiculos.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
                     if (dy > 0) boton.shrink() else if (dy < 0) boton.extend()

@@ -38,7 +38,9 @@ sealed class FilaVehiculo {
 
 class VehiculosPorTipoAdapter(
     private val onEliminar: (VehiculoDTO) -> Unit,
-    private val onEditar: (VehiculoDTO) -> Unit
+    private val onEditar: (VehiculoDTO) -> Unit,
+    // El arrendatario (o el propietario, si el conjunto lo deja a la administración) solo consulta
+    private val puedeGestionar: Boolean = true
 ) : ListAdapter<FilaVehiculo, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<FilaVehiculo>() {
     override fun areItemsTheSame(a: FilaVehiculo, b: FilaVehiculo) = when {
         a is FilaVehiculo.Vehiculo && b is FilaVehiculo.Vehiculo -> a.vehiculo.id == b.vehiculo.id
@@ -94,7 +96,8 @@ class VehiculosPorTipoAdapter(
         b.tvNotaVehiculo.text = nota
         b.tvNotaVehiculo.visibility = if (nota == null) View.GONE else View.VISIBLE
         b.btnEliminarVehiculo.contentDescription = ctx.getString(R.string.desc_eliminar_vehiculo, v.placa ?: v.tipo)
+        b.btnEliminarVehiculo.visibility = if (puedeGestionar) View.VISIBLE else View.GONE
         b.btnEliminarVehiculo.setOnClickListener { onEliminar(v) }
-        b.root.setOnClickListener { onEditar(v) }
+        if (puedeGestionar) b.root.setOnClickListener { onEditar(v) } else b.root.isClickable = false
     }
 }

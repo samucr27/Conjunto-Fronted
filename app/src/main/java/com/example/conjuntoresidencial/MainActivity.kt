@@ -88,6 +88,10 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         // Pantalla de inicio del sistema: solo el fondo morado (el logo lo anima la app)
         val inicio = installSplashScreen()
         super.onCreate(savedInstanceState)
+        // La sesión no sobrevive a cerrar la app desde recientes ni a que el sistema mate el proceso:
+        // siempre se arranca en el login (la huella, si está activada, entra desde ahí)
+        if (savedInstanceState == null || !procesoIniciado) SessionManager(this).clearSession()
+        procesoIniciado = true
         setContentView(R.layout.activity_main)
         if (savedInstanceState == null) mostrarLogoAnimado(inicio)
         navController = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
@@ -509,6 +513,8 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     }
 
     companion object {
+        // false mientras el proceso es nuevo (arranque en frío o restaurado tras ser matado)
+        private var procesoIniciado = false
         private const val RADIO_DESENFOQUE = 24f
         // Radio del desenfoque justo en el borde (dp); hacia el centro baja hasta 0
         private const val RADIO_PROGRESIVO_DP = 22f

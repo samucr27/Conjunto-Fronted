@@ -7,6 +7,10 @@ import retrofit2.http.*
 
 /** Rutas que solo usa la app de administración. */
 interface ApiAdmin : ApiComun {
+    // P6: ocupación del apartamento y banderas del arrendatario
+    @PATCH("api/apartamentos/{id}/ocupacion-y-banderas")
+    suspend fun cambiarOcupacionYBanderas(@Path("id") id: Long, @Body cambio: OcupacionYBanderas): Response<Apartamento>
+
     @GET("api/apartamentos")
     suspend fun getApartamentos(): Response<List<Apartamento>>
 

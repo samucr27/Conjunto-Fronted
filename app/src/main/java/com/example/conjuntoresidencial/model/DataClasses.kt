@@ -22,7 +22,15 @@ data class RegistroRecibido(val rol: String, val estado: String, val requierePro
 // citófonos y arrendado (arrendatario activo) los pone el backend (P5)
 data class Apartamento(
     val id: Long, val torre: String, val apto: String,
-    val citofono1: String? = null, val citofono2: String? = null, val arrendado: Boolean? = null
+    val citofono1: String? = null, val citofono2: String? = null, val arrendado: Boolean? = null,
+    // P6: cómo está ocupado y qué le deja ver la administración al arrendatario
+    val tipoOcupacion: String? = null, val arrendatarioVeCartera: Boolean? = null,
+    val arrendatarioPuedePagar: Boolean? = null, val arrendatarioVeObras: Boolean? = null
+)
+// PATCH /api/apartamentos/{id}/ocupacion-y-banderas: lo que no se envía no cambia
+data class OcupacionYBanderas(
+    val tipoOcupacion: String? = null, val arrendatarioVeCartera: Boolean? = null,
+    val arrendatarioPuedePagar: Boolean? = null, val arrendatarioVeObras: Boolean? = null
 )
 data class CitofonosRequest(val citofono1: String?, val citofono2: String?)
 // Feed de publicaciones (P5): cada url es un enlace firmado que vence en una hora
@@ -48,7 +56,16 @@ data class LoginResponse(
     val token: String, val expiraEn: String?, val rol: String, val id: Long, val usuario: String?, val torre: String?, val apto: String?,
     val residenteId: Long? = null, val nombre: String? = null,
     // P5: solo administradores; el principal es el único que maneja el equipo
-    val principal: Boolean? = null
+    val principal: Boolean? = null,
+    // P6: solo residentes. Ocupación del apartamento y lo que la administración le deja ver al arrendatario
+    val tipoOcupacion: String? = null,
+    val arrendatarioVeCartera: Boolean? = null,
+    val arrendatarioPuedePagar: Boolean? = null,
+    val arrendatarioVeObras: Boolean? = null,
+    // Si solo la administración registra vehículos
+    val vehiculosAltaSoloAdmin: Boolean? = null,
+    // Hay una versión de los términos o la política por aceptar
+    val consentimientosPendientes: Boolean? = null
 )
 // Cuerpo de los errores del backend: {"mensaje": "..."}
 data class MensajeError(val mensaje: String?)

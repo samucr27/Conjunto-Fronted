@@ -20,6 +20,10 @@ interface ApiComun {
     suspend fun registrar(@Body request: RegistroRequest): Response<RegistroRecibido>
 
     // Cuenta → Perfil: cambiar la propia contraseña (400 si la actual no coincide)
+    // Cerrar sesión: el token anterior deja de valer en el servidor (P6)
+    @POST("api/auth/logout")
+    suspend fun cerrarSesion(): Response<Void>
+
     @PUT("api/auth/contrasena")
     suspend fun cambiarContrasena(@Body request: CambioPropiaContrasenaRequest): Response<Void>
 

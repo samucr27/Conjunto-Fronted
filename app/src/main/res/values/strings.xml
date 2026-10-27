@@ -1155,4 +1155,18 @@
         <item quantity="one">%d trabajador</item>
         <item quantity="other">%d trabajadores</item>
     </plurals>
+
+    <!-- P6: ocupación del apartamento y lo que ve el arrendatario -->
+    <string name="ocupacion_titulo">Ocupación</string>
+    <string name="ocupacion_propietario">Vive el propietario</string>
+    <string name="ocupacion_arrendado">Arrendado</string>
+    <string name="ocupacion_desocupado">Desocupado</string>
+    <string name="ocupacion_cambiar">Cambiar</string>
+    <string name="ocupacion_banderas_titulo">Qué puede hacer el arrendatario</string>
+    <string name="bandera_cartera">Ver la cartera</string>
+    <string name="bandera_pagar">Subir comprobantes y pagar</string>
+    <string name="bandera_obras">Ver las obras</string>
+    <string name="ocupacion_guardada">Ocupación actualizada</string>
+    <string name="ocupacion_error">No se pudo guardar la ocupación</string>
+    <string name="apto_item_detalle_ocupacion">%1$s · Residentes y vehículos</string>
 </resources>
