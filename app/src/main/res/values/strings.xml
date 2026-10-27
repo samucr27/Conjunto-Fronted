@@ -985,6 +985,26 @@
         <item>Sábado</item>
         <item>Domingo</item>
     </string-array>
+    <!-- P5 bloque 9: búsqueda con filtros -->
+    <string name="busqueda_sin_resultados">Ninguno coincide con la búsqueda</string>
+    <string name="busqueda_todos">Todos</string>
+    <string name="busqueda_apartamentos">Buscar torre o apartamento</string>
+    <string name="busqueda_arrendados">Arrendados</string>
+    <string name="busqueda_vehiculos">Buscar placa, torre o apto</string>
+    <string name="busqueda_personal">Buscar nombre, cédula, torre o apto</string>
+    <string name="busqueda_por_aprobar">Por aprobar</string>
+    <string name="busqueda_sin_certificado">Sin certificado ARL</string>
+    <string name="busqueda_equipo">Buscar nombre, usuario o documento</string>
+    <string name="busqueda_asistentes">Asistentes</string>
+    <string name="busqueda_contadores">Contadores</string>
+    <string name="busqueda_conversaciones">Buscar torre, apto o mensaje</string>
+    <string name="busqueda_sin_leer">Sin leer</string>
+    <string name="busqueda_residentes">Buscar nombre, documento, torre o apto</string>
+    <string name="busqueda_propietarios">Propietarios</string>
+    <string name="busqueda_arrendatarios">Arrendatarios</string>
+    <string name="busqueda_reservas">Buscar zona o fecha</string>
+    <string name="busqueda_cuotas">Buscar torre o apto</string>
+
     <!-- P5 bloque 8: chat -->
     <string name="chat_titulo">Chat</string>
     <string name="chat_con_administracion">Administración</string>

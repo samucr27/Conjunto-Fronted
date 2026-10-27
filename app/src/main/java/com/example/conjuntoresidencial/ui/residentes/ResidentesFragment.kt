@@ -1,5 +1,8 @@
 package com.example.conjuntoresidencial.ui.residentes
 
+import com.example.conjuntoresidencial.ui.comun.BarraBusqueda
+import com.example.conjuntoresidencial.ui.comun.repetir
+import com.example.conjuntoresidencial.util.map
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -85,10 +88,21 @@ class ResidentesFragment : Fragment() {
             }
         }
 
-        viewModel.residentes.observe(viewLifecycleOwner) { resource ->
+        val barra = BarraBusqueda(this, binding.busqueda, R.string.busqueda_residentes, listOf(
+            R.string.busqueda_todos to null, R.string.busqueda_propietarios to "PROPIETARIO", R.string.busqueda_arrendatarios to "ARRENDATARIO"
+        )) { viewModel.residentes.repetir() }
+        barra.vincular(binding.swipe, binding.rvResidentes)
+        viewModel.residentes.observe(viewLifecycleOwner) { todo ->
+            val resource = todo.map { lista ->
+                lista.filter { r ->
+                    barra.coincide(r.nombreCompleto, r.identificacion, r.telefono, r.correo, r.torre, r.apto) &&
+                        (barra.filtro == null || r.tipoHabitante == barra.filtro)
+                }
+            }
             binding.estado.mostrarRecurso(
                 resource, binding.swipe, R.drawable.ic_people,
-                getString(if (pendientes) R.string.residentes_pendientes_vacio else R.string.residentes_vacio),
+                if (barra.activa || barra.filtro != null) getString(R.string.busqueda_sin_resultados)
+                else getString(if (pendientes) R.string.residentes_pendientes_vacio else R.string.residentes_vacio),
                 if (pendientes) getString(R.string.residentes_pendientes_vacio_mensaje)
                 else if (puedeGestionar) getString(R.string.residentes_vacio_mensaje) else null,
                 reintentar = { viewModel.recargar() }

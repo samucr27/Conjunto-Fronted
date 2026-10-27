@@ -1,5 +1,8 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.example.conjuntoresidencial.ui.comun.BarraBusqueda
+import com.example.conjuntoresidencial.ui.comun.repetir
+import com.example.conjuntoresidencial.util.map
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
@@ -75,10 +78,16 @@ class VehiculosAdminFragment : Fragment() {
         binding.swipe.setOnRefreshListener { cargar() }
 
         var desplazado = false
-        viewModel.pendientes.observe(viewLifecycleOwner) { resource ->
+        val barra = BarraBusqueda(this, binding.busqueda, R.string.busqueda_vehiculos) { viewModel.pendientes.repetir() }
+        barra.vincular(binding.swipe, binding.rvVehiculosPendientes)
+        viewModel.pendientes.observe(viewLifecycleOwner) { todo ->
+            val resource = todo.map { lista ->
+                lista.filter { v -> barra.coincide(v.placa, v.marca, v.color, v.tipo, v.torre, v.apto, "torre ${v.torre} apto ${v.apto}") }
+            }
             binding.estado.mostrarRecurso(
-                resource, binding.swipe, R.drawable.ic_car, getString(R.string.vehiculos_admin_vacio),
-                getString(R.string.vehiculos_admin_vacio_mensaje), reintentar = { cargar() }
+                resource, binding.swipe, R.drawable.ic_car,
+                if (barra.activa) getString(R.string.busqueda_sin_resultados) else getString(R.string.vehiculos_admin_vacio),
+                if (barra.activa) null else getString(R.string.vehiculos_admin_vacio_mensaje), reintentar = { cargar() }
             ) { lista ->
                 adaptador.submitList(lista) {
                     val posicion = lista.indexOfFirst { it.id == resaltado }

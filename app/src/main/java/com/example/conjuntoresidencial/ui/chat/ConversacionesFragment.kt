@@ -1,5 +1,6 @@
 package com.example.conjuntoresidencial.ui.chat
 
+import com.example.conjuntoresidencial.ui.comun.BarraBusqueda
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
@@ -39,6 +40,8 @@ class ConversacionesFragment : Fragment() {
     // Misma estructura que Mi equipo: encabezado, lista y sus estados
     private var _binding: FragmentEquipoBinding? = null
     private val binding get() = _binding!!
+    private var conversaciones: List<ConversacionDTO>? = null
+    private lateinit var barra: BarraBusqueda
     private val adaptador = ConversacionAdapter { c ->
         findNavController().navigate(R.id.chatFragment, bundleOf(ChatFragment.ARG_CONVERSACION to c.id))
     }
@@ -58,6 +61,10 @@ class ConversacionesFragment : Fragment() {
         binding.rvEquipo.adapter = adaptador
         binding.estado.vincular(binding.rvEquipo)
         binding.swipe.setOnRefreshListener { cargar() }
+        barra = BarraBusqueda(this, binding.busqueda, R.string.busqueda_conversaciones, listOf(
+            R.string.busqueda_todos to null, R.string.busqueda_sin_leer to "SIN_LEER"
+        )) { conversaciones?.let { mostrar(Resource.Success(it)) } }
+        barra.vincular(binding.swipe, binding.rvEquipo)
         controlesFlotantes?.mostrarBotonFlotante(R.string.chat_nuevo, R.drawable.ic_chat) { nuevoChat() }
         // También al volver de un chat: cambian el último mensaje y los no leídos
         cargar()
@@ -73,7 +80,19 @@ class ConversacionesFragment : Fragment() {
                 Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
             if (_binding == null) return@launch
-            binding.estado.mostrarRecurso(resource, binding.swipe, R.drawable.ic_chat, getString(R.string.chat_conversaciones_vacio),
+            if (resource is Resource.Success) conversaciones = resource.data
+            mostrar(resource)
+        }
+    }
+
+    private fun mostrar(resource: Resource<List<ConversacionDTO>>) {
+        val filtrado = if (resource is Resource.Success) Resource.Success(resource.data.orEmpty().filter { c ->
+            barra.coincide(c.torre, c.apto, "torre ${c.torre} apto ${c.apto}", c.ultimoMensaje) &&
+                (barra.filtro == null || c.noLeidos > 0)
+        }) else resource
+        run {
+            binding.estado.mostrarRecurso(filtrado, binding.swipe, R.drawable.ic_chat,
+                if (barra.activa || barra.filtro != null) getString(R.string.busqueda_sin_resultados) else getString(R.string.chat_conversaciones_vacio),
                 reintentar = { cargar() }) { lista ->
                 adaptador.submitList(lista)
                 val noLeidos = lista.sumOf { it.noLeidos }

@@ -1,5 +1,7 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.example.conjuntoresidencial.ui.comun.repetir
+import com.example.conjuntoresidencial.ui.comun.BarraBusqueda
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.model.ApartamentoRequest
 import com.example.conjuntoresidencial.ui.comun.controlesFlotantes
@@ -58,6 +60,11 @@ class DirectorioApartamentosFragment : Fragment() {
 
         binding.rvApartamentos.layoutManager = LinearLayoutManager(requireContext())
         binding.estado.vincular(binding.rvApartamentos)
+        // P5: en Torres, buscar o filtrar muestra los apartamentos de todas las torres que coinciden
+        barra = BarraBusqueda(this, binding.busqueda, R.string.busqueda_apartamentos, listOf(
+            R.string.busqueda_todos to null, R.string.busqueda_arrendados to "ARRENDADOS"
+        )) { viewModel.aptos.repetir() }
+        barra.vincular(binding.swipe, binding.rvApartamentos)
         binding.swipe.setOnRefreshListener { recargar() }
 
         if (torre == null) mostrarTorres() else mostrarApartamentos(torre)
@@ -79,7 +86,18 @@ class DirectorioApartamentosFragment : Fragment() {
         }
     }
 
+    private lateinit var barra: BarraBusqueda
+
+    private fun coincide(a: Apartamento) =
+        barra.coincide(a.torre, a.apto, "torre ${a.torre} apto ${a.apto}") && (barra.filtro == null || a.arrendado == true)
+
+    private fun abrir(apto: Apartamento) {
+        val bundle = Bundle().apply { putLong("aptoId", apto.id) }
+        findNavController().navigate(R.id.action_directorioApartamentosFragment_to_detalleApartamentoFragment, bundle)
+    }
+
     private fun mostrarTorres() {
+        val encontrados = ApartamentoAdapter(soloNumero = false) { abrir(it) }
         val adaptador = TorreAdapter { elegida ->
             findNavController().navigate(
                 R.id.action_directorioApartamentosFragment_to_torre,
@@ -88,6 +106,21 @@ class DirectorioApartamentosFragment : Fragment() {
         }
         binding.rvApartamentos.adapter = adaptador
         viewModel.aptos.observe(viewLifecycleOwner) { resource ->
+            if (barra.activa || barra.filtro != null) {
+                if (binding.rvApartamentos.adapter !== encontrados) binding.rvApartamentos.adapter = encontrados
+                binding.estado.mostrarRecurso(
+                    resource.map { aptos ->
+                        aptos.filter { coincide(it) }.sortedWith(compareBy<Apartamento, String>(ORDEN_NATURAL) { it.torre }
+                            .thenBy(ORDEN_NATURAL) { it.apto })
+                    }, binding.swipe, R.drawable.ic_apartment,
+                    getString(R.string.busqueda_sin_resultados), reintentar = { viewModel.fetchApartamentos() }
+                ) { lista ->
+                    encontrados.submitList(lista)
+                    binding.encabezado.ponerInfo(resumen(R.plurals.resumen_apartamentos, lista.size))
+                }
+                return@observe
+            }
+            if (binding.rvApartamentos.adapter !== adaptador) binding.rvApartamentos.adapter = adaptador
             binding.estado.mostrarRecurso(
                 resource.map { torresDe(it) }, binding.swipe, R.drawable.ic_apartment,
                 getString(R.string.directorio_vacio), reintentar = { viewModel.fetchApartamentos() }
@@ -102,18 +135,16 @@ class DirectorioApartamentosFragment : Fragment() {
     }
 
     private fun mostrarApartamentos(torre: String) {
-        val adaptador = ApartamentoAdapter(soloNumero = true) { apto ->
-            val bundle = Bundle().apply { putLong("aptoId", apto.id) }
-            findNavController().navigate(R.id.action_directorioApartamentosFragment_to_detalleApartamentoFragment, bundle)
-        }
+        val adaptador = ApartamentoAdapter(soloNumero = true) { abrir(it) }
         binding.rvApartamentos.adapter = adaptador
         viewModel.aptos.observe(viewLifecycleOwner) { resource ->
             val deLaTorre = resource.map { aptos ->
-                aptos.filter { it.torre == torre }.sortedWith(compareBy(ORDEN_NATURAL) { it.apto })
+                aptos.filter { it.torre == torre && coincide(it) }.sortedWith(compareBy(ORDEN_NATURAL) { it.apto })
             }
             binding.estado.mostrarRecurso(
                 deLaTorre, binding.swipe, R.drawable.ic_apartment,
-                getString(R.string.directorio_torre_vacia), reintentar = { viewModel.fetchApartamentos() }
+                getString(if (barra.activa || barra.filtro != null) R.string.busqueda_sin_resultados else R.string.directorio_torre_vacia),
+                reintentar = { viewModel.fetchApartamentos() }
             ) { lista ->
                 adaptador.submitList(lista)
                 binding.encabezado.ponerInfo(resumen(R.plurals.resumen_apartamentos, lista.size))

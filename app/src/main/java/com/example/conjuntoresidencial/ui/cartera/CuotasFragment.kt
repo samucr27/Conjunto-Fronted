@@ -1,5 +1,8 @@
 package com.example.conjuntoresidencial.ui.cartera
 
+import com.example.conjuntoresidencial.ui.comun.BarraBusqueda
+import com.example.conjuntoresidencial.ui.comun.repetir
+import com.example.conjuntoresidencial.util.map
 import android.text.InputType
 import com.example.conjuntoresidencial.model.CambioCuota
 import com.example.conjuntoresidencial.ui.comun.confirmar
@@ -73,12 +76,17 @@ class CuotasFragment : Fragment() {
             })
         }
 
-        viewModel.cuotas.observe(viewLifecycleOwner) { resource ->
+        val barra = BarraBusqueda(this, binding.busqueda, R.string.busqueda_cuotas) { viewModel.cuotas.repetir() }
+        barra.vincular(binding.swipe, binding.rvCuotas)
+        viewModel.cuotas.observe(viewLifecycleOwner) { todo ->
             val porRevisar = viewModel.periodo == null
+            val resource = todo.map { lista -> lista.filter { c -> barra.coincide(c.torre, c.apto, "torre ${c.torre} apto ${c.apto}") } }
             binding.estado.mostrarRecurso(
                 resource, binding.swipe, R.drawable.ic_wallet,
-                getString(if (porRevisar) R.string.facturacion_sin_revisar else R.string.facturacion_sin_cuotas),
-                getString(if (porRevisar) R.string.facturacion_sin_revisar_mensaje else R.string.facturacion_sin_cuotas_mensaje),
+                if (barra.activa) getString(R.string.busqueda_sin_resultados)
+                else getString(if (porRevisar) R.string.facturacion_sin_revisar else R.string.facturacion_sin_cuotas),
+                if (barra.activa) null
+                else getString(if (porRevisar) R.string.facturacion_sin_revisar_mensaje else R.string.facturacion_sin_cuotas_mensaje),
                 reintentar = { viewModel.recargar() }
             ) { lista ->
                 adaptador.submitList(lista)

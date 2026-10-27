@@ -1,5 +1,6 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.example.conjuntoresidencial.ui.comun.BarraBusqueda
 import android.os.Bundle
 import android.text.InputType
 import android.util.Patterns
@@ -48,6 +49,8 @@ class EquipoFragment : Fragment() {
     private var _binding: FragmentEquipoBinding? = null
     private val binding get() = _binding!!
     private val adaptador = CuentaAdapter { opciones(it) }
+    private var cuentas: List<CuentaAdministracion>? = null
+    private lateinit var barra: BarraBusqueda
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentEquipoBinding.inflate(inflater, container, false)
@@ -67,6 +70,10 @@ class EquipoFragment : Fragment() {
         binding.rvEquipo.adapter = adaptador
         binding.estado.vincular(binding.rvEquipo)
         binding.swipe.setOnRefreshListener { cargar() }
+        barra = BarraBusqueda(this, binding.busqueda, R.string.busqueda_equipo, listOf(
+            R.string.busqueda_todos to null, R.string.busqueda_asistentes to ROL_ADMIN, R.string.busqueda_contadores to ROL_CONTADOR
+        )) { cuentas?.let { mostrar(Resource.Success(it)) } }
+        barra.vincular(binding.swipe, binding.rvEquipo)
         controlesFlotantes?.mostrarBotonFlotante(R.string.equipo_agregar, R.drawable.ic_add) { formulario(null) }
         cargar()
     }
@@ -81,11 +88,20 @@ class EquipoFragment : Fragment() {
                 Resource.Error(RetrofitClient.mensajeDeExcepcion(e))
             }
             if (_binding == null) return@launch
-            binding.estado.mostrarRecurso(resource, binding.swipe, R.drawable.ic_people, getString(R.string.equipo_vacio),
-                reintentar = { cargar() }) { lista ->
-                adaptador.submitList(lista)
-                binding.encabezado.ponerInfo(resumen(R.plurals.resumen_cuentas, lista.size))
-            }
+            if (resource is Resource.Success) cuentas = resource.data
+            mostrar(resource)
+        }
+    }
+
+    private fun mostrar(resource: Resource<List<CuentaAdministracion>>) {
+        val filtrado = if (resource is Resource.Success) Resource.Success(resource.data.orEmpty().filter { c ->
+            barra.coincide(c.nombreCompleto, c.usuario, c.documento, c.correo) && (barra.filtro == null || c.rol == barra.filtro)
+        }) else resource
+        binding.estado.mostrarRecurso(filtrado, binding.swipe, R.drawable.ic_people,
+            if (barra.activa || barra.filtro != null) getString(R.string.busqueda_sin_resultados) else getString(R.string.equipo_vacio),
+            reintentar = { cargar() }) { lista ->
+            adaptador.submitList(lista)
+            binding.encabezado.ponerInfo(resumen(R.plurals.resumen_cuentas, lista.size))
         }
     }
 
@@ -272,8 +288,8 @@ class EquipoFragment : Fragment() {
     }
 
     companion object {
-        private const val ROL_ADMIN = "ADMIN"
-        private const val ROL_CONTADOR = "CONTADOR"
+        const val ROL_ADMIN = "ADMIN"
+        const val ROL_CONTADOR = "CONTADOR"
 
         fun etiquetaRol(rol: String, principal: Boolean = false) = when {
             rol == ROL_CONTADOR -> R.string.rol_contador

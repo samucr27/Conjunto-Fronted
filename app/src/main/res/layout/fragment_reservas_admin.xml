@@ -26,6 +26,12 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+            <!-- P5: búsqueda con filtros -->
+            <include
+                android:id="@+id/busqueda"
+                layout="@layout/barra_busqueda" />
+
+
                 <!-- P5: filtro por estado -->
                 <HorizontalScrollView
                     android:layout_width="match_parent"

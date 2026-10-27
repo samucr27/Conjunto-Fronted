@@ -1,5 +1,8 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.example.conjuntoresidencial.ui.comun.BarraBusqueda
+import com.example.conjuntoresidencial.ui.comun.repetir
+import com.example.conjuntoresidencial.util.map
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,9 +41,23 @@ class PersonalObraFragment : Fragment() {
         binding.estado.vincular(binding.rvPersonalObra)
         binding.swipe.setOnRefreshListener { viewModel.fetchPersonal() }
 
-        viewModel.personal.observe(viewLifecycleOwner) { resource ->
+        val barra = BarraBusqueda(this, binding.busqueda, R.string.busqueda_personal, listOf(
+            R.string.busqueda_todos to null, R.string.busqueda_por_aprobar to "PENDIENTE", R.string.busqueda_sin_certificado to "SIN_ARL"
+        )) { viewModel.personal.repetir() }
+        barra.vincular(binding.swipe, binding.rvPersonalObra)
+        viewModel.personal.observe(viewLifecycleOwner) { todo ->
+            val resource = todo.map { lista ->
+                lista.filter { p ->
+                    barra.coincide(p.nombreTrabajador, p.cedula, p.torrePiso, p.aptoNum) && when (barra.filtro) {
+                        "PENDIENTE" -> p.aprobacion == "PENDIENTE"
+                        "SIN_ARL" -> p.tieneCertificado != true
+                        else -> true
+                    }
+                }
+            }
             binding.estado.mostrarRecurso(
-                resource, binding.swipe, R.drawable.ic_people, getString(R.string.personal_vacio),
+                resource, binding.swipe, R.drawable.ic_people,
+                if (barra.activa || barra.filtro != null) getString(R.string.busqueda_sin_resultados) else getString(R.string.personal_vacio),
                 reintentar = { viewModel.fetchPersonal() }
             ) { lista ->
                 adaptador.submitList(lista)

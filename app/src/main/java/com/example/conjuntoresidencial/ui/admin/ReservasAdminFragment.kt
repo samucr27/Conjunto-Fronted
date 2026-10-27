@@ -1,5 +1,8 @@
 package com.example.conjuntoresidencial.ui.admin
 
+import com.example.conjuntoresidencial.ui.comun.BarraBusqueda
+import com.example.conjuntoresidencial.ui.comun.repetir
+import com.example.conjuntoresidencial.util.map
 import com.example.conjuntoresidencial.ui.comun.elegirOpcion
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.util.Formatos
@@ -68,9 +71,17 @@ class ReservasAdminFragment : Fragment() {
         binding.estado.vincular(binding.rvReservas)
         binding.swipe.setOnRefreshListener { viewModel.fetchReservas() }
 
-        viewModel.reservas.observe(viewLifecycleOwner) { resource ->
+        val barra = BarraBusqueda(this, binding.busqueda, R.string.busqueda_reservas) { viewModel.reservas.repetir() }
+        barra.vincular(binding.swipe, binding.rvReservas)
+        viewModel.reservas.observe(viewLifecycleOwner) { todo ->
+            val resource = todo.map { lista ->
+                lista.filter { r ->
+                    barra.coincide(viewModel.nombresZonas[r.zonaComunId], com.example.conjuntoresidencial.util.Formatos.fecha(r.fecha), r.fecha)
+                }
+            }
             binding.estado.mostrarRecurso(
-                resource, binding.swipe, R.drawable.ic_event, getString(R.string.reservas_vacio),
+                resource, binding.swipe, R.drawable.ic_event,
+                if (barra.activa) getString(R.string.busqueda_sin_resultados) else getString(R.string.reservas_vacio),
                 reintentar = { viewModel.fetchReservas() }
             ) { todas ->
                 // P5: filtro por estado (chips)
