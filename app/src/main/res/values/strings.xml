@@ -890,6 +890,27 @@
     <string name="publicar_quitar_adjunto">%1$s · Toca para quitarlo</string>
     <string name="publicar_error">No se pudo publicar</string>
     <string name="publicar_listo">Publicado. A los residentes les llega el aviso.</string>
+    <string name="publicar_titulo_opcional">Título (opcional)</string>
+    <string name="publicar_categoria">Categoría</string>
+    <string name="publicar_audiencia">¿A quién va dirigida?</string>
+    <string name="publicar_torre">Torre (opcional)</string>
+    <string name="publicar_torre_ayuda">Déjalo vacío para todas las torres</string>
+    <string name="publicar_fijar">Fijar arriba del feed</string>
+    <string name="categoria_general">General</string>
+    <string name="categoria_urgente">Urgente</string>
+    <string name="categoria_mantenimiento">Mantenimiento</string>
+    <string name="categoria_evento">Evento</string>
+    <string name="categoria_finanzas">Finanzas</string>
+    <string name="audiencia_todos">Todos los residentes</string>
+    <string name="audiencia_propietarios">Solo propietarios</string>
+    <string name="audiencia_arrendatarios">Solo arrendatarios</string>
+    <string name="feed_fijada">Fijada</string>
+    <string name="feed_torre_etiqueta">Torre %1$s</string>
+    <string name="feed_sin_leer">Sin leer</string>
+    <string name="feed_fijar">Fijar arriba</string>
+    <string name="feed_quitar_fijado">Quitar de arriba</string>
+    <string name="feed_fijada_ok">Publicación fijada</string>
+    <string name="feed_desfijada_ok">Publicación sin fijar</string>
 
     <!-- P5 bloque 4: parqueaderos y vehículos -->
     <string name="vehiculos_categoria">%1$s · %2$d de %3$d</string>

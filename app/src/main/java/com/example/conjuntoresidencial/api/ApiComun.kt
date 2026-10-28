@@ -48,10 +48,22 @@ interface ApiComun {
 
     @Multipart
     @POST("api/publicaciones")
-    suspend fun publicar(@Part("texto") texto: okhttp3.RequestBody?, @Part archivos: List<MultipartBody.Part>): Response<PublicacionDTO>
+    suspend fun publicar(
+        @Part("texto") texto: okhttp3.RequestBody?, @Part archivos: List<MultipartBody.Part>,
+        @Part("titulo") titulo: okhttp3.RequestBody? = null, @Part("categoria") categoria: okhttp3.RequestBody? = null,
+        @Part("audiencia") audiencia: okhttp3.RequestBody? = null, @Part("torre") torre: okhttp3.RequestBody? = null,
+        @Part("fijado") fijado: okhttp3.RequestBody? = null
+    ): Response<PublicacionDTO>
 
     @PUT("api/publicaciones/{id}")
     suspend fun editarPublicacion(@Path("id") id: Long, @Body edicion: EdicionPublicacion): Response<PublicacionDTO>
+
+    // P6: fijar arriba (administración) y marcar como leída (idempotente)
+    @PATCH("api/publicaciones/{id}/fijar")
+    suspend fun fijarPublicacion(@Path("id") id: Long, @Body cuerpo: FijarPublicacion): Response<PublicacionDTO>
+
+    @POST("api/publicaciones/{id}/lectura")
+    suspend fun marcarPublicacionLeida(@Path("id") id: Long): Response<Void>
 
     @DELETE("api/publicaciones/{id}")
     suspend fun eliminarPublicacion(@Path("id") id: Long): Response<Void>

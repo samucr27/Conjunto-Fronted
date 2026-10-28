@@ -32,6 +32,17 @@ class FeedViewModel : ViewModel() {
         if (hayMas && !cargando) cargarPagina()
     }
 
+    /** Se abrió la publicación: se pinta como leída de inmediato y se avisa al servidor (si falla, se queda leída aquí). */
+    fun marcarLeida(id: Long) {
+        val i = cargadas.indexOfFirst { it.id == id }
+        if (i < 0 || cargadas[i].leida) return
+        cargadas[i] = cargadas[i].copy(leida = true)
+        _publicaciones.value = Resource.Success(cargadas.toList())
+        viewModelScope.launch {
+            try { RetrofitClient.comun.marcarPublicacionLeida(id) } catch (_: Exception) { }
+        }
+    }
+
     private fun cargarPagina() {
         cargando = true
         viewModelScope.launch {

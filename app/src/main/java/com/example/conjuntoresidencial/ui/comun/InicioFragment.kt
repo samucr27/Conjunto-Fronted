@@ -19,6 +19,7 @@ import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentInicioBinding
 import com.example.conjuntoresidencial.model.AdjuntoPublicacion
 import com.example.conjuntoresidencial.model.EdicionPublicacion
+import com.example.conjuntoresidencial.model.FijarPublicacion
 import com.example.conjuntoresidencial.model.PublicacionDTO
 import com.example.conjuntoresidencial.ui.feed.FeedViewModel
 import com.example.conjuntoresidencial.ui.feed.PublicacionAdapter
@@ -68,7 +69,10 @@ class InicioFragment : Fragment() {
 
         // Publica la administración (no el contador)
         val publica = sesion.esAdmin() && !sesion.esContador()
-        val adaptador = PublicacionAdapter(onAbrir = ::abrir, onOpciones = if (publica) ::opciones else null)
+        val adaptador = PublicacionAdapter(
+            onAbrir = ::abrir, onOpciones = if (publica) ::opciones else null,
+            onLeer = { viewModel.marcarLeida(it.id) }
+        )
         val manejador = LinearLayoutManager(requireContext())
         binding.rvPublicaciones.layoutManager = manejador
         binding.rvPublicaciones.adapter = adaptador
@@ -124,8 +128,12 @@ class InicioFragment : Fragment() {
                     InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES,
                     validar = { if (it.isBlank() && p.adjuntos.isEmpty()) getString(R.string.publicar_vacia) else null }) { texto ->
                     ejecutarAccion(getString(R.string.feed_editada_ok),
-                        { RetrofitClient.comun.editarPublicacion(p.id, EdicionPublicacion(texto)) }) { viewModel.recargar() }
+                        { RetrofitClient.comun.editarPublicacion(p.id, EdicionPublicacion(texto = texto)) }) { viewModel.recargar() }
                 }
+            },
+            (if (p.fijado) R.string.feed_quitar_fijado else R.string.feed_fijar) to {
+                ejecutarAccion(getString(if (p.fijado) R.string.feed_desfijada_ok else R.string.feed_fijada_ok),
+                    { RetrofitClient.comun.fijarPublicacion(p.id, FijarPublicacion(!p.fijado)) }) { viewModel.recargar() }
             },
             R.string.feed_eliminar to {
                 confirmar(getString(R.string.feed_eliminar_titulo), getString(R.string.feed_eliminar_mensaje), R.string.residente_eliminar_si) {

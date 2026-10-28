@@ -37,10 +37,18 @@ data class CitofonosRequest(val citofono1: String?, val citofono2: String?)
 data class AdjuntoPublicacion(val id: Long, val tipo: String, val nombre: String, val mime: String, val tamano: Long, val url: String?)
 data class PublicacionDTO(
     val id: Long, val texto: String, val autor: String, val creadaEn: String, val editadaEn: String?,
-    val adjuntos: List<AdjuntoPublicacion>
+    val adjuntos: List<AdjuntoPublicacion>,
+    // P6: título opcional, categoría, a quién va dirigida, torre (null = todas), fijada arriba y si ya la abrí
+    val titulo: String? = null, val categoria: String = "GENERAL", val audiencia: String = "TODOS",
+    val torre: String? = null, val fijado: Boolean = false, val leida: Boolean = true
 )
 data class PaginaPublicaciones(val publicaciones: List<PublicacionDTO>, val hayMas: Boolean)
-data class EdicionPublicacion(val texto: String)
+// Lo que va null no se cambia
+data class EdicionPublicacion(
+    val texto: String? = null, val titulo: String? = null, val categoria: String? = null,
+    val audiencia: String? = null, val torre: String? = null, val fijado: Boolean? = null
+)
+data class FijarPublicacion(val fijado: Boolean)
 // Visitante frecuente del apartamento (P5)
 data class VisitanteDTO(val id: Long?, val nombreCompleto: String, val identificacion: String?, val telefono: String?, val apartamentoId: Long)
 // El propietario acepta o rechaza a su arrendatario
