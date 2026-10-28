@@ -8,6 +8,7 @@ import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.model.LoginAdminRequest
 import com.example.conjuntoresidencial.model.LoginApartamentoRequest
+import com.example.conjuntoresidencial.model.LoginBiometria
 import com.example.conjuntoresidencial.model.LoginResidenteRequest
 import com.example.conjuntoresidencial.model.LoginResponse
 import com.example.conjuntoresidencial.seguridad.AccesoBiometrico
@@ -100,20 +101,21 @@ fun Fragment.ofrecerHuella(boton: com.google.android.material.button.MaterialBut
 }
 
 private fun Fragment.entrarConHuella(boton: com.google.android.material.button.MaterialButton, cargando: (Boolean) -> Unit) {
-    AccesoBiometrico.entrar(this, alObtener = { credenciales ->
+    AccesoBiometrico.entrar(this, alObtener = { activacion ->
         cargando(true)
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val respuesta = iniciarSesion(credenciales)
+                // P6: se canjea la credencial opaca del celular por una sesión; la contraseña no existe aquí
+                val respuesta = RetrofitClient.comun.loginBiometria(LoginBiometria(activacion.dispositivoId, activacion.credencial))
                 val datos = respuesta.body()
                 when {
                     respuesta.isSuccessful && datos != null -> {
                         completarInicioSesion(datos, null)
                         return@launch
                     }
-                    // La contraseña cambió desde otro celular o la restableció la administración
+                    // La contraseña cambió, la huella se quitó desde otro celular o la cuenta ya no existe
                     respuesta.code() == 401 -> {
-                        val cuentaVieja = credenciales.cuenta(requireContext())
+                        val cuentaVieja = AccesoBiometrico.cuentaGuardada(requireContext()).orEmpty()
                         AccesoBiometrico.desactivar(requireContext())
                         aviso(getString(R.string.biometria_contrasena_cambio, cuentaVieja)).show()
                         boton.visibility = android.view.View.GONE

@@ -215,6 +215,19 @@ data class NotificacionDTO(
     val referenciaId: Long? = null, val apartamentoId: Long? = null
 )
 // Token de Firebase del celular (avisos)
-data class DispositivoRequest(val token: String)
+data class DispositivoRequest(val token: String, val tipoApp: String? = null, val applicationId: String? = null)
+// P6: huella con credencial opaca por celular (nunca la contraseña)
+data class ActivarBiometria(val dispositivoId: String)
+data class BiometriaActivada(val credencial: String)
+data class LoginBiometria(val dispositivoId: String, val credencial: String)
+// P6: textos legales con versión, consentimientos y solicitudes de datos personales
+data class TextoLegalDTO(val id: Long, val tipo: String, val version: Int, val titulo: String, val contenido: String)
+data class AceptarTextos(val textoIds: List<Long>)
+data class NuevaSolicitudDatos(val tipo: String, val detalle: String?)
+data class SolicitudDatosDTO(
+    val id: Long, val nombre: String?, val tipo: String, val estado: String, val detalle: String?,
+    val respuesta: String?, val creadaEn: String, val resueltaEn: String?
+)
+data class ResolverSolicitudDatos(val estado: String, val respuesta: String?)
 // {"total": n}
 data class ConteoDTO(val total: Long)

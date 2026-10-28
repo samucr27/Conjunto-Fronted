@@ -12,6 +12,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import com.example.conjuntoresidencial.BuildConfig
 import com.example.conjuntoresidencial.MainActivity
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.api.RetrofitClient
@@ -33,7 +34,8 @@ import kotlinx.coroutines.tasks.await
  */
 object AvisosCelular {
 
-    private const val CANAL = "avisos"
+    // P6: un canal por app, para ajustar el sonido de cada una por separado
+    private val CANAL = "avisos_" + BuildConfig.TIPO_APP.lowercase()
     private const val TAG = "AvisosCelular"
     private const val PREFS = "ajustes"
     private const val CLAVE_ACTIVADOS = "avisos_activados"
@@ -77,7 +79,7 @@ object AvisosCelular {
         if (!activados(context)) return
         alcance.launch {
             try {
-                RetrofitClient.comun.registrarDispositivo(DispositivoRequest(token))
+                RetrofitClient.comun.registrarDispositivo(DispositivoRequest(token, BuildConfig.TIPO_APP, BuildConfig.APPLICATION_ID))
             } catch (e: Exception) {
                 Log.w(TAG, "No se pudo registrar el celular para avisos", e)
             }
@@ -90,7 +92,7 @@ object AvisosCelular {
         alcance.launch {
             try {
                 val token = FirebaseMessaging.getInstance().token.await()
-                RetrofitClient.comun.darDeBajaDispositivo(DispositivoRequest(token))
+                RetrofitClient.comun.darDeBajaDispositivo(DispositivoRequest(token, BuildConfig.TIPO_APP, BuildConfig.APPLICATION_ID))
             } catch (e: Exception) {
                 Log.w(TAG, "No se pudo dar de baja el celular", e)
             }

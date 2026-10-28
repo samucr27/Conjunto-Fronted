@@ -13,8 +13,17 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.conjuntoresidencial.R
+import com.example.conjuntoresidencial.api.RetrofitClient
+import com.example.conjuntoresidencial.model.ActivarBiometria
+import com.example.conjuntoresidencial.util.SessionManager
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import java.util.UUID
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -22,9 +31,10 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
 /**
- * Entrar con huella o rostro. Al activarlo se guardan los datos de acceso de la cuenta
- * (usuario o torre/apto y contraseña) cifrados con una llave del Android Keystore que nunca
- * sale del celular; al entrar, la huella los descifra y la app inicia sesión con ellos.
+ * Entrar con huella o rostro (P6). La contraseña NO se guarda nunca: al activarlo el servidor
+ * entrega una credencial aleatoria que solo sirve en este celular y en esta app; se guarda
+ * cifrada con una llave del Android Keystore que nunca sale del celular. Al entrar, la huella
+ * la descifra y se canjea por una sesión nueva (POST /api/auth/biometria/login).
  *
  * - Biometría fuerte (huella, rostro de clase 3): la llave solo funciona después de
  *   autenticarse (CryptoObject) y se invalida si se registra otra huella.
@@ -64,7 +74,12 @@ object AccesoBiometrico {
         }
     }
 
+    /** Lo único que se guarda (cifrado): el celular y su credencial opaca. */
+    data class Activacion(val dispositivoId: String, val credencial: String)
+
     private const val ROL_ADMIN = "ADMIN"
+    private const val CLAVE_DISPOSITIVO = "biometria_dispositivo_id"
+    private val alcance = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private const val PREFS = "ajustes"
     private const val CLAVE_DATOS = "biometria_datos"
     private const val CLAVE_IV = "biometria_iv"
@@ -120,6 +135,23 @@ object AccesoBiometrico {
     fun activar(fragment: Fragment, credenciales: Credenciales, alTerminar: (Boolean) -> Unit) {
         val context = fragment.requireContext()
         val modo = modoDisponible(context) ?: return alTerminar(false)
+        // Primero el servidor entrega la credencial de este celular; luego la huella confirma y se guarda
+        fragment.viewLifecycleOwner.lifecycleScope.launch {
+            val credencial = try {
+                val r = RetrofitClient.comun.activarBiometria(ActivarBiometria(dispositivoId(context)))
+                r.body()?.credencial.takeIf { r.isSuccessful }
+            } catch (_: Exception) {
+                null
+            }
+            if (credencial == null) alTerminar(false)
+            else guardarConHuella(fragment, modo, credenciales, Activacion(dispositivoId(context), credencial), alTerminar)
+        }
+    }
+
+    private fun guardarConHuella(
+        fragment: Fragment, modo: Modo, credenciales: Credenciales, activacion: Activacion, alTerminar: (Boolean) -> Unit
+    ) {
+        val context = fragment.requireContext()
         val cifrador = try {
             Cipher.getInstance(TRANSFORMACION).apply { init(Cipher.ENCRYPT_MODE, llave(modo)) }
         } catch (_: KeyPermanentlyInvalidatedException) {
@@ -133,7 +165,7 @@ object AccesoBiometrico {
             subtitulo = credenciales.cuenta(context),
             botonNegativo = context.getString(R.string.btn_cancelar),
             alExito = { c ->
-                val datos = c.doFinal(gson.toJson(credenciales).toByteArray(Charsets.UTF_8))
+                val datos = c.doFinal(gson.toJson(activacion).toByteArray(Charsets.UTF_8))
                 prefs(context).edit {
                     putString(CLAVE_DATOS, Base64.encodeToString(datos, Base64.NO_WRAP))
                     putString(CLAVE_IV, Base64.encodeToString(c.iv, Base64.NO_WRAP))
@@ -149,10 +181,10 @@ object AccesoBiometrico {
     }
 
     /**
-     * Pide la huella y entrega las credenciales guardadas. [alFallar] recibe un mensaje para
+     * Pide la huella y entrega la credencial guardada. [alFallar] recibe un mensaje para
      * mostrar, o null si el usuario solo canceló (eligió usar la contraseña).
      */
-    fun entrar(fragment: Fragment, alObtener: (Credenciales) -> Unit, alFallar: (String?) -> Unit) {
+    fun entrar(fragment: Fragment, alObtener: (Activacion) -> Unit, alFallar: (String?) -> Unit) {
         val context = fragment.requireContext()
         val p = prefs(context)
         val datos = p.getString(CLAVE_DATOS, null)
@@ -176,10 +208,10 @@ object AccesoBiometrico {
             subtitulo = p.getString(CLAVE_CUENTA, null),
             botonNegativo = context.getString(R.string.biometria_usar_contrasena),
             alExito = { c ->
-                val credenciales = runCatching {
-                    gson.fromJson(String(c.doFinal(Base64.decode(datos, Base64.NO_WRAP)), Charsets.UTF_8), Credenciales::class.java)
+                val activacion = runCatching {
+                    gson.fromJson(String(c.doFinal(Base64.decode(datos, Base64.NO_WRAP)), Charsets.UTF_8), Activacion::class.java)
                 }.getOrNull()
-                if (credenciales != null) alObtener(credenciales)
+                if (activacion?.credencial != null && activacion.dispositivoId != null) alObtener(activacion)
                 else {
                     desactivar(context)
                     alFallar(context.getString(R.string.biometria_error_datos))
@@ -189,8 +221,20 @@ object AccesoBiometrico {
         )
     }
 
-    /** Borra los datos guardados y las llaves: hará falta la contraseña otra vez. */
+    /** El identificador de este celular para el servidor (se crea una vez; no es un dato personal). */
+    fun dispositivoId(context: Context): String {
+        val p = prefs(context)
+        return p.getString(CLAVE_DISPOSITIVO, null) ?: UUID.randomUUID().toString().also {
+            p.edit { putString(CLAVE_DISPOSITIVO, it) }
+        }
+    }
+
+    /** Borra los datos guardados y las llaves: hará falta la contraseña otra vez. Si hay sesión, también revoca la del servidor. */
     fun desactivar(context: Context) {
+        if (activado(context) && SessionManager(context).getToken() != null) {
+            val id = dispositivoId(context)
+            alcance.launch { runCatching { RetrofitClient.comun.quitarBiometria(id) } }
+        }
         prefs(context).edit {
             remove(CLAVE_DATOS); remove(CLAVE_IV); remove(CLAVE_MODO); remove(CLAVE_CUENTA)
         }

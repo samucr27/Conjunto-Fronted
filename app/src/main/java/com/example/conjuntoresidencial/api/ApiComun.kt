@@ -42,6 +42,35 @@ interface ApiComun {
     @DELETE("api/residentes/{id}")
     suspend fun deleteResidente(@Path("id") id: Long): Response<Void>
 
+    // P6: huella con credencial opaca; textos legales y solicitudes de datos personales
+    @POST("api/auth/biometria/activar")
+    suspend fun activarBiometria(@Body cuerpo: ActivarBiometria): Response<BiometriaActivada>
+
+    @POST("api/auth/biometria/login")
+    suspend fun loginBiometria(@Body cuerpo: LoginBiometria): Response<LoginResponse>
+
+    @DELETE("api/auth/biometria")
+    suspend fun quitarBiometria(@Query("dispositivoId") dispositivoId: String): Response<Void>
+
+    @GET("api/legal/pendientes")
+    suspend fun getTextosPendientes(): Response<List<TextoLegalDTO>>
+
+    @POST("api/legal/consentimientos")
+    suspend fun aceptarTextos(@Body cuerpo: AceptarTextos): Response<Void>
+
+    @POST("api/solicitudes-datos")
+    suspend fun solicitarDatos(@Body cuerpo: NuevaSolicitudDatos): Response<SolicitudDatosDTO>
+
+    @GET("api/solicitudes-datos/mias")
+    suspend fun getMisSolicitudesDatos(): Response<List<SolicitudDatosDTO>>
+
+    // Solo el administrador (el servidor lo exige); la pantalla Cuenta → Legal es de las dos apps
+    @GET("api/solicitudes-datos")
+    suspend fun getSolicitudesDatos(): Response<List<SolicitudDatosDTO>>
+
+    @PATCH("api/solicitudes-datos/{id}")
+    suspend fun resolverSolicitudDatos(@Path("id") id: Long, @Body cuerpo: ResolverSolicitudDatos): Response<SolicitudDatosDTO>
+
     // Feed de publicaciones (P5): lo ven todos; publica la administración
     @GET("api/publicaciones")
     suspend fun getPublicaciones(@Query("pagina") pagina: Int): Response<PaginaPublicaciones>

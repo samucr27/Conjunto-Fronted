@@ -20,6 +20,7 @@ import com.example.conjuntoresidencial.databinding.FragmentInicioBinding
 import com.example.conjuntoresidencial.model.AdjuntoPublicacion
 import com.example.conjuntoresidencial.model.EdicionPublicacion
 import com.example.conjuntoresidencial.model.FijarPublicacion
+import com.example.conjuntoresidencial.ui.cuenta.pedirConsentimientos
 import com.example.conjuntoresidencial.model.PublicacionDTO
 import com.example.conjuntoresidencial.ui.feed.FeedViewModel
 import com.example.conjuntoresidencial.ui.feed.PublicacionAdapter
@@ -109,6 +110,8 @@ class InicioFragment : Fragment() {
             }
 
         if (viewModel.publicaciones.value == null) viewModel.recargar()
+        // P6: textos legales nuevos o sin aceptar
+        pedirConsentimientos()
     }
 
     /** La imagen o el archivo, con la app que el celular tenga para abrirlo (enlace de una hora). */
