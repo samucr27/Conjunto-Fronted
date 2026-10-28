@@ -271,8 +271,15 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
                 R.id.adminDashboardFragment -> R.menu.menu_barra_admin
                 R.id.propietarioDashboardFragment -> R.menu.menu_barra_residente
                 // Las dos barras las tienen: depende de quién inició sesión
-                R.id.inicioFragment, R.id.notificacionesFragment, R.id.cuentaFragment ->
-                    if (SessionManager(this).esAdmin()) R.menu.menu_barra_admin else R.menu.menu_barra_residente
+                R.id.porteriaFragment -> R.menu.menu_barra_porteria
+                R.id.inicioFragment, R.id.notificacionesFragment, R.id.cuentaFragment -> {
+                    val sesion = SessionManager(this)
+                    when {
+                        sesion.esPorteria() -> R.menu.menu_barra_porteria
+                        sesion.esAdmin() -> R.menu.menu_barra_admin
+                        else -> R.menu.menu_barra_residente
+                    }
+                }
                 else -> null
             }
             mostrarBarra(menu)

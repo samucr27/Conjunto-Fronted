@@ -37,7 +37,7 @@ data class DestinoNotificacion(
             // P5: lo que mandó el contador → la cartera de la administración
             tipo == TIPO_SOLICITUD_CONTABLE -> nav.navigate(R.id.carteraResumenFragment)
             // Nueva publicación → el feed de Inicio
-            tipo == TIPO_PUBLICACION -> nav.navigate(R.id.inicioFragment)
+            tipo == TIPO_PUBLICACION || tipo == TIPO_VISITA -> nav.navigate(R.id.inicioFragment)
             // Comprobante por revisar → Facturación; cuota nueva o revisada → Mi cartera
             tipo == TIPO_COMPROBANTE -> nav.navigate(R.id.cuotasFragment)
             tipo.startsWith(TIPO_CUOTA) -> nav.navigate(R.id.miCarteraFragment)
@@ -77,6 +77,7 @@ data class DestinoNotificacion(
         const val TIPO_CUOTA = "CUOTA"
         const val TIPO_REGISTRO = "REGISTRO"
         const val TIPO_PUBLICACION = "PUBLICACION"
+        const val TIPO_VISITA = "VISITA_PORTERIA"
         const val TIPO_SOLICITUD_ARRENDATARIO = "SOLICITUD_ARRENDATARIO"
         const val TIPO_COMPROBANTE = "COMPROBANTE"
         const val TIPO_CHAT = "CHAT"

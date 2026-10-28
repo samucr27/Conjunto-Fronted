@@ -45,6 +45,12 @@
         android:name="com.example.conjuntoresidencial.ui.feed.PublicarFragment"
         tools:layout="@layout/fragment_publicar" />
 
+    <!-- P6 bloque 5: la portería registra visitas y ve cómo responde cada apartamento -->
+    <fragment
+        android:id="@+id/porteriaFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.PorteriaFragment"
+        tools:layout="@layout/fragment_porteria" />
+
     <!-- Pestañas de la barra inferior (MainActivity navega a ellas por id) -->
     <fragment
         android:id="@+id/inicioFragment"

@@ -72,7 +72,7 @@ class EquipoFragment : Fragment() {
         binding.estado.vincular(binding.rvEquipo)
         binding.swipe.setOnRefreshListener { cargar() }
         barra = BarraBusqueda(this, binding.busqueda, R.string.busqueda_equipo, listOf(
-            R.string.busqueda_todos to null, R.string.busqueda_asistentes to ROL_ADMIN, R.string.busqueda_contadores to ROL_CONTADOR
+            R.string.busqueda_todos to null, R.string.busqueda_asistentes to ROL_ADMIN, R.string.busqueda_contadores to ROL_CONTADOR, R.string.busqueda_porteros to ROL_PORTERIA
         )) { cuentas?.let { mostrar(Resource.Success(it)) } }
         barra.vincular(binding.swipe, binding.rvEquipo)
         controlesFlotantes?.mostrarBotonFlotante(R.string.equipo_agregar, R.drawable.ic_add) { formulario(null) }
@@ -119,7 +119,7 @@ class EquipoFragment : Fragment() {
         val correo = campo(R.id.tilCorreoCuenta, R.id.etCorreoCuenta)
         val usuario = campo(R.id.tilUsuarioCuenta, R.id.etUsuarioCuenta)
         val contrasena = campo(R.id.tilContrasenaCuenta, R.id.etContrasenaCuenta)
-        val roles = listOf(ROL_ADMIN, ROL_CONTADOR)
+        val roles = listOf(ROL_ADMIN, ROL_CONTADOR, ROL_PORTERIA)
         val etiquetas = roles.map { getString(etiquetaRol(it, false)) }
         val rol = vista.findViewById<AutoCompleteTextView>(R.id.etRolCuenta).apply { comoLista(etiquetas) }
         if (editando != null) {
@@ -177,7 +177,7 @@ class EquipoFragment : Fragment() {
                 ejecutar(getString(R.string.equipo_rol_cambiado, c.usuario, getString(etiquetaRol(otroRol, false)))) {
                     RetrofitClient.instance.updateCuentaAdministracion(c.id!!, c.copy(rol = otroRol))
                 }
-            }).takeIf { !principal },
+            }).takeIf { !principal && c.rol != ROL_PORTERIA },
             R.string.equipo_restablecer to {
                 pedirTexto(getString(R.string.equipo_restablecer_titulo, c.usuario), R.string.login_contrasena, null,
                     InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD,
@@ -227,7 +227,8 @@ class EquipoFragment : Fragment() {
                 setText(R.string.equipo_cupos_ayuda)
                 setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium)
             })
-            val campos = listOf(ROL_ADMIN to R.string.equipo_cupo_asistentes, ROL_CONTADOR to R.string.equipo_cupo_contadores)
+            val campos = listOf(ROL_ADMIN to R.string.equipo_cupo_asistentes, ROL_CONTADOR to R.string.equipo_cupo_contadores,
+                ROL_PORTERIA to R.string.equipo_cupo_porteros)
                 .map { (rol, etiqueta) ->
                     val cupo = cupos.firstOrNull { it.rol == rol }
                     val et = TextInputEditText(requireContext()).apply {
@@ -291,9 +292,11 @@ class EquipoFragment : Fragment() {
     companion object {
         const val ROL_ADMIN = "ADMIN"
         const val ROL_CONTADOR = "CONTADOR"
+        const val ROL_PORTERIA = "PORTERIA"
 
         fun etiquetaRol(rol: String, principal: Boolean = false) = when {
             rol == ROL_CONTADOR -> R.string.rol_contador
+            rol == ROL_PORTERIA -> R.string.rol_porteria
             principal -> R.string.equipo_principal
             else -> R.string.rol_asistente
         }

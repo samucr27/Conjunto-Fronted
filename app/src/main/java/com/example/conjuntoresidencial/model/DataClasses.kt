@@ -216,6 +216,17 @@ data class NotificacionDTO(
 )
 // Token de Firebase del celular (avisos)
 data class DispositivoRequest(val token: String, val tipoApp: String? = null, val applicationId: String? = null)
+// P6 bloque 5: portería. telefono solo lo ve la portería
+data class VisitaDTO(
+    val id: Long, val apartamentoId: Long, val torre: String, val apto: String, val visitante: String,
+    val documento: String?, val placa: String?, val motivo: String?, val estado: String,
+    val creadaEn: String, val venceEn: String, val respondidaEn: String?, val canal: String?, val telefono: String?
+)
+data class NuevaVisita(
+    val torre: String, val apto: String, val visitante: String,
+    val documento: String? = null, val placa: String? = null, val motivo: String? = null
+)
+data class RespuestaVisita(val decision: String)
 // P6: huella con credencial opaca por celular (nunca la contraseña)
 data class ActivarBiometria(val dispositivoId: String)
 data class BiometriaActivada(val credencial: String)

@@ -6,7 +6,7 @@ object ConfigApp {
     val destinoLogin: Int = R.id.loginAdminFragment
 
     /** Roles que pueden usar esta app. */
-    val rolesPermitidos: Set<String> = setOf("ADMIN", "CONTADOR")
+    val rolesPermitidos: Set<String> = setOf("ADMIN", "CONTADOR", "PORTERIA")
 
     const val tipoApp = "ADMIN"
 }

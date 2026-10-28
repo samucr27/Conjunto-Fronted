@@ -112,6 +112,8 @@ class InicioFragment : Fragment() {
         if (viewModel.publicaciones.value == null) viewModel.recargar()
         // P6: textos legales nuevos o sin aceptar
         pedirConsentimientos()
+        // P6: visitas que la portería espera que el apartamento responda
+        if (!sesion.esAdmin()) vigilarVisitas()
     }
 
     /** La imagen o el archivo, con la app que el celular tenga para abrirlo (enlace de una hora). */

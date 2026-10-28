@@ -42,6 +42,19 @@ interface ApiComun {
     @DELETE("api/residentes/{id}")
     suspend fun deleteResidente(@Path("id") id: Long): Response<Void>
 
+    // P6 bloque 5: portería (registrar y listar: portería; pendientes y responder: residentes)
+    @POST("api/porteria/visitas")
+    suspend fun registrarVisita(@Body visita: NuevaVisita): Response<VisitaDTO>
+
+    @GET("api/porteria/visitas")
+    suspend fun getVisitas(): Response<List<VisitaDTO>>
+
+    @GET("api/porteria/visitas/pendientes")
+    suspend fun getVisitasPendientes(): Response<List<VisitaDTO>>
+
+    @PATCH("api/porteria/visitas/{id}/respuesta")
+    suspend fun responderVisita(@Path("id") id: Long, @Body respuesta: RespuestaVisita): Response<VisitaDTO>
+
     // P6: huella con credencial opaca; textos legales y solicitudes de datos personales
     @POST("api/auth/biometria/activar")
     suspend fun activarBiometria(@Body cuerpo: ActivarBiometria): Response<BiometriaActivada>

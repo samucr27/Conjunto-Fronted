@@ -29,7 +29,9 @@ fun Fragment.completarInicioSesion(respuesta: LoginResponse, credenciales: Acces
     val contexto = requireContext()
     SessionManager(contexto).guardar(respuesta, credenciales?.documento)
     val irAlPanel = {
-        findNavController().navigate(R.id.inicioFragment, null, NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build())
+        // La portería solo tiene su pantalla de visitas
+        val inicio = if (respuesta.rol == "PORTERIA") R.id.porteriaFragment else R.id.inicioFragment
+        findNavController().navigate(inicio, null, NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build())
     }
     val cuenta = credenciales?.cuenta(contexto)
     if (credenciales == null || cuenta == null || !AccesoBiometrico.conviene(contexto, cuenta)) {

@@ -29,7 +29,9 @@ class SessionManager(context: Context) {
     fun saveRol(rol: String) = prefs.edit { putString("rol", rol) }
     fun getRol(): String? = prefs.getString("rol", null)
     // De la administración: el administrador o el contador (P4), que entra por el mismo login
-    fun esAdmin(): Boolean = getRol() == "ADMIN" || esContador()
+    // P6: la portería también entra por el login de la administración; solo ve su pantalla de visitas
+    fun esAdmin(): Boolean = getRol() == "ADMIN" || esContador() || esPorteria()
+    fun esPorteria(): Boolean = getRol() == "PORTERIA"
     // El contador solo maneja la cartera y la facturación
     fun esContador(): Boolean = getRol() == "CONTADOR"
 
