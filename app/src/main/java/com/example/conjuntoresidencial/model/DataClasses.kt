@@ -216,6 +216,9 @@ data class NotificacionDTO(
 )
 // Token de Firebase del celular (avisos)
 data class DispositivoRequest(val token: String, val tipoApp: String? = null, val applicationId: String? = null)
+// P6 bloque 6: pago en línea con Wompi (el servidor firma la dirección; la app solo la abre)
+data class CheckoutRequest(val cuotaId: Long)
+data class CheckoutDTO(val url: String, val referencia: String, val montoCentavos: Long)
 // P6 bloque 5: portería. telefono solo lo ve la portería
 data class VisitaDTO(
     val id: Long, val apartamentoId: Long, val torre: String, val apto: String, val visitante: String,

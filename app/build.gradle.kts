@@ -87,6 +87,8 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
     // Entrar con huella o rostro
     implementation("androidx.biometric:biometric:1.1.0")
+    // Checkout de Wompi en una pestaña del navegador (Custom Tabs)
+    implementation("androidx.browser:browser:1.8.0")
     // Desenfoque en vivo del contenido bajo las barras translúcidas (Apache 2.0)
     implementation("com.github.Dimezis:BlurView:version-3.2.0")
     implementation("androidx.appcompat:appcompat:1.7.0")

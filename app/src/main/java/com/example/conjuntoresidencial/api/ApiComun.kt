@@ -42,6 +42,9 @@ interface ApiComun {
     @DELETE("api/residentes/{id}")
     suspend fun deleteResidente(@Path("id") id: Long): Response<Void>
 
+    @POST("api/pagos/checkout")
+    suspend fun crearCheckout(@Body cuerpo: CheckoutRequest): Response<CheckoutDTO>
+
     // P6 bloque 5: portería (registrar y listar: portería; pendientes y responder: residentes)
     @POST("api/porteria/visitas")
     suspend fun registrarVisita(@Body visita: NuevaVisita): Response<VisitaDTO>

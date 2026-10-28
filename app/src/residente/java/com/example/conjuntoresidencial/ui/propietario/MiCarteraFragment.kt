@@ -1,6 +1,12 @@
 package com.example.conjuntoresidencial.ui.propietario
 
+import android.net.Uri
 import android.os.Bundle
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.lifecycle.lifecycleScope
+import com.example.conjuntoresidencial.api.RetrofitClient
+import com.example.conjuntoresidencial.model.CheckoutRequest
+import kotlinx.coroutines.launch
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -100,16 +106,60 @@ class MiCarteraFragment : Fragment() {
         val dialogo = MaterialAlertDialogBuilder(requireContext())
             .setTitle(Cuotas.nombreMes(c.periodo))
             .setMessage(Cuotas.detalle(requireContext(), c) + "\n" + getString(Cuotas.estado(c).etiqueta))
+        val subir = {
+            cuotaPorSubir = c.id
+            elegirArchivo.launch(arrayOf("image/*", "application/pdf"))
+        }
         if (c.estado != Cuotas.PAGADA) {
-            dialogo.setPositiveButton(
-                if (c.tieneComprobante == true) R.string.cuota_cambiar_comprobante else R.string.cuota_subir_comprobante
-            ) { _, _ ->
-                cuotaPorSubir = c.id
-                elegirArchivo.launch(arrayOf("image/*", "application/pdf"))
+            // P6: el pago en línea es lo principal; el comprobante queda como segunda opción
+            dialogo.setPositiveButton(R.string.cuota_pagar_en_linea) { _, _ -> pagarEnLinea(c) }
+            dialogo.setNeutralButton(R.string.cuota_otras_opciones) { _, _ ->
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(Cuotas.nombreMes(c.periodo))
+                    .setItems(listOfNotNull(
+                        getString(if (c.tieneComprobante == true) R.string.cuota_cambiar_comprobante else R.string.cuota_subir_comprobante),
+                        getString(R.string.cuota_ver_comprobante).takeIf { c.tieneComprobante == true }
+                    ).toTypedArray()) { _, i -> if (i == 0) subir() else abrirComprobante(c) }
+                    .setNegativeButton(R.string.btn_cerrar, null).show()
+            }
+        } else if (c.tieneComprobante == true) {
+            dialogo.setNeutralButton(R.string.cuota_ver_comprobante) { _, _ -> abrirComprobante(c) }
+        }
+        dialogo.setNegativeButton(R.string.btn_cerrar, null).show()
+    }
+
+    /** Pide al servidor la dirección firmada y la abre en una pestaña del navegador; al volver se recarga la cartera. */
+    private fun pagarEnLinea(c: CuotaDTO) {
+        if (!SessionManager(requireContext()).arrendatarioPuedePagar()) {
+            aviso(R.string.cuota_sin_permiso_pagar).show()
+            return
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val r = RetrofitClient.comun.crearCheckout(CheckoutRequest(c.id))
+                val checkout = r.body()
+                if (_binding == null) return@launch
+                if (r.isSuccessful && checkout != null) {
+                    esperandoPago = true
+                    CustomTabsIntent.Builder().build().launchUrl(requireContext(), Uri.parse(checkout.url))
+                } else {
+                    aviso(RetrofitClient.mensajeDeError(r, getString(R.string.cuota_error_pago)), Snackbar.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                if (_binding != null) aviso(RetrofitClient.mensajeDeExcepcion(e)).show()
             }
         }
-        if (c.tieneComprobante == true) dialogo.setNeutralButton(R.string.cuota_ver_comprobante) { _, _ -> abrirComprobante(c) }
-        dialogo.setNegativeButton(R.string.btn_cerrar, null).show()
+    }
+
+    // El pago se confirma en el servidor (webhook): al volver del navegador solo se recarga para verlo
+    private var esperandoPago = false
+
+    override fun onResume() {
+        super.onResume()
+        if (esperandoPago) {
+            esperandoPago = false
+            cargar()
+        }
     }
 
     // La cuota elegida sobrevive a que el sistema cierre la app mientras se escoge el archivo

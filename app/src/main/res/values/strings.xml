@@ -904,6 +904,10 @@
     <string name="audiencia_todos">Todos los residentes</string>
     <string name="audiencia_propietarios">Solo propietarios</string>
     <string name="audiencia_arrendatarios">Solo arrendatarios</string>
+    <string name="cuota_pagar_en_linea">Pagar en línea</string>
+    <string name="cuota_otras_opciones">Comprobante…</string>
+    <string name="cuota_error_pago">No se pudo abrir el pago en línea</string>
+    <string name="cuota_sin_permiso_pagar">La administración no te permite pagar desde la app</string>
     <string name="pestana_porteria">Visitas</string>
     <string name="rol_porteria">Portería</string>
     <string name="busqueda_porteros">Portería</string>
