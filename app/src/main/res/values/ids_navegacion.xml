@@ -36,6 +36,7 @@
     <item name="equipoFragment" type="id" />
     <item name="inicioFragment" type="id" />
     <item name="porteriaFragment" type="id" />
+    <item name="personalConjuntoFragment" type="id" />
     <item name="legalFragment" type="id" />
     <item name="loginAdminFragment" type="id" />
     <item name="loginApartamentoFragment" type="id" />

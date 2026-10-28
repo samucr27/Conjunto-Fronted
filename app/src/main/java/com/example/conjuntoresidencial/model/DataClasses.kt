@@ -216,6 +216,29 @@ data class NotificacionDTO(
 )
 // Token de Firebase del celular (avisos)
 data class DispositivoRequest(val token: String, val tipoApp: String? = null, val applicationId: String? = null)
+// P6 bloque 7: personal del conjunto, turnos, nómina y presupuesto (solo administración)
+data class EmpresaDTO(val id: Long? = null, val nombre: String? = null, val nit: String? = null, val contacto: String? = null,
+                      val telefono: String? = null, val activa: Boolean? = null)
+data class TrabajadorDTO(
+    val id: Long? = null, val nombreCompleto: String? = null, val documento: String? = null, val telefono: String? = null,
+    val cargo: String? = null, val vinculo: String? = null, val empresaId: Long? = null, val empresa: String? = null,
+    val salarioBase: Double? = null, val fechaIngreso: String? = null, val activo: Boolean? = null
+)
+data class TurnoDTO(
+    val id: Long? = null, val trabajadorId: Long? = null, val trabajador: String? = null, val cargo: String? = null,
+    val fecha: String? = null, val horaInicio: String? = null, val horaFin: String? = null
+)
+data class NominaDTO(
+    val id: Long, val trabajadorId: Long, val trabajador: String, val cargo: String, val periodo: String,
+    val salarioBase: Double, val bonificaciones: Double, val descuentos: Double, val neto: Double, val estado: String
+)
+data class CambioNomina(val bonificaciones: Double? = null, val descuentos: Double? = null, val estado: String? = null)
+data class LineaPresupuesto(val cargo: String, val monto: Double)
+data class LineaResumenPresupuesto(val cargo: String, val presupuestado: Double, val nomina: Double, val diferencia: Double)
+data class ResumenPresupuesto(
+    val periodo: String, val lineas: List<LineaResumenPresupuesto>,
+    val totalPresupuestado: Double, val totalNomina: Double, val diferencia: Double
+)
 // P6 bloque 6: pago en línea con Wompi (el servidor firma la dirección; la app solo la abre)
 data class CheckoutRequest(val cuotaId: Long)
 data class CheckoutDTO(val url: String, val referencia: String, val montoCentavos: Long)

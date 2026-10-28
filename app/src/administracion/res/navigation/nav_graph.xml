@@ -45,6 +45,12 @@
         android:name="com.example.conjuntoresidencial.ui.feed.PublicarFragment"
         tools:layout="@layout/fragment_publicar" />
 
+    <!-- P6 bloque 7: personal, turnos, nómina y presupuesto (solo administrador) -->
+    <fragment
+        android:id="@+id/personalConjuntoFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.PersonalConjuntoFragment"
+        tools:layout="@layout/fragment_personal_conjunto" />
+
     <!-- P6 bloque 5: la portería registra visitas y ve cómo responde cada apartamento -->
     <fragment
         android:id="@+id/porteriaFragment"

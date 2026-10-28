@@ -84,8 +84,12 @@ class AdminDashboardFragment : Fragment() {
         binding.cardEquipo.configurar(R.drawable.ic_people, R.string.menu_equipo, R.string.menu_equipo_sub) {
             nav.navigate(R.id.equipoFragment)
         }
+        binding.cardPersonalConjunto.configurar(R.drawable.ic_people, R.string.menu_personal_conjunto, R.string.menu_personal_conjunto_sub) {
+            nav.navigate(R.id.personalConjuntoFragment)
+        }
         // El contador solo ve la cartera y la facturación (el backend tampoco le deja lo demás)
         if (contador) {
+            quitar(binding.cardPersonalConjunto.root)
             listOf(binding.cardDirectorioAptos, binding.cardControlObras, binding.cardHistorialReservas, binding.cardZonasAdmin,
                 binding.cardPersonalObra, binding.cardVehiculosAdmin, binding.cardParqueaderos, binding.cardResidentesPendientes, binding.cardEquipo, binding.cardMensajes)
                 .forEach { quitar(it.root) }

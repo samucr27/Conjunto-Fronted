@@ -127,6 +127,55 @@ interface ApiAdmin : ApiComun {
     @DELETE("api/parqueaderos/{id}")
     suspend fun eliminarParqueadero(@Path("id") id: Long): Response<Void>
 
+    // P6 bloque 7: personal del conjunto
+    @GET("api/personal-conjunto/empresas")
+    suspend fun getEmpresasPersonal(): Response<List<EmpresaDTO>>
+
+    @POST("api/personal-conjunto/empresas")
+    suspend fun crearEmpresaPersonal(@Body empresa: EmpresaDTO): Response<EmpresaDTO>
+
+    @PUT("api/personal-conjunto/empresas/{id}")
+    suspend fun actualizarEmpresaPersonal(@Path("id") id: Long, @Body empresa: EmpresaDTO): Response<EmpresaDTO>
+
+    @DELETE("api/personal-conjunto/empresas/{id}")
+    suspend fun eliminarEmpresaPersonal(@Path("id") id: Long): Response<Void>
+
+    @GET("api/personal-conjunto/trabajadores")
+    suspend fun getTrabajadores(): Response<List<TrabajadorDTO>>
+
+    @POST("api/personal-conjunto/trabajadores")
+    suspend fun crearTrabajador(@Body trabajador: TrabajadorDTO): Response<TrabajadorDTO>
+
+    @PUT("api/personal-conjunto/trabajadores/{id}")
+    suspend fun actualizarTrabajador(@Path("id") id: Long, @Body trabajador: TrabajadorDTO): Response<TrabajadorDTO>
+
+    @GET("api/personal-conjunto/turnos")
+    suspend fun getTurnos(@Query("desde") desde: String, @Query("hasta") hasta: String): Response<List<TurnoDTO>>
+
+    @POST("api/personal-conjunto/turnos")
+    suspend fun crearTurno(@Body turno: TurnoDTO): Response<TurnoDTO>
+
+    @DELETE("api/personal-conjunto/turnos/{id}")
+    suspend fun eliminarTurno(@Path("id") id: Long): Response<Void>
+
+    @GET("api/personal-conjunto/nomina")
+    suspend fun getNomina(@Query("periodo") periodo: String): Response<List<NominaDTO>>
+
+    @POST("api/personal-conjunto/nomina/generar")
+    suspend fun generarNomina(@Query("periodo") periodo: String): Response<List<NominaDTO>>
+
+    @PATCH("api/personal-conjunto/nomina/{id}")
+    suspend fun ajustarNomina(@Path("id") id: Long, @Body cambio: CambioNomina): Response<NominaDTO>
+
+    @GET("api/personal-conjunto/presupuesto")
+    suspend fun getPresupuesto(@Query("periodo") periodo: String): Response<List<LineaPresupuesto>>
+
+    @PUT("api/personal-conjunto/presupuesto")
+    suspend fun fijarPresupuesto(@Query("periodo") periodo: String, @Body lineas: List<LineaPresupuesto>): Response<List<LineaPresupuesto>>
+
+    @GET("api/personal-conjunto/presupuesto/resumen")
+    suspend fun getResumenPresupuesto(@Query("periodo") periodo: String): Response<ResumenPresupuesto>
+
     @PUT("api/vehiculos/cupos")
     suspend fun guardarCuposVehiculo(@Body cupos: List<CupoVehiculoDTO>): Response<List<CupoVehiculoDTO>>
 }

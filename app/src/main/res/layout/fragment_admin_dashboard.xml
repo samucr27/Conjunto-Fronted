@@ -107,6 +107,13 @@
                     android:layout_columnWeight="1"
                     android:layout_margin="6dp" />
                 <include
+                    android:id="@+id/cardPersonalConjunto"
+                    layout="@layout/item_tarjeta_menu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp" />
+                <include
                     android:id="@+id/cardEquipo"
                     layout="@layout/item_tarjeta_menu"
                     android:layout_width="0dp"
