@@ -34,6 +34,7 @@ class CuentaFragment : Fragment() {
         val sesion = SessionManager(requireContext())
         val rol = getString(when {
             sesion.esContador() -> R.string.rol_contador
+            sesion.esPorteria() -> R.string.rol_porteria
             sesion.esPrincipal() -> R.string.equipo_principal
             sesion.esAdmin() -> R.string.rol_asistente
             else -> R.string.rol_residente
@@ -48,7 +49,7 @@ class CuentaFragment : Fragment() {
         if (!sesion.esAdmin()) {
             viewLifecycleOwner.lifecycleScope.launch {
                 val arrendado = runCatching {
-                    RetrofitClient.instance.getApartamentoById(sesion.getApartamentoId()).body()?.arrendado
+                    RetrofitClient.comun.getApartamentoById(sesion.getApartamentoId()).body()?.arrendado
                 }.getOrNull() ?: return@launch
                 if (_binding == null) return@launch
                 val estado = getString(if (arrendado) R.string.cuenta_apto_arrendado else R.string.cuenta_apto_propietario)

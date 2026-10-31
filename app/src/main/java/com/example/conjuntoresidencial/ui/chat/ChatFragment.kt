@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 fun Fragment.abrirChatCon(aptoId: Long, participante: String) {
     viewLifecycleOwner.lifecycleScope.launch {
         try {
-            val r = RetrofitClient.instance.abrirChat(AbrirChat(aptoId, participante))
+            val r = RetrofitClient.comun.abrirChat(AbrirChat(aptoId, participante))
             val c = r.body()
             if (!r.isSuccessful || c == null) {
                 aviso(RetrofitClient.mensajeDeError(r, getString(R.string.chat_error))).show()
@@ -137,8 +137,8 @@ class ChatFragment : Fragment() {
         return try {
             val id = conversacionId
             // Con id: marcarla leída devuelve sus datos (torre, apto, con quién)
-            val r = if (id == null) RetrofitClient.instance.abrirChat(AbrirChat())
-            else RetrofitClient.instance.marcarChatLeido(id)
+            val r = if (id == null) RetrofitClient.comun.abrirChat(AbrirChat())
+            else RetrofitClient.comun.marcarChatLeido(id)
             val c = r.body()
             if (!r.isSuccessful || c == null) {
                 binding.estado.mostrarError(RetrofitClient.mensajeDeError(r, getString(R.string.chat_error))) { reintentar() }
@@ -158,7 +158,7 @@ class ChatFragment : Fragment() {
     private suspend fun traerNuevos(id: Long) {
         try {
             val ultimo = adaptador.currentList.lastOrNull()?.id
-            val r = RetrofitClient.instance.getMensajes(id, ultimo)
+            val r = RetrofitClient.comun.getMensajes(id, ultimo)
             if (!r.isSuccessful) {
                 if (adaptador.currentList.isEmpty()) {
                     binding.estado.mostrarError(RetrofitClient.mensajeDeError(r, getString(R.string.chat_error))) { reintentar() }
@@ -170,7 +170,7 @@ class ChatFragment : Fragment() {
                 // Los que ya están (el propio recién enviado) no se repiten
                 val ids = adaptador.currentList.map { it.id }.toSet()
                 agregar(nuevos.filter { it.id !in ids })
-                if (nuevos.any { !it.propio }) RetrofitClient.instance.marcarChatLeido(id)
+                if (nuevos.any { !it.propio }) RetrofitClient.comun.marcarChatLeido(id)
             }
             if (adaptador.currentList.isEmpty()) {
                 binding.estado.mostrarVacio(R.drawable.ic_chat, getString(R.string.chat_vacio),
@@ -196,7 +196,7 @@ class ChatFragment : Fragment() {
         binding.btnEnviar.isEnabled = false
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val r = RetrofitClient.instance.enviarMensaje(id, MensajeNuevo(texto))
+                val r = RetrofitClient.comun.enviarMensaje(id, MensajeNuevo(texto))
                 val m = r.body()
                 if (r.isSuccessful && m != null) {
                     binding.etMensaje.text?.clear()

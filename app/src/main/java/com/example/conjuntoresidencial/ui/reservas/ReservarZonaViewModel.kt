@@ -61,7 +61,7 @@ class ReservarZonaViewModel : ViewModel() {
         val hasta = String.format(Locale.US, "%04d-%02d-%02d", anio, mes + 1, ultimoDia)
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.instance.getDisponibilidad(zonaId, desde, hasta)
+                val response = RetrofitClient.comun.getDisponibilidad(zonaId, desde, hasta)
                 val datos = response.body()
                 _disponibilidad.value = if (response.isSuccessful && datos != null) Resource.Success(datos)
                     else Resource.Error(RetrofitClient.mensajeDeError(response, errorPorDefecto))
@@ -87,8 +87,8 @@ class ReservarZonaViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val id = reservaId
-                val response = if (id == null) RetrofitClient.instance.createReserva(reserva)
-                    else RetrofitClient.instance.updateReserva(id, reserva)
+                val response = if (id == null) RetrofitClient.comun.createReserva(reserva)
+                    else RetrofitClient.comun.updateReserva(id, reserva)
                 // 409 si mientras tanto otro reservó esa franja; 400 si no cabe en el horario o el aforo
                 _resultado.value = Evento(if (response.isSuccessful) null else RetrofitClient.mensajeDeError(response, errorPorDefecto))
             } catch (e: Exception) {

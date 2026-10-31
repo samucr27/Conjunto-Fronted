@@ -24,7 +24,7 @@ class MisObrasViewModel : ViewModel() {
         _obras.value = Resource.Loading
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.instance.getObrasPorApartamento(aptoId)
+                val response = RetrofitClient.comun.getObrasPorApartamento(aptoId)
                 if (response.isSuccessful && response.body() != null)
                     _obras.value = Resource.Success(response.body()!!)
                 else _obras.value = Resource.Error("Error al cargar obras")
@@ -38,7 +38,7 @@ class MisObrasViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val obraActualizada = obra.copy(estadoObra = "FINALIZADA")
-                val response = RetrofitClient.instance.updateObra(obraId, obraActualizada)
+                val response = RetrofitClient.comun.updateObra(obraId, obraActualizada)
                 if (response.isSuccessful) {
                     // Actualizar solo ese item en la lista sin recargar todo
                     val listaActual = (_obras.value as? Resource.Success)?.data?.toMutableList() ?: return@launch

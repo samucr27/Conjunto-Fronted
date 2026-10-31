@@ -23,7 +23,7 @@ import com.example.conjuntoresidencial.model.ObraDTO
 import com.example.conjuntoresidencial.model.PersonalObraDTO
 import com.example.conjuntoresidencial.model.RevisionObra
 import com.example.conjuntoresidencial.model.RevisionPersonal
-import com.example.conjuntoresidencial.ui.admin.editarPersonal
+import com.example.conjuntoresidencial.ui.obras.editarPersonal
 import com.example.conjuntoresidencial.ui.comun.Estados
 import com.example.conjuntoresidencial.ui.comun.accionesDeLista
 import com.example.conjuntoresidencial.ui.comun.aviso
@@ -37,6 +37,7 @@ import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.ui.comun.ponerTitulo
 import com.example.conjuntoresidencial.ui.propietario.RegistrarObraFragment
 import com.example.conjuntoresidencial.util.Formatos
+import com.example.conjuntoresidencial.util.SessionManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -73,7 +74,7 @@ class ObraDetalleFragment : Fragment() {
         when {
             enDialogo != null -> enDialogo(certificado)
             trabajador != null -> ejecutarAccion(getString(R.string.arl_subido),
-                { RetrofitClient.instance.subirCertificadoArl(trabajador, certificado.parte()) }) { cargar() }
+                { RetrofitClient.comun.subirCertificadoArl(trabajador, certificado.parte()) }) { cargar() }
         }
     }
 
@@ -108,8 +109,8 @@ class ObraDetalleFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val (o, p) = coroutineScope {
-                    val a = async { RetrofitClient.instance.getObra(obraId) }
-                    val b = async { RetrofitClient.instance.getPersonalPorObra(obraId) }
+                    val a = async { RetrofitClient.comun.getObra(obraId) }
+                    val b = async { RetrofitClient.comun.getPersonalPorObra(obraId) }
                     a.await() to b.await()
                 }
                 binding.swipe.isRefreshing = false
@@ -176,6 +177,10 @@ class ObraDetalleFragment : Fragment() {
             fila.root.isFocusable = true
             fila.root.setOnClickListener { opcionesTrabajador(p) }
         }
+        // El arrendatario solo mira: sin personal que ver ni poder añadirlo, la tarjeta no aparece
+        val puedeAnadir = esAdmin || SessionManager(requireContext()).getRol() != "ARRENDATARIO"
+        binding.btnAnadirTrabajador.isVisible = puedeAnadir
+        binding.cardPersonal.isVisible = personal.isNotEmpty() || puedeAnadir
         binding.tvSinPersonal.isVisible = personal.isEmpty()
         binding.encabezado.ponerInfo(
             resources.getQuantityString(R.plurals.obra_resumen_personal, personal.size, personal.size)
@@ -198,7 +203,7 @@ class ObraDetalleFragment : Fragment() {
             (R.string.editar to { editarPersonal(p) { cargar() } }).takeIf { esAdmin || !aprobada(o) },
             R.string.personal_eliminar to {
                 confirmar(getString(R.string.personal_eliminar_titulo, p.nombreTrabajador), null, R.string.residente_eliminar_si) {
-                    ejecutarAccion(getString(R.string.personal_eliminado), { RetrofitClient.instance.deletePersonalObra(id) }) { cargar() }
+                    ejecutarAccion(getString(R.string.personal_eliminado), { RetrofitClient.comun.deletePersonalObra(id) }) { cargar() }
                 }
             }
         )
@@ -208,12 +213,12 @@ class ObraDetalleFragment : Fragment() {
     private fun revisarTrabajador(p: PersonalObraDTO, aprobado: Boolean) {
         if (aprobado) {
             ejecutarAccion(getString(R.string.personal_aprobado_ok),
-                { RetrofitClient.instance.revisarPersonal(p.id!!, RevisionPersonal(true)) }) { cargar() }
+                { RetrofitClient.comun.revisarPersonal(p.id!!, RevisionPersonal(true)) }) { cargar() }
             return
         }
         pedirMotivo(getString(R.string.personal_rechazar)) { motivo ->
             ejecutarAccion(getString(R.string.personal_rechazado_ok),
-                { RetrofitClient.instance.revisarPersonal(p.id!!, RevisionPersonal(false, motivo)) }) { cargar() }
+                { RetrofitClient.comun.revisarPersonal(p.id!!, RevisionPersonal(false, motivo)) }) { cargar() }
         }
     }
 
@@ -221,14 +226,14 @@ class ObraDetalleFragment : Fragment() {
         val mensaje = getString(R.string.obra_aprobar_mensaje).takeIf { personal.any { it.aprobacion == PENDIENTE } }
         confirmar(getString(R.string.obra_aprobar_titulo), mensaje, R.string.obra_aprobar) {
             ejecutarAccion(getString(R.string.obra_aprobada_ok),
-                { RetrofitClient.instance.revisarObra(obraId, RevisionObra(true)) }) { cargar() }
+                { RetrofitClient.comun.revisarObra(obraId, RevisionObra(true)) }) { cargar() }
         }
     }
 
     private fun rechazarObra() {
         pedirMotivo(getString(R.string.obra_rechazar)) { motivo ->
             ejecutarAccion(getString(R.string.obra_rechazada_ok),
-                { RetrofitClient.instance.revisarObra(obraId, RevisionObra(false, motivo)) }) { cargar() }
+                { RetrofitClient.comun.revisarObra(obraId, RevisionObra(false, motivo)) }) { cargar() }
         }
     }
 
@@ -243,8 +248,8 @@ class ObraDetalleFragment : Fragment() {
         val elegir = { estado: String ->
             ejecutarAccion(getString(R.string.obra_estado_cambiado), {
                 // La administración usa su ruta de estado; el propietario la de editar (con la obra aprobada solo cambia esto)
-                if (esAdmin) RetrofitClient.instance.cambiarEstadoObra(obraId, EstadoRequest(estado))
-                else RetrofitClient.instance.updateObra(obraId, o.copy(estadoObra = estado))
+                if (esAdmin) RetrofitClient.comun.cambiarEstadoObra(obraId, EstadoRequest(estado))
+                else RetrofitClient.comun.updateObra(obraId, o.copy(estadoObra = estado))
             }) { cargar() }
         }
         elegirOpcion(getString(R.string.obra_cambiar_estado), listOf(
@@ -257,7 +262,7 @@ class ObraDetalleFragment : Fragment() {
         val o = obra ?: return
         confirmar(getString(R.string.obra_eliminar_titulo), getString(R.string.obra_eliminar_mensaje, o.descripcionAdecuacion),
             R.string.residente_eliminar_si) {
-            ejecutarAccion(getString(R.string.obra_eliminada), { RetrofitClient.instance.deleteObra(obraId) }) {
+            ejecutarAccion(getString(R.string.obra_eliminada), { RetrofitClient.comun.deleteObra(obraId) }) {
                 findNavController().popBackStack()
             }
         }
@@ -297,14 +302,14 @@ class ObraDetalleFragment : Fragment() {
     private fun guardarTrabajador(dto: PersonalObraDTO, certificado: CertificadoArl?) {
         viewLifecycleOwner.lifecycleScope.launch {
             val mensaje = try {
-                val r = RetrofitClient.instance.createPersonalObra(dto)
+                val r = RetrofitClient.comun.createPersonalObra(dto)
                 val creado = r.body()
                 val id = creado?.id
                 when {
                     !r.isSuccessful || id == null ->
                         RetrofitClient.mensajeDeError(r, getString(R.string.personal_error_guardar))
                     certificado != null &&
-                        !RetrofitClient.instance.subirCertificadoArl(id, certificado.parte()).isSuccessful ->
+                        !RetrofitClient.comun.subirCertificadoArl(id, certificado.parte()).isSuccessful ->
                         getString(R.string.arl_error_subir)
                     creado.aprobacion == PENDIENTE -> getString(R.string.personal_agregado_pendiente)
                     else -> getString(R.string.personal_agregado)

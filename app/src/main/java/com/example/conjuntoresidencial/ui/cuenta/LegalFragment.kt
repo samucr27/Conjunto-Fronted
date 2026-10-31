@@ -29,6 +29,12 @@ class LegalFragment : Fragment() {
         binding.filaTerminos.setOnClickListener { abrir(R.string.legal_terminos, R.raw.terminos) }
         binding.filaPrivacidad.setOnClickListener { abrir(R.string.legal_privacidad, R.raw.privacidad) }
         binding.filaLicencias.setOnClickListener { abrir(R.string.legal_licencias, R.raw.licencias) }
+        // P6: datos personales (Ley 1581). El administrador principal atiende las solicitudes
+        binding.filaMisDatos.setOnClickListener { misDatosPersonales() }
+        val atiende = com.example.conjuntoresidencial.util.SessionManager(requireContext()).let { it.esAdmin() && !it.esContador() }
+        binding.filaSolicitudesDatos.visibility = if (atiende) View.VISIBLE else View.GONE
+        binding.divisorSolicitudes.visibility = if (atiende) View.VISIBLE else View.GONE
+        binding.filaSolicitudesDatos.setOnClickListener { solicitudesDeDatos() }
     }
 
     private fun abrir(@StringRes titulo: Int, @RawRes texto: Int) {

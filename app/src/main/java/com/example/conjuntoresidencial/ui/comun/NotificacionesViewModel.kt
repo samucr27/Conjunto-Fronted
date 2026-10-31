@@ -40,7 +40,7 @@ class NotificacionesViewModel : ViewModel() {
     fun actualizarConteo() {
         viewModelScope.launch {
             _noLeidas.value = try {
-                val response = RetrofitClient.instance.getNotificacionesNoLeidas()
+                val response = RetrofitClient.comun.getNotificacionesNoLeidas()
                 if (response.isSuccessful) response.body()?.total?.toInt() ?: 0 else 0
             } catch (_: Exception) {
                 0 // sin conexión: no se muestra el contador
@@ -52,7 +52,7 @@ class NotificacionesViewModel : ViewModel() {
         _lista.value = Resource.Loading
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.instance.getNotificaciones()
+                val response = RetrofitClient.comun.getNotificaciones()
                 if (!response.isSuccessful) {
                     _lista.value = Resource.Error(RetrofitClient.mensajeDeError(response, errorPorDefecto))
                     return@launch
@@ -78,14 +78,14 @@ class NotificacionesViewModel : ViewModel() {
             _noLeidas.value = ((_noLeidas.value ?: 0) - 1).coerceAtLeast(0)
         }
         viewModelScope.launch {
-            try { RetrofitClient.instance.marcarNotificacionLeida(id) } catch (_: Exception) {}
+            try { RetrofitClient.comun.marcarNotificacionLeida(id) } catch (_: Exception) {}
             actualizarConteo()
         }
     }
 
     fun marcarTodasLeidas(errorPorDefecto: String) {
         viewModelScope.launch {
-            val ok = try { RetrofitClient.instance.marcarNotificacionesLeidas().isSuccessful } catch (_: Exception) { false }
+            val ok = try { RetrofitClient.comun.marcarNotificacionesLeidas().isSuccessful } catch (_: Exception) { false }
             if (ok) {
                 _lista.value = Resource.Success(actuales.map { it.copy(leida = true) })
                 _noLeidas.value = 0
@@ -123,7 +123,7 @@ class NotificacionesViewModel : ViewModel() {
     }
 
     private suspend fun borrarEnServidor(n: NotificacionDTO, errorPorDefecto: String) {
-        val ok = try { RetrofitClient.instance.eliminarNotificacion(n.id).isSuccessful } catch (_: Exception) { false }
+        val ok = try { RetrofitClient.comun.eliminarNotificacion(n.id).isSuccessful } catch (_: Exception) { false }
         borradosPendientes.remove(n.id)
         if (!ok) {
             _mensaje.value = Evento(errorPorDefecto)
@@ -141,7 +141,7 @@ class NotificacionesViewModel : ViewModel() {
 
     fun limpiar(errorPorDefecto: String) {
         viewModelScope.launch {
-            val ok = try { RetrofitClient.instance.eliminarNotificaciones().isSuccessful } catch (_: Exception) { false }
+            val ok = try { RetrofitClient.comun.eliminarNotificaciones().isSuccessful } catch (_: Exception) { false }
             if (ok) {
                 borradosPendientes.values.forEach { it.cancel() }
                 borradosPendientes.clear()

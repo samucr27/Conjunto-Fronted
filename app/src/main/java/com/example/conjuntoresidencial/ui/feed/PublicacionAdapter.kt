@@ -22,7 +22,9 @@ import com.google.android.material.button.MaterialButton
  */
 class PublicacionAdapter(
     private val onAbrir: (AdjuntoPublicacion) -> Unit,
-    private val onOpciones: ((PublicacionDTO) -> Unit)? = null
+    private val onOpciones: ((PublicacionDTO) -> Unit)? = null,
+    // Tocar la tarjeta (o un adjunto) la marca como leída
+    private val onLeer: ((PublicacionDTO) -> Unit)? = null
 ) : ListAdapter<PublicacionDTO, PublicacionAdapter.VH>(DiffPorId { it.id }) {
 
     class VH(val binding: ItemPublicacionBinding) : RecyclerView.ViewHolder(binding.root)
@@ -41,6 +43,20 @@ class PublicacionAdapter(
         h.binding.tvTextoPublicacion.text = p.texto
         h.binding.tvTextoPublicacion.visibility = if (p.texto.isBlank()) View.GONE else View.VISIBLE
 
+        h.binding.tvTituloPublicacion.text = p.titulo
+        h.binding.tvTituloPublicacion.visibility = if (p.titulo.isNullOrBlank()) View.GONE else View.VISIBLE
+        // "Urgente · Torre 3 · Fijada": solo lo que aporta algo
+        val etiquetas = listOfNotNull(
+            ctx.getString(EtiquetasPublicacion.categoria(p.categoria)).takeIf { p.categoria != "GENERAL" },
+            ctx.getString(EtiquetasPublicacion.audiencia(p.audiencia)).takeIf { p.audiencia != "TODOS" },
+            p.torre?.let { ctx.getString(R.string.feed_torre_etiqueta, it) },
+            ctx.getString(R.string.feed_fijada).takeIf { p.fijado }
+        )
+        h.binding.tvEtiquetasPublicacion.text = etiquetas.joinToString(" · ")
+        h.binding.tvEtiquetasPublicacion.visibility = if (etiquetas.isEmpty()) View.GONE else View.VISIBLE
+        h.binding.puntoNoLeida.visibility = if (p.leida) View.GONE else View.VISIBLE
+        h.binding.root.setOnClickListener { if (!p.leida) onLeer?.invoke(p) }
+
         val imagenes = p.adjuntos.filter { it.tipo == "IMAGEN" }
         h.binding.scrollImagenes.visibility = if (imagenes.isEmpty()) View.GONE else View.VISIBLE
         h.binding.contenedorImagenes.removeAllViews()
@@ -56,7 +72,7 @@ class PublicacionAdapter(
                 placeholder(R.drawable.fondo_imagen_cargando)
                 error(R.drawable.fondo_imagen_cargando)
             }
-            img.setOnClickListener { onAbrir(adj) }
+            img.setOnClickListener { if (!p.leida) onLeer?.invoke(p); onAbrir(adj) }
             h.binding.contenedorImagenes.addView(img)
         }
 
@@ -64,7 +80,7 @@ class PublicacionAdapter(
         p.adjuntos.filter { it.tipo != "IMAGEN" }.forEach { adj ->
             val boton = LayoutInflater.from(ctx).inflate(R.layout.item_publicacion_archivo, h.binding.contenedorArchivos, false) as MaterialButton
             boton.text = adj.nombre
-            boton.setOnClickListener { onAbrir(adj) }
+            boton.setOnClickListener { if (!p.leida) onLeer?.invoke(p); onAbrir(adj) }
             h.binding.contenedorArchivos.addView(boton)
         }
 

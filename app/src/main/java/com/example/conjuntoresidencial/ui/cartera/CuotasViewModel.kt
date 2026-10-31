@@ -32,7 +32,7 @@ class CuotasViewModel : ViewModel() {
         _cuotas.value = Resource.Loading
         viewModelScope.launch {
             try {
-                val r = RetrofitClient.instance.getCuotas(periodo, if (periodo == null) Cuotas.EN_REVISION else null)
+                val r = RetrofitClient.comun.getCuotas(periodo, if (periodo == null) Cuotas.EN_REVISION else null)
                 _cuotas.value = if (r.isSuccessful) Resource.Success(r.body().orEmpty())
                 else Resource.Error(RetrofitClient.mensajeDeError(r, "No se pudieron cargar las cuotas"))
             } catch (e: Exception) {

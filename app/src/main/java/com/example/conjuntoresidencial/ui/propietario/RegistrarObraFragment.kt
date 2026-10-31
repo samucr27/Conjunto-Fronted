@@ -151,7 +151,7 @@ class RegistrarObraFragment : Fragment() {
         binding.progressRegistrarObra.visibility = View.VISIBLE
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val r = RetrofitClient.instance.getObra(id)
+                val r = RetrofitClient.comun.getObra(id)
                 val obra = r.body()
                 if (!r.isSuccessful || obra == null) {
                     aviso(RetrofitClient.mensajeDeError(r, getString(R.string.obra_error_cargar)), Snackbar.LENGTH_LONG).show()
@@ -241,12 +241,12 @@ class RegistrarObraFragment : Fragment() {
             val fallidos = mutableListOf<String>()
             viewModel.personal.forEach { (dto, certificado) ->
                 try {
-                    val response = RetrofitClient.instance.createPersonalObra(dto.copy(obraId = obraId))
+                    val response = RetrofitClient.comun.createPersonalObra(dto.copy(obraId = obraId))
                     val id = response.body()?.id
                     if (!response.isSuccessful || id == null) {
                         fallidos += "${dto.nombreTrabajador}: ${RetrofitClient.mensajeDeError(response, getString(R.string.registrar_obra_error))}"
                     } else if (certificado != null &&
-                        !RetrofitClient.instance.subirCertificadoArl(id, certificado.parte()).isSuccessful) {
+                        !RetrofitClient.comun.subirCertificadoArl(id, certificado.parte()).isSuccessful) {
                         fallidos += "${dto.nombreTrabajador}: ${getString(R.string.registrar_obra_arl_fallo)}"
                     }
                 } catch (_: Exception) {

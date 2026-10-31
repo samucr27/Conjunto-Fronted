@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Barra inferior de la portería (P6): sus visitas y su cuenta. Los id son los de las pantallas (nav_graph). -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/porteriaFragment"
+        android:icon="@drawable/ic_people"
+        android:title="@string/pestana_porteria" />
+    <item
+        android:id="@+id/cuentaFragment"
+        android:icon="@drawable/ic_person"
+        android:title="@string/pestana_cuenta" />
+</menu>

@@ -52,7 +52,7 @@ fun Fragment.leerCertificado(uri: Uri): CertificadoArl? {
 fun Fragment.abrirCertificado(personalId: Long) {
     viewLifecycleOwner.lifecycleScope.launch {
         try {
-            val r = RetrofitClient.instance.getCertificadoArl(personalId)
+            val r = RetrofitClient.comun.getCertificadoArl(personalId)
             val enlace = r.body()
             if (!r.isSuccessful || enlace == null) {
                 aviso(RetrofitClient.mensajeDeError(r, getString(R.string.arl_error_ver))).show()

@@ -16,6 +16,7 @@ import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentPublicarBinding
 import com.example.conjuntoresidencial.ui.comun.aviso
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.util.comoLista
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -55,6 +56,8 @@ class PublicarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         configurarEncabezado(binding.encabezado, R.string.publicar_titulo, R.string.publicar_descripcion)
+        binding.etCategoriaPublicacion.comoLista(EtiquetasPublicacion.CATEGORIAS.map { getString(it.second) })
+        binding.etAudienciaPublicacion.comoLista(EtiquetasPublicacion.AUDIENCIAS.map { getString(it.second) })
         binding.btnAdjuntar.setOnClickListener { elegir.launch(TIPOS) }
         binding.btnPublicar.setOnClickListener { publicar() }
         pintarAdjuntos()
@@ -91,9 +94,15 @@ class PublicarFragment : Fragment() {
                         MultipartBody.Part.createFormData("archivos", a.nombre, datos.toRequestBody(tipo.toMediaTypeOrNull()))
                     }
                 }
-                val r = RetrofitClient.instance.publicar(
-                    texto.takeIf { it.isNotEmpty() }?.let { it.toRequestBody("text/plain; charset=utf-8".toMediaTypeOrNull()) },
-                    partes
+                fun texto(valor: String?) = valor?.takeIf { it.isNotBlank() }
+                    ?.toRequestBody("text/plain; charset=utf-8".toMediaTypeOrNull())
+                val r = RetrofitClient.comun.publicar(
+                    texto(texto), partes,
+                    titulo = texto(binding.etTituloPublicacion.text?.toString()?.trim()),
+                    categoria = texto(codigoDe(EtiquetasPublicacion.CATEGORIAS, binding.etCategoriaPublicacion)),
+                    audiencia = texto(codigoDe(EtiquetasPublicacion.AUDIENCIAS, binding.etAudienciaPublicacion)),
+                    torre = texto(binding.etTorrePublicacion.text?.toString()?.trim()),
+                    fijado = texto(binding.swFijada.isChecked.toString())
                 )
                 if (_binding == null) return@launch
                 if (r.isSuccessful) {
@@ -110,6 +119,12 @@ class PublicarFragment : Fragment() {
                 aviso(RetrofitClient.mensajeDeExcepcion(e)).show()
             }
         }
+    }
+
+    /** El código (GENERAL, TODOS…) de la opción que muestra la lista desplegable. */
+    private fun codigoDe(opciones: List<Pair<String, Int>>, lista: android.widget.AutoCompleteTextView): String {
+        val elegida = lista.text?.toString().orEmpty()
+        return opciones.firstOrNull { getString(it.second) == elegida }?.first ?: opciones.first().first
     }
 
     private fun cargando(si: Boolean) {

@@ -8,6 +8,7 @@ import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.model.LoginAdminRequest
 import com.example.conjuntoresidencial.model.LoginApartamentoRequest
+import com.example.conjuntoresidencial.model.LoginBiometria
 import com.example.conjuntoresidencial.model.LoginResidenteRequest
 import com.example.conjuntoresidencial.model.LoginResponse
 import com.example.conjuntoresidencial.seguridad.AccesoBiometrico
@@ -28,7 +29,9 @@ fun Fragment.completarInicioSesion(respuesta: LoginResponse, credenciales: Acces
     val contexto = requireContext()
     SessionManager(contexto).guardar(respuesta, credenciales?.documento)
     val irAlPanel = {
-        findNavController().navigate(R.id.inicioFragment, null, NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build())
+        // La portería solo tiene su pantalla de visitas
+        val inicio = if (respuesta.rol == "PORTERIA") R.id.porteriaFragment else R.id.inicioFragment
+        findNavController().navigate(inicio, null, NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build())
     }
     val cuenta = credenciales?.cuenta(contexto)
     if (credenciales == null || cuenta == null || !AccesoBiometrico.conviene(contexto, cuenta)) {
@@ -57,15 +60,15 @@ fun Fragment.completarInicioSesion(respuesta: LoginResponse, credenciales: Acces
 /** Inicia sesión con unas credenciales guardadas (huella) o confirmadas (Ajustes). */
 suspend fun iniciarSesion(credenciales: AccesoBiometrico.Credenciales): Response<LoginResponse> =
     if (credenciales.esAdmin) {
-        RetrofitClient.instance.loginAdmin(LoginAdminRequest(credenciales.usuario.orEmpty(), credenciales.contrasena))
+        RetrofitClient.comun.loginAdmin(LoginAdminRequest(credenciales.usuario.orEmpty(), credenciales.contrasena))
     } else if (credenciales.documento != null) {
-        RetrofitClient.instance.loginResidente(LoginResidenteRequest(credenciales.documento, credenciales.contrasena))
+        RetrofitClient.comun.loginResidente(LoginResidenteRequest(credenciales.documento, credenciales.contrasena))
     } else if (credenciales.torre != null) {
         // P5: el titular con torre, apto y rol
-        RetrofitClient.instance.loginResidente(LoginResidenteRequest(
+        RetrofitClient.comun.loginResidente(LoginResidenteRequest(
             contrasena = credenciales.contrasena, torre = credenciales.torre, apto = credenciales.apto, rol = credenciales.rol))
     } else {
-        RetrofitClient.instance.loginApartamento(
+        RetrofitClient.comun.loginApartamento(
             LoginApartamentoRequest(credenciales.torre.orEmpty(), credenciales.apto.orEmpty(), credenciales.contrasena)
         )
     }
@@ -100,20 +103,21 @@ fun Fragment.ofrecerHuella(boton: com.google.android.material.button.MaterialBut
 }
 
 private fun Fragment.entrarConHuella(boton: com.google.android.material.button.MaterialButton, cargando: (Boolean) -> Unit) {
-    AccesoBiometrico.entrar(this, alObtener = { credenciales ->
+    AccesoBiometrico.entrar(this, alObtener = { activacion ->
         cargando(true)
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val respuesta = iniciarSesion(credenciales)
+                // P6: se canjea la credencial opaca del celular por una sesión; la contraseña no existe aquí
+                val respuesta = RetrofitClient.comun.loginBiometria(LoginBiometria(activacion.dispositivoId, activacion.credencial))
                 val datos = respuesta.body()
                 when {
                     respuesta.isSuccessful && datos != null -> {
                         completarInicioSesion(datos, null)
                         return@launch
                     }
-                    // La contraseña cambió desde otro celular o la restableció la administración
+                    // La contraseña cambió, la huella se quitó desde otro celular o la cuenta ya no existe
                     respuesta.code() == 401 -> {
-                        val cuentaVieja = credenciales.cuenta(requireContext())
+                        val cuentaVieja = AccesoBiometrico.cuentaGuardada(requireContext()).orEmpty()
                         AccesoBiometrico.desactivar(requireContext())
                         aviso(getString(R.string.biometria_contrasena_cambio, cuentaVieja)).show()
                         boton.visibility = android.view.View.GONE

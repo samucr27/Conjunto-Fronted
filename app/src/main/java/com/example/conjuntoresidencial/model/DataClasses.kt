@@ -22,17 +22,33 @@ data class RegistroRecibido(val rol: String, val estado: String, val requierePro
 // citófonos y arrendado (arrendatario activo) los pone el backend (P5)
 data class Apartamento(
     val id: Long, val torre: String, val apto: String,
-    val citofono1: String? = null, val citofono2: String? = null, val arrendado: Boolean? = null
+    val citofono1: String? = null, val citofono2: String? = null, val arrendado: Boolean? = null,
+    // P6: cómo está ocupado y qué le deja ver la administración al arrendatario
+    val tipoOcupacion: String? = null, val arrendatarioVeCartera: Boolean? = null,
+    val arrendatarioPuedePagar: Boolean? = null, val arrendatarioVeObras: Boolean? = null
+)
+// PATCH /api/apartamentos/{id}/ocupacion-y-banderas: lo que no se envía no cambia
+data class OcupacionYBanderas(
+    val tipoOcupacion: String? = null, val arrendatarioVeCartera: Boolean? = null,
+    val arrendatarioPuedePagar: Boolean? = null, val arrendatarioVeObras: Boolean? = null
 )
 data class CitofonosRequest(val citofono1: String?, val citofono2: String?)
 // Feed de publicaciones (P5): cada url es un enlace firmado que vence en una hora
 data class AdjuntoPublicacion(val id: Long, val tipo: String, val nombre: String, val mime: String, val tamano: Long, val url: String?)
 data class PublicacionDTO(
     val id: Long, val texto: String, val autor: String, val creadaEn: String, val editadaEn: String?,
-    val adjuntos: List<AdjuntoPublicacion>
+    val adjuntos: List<AdjuntoPublicacion>,
+    // P6: título opcional, categoría, a quién va dirigida, torre (null = todas), fijada arriba y si ya la abrí
+    val titulo: String? = null, val categoria: String = "GENERAL", val audiencia: String = "TODOS",
+    val torre: String? = null, val fijado: Boolean = false, val leida: Boolean = true
 )
 data class PaginaPublicaciones(val publicaciones: List<PublicacionDTO>, val hayMas: Boolean)
-data class EdicionPublicacion(val texto: String)
+// Lo que va null no se cambia
+data class EdicionPublicacion(
+    val texto: String? = null, val titulo: String? = null, val categoria: String? = null,
+    val audiencia: String? = null, val torre: String? = null, val fijado: Boolean? = null
+)
+data class FijarPublicacion(val fijado: Boolean)
 // Visitante frecuente del apartamento (P5)
 data class VisitanteDTO(val id: Long?, val nombreCompleto: String, val identificacion: String?, val telefono: String?, val apartamentoId: Long)
 // El propietario acepta o rechaza a su arrendatario
@@ -48,7 +64,16 @@ data class LoginResponse(
     val token: String, val expiraEn: String?, val rol: String, val id: Long, val usuario: String?, val torre: String?, val apto: String?,
     val residenteId: Long? = null, val nombre: String? = null,
     // P5: solo administradores; el principal es el único que maneja el equipo
-    val principal: Boolean? = null
+    val principal: Boolean? = null,
+    // P6: solo residentes. Ocupación del apartamento y lo que la administración le deja ver al arrendatario
+    val tipoOcupacion: String? = null,
+    val arrendatarioVeCartera: Boolean? = null,
+    val arrendatarioPuedePagar: Boolean? = null,
+    val arrendatarioVeObras: Boolean? = null,
+    // Si solo la administración registra vehículos
+    val vehiculosAltaSoloAdmin: Boolean? = null,
+    // Hay una versión de los términos o la política por aceptar
+    val consentimientosPendientes: Boolean? = null
 )
 // Cuerpo de los errores del backend: {"mensaje": "..."}
 data class MensajeError(val mensaje: String?)
@@ -190,6 +215,56 @@ data class NotificacionDTO(
     val referenciaId: Long? = null, val apartamentoId: Long? = null
 )
 // Token de Firebase del celular (avisos)
-data class DispositivoRequest(val token: String)
+data class DispositivoRequest(val token: String, val tipoApp: String? = null, val applicationId: String? = null)
+// P6 bloque 7: personal del conjunto, turnos, nómina y presupuesto (solo administración)
+data class EmpresaDTO(val id: Long? = null, val nombre: String? = null, val nit: String? = null, val contacto: String? = null,
+                      val telefono: String? = null, val activa: Boolean? = null)
+data class TrabajadorDTO(
+    val id: Long? = null, val nombreCompleto: String? = null, val documento: String? = null, val telefono: String? = null,
+    val cargo: String? = null, val vinculo: String? = null, val empresaId: Long? = null, val empresa: String? = null,
+    val salarioBase: Double? = null, val fechaIngreso: String? = null, val activo: Boolean? = null
+)
+data class TurnoDTO(
+    val id: Long? = null, val trabajadorId: Long? = null, val trabajador: String? = null, val cargo: String? = null,
+    val fecha: String? = null, val horaInicio: String? = null, val horaFin: String? = null
+)
+data class NominaDTO(
+    val id: Long, val trabajadorId: Long, val trabajador: String, val cargo: String, val periodo: String,
+    val salarioBase: Double, val bonificaciones: Double, val descuentos: Double, val neto: Double, val estado: String
+)
+data class CambioNomina(val bonificaciones: Double? = null, val descuentos: Double? = null, val estado: String? = null)
+data class LineaPresupuesto(val cargo: String, val monto: Double)
+data class LineaResumenPresupuesto(val cargo: String, val presupuestado: Double, val nomina: Double, val diferencia: Double)
+data class ResumenPresupuesto(
+    val periodo: String, val lineas: List<LineaResumenPresupuesto>,
+    val totalPresupuestado: Double, val totalNomina: Double, val diferencia: Double
+)
+// P6 bloque 6: pago en línea con Wompi (el servidor firma la dirección; la app solo la abre)
+data class CheckoutRequest(val cuotaId: Long)
+data class CheckoutDTO(val url: String, val referencia: String, val montoCentavos: Long)
+// P6 bloque 5: portería. telefono solo lo ve la portería
+data class VisitaDTO(
+    val id: Long, val apartamentoId: Long, val torre: String, val apto: String, val visitante: String,
+    val documento: String?, val placa: String?, val motivo: String?, val estado: String,
+    val creadaEn: String, val venceEn: String, val respondidaEn: String?, val canal: String?, val telefono: String?
+)
+data class NuevaVisita(
+    val torre: String, val apto: String, val visitante: String,
+    val documento: String? = null, val placa: String? = null, val motivo: String? = null
+)
+data class RespuestaVisita(val decision: String)
+// P6: huella con credencial opaca por celular (nunca la contraseña)
+data class ActivarBiometria(val dispositivoId: String)
+data class BiometriaActivada(val credencial: String)
+data class LoginBiometria(val dispositivoId: String, val credencial: String)
+// P6: textos legales con versión, consentimientos y solicitudes de datos personales
+data class TextoLegalDTO(val id: Long, val tipo: String, val version: Int, val titulo: String, val contenido: String)
+data class AceptarTextos(val textoIds: List<Long>)
+data class NuevaSolicitudDatos(val tipo: String, val detalle: String?)
+data class SolicitudDatosDTO(
+    val id: Long, val nombre: String?, val tipo: String, val estado: String, val detalle: String?,
+    val respuesta: String?, val creadaEn: String, val resueltaEn: String?
+)
+data class ResolverSolicitudDatos(val estado: String, val respuesta: String?)
 // {"total": n}
 data class ConteoDTO(val total: Long)

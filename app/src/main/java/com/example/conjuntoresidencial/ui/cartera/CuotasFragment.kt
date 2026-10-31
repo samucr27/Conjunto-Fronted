@@ -143,7 +143,7 @@ class CuotasFragment : Fragment() {
             dialogo.dismiss()
             val limite = "$periodo-${dia.toString().padStart(2, '0')}"
             viewModel.ejecutar(getString(R.string.facturacion_error_generar),
-                { RetrofitClient.instance.generarCuotas(GenerarCuotasRequest(periodo, valor!!, limite)) }) { g ->
+                { RetrofitClient.comun.generarCuotas(GenerarCuotasRequest(periodo, valor!!, limite)) }) { g ->
                 if (g == null) getString(R.string.facturacion_generada_sin_datos)
                 else if (g.enAprobacion == true) getString(R.string.facturacion_en_aprobacion, Cuotas.nombreMes(g.periodo))
                 else resources.getQuantityString(R.plurals.facturacion_generadas, g.creadas, g.creadas, Cuotas.nombreMes(g.periodo))
@@ -160,7 +160,7 @@ class CuotasFragment : Fragment() {
         if (c.estado != Cuotas.PAGADA) {
             opciones += R.string.cuota_confirmar_pago to {
                 viewModel.ejecutar(getString(R.string.cuota_error_revisar),
-                    { RetrofitClient.instance.revisarCuota(c.id, RevisionCuota(Cuotas.PAGADA)) }) {
+                    { RetrofitClient.comun.revisarCuota(c.id, RevisionCuota(Cuotas.PAGADA)) }) {
                     // P5: el pago sin comprobante del contador queda esperando al administrador
                     getString(if (it?.pagoPorAprobar == true) R.string.cuota_pago_en_aprobacion else R.string.cuota_pago_confirmado)
                 }
@@ -173,7 +173,7 @@ class CuotasFragment : Fragment() {
                     InputType.TYPE_CLASS_NUMBER,
                     validar = { if ((it.toDoubleOrNull() ?: 0.0) <= 0) getString(R.string.cuota_valor_obligatorio) else null }) { v ->
                     viewModel.ejecutar(getString(R.string.cuota_error_revisar),
-                        { RetrofitClient.instance.updateCuota(c.id, CambioCuota(valor = v.toDouble())) }) {
+                        { RetrofitClient.comun.updateCuota(c.id, CambioCuota(valor = v.toDouble())) }) {
                         getString(R.string.cuota_actualizada)
                     }
                 }
@@ -185,7 +185,7 @@ class CuotasFragment : Fragment() {
                     validar = { if (it.toIntOrNull() !in 1..maximo) getString(R.string.cuota_dia_invalido, maximo) else null }) { d ->
                     val fecha = "${c.periodo}-${d.padStart(2, '0')}"
                     viewModel.ejecutar(getString(R.string.cuota_error_revisar),
-                        { RetrofitClient.instance.updateCuota(c.id, CambioCuota(fechaLimite = fecha)) }) {
+                        { RetrofitClient.comun.updateCuota(c.id, CambioCuota(fechaLimite = fecha)) }) {
                         getString(R.string.cuota_actualizada)
                     }
                 }
@@ -193,7 +193,7 @@ class CuotasFragment : Fragment() {
             opciones += R.string.cuota_eliminar to {
                 confirmar(getString(R.string.cuota_eliminar_titulo), getString(R.string.cuota_eliminar_mensaje),
                     R.string.residente_eliminar_si) {
-                    viewModel.ejecutar(getString(R.string.cuota_error_revisar), { RetrofitClient.instance.deleteCuota(c.id) }) {
+                    viewModel.ejecutar(getString(R.string.cuota_error_revisar), { RetrofitClient.comun.deleteCuota(c.id) }) {
                         getString(R.string.cuota_eliminada)
                     }
                 }
@@ -225,7 +225,7 @@ class CuotasFragment : Fragment() {
             .setPositiveButton(R.string.cuota_rechazar) { _, _ ->
                 val motivo = campo.text?.toString()?.trim()?.ifBlank { null }
                 viewModel.ejecutar(getString(R.string.cuota_error_revisar),
-                    { RetrofitClient.instance.revisarCuota(c.id, RevisionCuota(Cuotas.RECHAZADA, motivo)) }) {
+                    { RetrofitClient.comun.revisarCuota(c.id, RevisionCuota(Cuotas.RECHAZADA, motivo)) }) {
                     getString(R.string.cuota_comprobante_rechazado)
                 }
             }

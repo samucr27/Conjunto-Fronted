@@ -31,12 +31,14 @@ android {
             dimension = "app"
             resValue("string", "app_name", "MiConjunto")
             resValue("bool", "app_admin", "false")
+            buildConfigField("String", "TIPO_APP", "\"RESIDENTE\"")
         }
         create("administracion") {
             dimension = "app"
             applicationIdSuffix = ".admin"
             resValue("string", "app_name", "MiConjunto Admin")
             resValue("bool", "app_admin", "true")
+            buildConfigField("String", "TIPO_APP", "\"ADMIN\"")
         }
     }
 
@@ -85,6 +87,8 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
     // Entrar con huella o rostro
     implementation("androidx.biometric:biometric:1.1.0")
+    // Checkout de Wompi en una pestaña del navegador (Custom Tabs)
+    implementation("androidx.browser:browser:1.8.0")
     // Desenfoque en vivo del contenido bajo las barras translúcidas (Apache 2.0)
     implementation("com.github.Dimezis:BlurView:version-3.2.0")
     implementation("androidx.appcompat:appcompat:1.7.0")

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ids de la navegación (P6): cada app declara sus destinos en su propio nav_graph;
+     aquí se declaran todos para que el código de src/main compile en las dos. -->
+<resources>
+    <item name="action_adminDashboardFragment_to_carteraAdminFragment" type="id" />
+    <item name="action_adminDashboardFragment_to_controlObrasFragment" type="id" />
+    <item name="action_adminDashboardFragment_to_directorioApartamentosFragment" type="id" />
+    <item name="action_adminDashboardFragment_to_personalObraFragment" type="id" />
+    <item name="action_adminDashboardFragment_to_reservasAdminFragment" type="id" />
+    <item name="action_adminDashboardFragment_to_zonasComunesAdminFragment" type="id" />
+    <item name="action_directorioApartamentosFragment_to_detalleApartamentoFragment" type="id" />
+    <item name="action_directorioApartamentosFragment_to_torre" type="id" />
+    <item name="action_loginAdminFragment_to_adminDashboardFragment" type="id" />
+    <item name="action_loginApartamentoFragment_to_propietarioDashboardFragment" type="id" />
+    <item name="action_propietarioDashboardFragment_to_miCarteraFragment" type="id" />
+    <item name="action_propietarioDashboardFragment_to_misObrasFragment" type="id" />
+    <item name="action_propietarioDashboardFragment_to_misReservasFragment" type="id" />
+    <item name="action_propietarioDashboardFragment_to_misVehiculosFragment" type="id" />
+    <item name="action_propietarioDashboardFragment_to_registrarObraFragment" type="id" />
+    <item name="action_propietarioDashboardFragment_to_zonasComunesPropietarioFragment" type="id" />
+    <item name="adminDashboardFragment" type="id" />
+    <item name="ajustesFragment" type="id" />
+    <item name="arrendatarioFragment" type="id" />
+    <item name="ayudaFragment" type="id" />
+    <item name="carteraAdminFragment" type="id" />
+    <item name="carteraResumenFragment" type="id" />
+    <item name="chatFragment" type="id" />
+    <item name="controlObrasFragment" type="id" />
+    <item name="conversacionesFragment" type="id" />
+    <item name="cuentaFragment" type="id" />
+    <item name="cuotasFragment" type="id" />
+    <item name="detalleApartamentoFragment" type="id" />
+    <item name="directorioApartamentosFragment" type="id" />
+    <item name="documentoFragment" type="id" />
+    <item name="editarZonaFragment" type="id" />
+    <item name="equipoFragment" type="id" />
+    <item name="inicioFragment" type="id" />
+    <item name="porteriaFragment" type="id" />
+    <item name="personalConjuntoFragment" type="id" />
+    <item name="legalFragment" type="id" />
+    <item name="loginAdminFragment" type="id" />
+    <item name="loginApartamentoFragment" type="id" />
+    <item name="miCarteraFragment" type="id" />
+    <item name="miHogarFragment" type="id" />
+    <item name="misObrasFragment" type="id" />
+    <item name="misReservasFragment" type="id" />
+    <item name="misVehiculosFragment" type="id" />
+    <item name="notificacionesFragment" type="id" />
+    <item name="obraDetalleFragment" type="id" />
+    <item name="parqueaderosFragment" type="id" />
+    <item name="perfilFragment" type="id" />
+    <item name="permisosFragment" type="id" />
+    <item name="personalObraFragment" type="id" />
+    <item name="propietarioDashboardFragment" type="id" />
+    <item name="publicarFragment" type="id" />
+    <item name="registrarObraFragment" type="id" />
+    <item name="registroFragment" type="id" />
+    <item name="reservarZonaFragment" type="id" />
+    <item name="reservasAdminFragment" type="id" />
+    <item name="residentesFragment" type="id" />
+    <item name="vehiculosAdminFragment" type="id" />
+    <item name="zonasComunesAdminFragment" type="id" />
+    <item name="zonasComunesPropietarioFragment" type="id" />
+</resources>

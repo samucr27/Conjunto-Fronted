@@ -44,12 +44,26 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
-                <TextView
-                    android:id="@+id/tvAutorPublicacion"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?attr/textAppearanceTitleSmall"
-                    android:textColor="?attr/colorOnSurface" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tvAutorPublicacion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?attr/textAppearanceTitleSmall"
+                        android:textColor="?attr/colorOnSurface" />
+                    <View
+                        android:id="@+id/puntoNoLeida"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/punto_no_leido"
+                        android:contentDescription="@string/feed_sin_leer"
+                        android:visibility="gone" />
+                </LinearLayout>
                 <TextView
                     android:id="@+id/tvFechaPublicacion"
                     android:layout_width="wrap_content"
@@ -69,6 +83,27 @@
                 android:visibility="gone"
                 app:tint="?attr/colorOnSurfaceVariant" />
         </LinearLayout>
+
+        <!-- Categoría, a quién va y si está fijada -->
+        <TextView
+            android:id="@+id/tvEtiquetasPublicacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textColor="?attr/colorPrimary" />
+
+        <TextView
+            android:id="@+id/tvTituloPublicacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?attr/colorOnSurface" />
 
         <TextView
             android:id="@+id/tvTextoPublicacion"

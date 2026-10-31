@@ -88,6 +88,10 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         // Pantalla de inicio del sistema: solo el fondo morado (el logo lo anima la app)
         val inicio = installSplashScreen()
         super.onCreate(savedInstanceState)
+        // La sesión no sobrevive a cerrar la app desde recientes ni a que el sistema mate el proceso:
+        // siempre se arranca en el login (la huella, si está activada, entra desde ahí)
+        if (savedInstanceState == null || !procesoIniciado) SessionManager(this).clearSession()
+        procesoIniciado = true
         setContentView(R.layout.activity_main)
         if (savedInstanceState == null) mostrarLogoAnimado(inicio)
         navController = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
@@ -267,8 +271,15 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
                 R.id.adminDashboardFragment -> R.menu.menu_barra_admin
                 R.id.propietarioDashboardFragment -> R.menu.menu_barra_residente
                 // Las dos barras las tienen: depende de quién inició sesión
-                R.id.inicioFragment, R.id.notificacionesFragment, R.id.cuentaFragment ->
-                    if (SessionManager(this).esAdmin()) R.menu.menu_barra_admin else R.menu.menu_barra_residente
+                R.id.porteriaFragment -> R.menu.menu_barra_porteria
+                R.id.inicioFragment, R.id.notificacionesFragment, R.id.cuentaFragment -> {
+                    val sesion = SessionManager(this)
+                    when {
+                        sesion.esPorteria() -> R.menu.menu_barra_porteria
+                        sesion.esAdmin() -> R.menu.menu_barra_admin
+                        else -> R.menu.menu_barra_residente
+                    }
+                }
                 else -> null
             }
             mostrarBarra(menu)
@@ -280,7 +291,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
                     // Después de este cambio de pantalla, no dentro de él
                     navInferior.post { abrirAvisoPendiente() }
                 }
-                R.id.loginSelectorFragment -> celularRegistrado = false
+                ConfigApp.destinoLogin -> celularRegistrado = false
             }
         }
 
@@ -314,7 +325,7 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         // Cada aviso es para un rol: el de la sesión tiene que coincidir
         if (sesion.getToken() == null || sesion.esAdmin() != destino.esParaAdmin) return
         val actual = navController.currentDestination?.id
-        if (actual == null || actual in setOf(R.id.loginSelectorFragment, R.id.loginAdminFragment, R.id.loginApartamentoFragment)) return
+        if (actual == null || actual in setOf(R.id.loginAdminFragment, R.id.loginApartamentoFragment)) return
         avisoPendiente = null
         destino.notificacionId?.let(notificaciones::marcarLeida)
         destino.abrir(navController)
@@ -499,16 +510,18 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
     /** Vuelve al selector de login y vacía la pila para que "atrás" no regrese a pantallas protegidas. */
     private fun irAlLogin() {
         val actual = navController.currentDestination?.id
-        val pantallasLogin = setOf(R.id.loginSelectorFragment, R.id.loginAdminFragment, R.id.loginApartamentoFragment)
+        val pantallasLogin = setOf(R.id.loginAdminFragment, R.id.loginApartamentoFragment)
         if (actual in pantallasLogin) return
         navController.navigate(
-            R.id.loginSelectorFragment,
+            ConfigApp.destinoLogin,
             null,
             NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build()
         )
     }
 
     companion object {
+        // false mientras el proceso es nuevo (arranque en frío o restaurado tras ser matado)
+        private var procesoIniciado = false
         private const val RADIO_DESENFOQUE = 24f
         // Radio del desenfoque justo en el borde (dp); hacia el centro baja hasta 0
         private const val RADIO_PROGRESIVO_DP = 22f

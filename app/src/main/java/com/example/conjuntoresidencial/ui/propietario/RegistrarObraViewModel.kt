@@ -36,10 +36,10 @@ class RegistrarObraViewModel : ViewModel() {
             try {
                 val editada = original
                 val response = if (editada?.id != null) {
-                    RetrofitClient.instance.updateObra(editada.id, editada.copy(descripcionAdecuacion = descripcion,
+                    RetrofitClient.comun.updateObra(editada.id, editada.copy(descripcionAdecuacion = descripcion,
                         fechaInicio = fechaInicio, fechaFinEstimada = fechaFin, estadoObra = estado))
                 } else {
-                    RetrofitClient.instance.createObra(ObraDTO(null, descripcion, fechaInicio, fechaFin, estado, aptoId))
+                    RetrofitClient.comun.createObra(ObraDTO(null, descripcion, fechaInicio, fechaFin, estado, aptoId))
                 }
                 if (response.isSuccessful && response.body() != null) {
                     _obraState.value = Resource.Success(response.body())

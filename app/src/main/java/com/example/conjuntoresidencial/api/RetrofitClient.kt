@@ -31,15 +31,17 @@ object RetrofitClient {
             .build()
     }
 
-    val instance: ApiService by lazy {
+    internal val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             // Render, o la de -PapiUrl en debug. Ver app/build.gradle.kts
             .baseUrl(appContext.getString(R.string.api_url))
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ApiService::class.java)
     }
+
+    /** Lo que usan las dos apps. La API completa de cada app es RetrofitClient.instance (por flavor). */
+    val comun: ApiComun by lazy { retrofit.create(ApiComun::class.java) }
 
     /**
      * Mensaje para el usuario cuando una petición lanza una excepción, sin detalles técnicos.

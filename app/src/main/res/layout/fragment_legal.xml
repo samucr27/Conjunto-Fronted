@@ -74,6 +74,33 @@
                             app:filaTipo="enlace"
                             app:filaTitulo="@string/legal_licencias"
                             app:filaSubtitulo="@string/legal_licencias_sub" />
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="72dp" />
+                        <com.example.conjuntoresidencial.ui.comun.FilaOpcion
+                            android:id="@+id/filaMisDatos"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:filaIcono="@drawable/ic_person"
+                            app:filaTipo="enlace"
+                            app:filaTitulo="@string/legal_mis_datos"
+                            app:filaSubtitulo="@string/legal_mis_datos_sub" />
+                        <com.google.android.material.divider.MaterialDivider
+                            android:id="@+id/divisorSolicitudes"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="72dp"
+                            android:visibility="gone" />
+                        <com.example.conjuntoresidencial.ui.comun.FilaOpcion
+                            android:id="@+id/filaSolicitudesDatos"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            app:filaIcono="@drawable/ic_info"
+                            app:filaTipo="enlace"
+                            app:filaTitulo="@string/datos_solicitudes_admin"
+                            app:filaSubtitulo="@string/legal_solicitudes_admin_sub" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
                 <TextView
