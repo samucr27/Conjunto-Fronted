@@ -208,6 +208,8 @@ class MiCarteraFragment : Fragment() {
 
         // Sin deuda el botón queda deshabilitado con su propio texto (colores del tema, no fijos)
         val debe = pago.saldoPendiente > 0
+        // En producción se paga en línea desde cada cuota; el pago simulado es solo de la demo local
+        binding.btnSimularPago.visibility = if (com.example.conjuntoresidencial.BuildConfig.SIMULAR_PAGO) View.VISIBLE else View.GONE
         binding.btnSimularPago.isEnabled = debe
         binding.btnSimularPago.setText(if (debe) R.string.btn_simular_pago else R.string.btn_sin_deuda)
         binding.btnSimularPago.setOnClickListener { confirmarPago(saldo) }

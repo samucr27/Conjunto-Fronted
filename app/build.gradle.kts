@@ -53,9 +53,12 @@ android {
             //   ./gradlew installDebug -PapiUrl=http://10.0.2.2:8080/
             val apiUrl = (project.findProperty("apiUrl") as String?) ?: urlRender
             resValue("string", "api_url", apiUrl)
+            // El pago simulado solo existe contra el backend local de demostración
+            buildConfigField("boolean", "SIMULAR_PAGO", (apiUrl.contains("10.0.2.2")).toString())
         }
         release {
             resValue("string", "api_url", urlRender)
+            buildConfigField("boolean", "SIMULAR_PAGO", "false")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
