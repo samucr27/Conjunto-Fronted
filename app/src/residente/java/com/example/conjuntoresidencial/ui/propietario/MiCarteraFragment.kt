@@ -159,6 +159,13 @@ class MiCarteraFragment : Fragment() {
         if (esperandoPago) {
             esperandoPago = false
             cargar()
+            // El webhook de Wompi puede tardar unos segundos: se vuelve a consultar un par de veces
+            viewLifecycleOwner.lifecycleScope.launch {
+                repeat(2) {
+                    kotlinx.coroutines.delay(4000)
+                    if (_binding != null) cargar()
+                }
+            }
         }
     }
 

@@ -8,8 +8,9 @@ class SessionManager(context: Context) {
     // Este archivo está excluido de las copias de seguridad (ver res/xml/backup_rules.xml)
     private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    fun saveToken(token: String) = prefs.edit { putString("token", token) }
-    fun getToken(): String? = prefs.getString("token", null)
+    // El token se guarda cifrado con el Keystore del celular (ver CifradoToken)
+    fun saveToken(token: String) = prefs.edit { putString("token", CifradoToken.cifrar(token)) }
+    fun getToken(): String? = prefs.getString("token", null)?.let(CifradoToken::descifrar)
 
     fun saveApartamentoId(id: Long) = prefs.edit { putLong("apartamento_id", id) }
     fun getApartamentoId(): Long = prefs.getLong("apartamento_id", -1L)

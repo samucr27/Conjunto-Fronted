@@ -88,7 +88,11 @@ class PerfilFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             val error = try {
                 val respuesta = RetrofitClient.comun.cambiarContrasena(CambioPropiaContrasenaRequest(actual, nueva))
-                if (respuesta.isSuccessful) null
+                if (respuesta.isSuccessful) {
+                    // El servidor cerró las demás sesiones: se guarda el token nuevo para seguir dentro
+                    respuesta.body()?.token?.let { SessionManager(requireContext()).saveToken(it) }
+                    null
+                }
                 else RetrofitClient.mensajeDeError(respuesta, getString(R.string.contrasena_error_cambiar))
             } catch (e: Exception) {
                 RetrofitClient.mensajeDeExcepcion(e)

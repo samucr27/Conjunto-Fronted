@@ -25,7 +25,7 @@ interface ApiComun {
     suspend fun cerrarSesion(): Response<Void>
 
     @PUT("api/auth/contrasena")
-    suspend fun cambiarContrasena(@Body request: CambioPropiaContrasenaRequest): Response<Void>
+    suspend fun cambiarContrasena(@Body request: CambioPropiaContrasenaRequest): Response<LoginResponse>
 
     @GET("api/apartamentos/{id}")
     suspend fun getApartamentoById(@Path("id") id: Long): Response<Apartamento>
