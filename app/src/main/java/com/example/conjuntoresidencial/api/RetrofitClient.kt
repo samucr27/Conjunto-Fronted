@@ -24,9 +24,9 @@ object RetrofitClient {
         OkHttpClient.Builder()
             .addInterceptor(TiempoEsperaInterceptor())
             .addInterceptor(AuthInterceptor(SessionManager(appContext)))
-            .connectTimeout(15, TimeUnit.SECONDS)
-            // 30 s: el plan gratuito de Render tarda en responder tras un arranque en frío
-            .readTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(20, TimeUnit.SECONDS)
+            // 60 s: el plan gratuito de Render puede tardar cerca de un minuto tras un arranque en frío
+            .readTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
             .build()
     }
