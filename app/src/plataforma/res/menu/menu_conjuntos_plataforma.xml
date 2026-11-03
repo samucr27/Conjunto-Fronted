@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P7: menú "⋮" de la lista de conjuntos de la plataforma -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/accion_actualizar"
+        android:title="@string/accion_actualizar" />
+    <item
+        android:id="@+id/accion_auditoria"
+        android:title="@string/plataforma_auditoria" />
+    <item
+        android:id="@+id/accion_contrasena"
+        android:title="@string/perfil_cambiar_contrasena" />
+    <item
+        android:id="@+id/accion_cerrar_sesion"
+        android:title="@string/cerrar_sesion" />
+</menu>

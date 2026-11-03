@@ -35,6 +35,8 @@ class SessionManager(private val context: Context) {
     fun esPorteria(): Boolean = getRol() == "PORTERIA"
     // El contador solo maneja la cartera y la facturación
     fun esContador(): Boolean = getRol() == "CONTADOR"
+    // P7: la app de plataforma (crea y suspende conjuntos); no es de ningún conjunto
+    fun esPlataforma(): Boolean = getRol() == "PLATAFORMA"
 
     // P5: el administrador principal maneja el equipo; los asistentes no
     fun esPrincipal(): Boolean = getRol() == "ADMIN" && prefs.getBoolean("principal", false)
@@ -55,7 +57,7 @@ class SessionManager(private val context: Context) {
         saveToken(respuesta.token)
         saveRol(respuesta.rol)
         ConjuntoElegido.alIniciarSesion(context, respuesta.conjuntoId, respuesta.conjuntoNombre)
-        if (respuesta.rol == "ADMIN" || respuesta.rol == "CONTADOR") {
+        if (respuesta.rol == "ADMIN" || respuesta.rol == "CONTADOR" || respuesta.rol == "PLATAFORMA") {
             respuesta.usuario?.let(::saveUsuario)
             prefs.edit { putBoolean("principal", respuesta.principal == true) }
         } else {

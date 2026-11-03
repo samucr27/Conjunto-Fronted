@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P7: textos de la app de plataforma (los comunes están en src/main) -->
+<resources>
+    <string name="plataforma_login_titulo">Plataforma</string>
+    <string name="plataforma_login_ayuda">Para quienes manejan los conjuntos de MiConjunto</string>
+    <string name="plataforma_login_error">Credenciales incorrectas</string>
+
+    <string name="plataforma_conjuntos_titulo">Conjuntos</string>
+    <string name="plataforma_conjuntos_descripcion">Crea conjuntos y su administrador principal, cambia sus datos o suspéndelos</string>
+    <string name="plataforma_vacio">Aún no hay conjuntos</string>
+    <string name="plataforma_error_cargar">No se pudo cargar la información</string>
+    <string name="plataforma_error_guardar">No se pudo guardar</string>
+    <string name="plataforma_error_departamentos">No se pudieron cargar los departamentos. Intenta de nuevo</string>
+    <string name="plataforma_nuevo">Nuevo conjunto</string>
+    <string name="plataforma_editar">Editar datos</string>
+    <string name="plataforma_guardado">Cambios guardados</string>
+    <string name="plataforma_direccion">Dirección (opcional)</string>
+    <string name="plataforma_elige_departamento">Elige un departamento de la lista</string>
+    <string name="plataforma_principal_titulo">Administrador principal</string>
+    <string name="plataforma_principal_ayuda">Maneja el conjunto y crea las demás cuentas. Recibe una contraseña temporal</string>
+    <string name="plataforma_nombre_principal">Nombre completo</string>
+    <string name="plataforma_correo_opcional">Correo (opcional)</string>
+    <string name="plataforma_usuario_invalido">De 3 a 60 letras, números, punto, guion o guion bajo</string>
+    <string name="plataforma_nombre_suspendido">%1$s (suspendido)</string>
+    <!-- Municipio, departamento · 12 apartamentos · principal: usuario -->
+    <string name="plataforma_fila_detalle">%1$s, %2$s · %3$s · principal: %4$s</string>
+    <string name="plataforma_sin_principal">ninguno</string>
+
+    <string name="plataforma_acceso_creado">Conjunto creado</string>
+    <string name="plataforma_acceso_restablecido">Contraseña restablecida</string>
+    <string name="plataforma_acceso_mensaje">Entrega estos datos al administrador principal:\n\nUsuario: %1$s\nContraseña temporal: %2$s\n\nSolo se muestran esta vez. Pídele que la cambie en Cuenta → Perfil al entrar.</string>
+    <string name="plataforma_copiar">Copiar contraseña</string>
+    <string name="plataforma_copiada">Contraseña copiada</string>
+    <string name="plataforma_listo">Listo</string>
+
+    <string name="plataforma_administracion">Cuentas de la administración</string>
+    <string name="plataforma_administracion_de">Administración de %1$s</string>
+    <string name="plataforma_sin_cuentas">Este conjunto no tiene cuentas de administración</string>
+    <string name="plataforma_de_baja">de baja</string>
+
+    <string name="plataforma_restablecer">Restablecer contraseña del principal</string>
+    <string name="plataforma_restablecer_titulo">¿Restablecer la contraseña?</string>
+    <string name="plataforma_restablecer_mensaje">%1$s (%2$s) recibirá una contraseña temporal nueva. Sus sesiones abiertas y su huella dejarán de funcionar.</string>
+    <string name="plataforma_restablecer_confirmar">Restablecer</string>
+
+    <string name="plataforma_suspender">Suspender</string>
+    <string name="plataforma_reactivar">Reactivar</string>
+    <string name="plataforma_suspender_titulo">Suspender %1$s</string>
+    <string name="plataforma_reactivar_titulo">Reactivar %1$s</string>
+    <string name="plataforma_motivo">Motivo (queda en la auditoría)</string>
+    <string name="plataforma_falta_motivo">Escribe el motivo</string>
+    <string name="plataforma_suspendido">Conjunto suspendido: nadie del conjunto puede entrar</string>
+    <string name="plataforma_reactivado">Conjunto reactivado</string>
+
+    <string name="plataforma_contrasena_actual">Contraseña actual</string>
+    <string name="plataforma_contrasena_nueva">Contraseña nueva</string>
+    <string name="plataforma_contrasena_cambiada">Contraseña cambiada</string>
+
+    <string name="plataforma_auditoria">Auditoría</string>
+    <string name="plataforma_auditoria_descripcion">Lo que hizo cada operador de la plataforma, del más reciente al más antiguo</string>
+    <string name="plataforma_auditoria_vacia">Sin registros</string>
+    <string name="plataforma_evento_inicio">Inicio de sesión</string>
+    <string name="plataforma_evento_crear">Conjunto creado</string>
+    <string name="plataforma_evento_editar">Datos del conjunto editados</string>
+    <string name="plataforma_evento_suspender">Conjunto suspendido</string>
+    <string name="plataforma_evento_reactivar">Conjunto reactivado</string>
+    <string name="plataforma_evento_restablecer">Contraseña del principal restablecida</string>
+    <string name="plataforma_evento_otro">Otra acción</string>
+
+    <plurals name="plataforma_resumen_conjuntos">
+        <item quantity="one">%d conjunto</item>
+        <item quantity="other">%d conjuntos</item>
+    </plurals>
+    <plurals name="plataforma_resumen_suspendidos">
+        <item quantity="one">%d suspendido</item>
+        <item quantity="other">%d suspendidos</item>
+    </plurals>
+    <plurals name="plataforma_apartamentos">
+        <item quantity="one">%d apartamento</item>
+        <item quantity="other">%d apartamentos</item>
+    </plurals>
+    <plurals name="plataforma_resumen_eventos">
+        <item quantity="one">%d registro</item>
+        <item quantity="other">%d registros</item>
+    </plurals>
+</resources>

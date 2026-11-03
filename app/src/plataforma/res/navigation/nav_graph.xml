@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P7: la app de plataforma. Login, conjuntos (crear, editar, suspender, restablecer el
+     principal) y auditoría. No tiene barra inferior ni avisos del celular. -->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginPlataformaFragment">
+
+    <fragment
+        android:id="@+id/loginPlataformaFragment"
+        android:name="com.example.conjuntoresidencial.ui.plataforma.LoginPlataformaFragment"
+        tools:layout="@layout/fragment_login_plataforma" />
+
+    <fragment
+        android:id="@+id/conjuntosPlataformaFragment"
+        android:name="com.example.conjuntoresidencial.ui.plataforma.ConjuntosPlataformaFragment"
+        tools:layout="@layout/fragment_lista_plataforma" />
+
+    <!-- conjuntoId: solo lo de ese conjunto; sin él, todo -->
+    <fragment
+        android:id="@+id/auditoriaPlataformaFragment"
+        android:name="com.example.conjuntoresidencial.ui.plataforma.AuditoriaPlataformaFragment"
+        tools:layout="@layout/fragment_lista_plataforma">
+        <argument
+            android:name="conjuntoId"
+            android:defaultValue="0L"
+            app:argType="long" />
+        <argument
+            android:name="titulo"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
+</navigation>

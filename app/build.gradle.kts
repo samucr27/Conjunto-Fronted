@@ -7,6 +7,10 @@ plugins {
 // y funciona igual, solo que no recibe avisos. Cómo obtenerlo: docs/firebase.md
 if (file("google-services.json").exists()) {
     apply(plugin = "com.google.gms.google-services")
+    // P7: google-services.json no trae la app de plataforma (no recibe avisos) y el plugin fallaría
+    tasks.configureEach {
+        if (name.startsWith("process") && name.contains("Plataforma") && name.endsWith("GoogleServices")) enabled = false
+    }
 }
 
 android {
@@ -23,7 +27,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    // Dos apps del mismo código (P5): residentes y administración. Lo común está en src/main;
+    // Apps del mismo código (P5): residentes y administración; P7 agrega plataforma. Lo común está en src/main;
     // R.bool.app_admin dice en cuál se está. Compilar: assembleResidenteDebug / assembleAdministracionDebug
     flavorDimensions += "app"
     productFlavors {
@@ -39,6 +43,14 @@ android {
             resValue("string", "app_name", "MiConjunto Admin")
             resValue("bool", "app_admin", "true")
             buildConfigField("String", "TIPO_APP", "\"ADMIN\"")
+        }
+        // P7: la plataforma crea, edita y suspende conjuntos. No usa avisos del celular
+        create("plataforma") {
+            dimension = "app"
+            applicationIdSuffix = ".plataforma"
+            resValue("string", "app_name", "MiConjunto Plataforma")
+            resValue("bool", "app_admin", "true")
+            buildConfigField("String", "TIPO_APP", "\"PLATAFORMA\"")
         }
     }
 

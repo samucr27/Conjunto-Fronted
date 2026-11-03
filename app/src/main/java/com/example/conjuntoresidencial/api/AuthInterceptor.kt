@@ -19,7 +19,8 @@ class AuthInterceptor(private val sessionManager: SessionManager, private val co
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val ruta = request.url.encodedPath
-        val esLogin = ruta.startsWith("/api/auth/") && ruta.endsWith("/login")
+        // P7: la app de plataforma entra por su propio login
+        val esLogin = ruta.startsWith("/api/auth/") && ruta.endsWith("/login") || ruta == "/api/plataforma/login"
         val token = sessionManager.getToken()
 
         // X-App-Tipo: qué app hace la petición (RESIDENTE o ADMIN); el servidor lo contrasta con el rol
