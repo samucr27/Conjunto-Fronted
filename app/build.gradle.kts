@@ -7,9 +7,10 @@ plugins {
 // y funciona igual, solo que no recibe avisos. Cómo obtenerlo: docs/firebase.md
 if (file("google-services.json").exists()) {
     apply(plugin = "com.google.gms.google-services")
-    // P7: google-services.json no trae la app de plataforma (no recibe avisos) y el plugin fallaría
+    // P7: google-services.json no trae las apps de plataforma y recepción (no reciben avisos) y el plugin fallaría
     tasks.configureEach {
-        if (name.startsWith("process") && name.contains("Plataforma") && name.endsWith("GoogleServices")) enabled = false
+        if (name.startsWith("process") && (name.contains("Plataforma") || name.contains("Recepcion")) &&
+            name.endsWith("GoogleServices")) enabled = false
     }
 }
 
@@ -51,6 +52,25 @@ android {
             resValue("string", "app_name", "MiConjunto Plataforma")
             resValue("bool", "app_admin", "true")
             buildConfigField("String", "TIPO_APP", "\"PLATAFORMA\"")
+        }
+        // P7 bloque 4: el celular de la recepción. Cuenta de portería, turno por guardia con PIN
+        create("recepcion") {
+            dimension = "app"
+            applicationIdSuffix = ".recepcion"
+            resValue("string", "app_name", "MiConjunto Recepción")
+            resValue("bool", "app_admin", "true")
+            buildConfigField("String", "TIPO_APP", "\"RECEPCION\"")
+        }
+    }
+    // Lo que comparten la administración y la recepción: el login del personal y la portería
+    sourceSets {
+        getByName("administracion") {
+            java.srcDir("src/personal/java")
+            res.srcDir("src/personal/res")
+        }
+        getByName("recepcion") {
+            java.srcDir("src/personal/java")
+            res.srcDir("src/personal/res")
         }
     }
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P7 bloque 4: textos de la portería que comparten la administración y la recepción -->
+<resources>
+    <string name="porteria_turno_de">Turno: %1$s</string>
+    <string name="porteria_registro_de">registró %1$s</string>
+    <string name="porteria_bloquear">Bloquear o cambiar de turno</string>
+</resources>

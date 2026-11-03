@@ -8,6 +8,9 @@ import android.content.res.Configuration
 import android.graphics.drawable.Animatable
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.SystemClock
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.ImageView
@@ -83,6 +86,10 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         private set
     private val _espacioInferior = MutableLiveData(0)
     override val espacioInferior: LiveData<Int> get() = _espacioInferior
+    // P7 bloque 4: bloqueo por inactividad (solo la recepción, ver ConfigApp.bloqueoInactividadMs)
+    private val temporizador = Handler(Looper.getMainLooper())
+    private var ultimaInteraccion = SystemClock.elapsedRealtime()
+    private val bloquear = Runnable { bloquearPorInactividad() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Pantalla de inicio del sistema: solo el fondo morado (el logo lo anima la app)
@@ -532,6 +539,38 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         private const val SALIDA_LOGO_MS = 350L
         private const val MARGEN_BOTON_DP = 16
         private const val ESPERA_MAXIMA_INICIO_MS = 4000L
+    }
+
+    // ---- Bloqueo por inactividad (P7 bloque 4) ----
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        val espera = ConfigApp.bloqueoInactividadMs ?: return
+        ultimaInteraccion = SystemClock.elapsedRealtime()
+        temporizador.removeCallbacks(bloquear)
+        temporizador.postDelayed(bloquear, espera)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val espera = ConfigApp.bloqueoInactividadMs ?: return
+        // Si la app estuvo en segundo plano más del tiempo permitido, se bloquea al volver
+        val pasado = SystemClock.elapsedRealtime() - ultimaInteraccion
+        if (pasado >= espera) bloquearPorInactividad() else temporizador.postDelayed(bloquear, espera - pasado)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        temporizador.removeCallbacks(bloquear)
+    }
+
+    /** Vuelve a la pantalla de turno vaciando la pila: el siguiente guardia entra con su PIN. */
+    private fun bloquearPorInactividad() {
+        val destino = ConfigApp.destinoBloqueo ?: return
+        if (SessionManager(this).getToken() == null) return
+        val actual = navController.currentDestination?.id ?: return
+        if (actual == destino || actual == ConfigApp.destinoLogin) return
+        navController.navigate(destino, null, NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build())
     }
 
     override fun onDestroy() {

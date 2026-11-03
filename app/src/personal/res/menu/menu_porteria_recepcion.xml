@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P7 bloque 4: menú "⋮" de la portería en la app de recepción -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/accion_bloquear"
+        android:title="@string/porteria_bloquear" />
+</menu>

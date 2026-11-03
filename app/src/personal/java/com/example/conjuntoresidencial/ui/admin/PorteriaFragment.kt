@@ -11,7 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
+import com.example.conjuntoresidencial.ConfigApp
 import com.example.conjuntoresidencial.R
+import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.FragmentPorteriaBinding
 import com.example.conjuntoresidencial.databinding.ItemVisitaBinding
@@ -40,7 +45,15 @@ class PorteriaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarEncabezado(binding.encabezado, R.string.porteria_titulo, R.string.porteria_descripcion, atras = false)
+        // P7 bloque 4: en la recepción, quién tiene el turno y el botón para bloquear (otro guardia lo abre con su PIN)
+        val bloqueo = ConfigApp.destinoBloqueo
+        configurarEncabezado(binding.encabezado, R.string.porteria_titulo, R.string.porteria_descripcion, atras = false,
+            menu = if (bloqueo != null) R.menu.menu_porteria_recepcion else null) { id ->
+            (id == R.id.accion_bloquear && bloqueo != null).also { tocado ->
+                if (tocado) bloqueo?.let { findNavController().navigate(it, null, NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build()) }
+            }
+        }
+        SessionManager(requireContext()).getGuardia()?.let { binding.encabezado.ponerInfo(getString(R.string.porteria_turno_de, it)) }
         binding.btnRegistrarVisita.setOnClickListener { registrar() }
         // Consulta cada 7 segundos mientras la pantalla está a la vista
         viewLifecycleOwner.lifecycleScope.launch {
@@ -103,7 +116,8 @@ class PorteriaFragment : Fragment() {
             val fila = ItemVisitaBinding.inflate(layoutInflater, binding.listaVisitas, false)
             fila.tvVisitaTitulo.text = getString(R.string.porteria_visita_titulo, v.visitante, v.torre, v.apto)
             fila.tvVisitaDetalle.text = listOfNotNull(
-                v.creadaEn.substringAfter('T').take(5), v.placa, v.motivo, v.documento
+                v.creadaEn.substringAfter('T').take(5), v.placa, v.motivo, v.documento,
+                v.guardia?.let { getString(R.string.porteria_registro_de, it) }
             ).joinToString(" · ")
             fila.tvVisitaEstado.text = when (v.estado) {
                 "AUTORIZADA" -> getString(R.string.porteria_estado_autorizada, canal(v))

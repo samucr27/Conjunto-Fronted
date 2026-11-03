@@ -8,5 +8,9 @@ object ConfigApp {
     /** Roles que pueden usar esta app. */
     val rolesPermitidos: Set<String> = setOf("PROPIETARIO", "ARRENDATARIO")
 
+    /** P7 bloque 4: sin tocar la pantalla este tiempo, vuelve a [destinoBloqueo]. Solo la recepción. */
+    val bloqueoInactividadMs: Long? = null
+    val destinoBloqueo: Int? = null
+
     const val tipoApp = "RESIDENTE"
 }

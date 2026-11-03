@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Textos solo de la app de administración (los comunes están en src/main) -->
+<resources>
+    <!-- P7 bloque 4: guardias de la recepción -->
+    <string name="guardias_descripcion">Cada guardia abre su turno en la app de recepción con su PIN: así cada visita dice quién la registró</string>
+    <string name="guardias_agregar">Agregar guardia</string>
+    <string name="guardias_editar">Editar datos</string>
+    <string name="guardias_cambiar_pin">Cambiar PIN</string>
+    <string name="guardias_cambiar_pin_de">PIN de %1$s</string>
+    <string name="guardias_dar_de_baja">Dar de baja</string>
+    <string name="guardias_reactivar">Reactivar</string>
+    <string name="guardias_dado_de_baja">Guardia dado de baja: ya no puede abrir turno</string>
+    <string name="guardias_reactivado">Guardia reactivado</string>
+    <string name="guardias_nombre">Nombre completo</string>
+    <string name="guardias_documento">Documento</string>
+    <string name="guardias_pin">PIN (4 a 6 dígitos)</string>
+    <string name="guardias_pin_nuevo">PIN nuevo (4 a 6 dígitos)</string>
+    <string name="guardias_pin_invalido">El PIN debe tener de 4 a 6 dígitos</string>
+    <string name="guardias_guardado">Cambios guardados</string>
+    <string name="guardias_error_cargar">No se pudieron cargar los guardias</string>
+    <string name="guardias_error_guardar">No se pudo guardar</string>
+    <string name="guardias_vacio">Aún no hay guardias</string>
+    <string name="guardias_vacio_mensaje">Sin guardias, la recepción usa la portería sin turno ni PIN</string>
+    <string name="guardias_fila">Documento %1$s</string>
+    <string name="guardias_fila_baja">Documento %1$s · de baja</string>
+    <plurals name="resumen_guardias">
+        <item quantity="one">%d guardia activo</item>
+        <item quantity="other">%d guardias activos</item>
+    </plurals>
+</resources>

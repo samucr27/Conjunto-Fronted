@@ -52,12 +52,15 @@ class SessionManager(private val context: Context) {
     fun saveUsuario(usuario: String) = prefs.edit { putString("usuario", usuario) }
     fun getUsuario(): String = prefs.getString("usuario", "") ?: ""
 
+    /** P7 bloque 4: el guardia con el turno abierto en la recepción; null sin turno. */
+    fun getGuardia(): String? = prefs.getString("guardia", null)
+
     /** Guarda lo que devuelve el login (con contraseña o con huella); [documento] si entró con él. */
     fun guardar(respuesta: LoginResponse, documento: String? = null) {
         saveToken(respuesta.token)
         saveRol(respuesta.rol)
         ConjuntoElegido.alIniciarSesion(context, respuesta.conjuntoId, respuesta.conjuntoNombre)
-        if (respuesta.rol == "ADMIN" || respuesta.rol == "CONTADOR" || respuesta.rol == "PLATAFORMA") {
+        if (respuesta.rol in setOf("ADMIN", "CONTADOR", "PORTERIA", "PLATAFORMA")) {
             respuesta.usuario?.let(::saveUsuario)
             prefs.edit { putBoolean("principal", respuesta.principal == true) }
         } else {
@@ -70,6 +73,8 @@ class SessionManager(private val context: Context) {
             // El saludo nunca se borra por entrar sin documento: si el servidor manda el nombre, se guarda
             if (!respuesta.nombre.isNullOrBlank()) putString("nombre", respuesta.nombre) else remove("nombre")
             if (documento != null) putString("documento", documento) else remove("documento")
+            // P7 bloque 4: el guardia del turno en la recepción
+            if (respuesta.guardiaNombre != null) putString("guardia", respuesta.guardiaNombre) else remove("guardia")
             // P6: lo que la administración le deja ver al arrendatario y los ajustes del conjunto
             putString("tipo_ocupacion", respuesta.tipoOcupacion)
             putBoolean("arr_ve_cartera", respuesta.arrendatarioVeCartera == true)

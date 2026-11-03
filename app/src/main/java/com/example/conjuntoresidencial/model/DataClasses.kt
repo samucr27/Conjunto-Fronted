@@ -76,7 +76,10 @@ data class LoginResponse(
     val consentimientosPendientes: Boolean? = null,
     // P7: el conjunto de la cuenta
     val conjuntoId: Long? = null,
-    val conjuntoNombre: String? = null
+    val conjuntoNombre: String? = null,
+    // P7 bloque 4: la portería con el turno de un guardia abierto con su PIN
+    val guardiaId: Long? = null,
+    val guardiaNombre: String? = null
 )
 // Cuerpo de los errores del backend: {"mensaje": "..."}
 data class MensajeError(val mensaje: String?)
@@ -249,7 +252,9 @@ data class CheckoutDTO(val url: String, val referencia: String, val montoCentavo
 data class VisitaDTO(
     val id: Long, val apartamentoId: Long, val torre: String, val apto: String, val visitante: String,
     val documento: String?, val placa: String?, val motivo: String?, val estado: String,
-    val creadaEn: String, val venceEn: String, val respondidaEn: String?, val canal: String?, val telefono: String?
+    val creadaEn: String, val venceEn: String, val respondidaEn: String?, val canal: String?, val telefono: String?,
+    // P7 bloque 4: el guardia que la registró en la recepción (solo lo ve el personal)
+    val guardia: String? = null
 )
 data class NuevaVisita(
     val torre: String, val apto: String, val visitante: String,

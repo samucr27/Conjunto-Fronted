@@ -282,6 +282,8 @@
     <string name="mostrar_opciones">Mostrar opciones</string>
     <string name="login_falta_usuario">Escribe tu usuario</string>
     <string name="login_falta_contrasena">Escribe la contraseña</string>
+    <!-- P7: la cuenta existe pero es de otra app (p. ej. un administrador en la de recepción) -->
+    <string name="login_rol_no_permitido">Esta cuenta no puede usar esta app</string>
     <string name="login_falta_torre">Escribe la torre</string>
     <string name="login_falta_apartamento">Escribe el apartamento</string>
 
@@ -906,6 +908,9 @@
     <string name="audiencia_arrendatarios">Solo arrendatarios</string>
     <string name="menu_personal_conjunto">Personal y presupuesto</string>
     <string name="menu_personal_conjunto_sub">Vigilancia, aseo, turnos y nómina</string>
+    <!-- P7 bloque 4: guardias de la app de recepción -->
+    <string name="menu_guardias">Guardias</string>
+    <string name="menu_guardias_sub">Quién atiende la recepción y su PIN</string>
     <string name="personal_conj_titulo">Personal y presupuesto</string>
     <string name="personal_descripcion">Trabajadores, turnos, nómina y presupuesto por cargo</string>
     <string name="personal_trabajadores">Trabajadores</string>

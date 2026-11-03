@@ -7,6 +7,16 @@ import retrofit2.http.*
 
 /** Rutas que solo usa la app de administración. */
 interface ApiAdmin : ApiComun {
+    // P7 bloque 4: guardias de la recepción
+    @GET("api/porteria/guardias")
+    suspend fun guardias(): Response<List<GuardiaDTO>>
+
+    @POST("api/porteria/guardias")
+    suspend fun crearGuardia(@Body datos: DatosGuardia): Response<GuardiaDTO>
+
+    @PUT("api/porteria/guardias/{id}")
+    suspend fun editarGuardia(@Path("id") id: Long, @Body datos: DatosGuardia): Response<GuardiaDTO>
+
     // P6: ocupación del apartamento y banderas del arrendatario
     @PATCH("api/apartamentos/{id}/ocupacion-y-banderas")
     suspend fun cambiarOcupacionYBanderas(@Path("id") id: Long, @Body cambio: OcupacionYBanderas): Response<Apartamento>

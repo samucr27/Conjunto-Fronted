@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import com.example.conjuntoresidencial.ConfigApp
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.model.LoginAdminRequest
@@ -27,10 +28,15 @@ import com.example.conjuntoresidencial.ui.comun.controlesFlotantes
  */
 fun Fragment.completarInicioSesion(respuesta: LoginResponse, credenciales: AccesoBiometrico.Credenciales?) {
     val contexto = requireContext()
+    // P7: cada app es para unos roles (la recepción, solo la portería; la administración, no los residentes)
+    if (respuesta.rol !in ConfigApp.rolesPermitidos) {
+        aviso(R.string.login_rol_no_permitido).show()
+        return
+    }
     SessionManager(contexto).guardar(respuesta, credenciales?.documento)
     val irAlPanel = {
-        // La portería solo tiene su pantalla de visitas
-        val inicio = if (respuesta.rol == "PORTERIA") R.id.porteriaFragment else R.id.inicioFragment
+        // La portería solo tiene su pantalla de visitas; en la recepción, primero el turno (P7)
+        val inicio = if (respuesta.rol == "PORTERIA") ConfigApp.destinoBloqueo ?: R.id.porteriaFragment else R.id.inicioFragment
         findNavController().navigate(inicio, null, NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build())
     }
     val cuenta = credenciales?.cuenta(contexto)

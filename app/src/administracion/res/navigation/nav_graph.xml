@@ -51,6 +51,12 @@
         android:name="com.example.conjuntoresidencial.ui.admin.PersonalConjuntoFragment"
         tools:layout="@layout/fragment_personal_conjunto" />
 
+    <!-- P7 bloque 4: guardias de la recepción (nombre, documento y PIN) -->
+    <fragment
+        android:id="@+id/guardiasFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.GuardiasFragment"
+        tools:layout="@layout/fragment_guardias" />
+
     <!-- P6 bloque 5: la portería registra visitas y ve cómo responde cada apartamento -->
     <fragment
         android:id="@+id/porteriaFragment"

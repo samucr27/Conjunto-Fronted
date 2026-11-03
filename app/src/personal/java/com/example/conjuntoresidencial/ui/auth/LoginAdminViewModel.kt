@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.conjuntoresidencial.api.RetrofitClient
-import com.example.conjuntoresidencial.api.instance
+
 import com.example.conjuntoresidencial.model.LoginAdminRequest
 import com.example.conjuntoresidencial.model.LoginResponse
 import com.example.conjuntoresidencial.util.Resource
@@ -25,7 +25,7 @@ class LoginAdminViewModel : ViewModel() {
         _loginState.value = Resource.Loading
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.instance.loginAdmin(LoginAdminRequest(usuario, contrasena))
+                val response = RetrofitClient.comun.loginAdmin(LoginAdminRequest(usuario, contrasena))
                 if (response.isSuccessful && response.body() != null) {
                     _loginState.value = Resource.Success(response.body())
                 } else {

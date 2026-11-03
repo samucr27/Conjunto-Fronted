@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P7 bloque 4: textos de la app de recepción (los comunes están en src/main y src/personal) -->
+<resources>
+    <string name="turno_titulo">Recepción</string>
+    <string name="turno_descripcion">Toca tu nombre y escribe tu PIN para abrir el turno</string>
+    <string name="turno_anterior">Último turno: %1$s</string>
+    <string name="turno_pregunta">¿Quién recibe el turno?</string>
+    <string name="turno_pin">PIN</string>
+    <string name="turno_pin_corto">El PIN tiene de 4 a 6 dígitos</string>
+    <string name="turno_abrir">Abrir turno</string>
+    <string name="turno_error_cargar">No se pudieron cargar los guardias</string>
+    <string name="turno_error_abrir">No se pudo abrir el turno</string>
+    <string name="turno_sin_guardias">La administración aún no ha registrado guardias. Puedes usar la portería sin turno; para pedir PIN, la administración los crea en Herramientas → Guardias.</string>
+    <string name="turno_continuar_sin_turno">Continuar sin turno</string>
+    <string name="turno_cerrar_puesto">Cerrar sesión del puesto</string>
+</resources>

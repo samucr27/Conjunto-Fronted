@@ -72,6 +72,8 @@ class LoginAdminFragment : Fragment() {
                 }
                 is Resource.Success -> {
                     binding.progressAdmin.visibility = View.GONE
+                    // Si la cuenta no es de esta app (P7) se queda aquí y puede intentar con otra
+                    binding.btnIngresarAdmin.isEnabled = true
                     // Guarda la sesión, ofrece entrar con huella la próxima vez y abre el panel
                     resource.data?.let { completarInicioSesion(it, credenciales) }
                 }
