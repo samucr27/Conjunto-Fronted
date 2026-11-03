@@ -73,7 +73,10 @@ data class LoginResponse(
     // Si solo la administración registra vehículos
     val vehiculosAltaSoloAdmin: Boolean? = null,
     // Hay una versión de los términos o la política por aceptar
-    val consentimientosPendientes: Boolean? = null
+    val consentimientosPendientes: Boolean? = null,
+    // P7: el conjunto de la cuenta
+    val conjuntoId: Long? = null,
+    val conjuntoNombre: String? = null
 )
 // Cuerpo de los errores del backend: {"mensaje": "..."}
 data class MensajeError(val mensaje: String?)
@@ -268,3 +271,6 @@ data class SolicitudDatosDTO(
 data class ResolverSolicitudDatos(val estado: String, val respuesta: String?)
 // {"total": n}
 data class ConteoDTO(val total: Long)
+// P7: para elegir el conjunto antes de iniciar sesión
+data class UbicacionConjuntos(val departamento: String, val municipios: List<String>)
+data class ConjuntoDTO(val id: Long, val nombre: String, val direccion: String?, val departamento: String, val municipio: String)

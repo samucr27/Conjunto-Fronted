@@ -7,6 +7,13 @@ import retrofit2.http.*
 
 /** Rutas que usan las dos apps (P6). Las firmas y rutas son las de antes de separarlas. */
 interface ApiComun {
+    // P7: departamentos y municipios con conjuntos, y los conjuntos de un municipio (públicos)
+    @GET("api/conjuntos/ubicaciones")
+    suspend fun ubicacionesConjuntos(): Response<List<UbicacionConjuntos>>
+
+    @GET("api/conjuntos")
+    suspend fun conjuntos(@Query("departamento") departamento: String, @Query("municipio") municipio: String): Response<List<ConjuntoDTO>>
+
     @POST("api/auth/admin/login")
     suspend fun loginAdmin(@Body request: LoginAdminRequest): Response<LoginResponse>
 

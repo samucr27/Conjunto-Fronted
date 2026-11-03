@@ -75,6 +75,19 @@
                             app:filaTipo="enlace"
                             app:filaTitulo="@string/cuenta_permisos"
                             app:filaSubtitulo="@string/cuenta_permisos_sub" />
+                        <!-- P7: el conjunto; cambiarlo cierra la sesión. Se oculta si el servidor maneja uno solo -->
+                        <com.google.android.material.divider.MaterialDivider
+                            android:id="@+id/divisorConjunto"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="72dp" />
+                        <com.example.conjuntoresidencial.ui.comun.FilaOpcion
+                            android:id="@+id/filaConjunto"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:filaIcono="@drawable/ic_apartment"
+                            app:filaTipo="enlace"
+                            app:filaTitulo="@string/cuenta_conjunto" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
                 <com.google.android.material.card.MaterialCardView

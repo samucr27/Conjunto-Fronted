@@ -63,6 +63,8 @@ class LoginApartamentoFragment : Fragment() {
             viewModel.loginTitular(torre, apto, rol, pass)
         }
         binding.btnRegistrarse.setOnClickListener { findNavController().navigate(R.id.registroFragment) }
+        // P7: el conjunto (la primera vez se pide solo)
+        prepararConjunto(binding.btnConjunto)
         ofrecerHuella(binding.btnHuella) { si ->
             binding.progressApto.visibility = if (si) View.VISIBLE else View.GONE
             listOf(binding.btnLoginApto, binding.btnHuella, binding.btnRegistrarse).forEach { it.isEnabled = !si }

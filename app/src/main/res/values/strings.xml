@@ -1315,4 +1315,22 @@
     <string name="ocupacion_guardada">Ocupación actualizada</string>
     <string name="ocupacion_error">No se pudo guardar la ocupación</string>
     <string name="apto_item_detalle_ocupacion">%1$s · Residentes y vehículos</string>
+
+    <!-- P7: elegir el conjunto -->
+    <string name="conjunto_titulo">Tu conjunto</string>
+    <string name="conjunto_mensaje">Elige el conjunto al que quieres entrar. Puedes cambiarlo después.</string>
+    <string name="conjunto_departamento">Departamento</string>
+    <string name="conjunto_municipio">Municipio</string>
+    <string name="conjunto_nombre">Conjunto</string>
+    <string name="conjunto_continuar">Continuar</string>
+    <string name="conjunto_elegir">Elige tu conjunto</string>
+    <string name="conjunto_actual">%1$s · %2$s</string>
+    <string name="conjunto_actual_descripcion">Conjunto: %1$s. Toca para cambiarlo</string>
+    <string name="conjunto_sin_conjuntos">Todavía no hay conjuntos disponibles</string>
+    <string name="conjunto_error">No se pudieron cargar los conjuntos</string>
+    <string name="conjunto_no_disponible">El servidor todavía no permite elegir el conjunto</string>
+    <string name="cuenta_conjunto">Conjunto</string>
+    <string name="conjunto_cambiar_titulo">¿Cambiar de conjunto?</string>
+    <string name="conjunto_cambiar_mensaje">Pasarás a %1$s. Se cerrará tu sesión y tendrás que entrar con una cuenta de ese conjunto. Si usabas la huella, tendrás que activarla de nuevo.</string>
+    <string name="conjunto_cambiar_confirmar">Cambiar y cerrar sesión</string>
 </resources>

@@ -46,6 +46,8 @@ class LoginAdminFragment : Fragment() {
 
         binding.tilUsuarioAdmin.limpiarErrorAlEscribir()
         binding.tilPassAdmin.limpiarErrorAlEscribir()
+        // P7: el conjunto (la primera vez se pide solo)
+        prepararConjunto(binding.btnConjunto)
         ofrecerHuella(binding.btnHuella) { si ->
             binding.progressAdmin.visibility = if (si) View.VISIBLE else View.GONE
             listOf(binding.btnIngresarAdmin, binding.btnHuella).forEach { it.isEnabled = !si }

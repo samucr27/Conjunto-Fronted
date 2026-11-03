@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.core.content.edit
 import com.example.conjuntoresidencial.model.LoginResponse
 
-class SessionManager(context: Context) {
+class SessionManager(private val context: Context) {
     // Este archivo está excluido de las copias de seguridad (ver res/xml/backup_rules.xml)
     private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -54,6 +54,7 @@ class SessionManager(context: Context) {
     fun guardar(respuesta: LoginResponse, documento: String? = null) {
         saveToken(respuesta.token)
         saveRol(respuesta.rol)
+        ConjuntoElegido.alIniciarSesion(context, respuesta.conjuntoId, respuesta.conjuntoNombre)
         if (respuesta.rol == "ADMIN" || respuesta.rol == "CONTADOR") {
             respuesta.usuario?.let(::saveUsuario)
             prefs.edit { putBoolean("principal", respuesta.principal == true) }

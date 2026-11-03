@@ -24,22 +24,26 @@ fun Fragment.confirmarCerrarSesion() {
     MaterialAlertDialogBuilder(requireContext())
         .setTitle(R.string.cerrar_sesion)
         .setMessage(R.string.cerrar_sesion_pregunta)
-        .setPositiveButton(R.string.cerrar_sesion_confirmar) { _, _ ->
-            val contexto = requireContext().applicationContext
-            AvisosCelular.darDeBaja(requireContext())
-            viewLifecycleOwner.lifecycleScope.launch {
-                // Antes de borrar la sesión: la petición lleva el token que se invalida
-                withTimeoutOrNull(ESPERA_LOGOUT_MS) {
-                    try { RetrofitClient.comun.cerrarSesion() } catch (_: Exception) { }
-                }
-                SessionManager(contexto).clearSession()
-                findNavController().navigate(
-                    ConfigApp.destinoLogin,
-                    null,
-                    NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build()
-                )
-            }
-        }
+        .setPositiveButton(R.string.cerrar_sesion_confirmar) { _, _ -> cerrarSesion() }
         .setNegativeButton(R.string.btn_cancelar, null)
         .show()
+}
+
+/** Cierra la sesión sin preguntar; [despues] corre ya sin sesión, antes de volver al acceso (P7: cambiar de conjunto). */
+fun Fragment.cerrarSesion(despues: () -> Unit = {}) {
+    val contexto = requireContext().applicationContext
+    AvisosCelular.darDeBaja(requireContext())
+    viewLifecycleOwner.lifecycleScope.launch {
+        // Antes de borrar la sesión: la petición lleva el token que se invalida
+        withTimeoutOrNull(ESPERA_LOGOUT_MS) {
+            try { RetrofitClient.comun.cerrarSesion() } catch (_: Exception) { }
+        }
+        SessionManager(contexto).clearSession()
+        despues()
+        findNavController().navigate(
+            ConfigApp.destinoLogin,
+            null,
+            NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build()
+        )
+    }
 }

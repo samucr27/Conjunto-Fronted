@@ -1,6 +1,8 @@
 package com.example.conjuntoresidencial.api
 
 import com.example.conjuntoresidencial.BuildConfig
+import android.content.Context
+import com.example.conjuntoresidencial.util.ConjuntoElegido
 import com.example.conjuntoresidencial.util.SesionEventos
 import com.example.conjuntoresidencial.util.SessionManager
 import okhttp3.Interceptor
@@ -12,7 +14,7 @@ import okhttp3.Response
  * El login no lleva token y sus 401 los maneja la propia pantalla. Las demás rutas de
  * /api/auth (cambiar la contraseña) sí lo llevan.
  */
-class AuthInterceptor(private val sessionManager: SessionManager) : Interceptor {
+class AuthInterceptor(private val sessionManager: SessionManager, private val context: Context) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
@@ -22,6 +24,8 @@ class AuthInterceptor(private val sessionManager: SessionManager) : Interceptor 
 
         // X-App-Tipo: qué app hace la petición (RESIDENTE o ADMIN); el servidor lo contrasta con el rol
         val conTipo = request.newBuilder().header("X-App-Tipo", BuildConfig.TIPO_APP)
+        // P7: el conjunto elegido; con sesión el servidor usa el del token
+        ConjuntoElegido.id(context)?.let { conTipo.header("X-Conjunto", it.toString()) }
         val conToken = if (!esLogin && token != null) {
             conTipo.header("Authorization", "Bearer $token").build()
         } else conTipo.build()

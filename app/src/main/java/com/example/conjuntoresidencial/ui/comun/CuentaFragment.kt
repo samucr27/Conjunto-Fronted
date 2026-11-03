@@ -14,6 +14,11 @@ import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentCuentaBinding
 import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.util.confirmarCerrarSesion
+import com.example.conjuntoresidencial.util.cerrarSesion
+import com.example.conjuntoresidencial.util.ConjuntoElegido
+import com.example.conjuntoresidencial.ui.auth.cambiarConjunto
+import com.example.conjuntoresidencial.ui.auth.elegirConjunto
+import androidx.core.view.isVisible
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 /**
@@ -63,6 +68,7 @@ class CuentaFragment : Fragment() {
         binding.filaPermisos.setOnClickListener { nav.navigate(R.id.permisosFragment) }
         binding.filaLegal.setOnClickListener { nav.navigate(R.id.legalFragment) }
         binding.filaAyuda.setOnClickListener { nav.navigate(R.id.ayudaFragment) }
+        configurarConjunto()
         val version = getString(R.string.version, BuildConfig.VERSION_NAME)
         binding.filaAcercaDe.subtitulo = version
         binding.filaAcercaDe.setOnClickListener {
@@ -74,6 +80,36 @@ class CuentaFragment : Fragment() {
                 .show()
         }
         binding.btnCerrarSesion.setOnClickListener { confirmarCerrarSesion() }
+    }
+
+    /**
+     * P7: el conjunto de la sesión. Elegir el mismo solo actualiza su ubicación; elegir otro cierra
+     * la sesión (la cuenta es de un solo conjunto). Sin conjunto conocido (servidor anterior) no se muestra.
+     */
+    private fun configurarConjunto() {
+        val contexto = requireContext()
+        val actual = ConjuntoElegido.actual(contexto)
+        binding.filaConjunto.isVisible = actual != null
+        binding.divisorConjunto.isVisible = actual != null
+        if (actual == null) return
+        binding.filaConjunto.subtitulo = actual.nombre
+        binding.filaConjunto.setOnClickListener {
+            elegirConjunto(null) { nuevo ->
+                if (nuevo.id == actual.id) {
+                    ConjuntoElegido.guardar(contexto, nuevo)
+                    return@elegirConjunto
+                }
+                MaterialAlertDialogBuilder(contexto)
+                    .setTitle(R.string.conjunto_cambiar_titulo)
+                    .setMessage(getString(R.string.conjunto_cambiar_mensaje, nuevo.nombre))
+                    .setPositiveButton(R.string.conjunto_cambiar_confirmar) { _, _ ->
+                        // Ya sin sesión: la huella guardada se quita solo en este celular
+                        cerrarSesion { cambiarConjunto(contexto.applicationContext, nuevo) }
+                    }
+                    .setNegativeButton(R.string.btn_cancelar, null)
+                    .show()
+            }
+        }
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }

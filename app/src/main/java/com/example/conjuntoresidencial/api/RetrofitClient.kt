@@ -23,7 +23,7 @@ object RetrofitClient {
     private val okHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(TiempoEsperaInterceptor())
-            .addInterceptor(AuthInterceptor(SessionManager(appContext)))
+            .addInterceptor(AuthInterceptor(SessionManager(appContext), appContext))
             .connectTimeout(20, TimeUnit.SECONDS)
             // 60 s: el plan gratuito de Render puede tardar cerca de un minuto tras un arranque en frío
             .readTimeout(60, TimeUnit.SECONDS)
