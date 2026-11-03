@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
+import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -49,6 +50,8 @@ class TurnoFragment : Fragment() {
         configurarEncabezado(binding.encabezado, R.string.turno_titulo, R.string.turno_descripcion, atras = false)
         SessionManager(requireContext()).getGuardia()?.let { binding.encabezado.ponerInfo(getString(R.string.turno_anterior, it)) }
         binding.btnCerrarSesion.setOnClickListener { confirmarCerrarSesion() }
+        // "Atrás" no cierra la app: al cerrarla se borra la sesión y habría que volver a escribir la contraseña del puesto
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) { requireActivity().moveTaskToBack(true) }
         cargar()
     }
 

@@ -3,6 +3,7 @@ package com.example.conjuntoresidencial.ui.admin
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.addCallback
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -54,6 +55,10 @@ class PorteriaFragment : Fragment() {
             }
         }
         SessionManager(requireContext()).getGuardia()?.let { binding.encabezado.ponerInfo(getString(R.string.porteria_turno_de, it)) }
+        // En la recepción es la primera pantalla: "atrás" deja la app abierta para no borrar la sesión del puesto
+        if (bloqueo != null) {
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) { requireActivity().moveTaskToBack(true) }
+        }
         binding.btnRegistrarVisita.setOnClickListener { registrar() }
         // Consulta cada 7 segundos mientras la pantalla está a la vista
         viewLifecycleOwner.lifecycleScope.launch {

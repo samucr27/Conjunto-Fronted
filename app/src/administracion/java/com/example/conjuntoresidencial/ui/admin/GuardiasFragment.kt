@@ -31,6 +31,7 @@ import com.example.conjuntoresidencial.ui.comun.mostrarRecurso
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.util.Resource
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
@@ -161,7 +162,8 @@ class GuardiasFragment : Fragment() {
                 aviso(R.string.guardias_guardado).show()
                 cargar()
             } else {
-                aviso(error).show()
+                // Sobre el diálogo: el aviso de la pantalla quedaría detrás del fondo oscuro
+                dialogo.window?.decorView?.let { Snackbar.make(it, error, Snackbar.LENGTH_LONG).show() } ?: aviso(error).show()
             }
         }
     }

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- P7 bloque 4: textos de la app de recepción (los comunes están en src/main y src/personal) -->
 <resources>
+    <!-- El login es el de la administración (src/personal): aquí entra la cuenta de portería -->
+    <string name="login_admin_titulo">Recepción</string>
+    <string name="login_admin_ayuda">Ingresa con la cuenta de portería del conjunto.</string>
     <string name="turno_titulo">Recepción</string>
     <string name="turno_descripcion">Toca tu nombre y escribe tu PIN para abrir el turno</string>
     <string name="turno_anterior">Último turno: %1$s</string>
