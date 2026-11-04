@@ -79,7 +79,22 @@ data class LoginResponse(
     val conjuntoNombre: String? = null,
     // P7 bloque 4: la portería con el turno de un guardia abierto con su PIN
     val guardiaId: Long? = null,
-    val guardiaNombre: String? = null
+    val guardiaNombre: String? = null,
+    // P7 bloque 5: celular nuevo. Llega sin token ni rol: hay que escribir el código enviado a ese
+    // correo (completarInicioSesion lo revisa antes de leer lo demás)
+    val verificacionId: String? = null,
+    val correoOculto: String? = null,
+    // El celular cuya sesión se cerró porque la cuenta pasó del límite
+    val sesionCerradaEn: String? = null
+)
+// P7 bloque 5: el código del correo para entrar en un celular nuevo
+data class VerificarCodigo(val verificacionId: String, val codigo: String)
+data class ReenviarCodigo(val verificacionId: String)
+data class CodigoReenviado(val correoOculto: String?)
+// Un celular de la cuenta (Cuenta → Mis dispositivos); las fechas, "2026-11-03T09:48:00"
+data class DispositivoCuentaDTO(
+    val id: Long, val nombre: String?, val app: String?, val verificadoEn: String?, val sesionDesde: String?,
+    val sesionAbierta: Boolean, val actual: Boolean
 )
 // Cuerpo de los errores del backend: {"mensaje": "..."}
 data class MensajeError(val mensaje: String?)

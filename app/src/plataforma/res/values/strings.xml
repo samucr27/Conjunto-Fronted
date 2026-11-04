@@ -15,6 +15,9 @@
     <string name="plataforma_editar">Editar datos</string>
     <string name="plataforma_guardado">Cambios guardados</string>
     <string name="plataforma_direccion">Dirección (opcional)</string>
+    <string name="plataforma_max_dispositivos">Celulares por cuenta</string>
+    <string name="plataforma_max_dispositivos_ayuda">Con sesión a la vez; al pasar el límite se cierra la más antigua</string>
+    <string name="plataforma_max_dispositivos_invalido">De 1 a 10 celulares</string>
     <string name="plataforma_elige_departamento">Elige un departamento de la lista</string>
     <string name="plataforma_principal_titulo">Administrador principal</string>
     <string name="plataforma_principal_ayuda">Maneja el conjunto y crea las demás cuentas. Recibe una contraseña temporal</string>

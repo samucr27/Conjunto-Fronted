@@ -92,6 +92,11 @@
         tools:layout="@layout/fragment_perfil" />
 
     <fragment
+        android:id="@+id/dispositivosFragment"
+        android:name="com.example.conjuntoresidencial.ui.cuenta.DispositivosFragment"
+        tools:layout="@layout/fragment_dispositivos" />
+
+    <fragment
         android:id="@+id/ajustesFragment"
         android:name="com.example.conjuntoresidencial.ui.cuenta.AjustesFragment"
         tools:layout="@layout/fragment_ajustes" />

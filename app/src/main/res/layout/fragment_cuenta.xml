@@ -67,6 +67,19 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="72dp" />
+                        <!-- P7 bloque 5: los celulares con sesión de la cuenta -->
+                        <com.example.conjuntoresidencial.ui.comun.FilaOpcion
+                            android:id="@+id/filaDispositivos"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:filaIcono="@drawable/ic_smartphone"
+                            app:filaTipo="enlace"
+                            app:filaTitulo="@string/dispositivos_titulo"
+                            app:filaSubtitulo="@string/cuenta_dispositivos_sub" />
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="72dp" />
                         <com.example.conjuntoresidencial.ui.comun.FilaOpcion
                             android:id="@+id/filaPermisos"
                             android:layout_width="match_parent"

@@ -74,6 +74,22 @@
                 android:maxLength="160" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- P7 bloque 5: celulares con sesión a la vez en cada cuenta del conjunto -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilMaxDispositivos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/plataforma_max_dispositivos"
+            app:helperText="@string/plataforma_max_dispositivos_ayuda">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMaxDispositivos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLength="2"
+                android:text="3" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <LinearLayout
             android:id="@+id/grupoPrincipal"
             android:layout_width="match_parent"

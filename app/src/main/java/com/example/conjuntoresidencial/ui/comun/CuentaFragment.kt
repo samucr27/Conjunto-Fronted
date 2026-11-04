@@ -65,6 +65,7 @@ class CuentaFragment : Fragment() {
         val nav = findNavController()
         binding.filaPerfil.setOnClickListener { nav.navigate(R.id.perfilFragment) }
         binding.filaAjustes.setOnClickListener { nav.navigate(R.id.ajustesFragment) }
+        binding.filaDispositivos.setOnClickListener { nav.navigate(R.id.dispositivosFragment) }
         binding.filaPermisos.setOnClickListener { nav.navigate(R.id.permisosFragment) }
         binding.filaLegal.setOnClickListener { nav.navigate(R.id.legalFragment) }
         binding.filaAyuda.setOnClickListener { nav.navigate(R.id.ayudaFragment) }

@@ -138,6 +138,12 @@ class AjustesFragment : Fragment() {
             viewLifecycleOwner.lifecycleScope.launch {
                 val error = try {
                     val respuesta = iniciarSesion(credenciales)
+                    // P7 bloque 5: ese login renueva la sesión de este celular: el token anterior deja de valer.
+                    // Si pide código (celular aún sin verificar), la contraseña ya quedó confirmada
+                    val nueva = respuesta.body()
+                    if (respuesta.isSuccessful && nueva?.verificacionId == null && nueva?.token != null) {
+                        SessionManager(requireContext()).guardar(nueva, credenciales.documento)
+                    }
                     if (respuesta.isSuccessful) null
                     else RetrofitClient.mensajeDeError(respuesta, getString(R.string.contrasena_falta_actual))
                 } catch (e: Exception) {

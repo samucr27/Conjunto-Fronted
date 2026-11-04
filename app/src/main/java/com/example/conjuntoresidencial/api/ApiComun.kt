@@ -75,6 +75,19 @@ interface ApiComun {
     @DELETE("api/auth/biometria")
     suspend fun quitarBiometria(@Query("dispositivoId") dispositivoId: String): Response<Void>
 
+    // P7 bloque 5: código del correo en un celular nuevo y los celulares de la cuenta
+    @POST("api/auth/verificar")
+    suspend fun verificarCodigo(@Body cuerpo: VerificarCodigo): Response<LoginResponse>
+
+    @POST("api/auth/verificar/reenviar")
+    suspend fun reenviarCodigo(@Body cuerpo: ReenviarCodigo): Response<CodigoReenviado>
+
+    @GET("api/auth/dispositivos")
+    suspend fun dispositivos(): Response<List<DispositivoCuentaDTO>>
+
+    @DELETE("api/auth/dispositivos/{id}")
+    suspend fun quitarDispositivo(@Path("id") id: Long): Response<Void>
+
     @GET("api/legal/pendientes")
     suspend fun getTextosPendientes(): Response<List<TextoLegalDTO>>
 

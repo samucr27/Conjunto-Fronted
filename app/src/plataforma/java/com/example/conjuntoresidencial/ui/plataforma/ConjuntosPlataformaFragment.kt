@@ -154,6 +154,7 @@ class ConjuntosPlataformaFragment : Fragment() {
         val usuario = campo(R.id.tilUsuario, R.id.etUsuario)
         val nombrePrincipal = campo(R.id.tilNombrePrincipal, R.id.etNombrePrincipal)
         val correo = campo(R.id.tilCorreo, R.id.etCorreo)
+        val maxDispositivos = campo(R.id.tilMaxDispositivos, R.id.etMaxDispositivos)
         val tilDepartamento = vista.findViewById<TextInputLayout>(R.id.tilDepartamento)
         val departamento = vista.findViewById<AutoCompleteTextView>(R.id.etDepartamento).apply {
             setAdapter(ArrayAdapter(context, android.R.layout.simple_list_item_1, lista))
@@ -165,6 +166,7 @@ class ConjuntosPlataformaFragment : Fragment() {
             departamento.setText(editando.departamento, false)
             municipio.second.setText(editando.municipio)
             direccion.second.setText(editando.direccion)
+            editando.maxDispositivos?.let { maxDispositivos.second.setText(it.toString()) }
         }
         val dialogo = MaterialAlertDialogBuilder(requireContext())
             .setTitle(if (editando == null) R.string.plataforma_nuevo else R.string.plataforma_editar)
@@ -184,7 +186,9 @@ class ConjuntosPlataformaFragment : Fragment() {
                 correo.first.error = if (texto(correo).isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(texto(correo)).matches())
                     getString(R.string.equipo_correo_invalido) else null
             }
-            if (listOf(nombre, municipio, usuario, nombrePrincipal, correo).any { it.first.error != null } || tilDepartamento.error != null) {
+            val maximo = texto(maxDispositivos).toIntOrNull()
+            maxDispositivos.first.error = if (maximo == null || maximo !in 1..10) getString(R.string.plataforma_max_dispositivos_invalido) else null
+            if (listOf(nombre, municipio, usuario, nombrePrincipal, correo, maxDispositivos).any { it.first.error != null } || tilDepartamento.error != null) {
                 return@setOnClickListener
             }
             val dir = texto(direccion).ifEmpty { null }
@@ -193,13 +197,13 @@ class ConjuntosPlataformaFragment : Fragment() {
                 val error = try {
                     if (editando == null) {
                         val r = RetrofitClient.instance.crear(NuevoConjunto(texto(nombre), departamento.text.toString(), texto(municipio),
-                            dir, texto(usuario), texto(nombrePrincipal), texto(correo).ifEmpty { null }))
+                            dir, texto(usuario), texto(nombrePrincipal), texto(correo).ifEmpty { null }, maximo))
                         val acceso = r.body()
                         if (r.isSuccessful && acceso != null) null.also { dialogo.dismiss(); mostrarAcceso(acceso, true); cargar() }
                         else RetrofitClient.mensajeDeError(r, getString(R.string.plataforma_error_guardar))
                     } else {
                         val r = RetrofitClient.instance.editar(editando.id,
-                            DatosConjunto(texto(nombre), departamento.text.toString(), texto(municipio), dir))
+                            DatosConjunto(texto(nombre), departamento.text.toString(), texto(municipio), dir, maximo))
                         if (r.isSuccessful) null.also { dialogo.dismiss(); aviso(R.string.plataforma_guardado).show(); cargar() }
                         else RetrofitClient.mensajeDeError(r, getString(R.string.plataforma_error_guardar))
                     }

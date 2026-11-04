@@ -31,6 +31,8 @@
     <item name="cuotasFragment" type="id" />
     <item name="detalleApartamentoFragment" type="id" />
     <item name="directorioApartamentosFragment" type="id" />
+    <!-- P7 bloque 5: Cuenta → Mis dispositivos -->
+    <item name="dispositivosFragment" type="id" />
     <item name="documentoFragment" type="id" />
     <item name="editarZonaFragment" type="id" />
     <item name="equipoFragment" type="id" />

@@ -1338,4 +1338,35 @@
     <string name="conjunto_cambiar_titulo">¿Cambiar de conjunto?</string>
     <string name="conjunto_cambiar_mensaje">Pasarás a %1$s. Se cerrará tu sesión y tendrás que entrar con una cuenta de ese conjunto. Si usabas la huella, tendrás que activarla de nuevo.</string>
     <string name="conjunto_cambiar_confirmar">Cambiar y cerrar sesión</string>
+
+    <!-- P7 bloque 5: código en un celular nuevo y Mis dispositivos -->
+    <string name="verificacion_titulo">Revisa tu correo</string>
+    <string name="verificacion_mensaje">Es la primera vez que entras en este celular. Enviamos un código de 6 dígitos a %1$s.</string>
+    <string name="verificacion_tu_correo">tu correo</string>
+    <string name="verificacion_codigo">Código</string>
+    <string name="verificacion_codigo_corto">El código tiene 6 dígitos</string>
+    <string name="verificacion_entrar">Entrar</string>
+    <string name="verificacion_reenviar">Reenviar</string>
+    <string name="verificacion_reenviado">Enviamos otro código a %1$s</string>
+    <string name="verificacion_error">No se pudo comprobar el código</string>
+    <string name="verificacion_sesion_cerrada_en">Se cerró tu sesión en %1$s: tu cuenta llegó al máximo de celulares</string>
+    <string name="cuenta_dispositivos_sub">Celulares donde entraste</string>
+    <string name="dispositivos_titulo">Mis dispositivos</string>
+    <string name="dispositivos_descripcion">Los celulares donde entró tu cuenta. Si no reconoces uno, quítalo y cambia tu contraseña</string>
+    <string name="dispositivos_error_cargar">No se pudieron cargar tus dispositivos</string>
+    <string name="dispositivos_vacio">Sin dispositivos</string>
+    <string name="dispositivos_vacio_mensaje">Aparecerán aquí cuando entres con la app actualizada</string>
+    <string name="dispositivos_sin_nombre">Celular</string>
+    <string name="dispositivos_este_celular">%1$s · este celular</string>
+    <string name="dispositivos_sesion_desde">Sesión abierta desde %1$s</string>
+    <string name="dispositivos_sin_sesion">Sin sesión abierta</string>
+    <string name="dispositivos_este_celular_ayuda">Es este celular: para salir usa Cerrar sesión</string>
+    <string name="dispositivos_quitar_titulo">¿Quitar %1$s?</string>
+    <string name="dispositivos_quitar_mensaje">Se cerrará la sesión en ese celular. Si vuelve a entrar, pedirá el código que llega a tu correo.</string>
+    <string name="dispositivos_quitar">Quitar</string>
+    <string name="dispositivos_quitado">%1$s quitado</string>
+    <plurals name="resumen_dispositivos">
+        <item quantity="one">%d sesión abierta</item>
+        <item quantity="other">%d sesiones abiertas</item>
+    </plurals>
 </resources>

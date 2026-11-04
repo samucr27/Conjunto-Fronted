@@ -8,14 +8,18 @@ data class ConjuntoPlataforma(
     val id: Long, val nombre: String, val departamento: String, val municipio: String, val direccion: String?,
     val activo: Boolean, val creadoEn: String?, val apartamentos: Long, val cuentasAdministracion: Long,
     // Usuario del administrador principal; null si el conjunto no tiene
-    val principal: String?
+    val principal: String?,
+    // P7 bloque 5: celulares con sesión a la vez por cuenta (null: servidor anterior)
+    val maxDispositivos: Int? = null
 )
 
-data class DatosConjunto(val nombre: String, val departamento: String, val municipio: String, val direccion: String?)
+data class DatosConjunto(
+    val nombre: String, val departamento: String, val municipio: String, val direccion: String?, val maxDispositivos: Int?
+)
 
 data class NuevoConjunto(
     val nombre: String, val departamento: String, val municipio: String, val direccion: String?,
-    val usuarioPrincipal: String, val nombrePrincipal: String, val correoPrincipal: String?
+    val usuarioPrincipal: String, val nombrePrincipal: String, val correoPrincipal: String?, val maxDispositivos: Int?
 )
 
 data class CambioEstadoConjunto(val activo: Boolean, val motivo: String)

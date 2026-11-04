@@ -2,6 +2,8 @@ package com.example.conjuntoresidencial.api
 
 import com.example.conjuntoresidencial.BuildConfig
 import android.content.Context
+import android.os.Build
+import com.example.conjuntoresidencial.seguridad.AccesoBiometrico
 import com.example.conjuntoresidencial.util.ConjuntoElegido
 import com.example.conjuntoresidencial.util.SesionEventos
 import com.example.conjuntoresidencial.util.SessionManager
@@ -19,12 +21,16 @@ class AuthInterceptor(private val sessionManager: SessionManager, private val co
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val ruta = request.url.encodedPath
-        // P7: la app de plataforma entra por su propio login
+        // P7: la app de plataforma entra por su propio login; el código de un celular nuevo es parte del login
         val esLogin = ruta.startsWith("/api/auth/") && ruta.endsWith("/login") || ruta == "/api/plataforma/login"
+            || ruta.startsWith("/api/auth/verificar")
         val token = sessionManager.getToken()
 
         // X-App-Tipo: qué app hace la petición (RESIDENTE o ADMIN); el servidor lo contrasta con el rol
         val conTipo = request.newBuilder().header("X-App-Tipo", BuildConfig.TIPO_APP)
+            // P7 bloque 5: este celular (una sesión por celular y código la primera vez)
+            .header("X-Dispositivo", AccesoBiometrico.dispositivoId(context))
+            .header("X-Dispositivo-Nombre", nombreCelular)
         // P7: el conjunto elegido; con sesión el servidor usa el del token
         ConjuntoElegido.id(context)?.let { conTipo.header("X-Conjunto", it.toString()) }
         val conToken = if (!esLogin && token != null) {
@@ -43,5 +49,14 @@ class AuthInterceptor(private val sessionManager: SessionManager, private val co
             }
         }
         return response
+    }
+
+    private companion object {
+        /** "Samsung SM-S921B": para reconocerlo en Mis dispositivos (solo ASCII: va en una cabecera). */
+        val nombreCelular: String by lazy {
+            val marca = Build.MANUFACTURER.replaceFirstChar { it.uppercase() }
+            val modelo = if (Build.MODEL.startsWith(Build.MANUFACTURER, ignoreCase = true)) Build.MODEL.drop(Build.MANUFACTURER.length).trim() else Build.MODEL
+            "$marca $modelo".filter { it.code in 32..126 }.take(80)
+        }
     }
 }
