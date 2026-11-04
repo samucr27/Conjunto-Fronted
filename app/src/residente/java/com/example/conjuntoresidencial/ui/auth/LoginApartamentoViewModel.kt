@@ -32,6 +32,8 @@ class LoginApartamentoViewModel : ViewModel() {
     }
 
     private fun entrar(peticion: suspend () -> retrofit2.Response<LoginResponse>) {
+        // Un solo intento a la vez: "Listo" del teclado y el botón juntos no deben pedir dos códigos (P7 bloque 5)
+        if (_loginState.value is Resource.Loading) return
         _loginState.value = Resource.Loading
         viewModelScope.launch {
             try {

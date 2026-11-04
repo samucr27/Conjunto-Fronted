@@ -21,6 +21,8 @@ class LoginAdminViewModel : ViewModel() {
             _loginState.value = Resource.Error("Por favor, rellene todos los campos")
             return
         }
+        // Un solo intento a la vez: "Listo" del teclado y el botón juntos no deben pedir dos códigos (P7 bloque 5)
+        if (_loginState.value is Resource.Loading) return
 
         _loginState.value = Resource.Loading
         viewModelScope.launch {

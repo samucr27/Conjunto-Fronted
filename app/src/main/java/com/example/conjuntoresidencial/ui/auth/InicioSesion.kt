@@ -5,6 +5,8 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.example.conjuntoresidencial.model.ReenviarCodigo
 import com.example.conjuntoresidencial.model.VerificarCodigo
 import com.google.android.material.textfield.TextInputEditText
@@ -107,6 +109,10 @@ private fun Fragment.pedirCodigo(verificacionId: String, correo: String?, creden
         .setNeutralButton(R.string.verificacion_reenviar, null)
         .setNegativeButton(R.string.btn_cancelar, null)
         .show()
+    // Si la pantalla del login se va (entró, giró el celular), el diálogo no queda huérfano encima
+    viewLifecycleOwner.lifecycle.addObserver(LifecycleEventObserver { _, evento ->
+        if (evento == Lifecycle.Event.ON_DESTROY) dialogo.dismiss()
+    })
     val entrar = dialogo.getButton(AlertDialog.BUTTON_POSITIVE)
     val reenviar = dialogo.getButton(AlertDialog.BUTTON_NEUTRAL)
     campo.setOnEditorActionListener { _, accion, _ -> (accion == EditorInfo.IME_ACTION_DONE).also { if (it) entrar.performClick() } }
