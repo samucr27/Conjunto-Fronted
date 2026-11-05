@@ -72,37 +72,90 @@
                     android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:orientation="horizontal">
-                <com.google.android.material.textfield.TextInputLayout
+                android:hint="@string/porteria_documento">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDocumentoVisita"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- P8 bloque 4: a pie o en vehículo -->
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/grupoIngreso"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:checkedButton="@id/btnIngresoPeatonal"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnIngresoPeatonal"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:hint="@string/porteria_documento">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etDocumentoVisita"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:maxLines="1" />
-                </com.google.android.material.textfield.TextInputLayout>
-                <com.google.android.material.textfield.TextInputLayout
+                    android:minHeight="52dp"
+                    android:text="@string/ingreso_peatonal"
+                    app:icon="@drawable/ic_person" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnIngresoVehiculo"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
                     android:layout_weight="1"
+                    android:minHeight="52dp"
+                    android:text="@string/ingreso_vehiculo"
+                    app:icon="@drawable/ic_car" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <LinearLayout
+                android:id="@+id/grupoVehiculo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilPlacaVisita"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
                     android:hint="@string/porteria_placa">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPlacaVisita"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textCapCharacters"
+                        android:maxLength="20"
                         android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/ingreso_parqueadero"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipsParqueadero"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:selectionRequired="true"
+                    app:singleSelection="true" />
+                <TextView
+                    android:id="@+id/tvSinParqueadero"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -125,6 +178,35 @@
                 android:layout_marginTop="16dp"
                 android:minHeight="52dp"
                 android:text="@string/porteria_registrar" />
+
+            <!-- P8 bloque 4: los parqueaderos de invitados y quién los ocupa (salida → queda libre) -->
+            <LinearLayout
+                android:id="@+id/seccionParqueaderos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/parqueaderos_invitados_titulo"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnSurface" />
+                <TextView
+                    android:id="@+id/tvResumenParqueaderos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+                <LinearLayout
+                    android:id="@+id/listaParqueaderos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"

@@ -65,6 +65,13 @@ interface ApiComun {
     @PATCH("api/porteria/visitas/{id}/respuesta")
     suspend fun responderVisita(@Path("id") id: Long, @Body respuesta: RespuestaVisita): Response<VisitaDTO>
 
+    // P8 bloque 4: parqueaderos de invitados y salida del visitante (portería y administración)
+    @GET("api/porteria/parqueaderos")
+    suspend fun getParqueaderosInvitados(): Response<List<ParqueaderoInvitadoDTO>>
+
+    @POST("api/porteria/visitas/{id}/salida")
+    suspend fun registrarSalidaVisita(@Path("id") id: Long): Response<VisitaDTO>
+
     // P6: huella con credencial opaca; textos legales y solicitudes de datos personales
     @POST("api/auth/biometria/activar")
     suspend fun activarBiometria(@Body cuerpo: ActivarBiometria): Response<BiometriaActivada>

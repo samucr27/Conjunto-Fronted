@@ -269,11 +269,21 @@ data class VisitaDTO(
     val documento: String?, val placa: String?, val motivo: String?, val estado: String,
     val creadaEn: String, val venceEn: String, val respondidaEn: String?, val canal: String?, val telefono: String?,
     // P7 bloque 4: el guardia que la registró en la recepción (solo lo ve el personal)
-    val guardia: String? = null
+    val guardia: String? = null,
+    // P8 bloque 4: PEATONAL o VEHICULO, el parqueadero de invitados y la salida
+    val tipoIngreso: String? = null, val parqueaderoId: Long? = null, val parqueadero: String? = null,
+    val salidaEn: String? = null
 )
 data class NuevaVisita(
     val torre: String, val apto: String, val visitante: String,
-    val documento: String? = null, val placa: String? = null, val motivo: String? = null
+    val documento: String? = null, val placa: String? = null, val motivo: String? = null,
+    // P8 bloque 4: sin parqueaderoId el backend asigna el primero libre
+    val tipoIngreso: String = "PEATONAL", val parqueaderoId: Long? = null
+)
+/** P8 bloque 4: un parqueadero de invitados y, si está ocupado, la visita que lo ocupa. */
+data class ParqueaderoInvitadoDTO(
+    val id: Long, val numero: String, val libre: Boolean, val visitaId: Long?, val visitante: String?,
+    val placa: String?, val torre: String?, val apto: String?, val estado: String?, val desde: String?
 )
 data class RespuestaVisita(val decision: String)
 // P6: huella con credencial opaca por celular (nunca la contraseña)

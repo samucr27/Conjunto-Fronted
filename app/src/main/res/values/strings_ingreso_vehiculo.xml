@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P8 bloque 4: ingreso a pie o en vehículo y parqueaderos de invitados (PorteriaFragment) -->
+<resources>
+    <string name="ingreso_peatonal">A pie</string>
+    <string name="ingreso_vehiculo">En vehículo</string>
+    <string name="ingreso_parqueadero">Parqueadero de invitados</string>
+    <string name="ingreso_falta_placa">Escribe la placa del vehículo</string>
+    <string name="ingreso_sin_parqueaderos">El conjunto no tiene parqueaderos de invitados: el vehículo entra sin puesto asignado.</string>
+    <string name="ingreso_todos_ocupados">Todos los parqueaderos de invitados están ocupados.</string>
+    <string name="ingreso_registrar_salida">Salida</string>
+    <string name="ingreso_salida_ok">Salida registrada: %1$s queda libre</string>
+    <string name="ingreso_salida_ok_sin_puesto">Salida registrada</string>
+    <string name="ingreso_salida_confirmar">¿Registrar la salida de %1$s (%2$s)?</string>
+    <string name="ingreso_a_pie">A pie</string>
+    <string name="ingreso_en_vehiculo">%1$s · parqueadero %2$s</string>
+    <string name="ingreso_salio">Salió %1$s</string>
+    <string name="parqueaderos_invitados_titulo">Parqueaderos de invitados</string>
+    <string name="parqueaderos_resumen">%1$d de %2$d libres</string>
+    <string name="parqueadero_libre">Libre</string>
+    <string name="parqueadero_ocupado">%1$s · %2$s</string>
+    <string name="parqueadero_ocupado_detalle">Torre %1$s Apto %2$s · desde %3$s</string>
+    <string name="parqueadero_esperando">(esperando respuesta)</string>
+</resources>
