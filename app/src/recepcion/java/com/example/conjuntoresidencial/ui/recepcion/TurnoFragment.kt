@@ -160,7 +160,8 @@ class TurnoFragment : Fragment() {
     }
 
     private fun irAPorteria() {
-        findNavController().navigate(R.id.porteriaFragment, null, NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build())
+        // P8 bloque 5: el turno empieza en el inicio de la recepción
+        findNavController().navigate(R.id.recepcionInicioFragment, null, NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build())
     }
 
     override fun onDestroyView() {

@@ -28,6 +28,27 @@
         android:name="com.example.conjuntoresidencial.ui.recepcion.TurnoFragment"
         tools:layout="@layout/fragment_turno" />
 
+    <!-- P8 bloque 5: inicio con el resumen del turno, historial, directorio y minuta -->
+    <fragment
+        android:id="@+id/recepcionInicioFragment"
+        android:name="com.example.conjuntoresidencial.ui.recepcion.RecepcionInicioFragment"
+        tools:layout="@layout/fragment_recepcion_inicio" />
+
+    <fragment
+        android:id="@+id/historialVisitasFragment"
+        android:name="com.example.conjuntoresidencial.ui.recepcion.HistorialVisitasFragment"
+        tools:layout="@layout/fragment_historial_visitas" />
+
+    <fragment
+        android:id="@+id/directorioFragment"
+        android:name="com.example.conjuntoresidencial.ui.recepcion.DirectorioFragment"
+        tools:layout="@layout/fragment_directorio" />
+
+    <fragment
+        android:id="@+id/minutaFragment"
+        android:name="com.example.conjuntoresidencial.ui.recepcion.MinutaFragment"
+        tools:layout="@layout/fragment_minuta" />
+
     <fragment
         android:id="@+id/porteriaFragment"
         android:name="com.example.conjuntoresidencial.ui.admin.PorteriaFragment"

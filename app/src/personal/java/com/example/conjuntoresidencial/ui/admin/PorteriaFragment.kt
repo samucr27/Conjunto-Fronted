@@ -65,7 +65,7 @@ class PorteriaFragment : Fragment() {
         }
         SessionManager(requireContext()).getGuardia()?.let { binding.encabezado.ponerInfo(getString(R.string.porteria_turno_de, it)) }
         // En la recepción es la primera pantalla: "atrás" deja la app abierta para no borrar la sesión del puesto
-        if (bloqueo != null) {
+        if (bloqueo != null && findNavController().previousBackStackEntry == null) {
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) { requireActivity().moveTaskToBack(true) }
         }
         binding.btnRegistrarVisita.setOnClickListener { registrar() }

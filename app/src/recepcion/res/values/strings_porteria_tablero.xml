@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P8 bloque 5: inicio, historial, directorio y minuta de la app de la recepción -->
+<resources>
+    <string name="pestana_inicio_recepcion">Inicio</string>
+    <string name="pestana_visitas_recepcion">Visitas</string>
+    <string name="pestana_historial">Historial</string>
+    <string name="pestana_directorio">Directorio</string>
+
+    <!-- Inicio -->
+    <string name="recepcion_inicio_titulo">Portería</string>
+    <string name="recepcion_inicio_descripcion">Lo que pasa en tu turno, de un vistazo</string>
+    <string name="recepcion_visitas_hoy">Visitas hoy</string>
+    <string name="recepcion_esperando">Esperando respuesta</string>
+    <string name="recepcion_dentro">Dentro ahora</string>
+    <string name="recepcion_parqueaderos">Parqueaderos libres</string>
+    <string name="recepcion_parqueaderos_valor">%1$d/%2$d</string>
+    <string name="recepcion_sin_parqueaderos">—</string>
+    <string name="recepcion_vehiculos_dentro">%1$d en vehículo</string>
+    <string name="recepcion_registrar_visita">Registrar visita</string>
+    <string name="recepcion_dentro_titulo">Dentro del conjunto</string>
+    <string name="recepcion_dentro_vacio">No hay visitantes dentro.</string>
+    <string name="recepcion_dentro_detalle">Torre %1$s Apto %2$s · entró %3$s</string>
+    <string name="recepcion_salida">Salida</string>
+    <string name="recepcion_salida_confirmar">¿Registrar la salida de %1$s?</string>
+    <string name="recepcion_salida_ok">Salida registrada</string>
+    <string name="recepcion_minuta_titulo">Minuta del turno</string>
+    <string name="recepcion_minuta_vacia">Nada anotado hoy.</string>
+    <string name="recepcion_ver_minuta">Abrir la minuta</string>
+
+    <!-- Historial -->
+    <string name="historial_titulo">Historial</string>
+    <string name="historial_descripcion">Busca por nombre, documento, placa o apartamento</string>
+    <string name="historial_buscar">Buscar (ej. Pérez, ABC123, 5-502)</string>
+    <string name="historial_hoy">Hoy</string>
+    <string name="historial_7_dias">7 días</string>
+    <string name="historial_30_dias">30 días</string>
+    <string name="historial_90_dias">90 días</string>
+    <string name="historial_vacio">No hay visitas con esa búsqueda.</string>
+    <string name="historial_cargar_mas">Cargar más</string>
+    <string name="historial_fecha">%1$s %2$s</string>
+
+    <!-- Directorio -->
+    <string name="directorio_titulo">Directorio</string>
+    <string name="directorio_descripcion">Apartamentos, quién vive y sus vehículos</string>
+    <string name="directorio_buscar">Buscar (ej. 5-502, Muñoz, KLM456)</string>
+    <string name="directorio_vacio">No hay apartamentos con esa búsqueda.</string>
+    <string name="directorio_apto">Torre %1$s · Apto %2$s</string>
+    <string name="directorio_sin_residentes">Sin residentes registrados</string>
+    <string name="directorio_propietario">propietario</string>
+    <string name="directorio_arrendatario">arrendatario</string>
+    <string name="directorio_residente">%1$s (%2$s)</string>
+    <string name="directorio_placas">Vehículos: %1$s</string>
+    <string name="directorio_citofono">Citófono: %1$s</string>
+    <string name="directorio_llamar">Llamar</string>
+    <string name="directorio_llamar_a">¿A quién llamas?</string>
+    <string name="directorio_desocupado">Desocupado</string>
+
+    <!-- Minuta -->
+    <string name="minuta_titulo">Minuta</string>
+    <string name="minuta_descripcion">Rondas, novedades, paquetes e incidentes del turno</string>
+    <string name="minuta_texto">¿Qué pasó?</string>
+    <string name="minuta_anotar">Anotar</string>
+    <string name="minuta_falta_texto">Escribe qué pasó</string>
+    <string name="minuta_anotada">Anotado en la minuta</string>
+    <string name="minuta_vacia">Todavía no hay anotaciones en los últimos 7 días.</string>
+    <string name="minuta_novedad">Novedad</string>
+    <string name="minuta_ronda">Ronda</string>
+    <string name="minuta_paquete">Paquete</string>
+    <string name="minuta_incidente">Incidente</string>
+    <string name="minuta_turno">Turno</string>
+    <string name="minuta_pie">%1$s · %2$s</string>
+    <string name="minuta_ultimos_7_dias">Últimos 7 días</string>
+</resources>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P8 bloque 5: la barra de la app de la recepción (reemplaza la de src/main, que usa la
+     administración). Los id son los de las pantallas (nav_graph). -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/recepcionInicioFragment"
+        android:icon="@drawable/ic_home"
+        android:title="@string/pestana_inicio_recepcion" />
+    <item
+        android:id="@+id/porteriaFragment"
+        android:icon="@drawable/ic_people"
+        android:title="@string/pestana_visitas_recepcion" />
+    <item
+        android:id="@+id/historialVisitasFragment"
+        android:icon="@drawable/ic_description"
+        android:title="@string/pestana_historial" />
+    <item
+        android:id="@+id/directorioFragment"
+        android:icon="@drawable/ic_apartment"
+        android:title="@string/pestana_directorio" />
+    <item
+        android:id="@+id/cuentaFragment"
+        android:icon="@drawable/ic_person"
+        android:title="@string/pestana_cuenta" />
+</menu>

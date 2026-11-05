@@ -278,7 +278,8 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
                 R.id.adminDashboardFragment -> R.menu.menu_barra_admin
                 R.id.propietarioDashboardFragment -> R.menu.menu_barra_residente
                 // Las dos barras las tienen: depende de quién inició sesión
-                R.id.porteriaFragment -> R.menu.menu_barra_porteria
+                R.id.porteriaFragment, R.id.recepcionInicioFragment, R.id.historialVisitasFragment,
+                R.id.directorioFragment -> R.menu.menu_barra_porteria
                 R.id.inicioFragment, R.id.notificacionesFragment, R.id.cuentaFragment -> {
                     val sesion = SessionManager(this)
                     when {

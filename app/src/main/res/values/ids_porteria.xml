@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P8 bloque 5: las pestañas de la app de la recepción. Se declaran aquí porque MainActivity
+     (src/main) las nombra para mostrar la barra inferior; solo existen en su nav_graph. -->
+<resources>
+    <item name="recepcionInicioFragment" type="id" />
+    <item name="historialVisitasFragment" type="id" />
+    <item name="directorioFragment" type="id" />
+    <item name="minutaFragment" type="id" />
+</resources>
