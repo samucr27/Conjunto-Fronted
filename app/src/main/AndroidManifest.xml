@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- P8 bloque 3: la visita en portería suena y se ve como una alarma -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <application
         android:name=".ConjuntoApp"
@@ -27,6 +30,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- P8 bloque 3: la visita a pantalla completa y Autorizar/Rechazar desde el aviso -->
+        <activity
+            android:name=".push.VisitaAlarmaActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:showWhenLocked="true"
+            android:taskAffinity=""
+            android:turnScreenOn="true" />
+
+        <receiver
+            android:name=".push.RespuestaVisitaReceiver"
+            android:exported="false" />
 
         <!-- Avisos de Firebase (push/ServicioMensajes) -->
         <service

@@ -16,6 +16,12 @@ class ServicioMensajes : FirebaseMessagingService() {
         // Desactivados en Ajustes: el celular ya se dio de baja; por si llega uno en camino
         if (!AvisosCelular.activados(this)) return
         val datos = mensaje.data
+        // P8 bloque 3: la visita en portería suena como una alarma, con Autorizar y Rechazar
+        val visita = datos["referenciaId"]?.toLongOrNull()
+        if (datos["tipo"] == DestinoNotificacion.TIPO_VISITA && visita != null) {
+            AlarmaVisita.sonar(this, visita, datos["titulo"] ?: getString(R.string.alarma_titulo_generico), datos["mensaje"].orEmpty())
+            return
+        }
         AvisosCelular.mostrar(
             this,
             datos["titulo"] ?: getString(R.string.app_name),

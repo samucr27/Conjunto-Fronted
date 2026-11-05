@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P8 bloque 3: la visita en portería como alarma (push/AlarmaVisita.kt, VisitaAlarmaActivity) -->
+<resources>
+    <string name="canal_alarma_visita">Visitas en portería</string>
+    <string name="canal_alarma_visita_descripcion">Suena como una alarma cuando alguien te busca en portería</string>
+    <string name="alarma_encabezado">Visita en portería</string>
+    <string name="alarma_titulo_generico">Alguien te busca en portería</string>
+    <string name="alarma_placa">Placa: %1$s</string>
+    <string name="alarma_tiempo">Responde en %1$d s</string>
+    <string name="alarma_abrir_app">Abrir la app</string>
+    <string name="alarma_sin_sesion">Inicia sesión en la app para responder</string>
+</resources>

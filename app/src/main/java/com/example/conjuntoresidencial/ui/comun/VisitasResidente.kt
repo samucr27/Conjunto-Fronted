@@ -31,7 +31,10 @@ fun Fragment.vigilarVisitas() {
                 if (pendientes != null && view != null) {
                     // Si la que se muestra ya expiró o la respondieron en otro celular, se quita
                     abierta?.let { (id, dialogo) ->
-                        if (pendientes.none { it.id == id }) { dialogo.dismiss(); abierta = null }
+                        if (pendientes.none { it.id == id }) {
+                            dialogo.dismiss(); abierta = null
+                            context?.let { com.example.conjuntoresidencial.push.AlarmaVisita.detener(it, id) }
+                        }
                     }
                     if (abierta == null) {
                         pendientes.firstOrNull()?.let { v -> abierta = v.id to mostrar(v) { abierta = null } }
@@ -61,6 +64,8 @@ private fun Fragment.responder(v: VisitaDTO, decision: String) {
     viewLifecycleOwner.lifecycleScope.launch {
         try {
             val r = RetrofitClient.comun.responderVisita(v.id, RespuestaVisita(decision))
+            // P8 bloque 3: contestada aquí, la alarma del celular deja de sonar
+            context?.let { com.example.conjuntoresidencial.push.AlarmaVisita.detener(it, v.id) }
             if (view == null) return@launch
             // 409: ya expiró o la respondió otra persona del apartamento
             aviso(if (r.isSuccessful) getString(if (decision == "AUTORIZAR") R.string.porteria_autorizada_ok else R.string.porteria_rechazada_ok)
