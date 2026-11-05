@@ -15,6 +15,7 @@ import com.example.conjuntoresidencial.ui.comun.NotificacionesViewModel
 import com.example.conjuntoresidencial.ui.comun.configurar
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.ui.comun.mostrarCodigoDelDia
 
 class AdminDashboardFragment : Fragment() {
 
@@ -46,6 +47,9 @@ class AdminDashboardFragment : Fragment() {
             )
         }
 
+
+        // P9 bloque 2: el código del conjunto de hoy, para dárselo en persona a los residentes
+        if (!contador) mostrarCodigoDelDia(binding.codigoConjunto)
 
         val nav = findNavController()
         binding.cardDirectorioAptos.configurar(R.drawable.ic_apartment, R.string.menu_directorio, R.string.menu_directorio_sub) {

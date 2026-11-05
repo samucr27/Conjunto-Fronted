@@ -286,6 +286,10 @@ data class ParqueaderoInvitadoDTO(
     val placa: String?, val torre: String?, val apto: String?, val estado: String?, val desde: String?
 )
 data class RespuestaVisita(val decision: String)
+// P9 bloque 2: el código del conjunto
+data class CodigoConjuntoRequest(val codigo: String)
+data class PaseConjunto(val conjuntoId: Long, val pase: String)
+data class CodigoDelDiaDTO(val codigo: String, val cambiaEn: String?)
 // P6: huella con credencial opaca por celular (nunca la contraseña)
 data class ActivarBiometria(val dispositivoId: String)
 data class BiometriaActivada(val credencial: String)

@@ -43,6 +43,14 @@
                     android:paddingBottom="4dp"
                     android:textAppearance="?attr/textAppearanceLabelLarge" />
 
+                <!-- P9 bloque 2: el código del conjunto de hoy -->
+                <include
+                    android:id="@+id/codigoConjunto"
+                    layout="@layout/item_codigo_conjunto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

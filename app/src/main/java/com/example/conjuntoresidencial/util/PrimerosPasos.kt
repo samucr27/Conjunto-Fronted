@@ -40,6 +40,7 @@ object PrimerosPasos {
     fun pendiente(context: Context): Int? = when {
         !bienvenidaVista(context) -> R.id.bienvenidaFragment
         ConfigApp.usaConjunto && ConjuntoElegido.id(context) == null -> R.id.elegirConjuntoFragment
+        ConfigApp.pideCodigo && ConjuntoElegido.pase(context) == null -> R.id.codigoConjuntoFragment
         ConfigApp.pideRol && rol(context) == null -> R.id.elegirRolFragment
         else -> null
     }

@@ -27,11 +27,28 @@ object ConjuntoElegido {
     fun id(context: Context): Long? = prefs(context).getLong("id", -1L).takeIf { it > 0 }
 
     fun guardar(context: Context, c: ConjuntoDTO) = prefs(context).edit {
+        // P9 bloque 2: otro conjunto, otro código
+        if (prefs(context).getLong("id", -1L) != c.id) { remove("pase"); remove("pase_conjunto") }
         putLong("id", c.id)
         putString("nombre", c.nombre)
         putString("departamento", c.departamento)
         putString("municipio", c.municipio)
     }
+
+    /** P9 bloque 2: el pase que dio el código del conjunto; null si es de otro conjunto o no hay. */
+    fun pase(context: Context): String? {
+        val p = prefs(context)
+        val de = p.getLong("pase_conjunto", -1L)
+        return p.getString("pase", null)?.takeIf { de > 0 && de == id(context) }
+    }
+
+    fun guardarPase(context: Context, conjuntoId: Long, pase: String) = prefs(context).edit {
+        putString("pase", pase)
+        putLong("pase_conjunto", conjuntoId)
+    }
+
+    /** El servidor ya no lo acepta (cambió el secreto del conjunto): se vuelve a pedir el código. */
+    fun borrarPase(context: Context) = prefs(context).edit { remove("pase"); remove("pase_conjunto") }
 
     /**
      * El login trae el conjunto de la cuenta. Si no se había elegido ninguno (la app anterior, o un

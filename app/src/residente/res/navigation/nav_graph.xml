@@ -17,6 +17,12 @@
         android:name="com.example.conjuntoresidencial.ui.auth.ElegirConjuntoFragment"
         android:label="Elegir conjunto" />
 
+    <!-- P9 bloque 2: el código diario del conjunto, entre el conjunto y el rol -->
+    <fragment
+        android:id="@+id/codigoConjuntoFragment"
+        android:name="com.example.conjuntoresidencial.ui.auth.CodigoConjuntoFragment"
+        android:label="Código del conjunto" />
+
     <fragment
         android:id="@+id/elegirRolFragment"
         android:name="com.example.conjuntoresidencial.ui.auth.ElegirRolFragment"

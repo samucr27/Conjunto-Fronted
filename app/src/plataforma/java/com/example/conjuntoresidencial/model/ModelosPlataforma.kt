@@ -57,7 +57,9 @@ data class CifrasConjunto(
 
 data class DetalleConjunto(
     val conjunto: ConjuntoPlataforma, val cifras: CifrasConjunto, val cuentas: List<CuentaConjunto>,
-    val ultimaSesion: String?, val eventos: List<EventoPlataforma>
+    val ultimaSesion: String?, val eventos: List<EventoPlataforma>,
+    // P9 bloque 2: el código de hoy (null: servidor anterior)
+    val codigoDelDia: String? = null, val codigoCambiaEn: String? = null
 )
 
 data class PaginaEventos(val eventos: List<EventoPlataforma>, val hayMas: Boolean)

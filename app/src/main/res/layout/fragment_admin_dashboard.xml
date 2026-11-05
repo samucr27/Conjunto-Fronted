@@ -29,6 +29,16 @@
                 android:paddingBottom="12dp"
                 android:useDefaultMargins="false">
 
+                <!-- P9 bloque 2: el código del conjunto de hoy (no lo ve el contador) -->
+                <include
+                    android:id="@+id/codigoConjunto"
+                    layout="@layout/item_codigo_conjunto"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnSpan="2"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp" />
+
                 <include
                     android:id="@+id/cardDirectorioAptos"
                     layout="@layout/item_tarjeta_menu"

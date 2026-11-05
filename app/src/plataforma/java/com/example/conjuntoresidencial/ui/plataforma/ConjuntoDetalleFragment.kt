@@ -89,6 +89,13 @@ class ConjuntoDetalleFragment : Fragment() {
         binding.tvEstado.background?.mutate()?.setTint(MaterialColors.getColor(binding.tvEstado, fondo))
         binding.tvEstado.setTextColor(MaterialColors.getColor(binding.tvEstado, texto))
 
+        // P9 bloque 2: el código de hoy, por si un administrador lo pide
+        binding.codigoConjunto.root.isVisible = d.codigoDelDia != null
+        d.codigoDelDia?.let {
+            binding.codigoConjunto.tvCodigo.text = com.example.conjuntoresidencial.ui.comun.separarCodigo(it)
+            binding.codigoConjunto.tvCambia.setText(R.string.codigo_hoy_cambia)
+        }
+
         val f = d.cifras
         filaCifras(binding.filaCifras1, listOf(
             Triple(R.drawable.ic_home, R.string.detalle_apartamentos, f.apartamentos),

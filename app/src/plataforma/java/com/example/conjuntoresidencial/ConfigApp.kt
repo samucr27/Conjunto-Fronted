@@ -16,6 +16,9 @@ object ConfigApp {
     const val usaConjunto = false
 
     /** P8 bloque 2: la primera vez se elige si se entra como propietario o arrendatario. */
+    /** P9 bloque 2: después del conjunto se pide su código diario (solo la app de residentes). */
+    const val pideCodigo = false
+
     const val pideRol = false
 
     const val tipoApp = "PLATAFORMA"

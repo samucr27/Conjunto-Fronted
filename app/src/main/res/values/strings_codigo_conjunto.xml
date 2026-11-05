@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P9 bloque 2: el código diario del conjunto -->
+<resources>
+    <!-- Administración, portería y plataforma -->
+    <string name="codigo_hoy_titulo">Código del conjunto hoy</string>
+    <string name="codigo_hoy_cambia">Cambia a medianoche. Dáselo en persona a quien viva aquí.</string>
+    <string name="codigo_hoy_accesible">Código del conjunto hoy: %1$s. Cambia a medianoche.</string>
+
+    <!-- App de residentes -->
+    <string name="codigo_titulo">Código del conjunto</string>
+    <string name="codigo_descripcion">Pídelo en la portería o en la administración</string>
+    <string name="codigo_explicacion">Para que solo entre quien vive aquí, la primera vez te pedimos el código del conjunto. Cambia cada día: pídelo en persona en la portería o en la administración. Solo lo pones una vez en este celular.</string>
+    <string name="codigo_campo">Código de 6 dígitos</string>
+    <string name="codigo_falta">Escribe los 6 dígitos</string>
+    <string name="codigo_continuar">Continuar</string>
+    <string name="codigo_otro_conjunto">No es mi conjunto</string>
+    <string name="codigo_listo">Listo, ya puedes entrar</string>
+    <string name="codigo_error">No se pudo revisar el código</string>
+</resources>

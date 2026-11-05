@@ -5,6 +5,8 @@
     <item name="bienvenidaFragment" type="id" />
     <item name="elegirConjuntoFragment" type="id" />
     <item name="elegirRolFragment" type="id" />
+    <!-- P9 bloque 2: el código del conjunto (solo en la app de residentes) -->
+    <item name="codigoConjuntoFragment" type="id" />
     <!-- El ⋮ del login (menu/menu_login*.xml) -->
     <item name="accionCambiarConjunto" type="id" />
     <item name="accionCambiarRol" type="id" />

@@ -33,11 +33,15 @@ class AuthInterceptor(private val sessionManager: SessionManager, private val co
             .header("X-Dispositivo-Nombre", nombreCelular)
         // P7: el conjunto elegido; con sesión el servidor usa el del token
         ConjuntoElegido.id(context)?.let { conTipo.header("X-Conjunto", it.toString()) }
+        // P9 bloque 2: el pase del código del conjunto (login y registro de residentes)
+        ConjuntoElegido.pase(context)?.let { conTipo.header("X-Pase-Conjunto", it) }
         val conToken = if (!esLogin && token != null) {
             conTipo.header("Authorization", "Bearer $token").build()
         } else conTipo.build()
 
         val response = chain.proceed(conToken)
+        // P9 bloque 2: el servidor pide el código del conjunto (no hay pase o ya no vale)
+        if (response.code == 428) ConjuntoElegido.borrarPase(context)
 
         if (!esLogin) {
             when (response.code) {

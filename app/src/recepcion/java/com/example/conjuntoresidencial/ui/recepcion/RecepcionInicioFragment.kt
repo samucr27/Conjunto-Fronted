@@ -28,6 +28,7 @@ import com.example.conjuntoresidencial.ui.comun.aviso
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.ui.comun.confirmar
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
+import com.example.conjuntoresidencial.ui.comun.mostrarCodigoDelDia
 import com.example.conjuntoresidencial.util.SessionManager
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -67,6 +68,7 @@ class RecepcionInicioFragment : Fragment() {
         cifra(binding.cifraDentro, R.drawable.ic_home, R.string.recepcion_dentro)
         cifra(binding.cifraParqueaderos, R.drawable.ic_car, R.string.recepcion_parqueaderos)
 
+        mostrarCodigoDelDia(binding.codigoConjunto)
         binding.btnRegistrarVisita.setOnClickListener { irAPestana(R.id.porteriaFragment) }
         binding.btnVerMinuta.setOnClickListener { findNavController().navigate(R.id.minutaFragment) }
 
