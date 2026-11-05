@@ -60,7 +60,7 @@ class LoginPlataformaFragment : Fragment() {
                 val respuesta = r.body()
                 if (r.isSuccessful && respuesta != null) {
                     SessionManager(requireContext()).guardar(respuesta)
-                    findNavController().navigate(R.id.conjuntosPlataformaFragment, null,
+                    findNavController().navigate(R.id.panelPlataformaFragment, null,
                         NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build())
                     return@launch
                 }

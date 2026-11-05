@@ -6,6 +6,9 @@ import com.example.conjuntoresidencial.model.CambioPropiaContrasenaRequest
 import com.example.conjuntoresidencial.model.ConjuntoPlataforma
 import com.example.conjuntoresidencial.model.CuentaConjunto
 import com.example.conjuntoresidencial.model.DatosConjunto
+import com.example.conjuntoresidencial.model.DetalleConjunto
+import com.example.conjuntoresidencial.model.PaginaEventos
+import com.example.conjuntoresidencial.model.PanelPlataforma
 import com.example.conjuntoresidencial.model.EventoPlataforma
 import com.example.conjuntoresidencial.model.LoginPlataforma
 import com.example.conjuntoresidencial.model.LoginResponse
@@ -48,4 +51,18 @@ interface ApiPlataforma {
 
     @GET("api/plataforma/auditoria")
     suspend fun auditoria(@Query("conjunto") conjunto: Long?): Response<List<EventoPlataforma>>
+
+    // P8 bloque 6
+    @GET("api/plataforma/panel")
+    suspend fun panel(): Response<PanelPlataforma>
+
+    @GET("api/plataforma/conjuntos/{id}/detalle")
+    suspend fun detalle(@Path("id") id: Long): Response<DetalleConjunto>
+
+    /** desde y hasta: "2026-11-05" (incluidos). */
+    @GET("api/plataforma/auditoria/buscar")
+    suspend fun buscarAuditoria(
+        @Query("conjunto") conjunto: Long?, @Query("accion") accion: String?, @Query("desde") desde: String?,
+        @Query("hasta") hasta: String?, @Query("q") q: String?, @Query("pagina") pagina: Int
+    ): Response<PaginaEventos>
 }

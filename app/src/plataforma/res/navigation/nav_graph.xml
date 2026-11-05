@@ -18,16 +18,31 @@
         android:name="com.example.conjuntoresidencial.ui.plataforma.LoginPlataformaFragment"
         tools:layout="@layout/fragment_login_plataforma" />
 
+    <!-- P8 bloque 6: lo primero tras el login; los conjuntos, su detalle y la auditoría se abren desde aquí -->
+    <fragment
+        android:id="@+id/panelPlataformaFragment"
+        android:name="com.example.conjuntoresidencial.ui.plataforma.PanelPlataformaFragment"
+        tools:layout="@layout/fragment_panel_plataforma" />
+
+    <fragment
+        android:id="@+id/conjuntoDetalleFragment"
+        android:name="com.example.conjuntoresidencial.ui.plataforma.ConjuntoDetalleFragment"
+        tools:layout="@layout/fragment_conjunto_detalle">
+        <argument
+            android:name="conjuntoId"
+            app:argType="long" />
+    </fragment>
+
     <fragment
         android:id="@+id/conjuntosPlataformaFragment"
         android:name="com.example.conjuntoresidencial.ui.plataforma.ConjuntosPlataformaFragment"
-        tools:layout="@layout/fragment_lista_plataforma" />
+        tools:layout="@layout/fragment_conjuntos_plataforma" />
 
     <!-- conjuntoId: solo lo de ese conjunto; sin él, todo -->
     <fragment
         android:id="@+id/auditoriaPlataformaFragment"
         android:name="com.example.conjuntoresidencial.ui.plataforma.AuditoriaPlataformaFragment"
-        tools:layout="@layout/fragment_lista_plataforma">
+        tools:layout="@layout/fragment_auditoria_plataforma">
         <argument
             android:name="conjuntoId"
             android:defaultValue="0L"

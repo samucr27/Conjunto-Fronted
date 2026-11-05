@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P8 bloque 6: panel, búsqueda de conjuntos, detalle del conjunto y auditoría con filtros -->
+<resources>
+    <!-- Panel -->
+    <string name="panel_titulo">Plataforma</string>
+    <string name="panel_descripcion">Cómo van todos los conjuntos</string>
+    <string name="panel_conjuntos_activos">Conjuntos activos</string>
+    <string name="panel_suspendidos">%1$d suspendidos</string>
+    <string name="panel_nuevos_mes">%1$d nuevos este mes</string>
+    <string name="panel_apartamentos">Apartamentos</string>
+    <string name="panel_residentes">Residentes</string>
+    <string name="panel_residentes_detalle">aprobados</string>
+    <string name="panel_celulares">Celulares con sesión</string>
+    <string name="panel_cuentas">%1$d cuentas de administración</string>
+    <string name="panel_visitas">Visitas en portería</string>
+    <string name="panel_visitas_detalle">últimos 7 días</string>
+    <string name="panel_ver_conjuntos">Ver conjuntos</string>
+    <string name="panel_ver_auditoria">Auditoría</string>
+    <string name="panel_pendientes">Para revisar</string>
+    <string name="panel_por_departamento">Por departamento</string>
+    <string name="panel_departamento_detalle">%1$d activos de %2$d</string>
+    <string name="panel_actividad">Actividad reciente</string>
+    <string name="panel_sin_actividad">Todavía no hay actividad.</string>
+    <string name="panel_abrir">Abrir</string>
+
+    <!-- Conjuntos -->
+    <string name="conjuntos_buscar">Buscar por nombre, municipio o administrador</string>
+    <string name="conjuntos_todos">Todos</string>
+    <string name="conjuntos_activos">Activos</string>
+    <string name="conjuntos_suspendidos">Suspendidos</string>
+    <string name="conjuntos_sin_resultados">Ningún conjunto coincide con la búsqueda.</string>
+
+    <!-- Detalle -->
+    <string name="detalle_activo">Activo</string>
+    <string name="detalle_suspendido">Suspendido</string>
+    <string name="detalle_info">%1$s, %2$s · %3$s</string>
+    <string name="detalle_cifras">En números</string>
+    <string name="detalle_apartamentos">Apartamentos</string>
+    <string name="detalle_propietarios">Propietarios</string>
+    <string name="detalle_arrendatarios">Arrendatarios</string>
+    <string name="detalle_pendientes">Por aprobar</string>
+    <string name="detalle_vehiculos">Vehículos</string>
+    <string name="detalle_guardias">Guardias</string>
+    <string name="detalle_celulares">Celulares</string>
+    <string name="detalle_visitas">Visitas (30 días)</string>
+    <string name="detalle_parqueaderos">Parqueaderos</string>
+    <string name="detalle_datos">Datos</string>
+    <string name="detalle_direccion">Dirección: %1$s</string>
+    <string name="detalle_creado">Creado el %1$s</string>
+    <string name="detalle_limite">Hasta %1$d celulares con sesión por cuenta</string>
+    <string name="detalle_ultima_sesion">Última sesión abierta: %1$s</string>
+    <string name="detalle_sin_sesiones">Nadie ha abierto sesión todavía</string>
+    <string name="detalle_cuentas">Administración</string>
+    <string name="detalle_acciones">Acciones</string>
+    <string name="detalle_actividad">Actividad del conjunto</string>
+    <string name="detalle_ver_toda">Ver toda</string>
+
+    <!-- Auditoría -->
+    <string name="auditoria_buscar">Buscar en el operador, el conjunto o el detalle</string>
+    <string name="auditoria_todas">Todas</string>
+    <string name="auditoria_rango_hoy">Hoy</string>
+    <string name="auditoria_rango_7">7 días</string>
+    <string name="auditoria_rango_30">30 días</string>
+    <string name="auditoria_rango_todo">Siempre</string>
+    <string name="auditoria_cargar_mas">Cargar más</string>
+    <string name="auditoria_sin_resultados">Nada coincide con los filtros.</string>
+</resources>

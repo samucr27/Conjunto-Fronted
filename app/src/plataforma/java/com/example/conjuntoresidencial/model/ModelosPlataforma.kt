@@ -32,5 +32,32 @@ data class CuentaConjunto(
 data class AccesoPrincipal(val conjuntoId: Long, val usuario: String, val contrasenaTemporal: String)
 
 data class EventoPlataforma(
-    val id: Long, val operador: String, val accion: String, val conjuntoId: Long?, val detalle: String?, val fecha: String
+    val id: Long, val operador: String, val accion: String, val conjuntoId: Long?, val detalle: String?, val fecha: String,
+    // P8 bloque 6: el nombre del conjunto (solo en /auditoria/buscar, /panel y /detalle)
+    val conjunto: String? = null
 )
+
+// P8 bloque 6: panel, detalle del conjunto y auditoría con filtros (PlataformaPanelService del backend)
+
+data class PorDepartamento(val departamento: String, val conjuntos: Long, val activos: Long)
+
+data class PendientePlataforma(val conjuntoId: Long, val nombre: String, val municipio: String, val motivo: String)
+
+data class PanelPlataforma(
+    val conjuntosActivos: Long, val conjuntosSuspendidos: Long, val conjuntosNuevosMes: Long, val apartamentos: Long,
+    val residentes: Long, val cuentasAdministracion: Long, val celularesConSesion: Long, val visitasSemana: Long,
+    val porDepartamento: List<PorDepartamento>, val pendientes: List<PendientePlataforma>,
+    val ultimosEventos: List<EventoPlataforma>
+)
+
+data class CifrasConjunto(
+    val apartamentos: Long, val propietarios: Long, val arrendatarios: Long, val residentesPendientes: Long,
+    val vehiculos: Long, val guardias: Long, val celularesConSesion: Long, val visitasMes: Long, val parqueaderos: Long
+)
+
+data class DetalleConjunto(
+    val conjunto: ConjuntoPlataforma, val cifras: CifrasConjunto, val cuentas: List<CuentaConjunto>,
+    val ultimaSesion: String?, val eventos: List<EventoPlataforma>
+)
+
+data class PaginaEventos(val eventos: List<EventoPlataforma>, val hayMas: Boolean)
