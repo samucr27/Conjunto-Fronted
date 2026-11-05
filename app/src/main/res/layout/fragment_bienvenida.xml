@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P8 bloque 2: bienvenida de la primera vez. Fondo del color de la app (el del ícono), su logo,
+     qué hace la app en una frase y tres puntos (values/strings: bienvenida_*, por app). -->
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/raiz"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ic_launcher_background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:id="@+id/contenido"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingStart="28dp"
+        android:paddingEnd="28dp">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/imgLogo"
+            android:layout_width="168dp"
+            android:layout_height="168dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/logo_animado" />
+
+        <TextView
+            android:id="@+id/tvTitulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:accessibilityHeading="true"
+            android:gravity="center"
+            android:text="@string/bienvenida_titulo"
+            android:textAppearance="@style/TextAppearance.App.HeadlineLarge"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:text="@string/bienvenida_texto"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textColor="@color/barra_subtitulo" />
+
+        <!-- Los tres puntos (bienvenida_puntos y bienvenida_iconos) los pone BienvenidaFragment -->
+        <LinearLayout
+            android:id="@+id/listaPuntos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:orientation="vertical" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:minHeight="32dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnComenzar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@color/white"
+            android:minHeight="56dp"
+            android:text="@string/bienvenida_comenzar"
+            android:textColor="@color/ic_launcher_background"
+            app:icon="@drawable/ic_chevron_right"
+            app:iconGravity="end"
+            app:iconTint="@color/ic_launcher_background" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

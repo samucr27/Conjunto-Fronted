@@ -6,7 +6,7 @@
     <string name="selector_pregunta">¿Cómo deseas ingresar?</string>
     <string name="selector_admin">Soy administrador</string>
     <string name="selector_residente">Soy residente</string>
-    <string name="login_admin_titulo">Acceso administrador</string>
+    <string name="login_admin_titulo">Acceso administración</string>
     <string name="login_residente_titulo">Acceso residente</string>
     <string name="login_iniciar_sesion">Iniciar sesión</string>
     <string name="login_admin_ayuda">Ingresa con tu usuario de administrador.</string>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P8 bloque 2: bienvenida, elegir conjunto, elegir rol y encabezado del login. Los bienvenida_*
+     de aquí son los de residentes; cada app los cambia en values/strings_bienvenida.xml de su flavor. -->
+<resources>
+    <string name="bienvenida_titulo">Bienvenido a MiConjunto</string>
+    <string name="bienvenida_texto">Tu conjunto en el celular: pagos, reservas, visitas y avisos, sin filas ni papeles.</string>
+    <string-array name="bienvenida_puntos">
+        <item>Paga la administración y consulta tus recibos</item>
+        <item>Reserva zonas comunes y autoriza a tus visitantes</item>
+        <item>Recibe los avisos y escríbele a la administración</item>
+    </string-array>
+    <array name="bienvenida_iconos">
+        <item>@drawable/ic_wallet</item>
+        <item>@drawable/ic_event</item>
+        <item>@drawable/ic_chat</item>
+    </array>
+    <string name="bienvenida_comenzar">Comenzar</string>
+
+    <string name="elegir_conjunto_titulo">Elige tu conjunto</string>
+    <string name="elegir_conjunto_descripcion">Busca por departamento y municipio</string>
+    <string name="elegir_conjunto_ayuda">Es el conjunto al que vas a entrar. Puedes cambiarlo después desde el inicio de sesión.</string>
+
+    <string name="rol_titulo">¿Cómo vives en el conjunto?</string>
+    <string name="rol_descripcion">Así te mostramos lo que puedes hacer</string>
+    <string name="rol_propietario_detalle">Eres dueño del apartamento: pagas la administración, ves la cartera y das acceso a tu arrendatario.</string>
+    <string name="rol_arrendatario_detalle">Vives en arriendo: reservas zonas comunes, autorizas visitas y recibes los avisos del conjunto.</string>
+
+    <string name="acceso_propietario">Acceso propietario</string>
+    <string name="acceso_arrendatario">Acceso arrendatario</string>
+    <string name="menu_cambiar_conjunto">Cambiar conjunto</string>
+    <string name="menu_cambiar_rol">Cambiar rol</string>
+</resources>

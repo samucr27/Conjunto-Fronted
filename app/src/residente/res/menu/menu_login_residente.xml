@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P8 bloque 2: el ⋮ del login de residentes -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/accionCambiarConjunto"
+        android:title="@string/menu_cambiar_conjunto" />
+    <item
+        android:id="@+id/accionCambiarRol"
+        android:title="@string/menu_cambiar_rol" />
+</menu>

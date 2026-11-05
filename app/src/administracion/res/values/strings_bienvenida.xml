@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P8 bloque 2: bienvenida de la app de administración -->
+<resources>
+    <string name="bienvenida_titulo">Administra tu conjunto</string>
+    <string name="bienvenida_texto">Todo el trabajo de la administración en un solo lugar.</string>
+    <string-array name="bienvenida_puntos">
+        <item>Cartera, cuotas y pagos al día</item>
+        <item>Aprueba registros, vehículos y obras</item>
+        <item>Publica avisos y responde los mensajes</item>
+    </string-array>
+    <array name="bienvenida_iconos">
+        <item>@drawable/ic_wallet</item>
+        <item>@drawable/ic_check_circle</item>
+        <item>@drawable/ic_campaign</item>
+    </array>
+</resources>

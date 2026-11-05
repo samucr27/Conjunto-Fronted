@@ -7,6 +7,17 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginAdminFragment">
 
+    <!-- P8 bloque 2: primeros pasos antes del login (util/PrimerosPasos.kt) -->
+    <fragment
+        android:id="@+id/bienvenidaFragment"
+        android:name="com.example.conjuntoresidencial.ui.auth.BienvenidaFragment"
+        android:label="Bienvenida" />
+
+    <fragment
+        android:id="@+id/elegirConjuntoFragment"
+        android:name="com.example.conjuntoresidencial.ui.auth.ElegirConjuntoFragment"
+        android:label="Elegir conjunto" />
+
     <fragment
         android:id="@+id/loginAdminFragment"
         android:name="com.example.conjuntoresidencial.ui.auth.LoginAdminFragment"

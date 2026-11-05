@@ -12,5 +12,11 @@ object ConfigApp {
     val bloqueoInactividadMs: Long? = null
     val destinoBloqueo: Int? = null
 
+    /** P8 bloque 2: la primera vez se elige el conjunto (la plataforma no es de ninguno). */
+    const val usaConjunto = true
+
+    /** P8 bloque 2: la primera vez se elige si se entra como propietario o arrendatario. */
+    const val pideRol = true
+
     const val tipoApp = "RESIDENTE"
 }

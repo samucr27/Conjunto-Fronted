@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P8 bloque 2: las pantallas de los primeros pasos. Se declaran aquí porque el código común
+     (util/PrimerosPasos.kt) las nombra, aunque no todas estén en el nav_graph de cada app. -->
+<resources>
+    <item name="bienvenidaFragment" type="id" />
+    <item name="elegirConjuntoFragment" type="id" />
+    <item name="elegirRolFragment" type="id" />
+    <!-- El ⋮ del login (menu/menu_login*.xml) -->
+    <item name="accionCambiarConjunto" type="id" />
+    <item name="accionCambiarRol" type="id" />
+</resources>

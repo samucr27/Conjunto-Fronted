@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P8 bloque 2: bienvenida de la app de plataforma -->
+<resources>
+    <string name="bienvenida_titulo">Plataforma MiConjunto</string>
+    <string name="bienvenida_texto">Para el equipo que maneja los conjuntos de MiConjunto.</string>
+    <string-array name="bienvenida_puntos">
+        <item>Crea conjuntos y su administrador principal</item>
+        <item>Suspende o reactiva un conjunto</item>
+        <item>Revisa en la auditoría cada cambio</item>
+    </string-array>
+    <array name="bienvenida_iconos">
+        <item>@drawable/ic_apartment</item>
+        <item>@drawable/ic_lock</item>
+        <item>@drawable/ic_description</item>
+    </array>
+</resources>

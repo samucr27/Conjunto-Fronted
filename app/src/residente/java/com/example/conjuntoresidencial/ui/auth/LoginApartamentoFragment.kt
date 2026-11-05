@@ -12,15 +12,18 @@ import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentLoginApartamentoBinding
 import com.example.conjuntoresidencial.seguridad.AccesoBiometrico
 import com.example.conjuntoresidencial.ui.comun.aviso
-import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.util.PrimerosPasos
 import com.example.conjuntoresidencial.util.Resource
+import com.example.conjuntoresidencial.util.encabezadoDeLogin
+import com.example.conjuntoresidencial.util.irAPasoPendiente
 import com.example.conjuntoresidencial.util.exigirTexto
 import com.example.conjuntoresidencial.util.limpiarErrorAlEscribir
 import com.google.android.material.snackbar.Snackbar
 
 /**
- * Acceso del residente (P5): arriba se elige propietario o arrendatario; se entra con la torre,
- * el apartamento y la contraseña personal. Abajo, el registro para quien aún no tiene cuenta.
+ * Acceso del residente (P5): se entra con la torre, el apartamento y la contraseña personal, con
+ * el rol elegido antes (P8 bloque 2: pantalla de rol; se cambia en el ⋮). Abajo, el registro para
+ * quien aún no tiene cuenta.
  */
 class LoginApartamentoFragment : Fragment() {
 
@@ -38,9 +41,12 @@ class LoginApartamentoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Sin flecha cuando es la primera pantalla (P5: sin el selector de entrada)
-        configurarEncabezado(binding.encabezado, R.string.login_residente_titulo,
-            atras = androidx.navigation.fragment.NavHostFragment.findNavController(this).previousBackStackEntry != null)
+        // P8 bloque 2: la primera vez, antes del login van la bienvenida, el conjunto y el rol
+        if (irAPasoPendiente()) return
+        val rol = PrimerosPasos.rol(requireContext()) ?: PrimerosPasos.PROPIETARIO
+        encabezadoDeLogin(binding.encabezado,
+            getString(if (rol == PrimerosPasos.ARRENDATARIO) R.string.acceso_arrendatario else R.string.acceso_propietario),
+            R.menu.menu_login_residente)
 
         // "Listo" en el teclado del campo de contraseña también inicia sesión
         binding.etPassApto.setOnEditorActionListener { _, accion, _ ->
@@ -58,13 +64,10 @@ class LoginApartamentoFragment : Fragment() {
             val torre = binding.etTorreApto.text.toString().trim()
             val apto = binding.etNumApto.text.toString().trim()
             val pass = binding.etPassApto.text.toString().trim()
-            val rol = if (binding.grupoModo.checkedButtonId == R.id.btnArrendatario) "ARRENDATARIO" else "PROPIETARIO"
             credenciales = AccesoBiometrico.Credenciales(rol, torre = torre, apto = apto, contrasena = pass)
             viewModel.loginTitular(torre, apto, rol, pass)
         }
         binding.btnRegistrarse.setOnClickListener { findNavController().navigate(R.id.registroFragment) }
-        // P7: el conjunto (la primera vez se pide solo)
-        prepararConjunto(binding.btnConjunto)
         ofrecerHuella(binding.btnHuella) { si ->
             binding.progressApto.visibility = if (si) View.VISIBLE else View.GONE
             listOf(binding.btnLoginApto, binding.btnHuella, binding.btnRegistrarse).forEach { it.isEnabled = !si }

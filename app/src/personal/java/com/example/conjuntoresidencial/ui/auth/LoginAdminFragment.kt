@@ -10,7 +10,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.databinding.FragmentLoginAdminBinding
 import com.example.conjuntoresidencial.util.Resource
-import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.util.encabezadoDeLogin
+import com.example.conjuntoresidencial.util.irAPasoPendiente
 import com.example.conjuntoresidencial.util.exigirTexto
 import com.example.conjuntoresidencial.util.limpiarErrorAlEscribir
 import com.example.conjuntoresidencial.ui.comun.aviso
@@ -35,9 +36,9 @@ class LoginAdminFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Sin flecha cuando es la primera pantalla (P5: sin el selector de entrada)
-        configurarEncabezado(binding.encabezado, R.string.login_admin_titulo,
-            atras = androidx.navigation.fragment.NavHostFragment.findNavController(this).previousBackStackEntry != null)
+        // P8 bloque 2: la primera vez, antes del login van la bienvenida y el conjunto
+        if (irAPasoPendiente()) return
+        encabezadoDeLogin(binding.encabezado, getString(R.string.login_admin_titulo), R.menu.menu_login)
 
         // "Listo" en el teclado del campo de contraseña también inicia sesión
         binding.etPassAdmin.setOnEditorActionListener { _, accion, _ ->
@@ -46,8 +47,6 @@ class LoginAdminFragment : Fragment() {
 
         binding.tilUsuarioAdmin.limpiarErrorAlEscribir()
         binding.tilPassAdmin.limpiarErrorAlEscribir()
-        // P7: el conjunto (la primera vez se pide solo)
-        prepararConjunto(binding.btnConjunto)
         ofrecerHuella(binding.btnHuella) { si ->
             binding.progressAdmin.visibility = if (si) View.VISIBLE else View.GONE
             listOf(binding.btnIngresarAdmin, binding.btnHuella).forEach { it.isEnabled = !si }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P8 bloque 2: bienvenida de la app de portería -->
+<resources>
+    <string name="bienvenida_titulo">Portería del conjunto</string>
+    <string name="bienvenida_texto">Anuncia a los visitantes y lleva el control de la entrada.</string>
+    <string-array name="bienvenida_puntos">
+        <item>Anuncia la visita y el residente responde desde su celular</item>
+        <item>Cada guardia abre su turno con su PIN</item>
+        <item>Consulta quién ha entrado al conjunto</item>
+    </string-array>
+    <array name="bienvenida_iconos">
+        <item>@drawable/ic_notifications</item>
+        <item>@drawable/ic_key</item>
+        <item>@drawable/ic_security</item>
+    </array>
+</resources>

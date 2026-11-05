@@ -18,6 +18,7 @@ import com.example.conjuntoresidencial.ui.comun.aviso
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.util.exigirTexto
+import com.example.conjuntoresidencial.util.irAPasoPendiente
 import com.example.conjuntoresidencial.util.limpiarErrorAlEscribir
 import kotlinx.coroutines.launch
 
@@ -34,6 +35,8 @@ class LoginPlataformaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // P8 bloque 2: la primera vez, antes del login va la bienvenida
+        if (irAPasoPendiente()) return
         configurarEncabezado(binding.encabezado, R.string.plataforma_login_titulo, atras = false)
         binding.tilUsuario.limpiarErrorAlEscribir()
         binding.tilContrasena.limpiarErrorAlEscribir()

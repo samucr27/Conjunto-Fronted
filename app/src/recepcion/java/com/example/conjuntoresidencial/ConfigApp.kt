@@ -15,5 +15,11 @@ object ConfigApp {
     val bloqueoInactividadMs: Long? = 3 * 60_000L
     val destinoBloqueo: Int? = R.id.turnoFragment
 
+    /** P8 bloque 2: la primera vez se elige el conjunto (la plataforma no es de ninguno). */
+    const val usaConjunto = true
+
+    /** P8 bloque 2: la primera vez se elige si se entra como propietario o arrendatario. */
+    const val pideRol = false
+
     const val tipoApp = "RECEPCION"
 }
