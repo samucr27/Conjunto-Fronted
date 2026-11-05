@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P9 bloque 3: las pantallas de correspondencia. Se declaran aquí porque DestinoNotificacion
+     (src/main) las nombra; cada una existe solo en el nav_graph de sus apps. -->
+<resources>
+    <item name="correspondenciaFragment" type="id" />
+    <item name="miCorrespondenciaFragment" type="id" />
+</resources>

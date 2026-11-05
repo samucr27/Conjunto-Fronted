@@ -74,6 +74,13 @@
         android:name="com.example.conjuntoresidencial.ui.admin.PorteriaFragment"
         tools:layout="@layout/fragment_porteria" />
 
+    <!-- P9 bloque 3: paquetes, cartas y recibos -->
+    <fragment
+        android:id="@+id/correspondenciaFragment"
+        android:name="com.example.conjuntoresidencial.ui.admin.CorrespondenciaFragment"
+        android:label="Correspondencia"
+        tools:layout="@layout/fragment_correspondencia" />
+
     <!-- Pestañas de la barra inferior (MainActivity navega a ellas por id) -->
     <fragment
         android:id="@+id/inicioFragment"

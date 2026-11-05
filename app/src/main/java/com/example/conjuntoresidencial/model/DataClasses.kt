@@ -290,6 +290,16 @@ data class RespuestaVisita(val decision: String)
 data class CodigoConjuntoRequest(val codigo: String)
 data class PaseConjunto(val conjuntoId: Long, val pase: String)
 data class CodigoDelDiaDTO(val codigo: String, val cambiaEn: String?)
+// P9 bloque 3: correspondencia, paquetes y recibos
+data class CorrespondenciaDTO(
+    val id: Long, val apartamentoId: Long?, val torre: String, val apto: String, val tipo: String,
+    val remitente: String?, val nota: String?, val estado: String, val recibidaEn: String?, val guardia: String?,
+    val entregadaEn: String?, val entregadaA: String?, val entregadaPor: String?
+)
+data class NuevaCorrespondencia(val torre: String, val apto: String, val tipo: String, val remitente: String?, val nota: String?)
+data class ReciboParaTodos(val remitente: String, val nota: String?)
+data class LoteCorrespondencia(val lote: String?, val creadas: Int)
+data class EntregaCorrespondencia(val recibidaPor: String)
 // P6: huella con credencial opaca por celular (nunca la contraseña)
 data class ActivarBiometria(val dispositivoId: String)
 data class BiometriaActivada(val credencial: String)

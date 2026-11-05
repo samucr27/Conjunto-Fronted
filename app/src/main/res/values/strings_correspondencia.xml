@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P9 bloque 3: correspondencia, paquetes y recibos (portería, administración y residentes) -->
+<resources>
+    <string name="corr_titulo">Correspondencia</string>
+    <string name="corr_descripcion">Paquetes, cartas y recibos que llegan a la portería</string>
+    <string name="corr_tarjeta_sub">Paquetes, cartas y recibos</string>
+    <string name="corr_mia_titulo">Mi correspondencia</string>
+    <string name="corr_mia_descripcion">Lo que llegó a la portería para tu apartamento</string>
+    <string name="corr_mia_tarjeta_sub">Paquetes y recibos en portería</string>
+
+    <string name="corr_tipo_paquete">Paquete</string>
+    <string name="corr_tipo_carta">Carta</string>
+    <string name="corr_tipo_documento">Documento</string>
+    <string name="corr_tipo_recibo">Recibo</string>
+
+    <string name="corr_por_entregar">Por entregar</string>
+    <string name="corr_por_entregar_n">Por entregar (%1$d)</string>
+    <string name="corr_entregadas">Entregadas (7 días)</string>
+    <string name="corr_por_recoger">Por recoger</string>
+    <string name="corr_entregada">Entregada</string>
+
+    <string name="corr_registrar">Registrar llegada</string>
+    <string name="corr_recibo_todos">Recibo para todos</string>
+    <string name="corr_buscar">Buscar apartamento o remitente</string>
+    <string name="corr_vacio_pendientes">No hay nada por entregar</string>
+    <string name="corr_vacio_entregadas">No se entregó nada en los últimos 7 días</string>
+    <string name="corr_mia_vacia">No tienes nada en la portería</string>
+    <string name="corr_mia_pendientes">Tienes %1$d por recoger en la portería. Lleva tu documento.</string>
+
+    <string name="corr_apartamento">Torre %1$s · Apto %2$s</string>
+    <string name="corr_llego">Llegó %1$s</string>
+    <string name="corr_recibio">recibió %1$s</string>
+    <string name="corr_entregada_a">Entregada a %1$s · %2$s</string>
+    <string name="corr_entregada_por">por %1$s</string>
+
+    <string name="corr_entregar">Entregar</string>
+    <string name="corr_entregar_titulo">¿Quién recoge?</string>
+    <string name="corr_entregar_mensaje">%1$s para torre %2$s apto %3$s</string>
+    <string name="corr_nombre_recoge">Nombre de quien recoge</string>
+    <string name="corr_falta_nombre">Escribe el nombre de quien recoge</string>
+    <string name="corr_entregada_ok">Entregada a %1$s</string>
+
+    <string name="corr_nueva_titulo">Registrar llegada</string>
+    <string name="corr_torre">Torre</string>
+    <string name="corr_apto">Apto</string>
+    <string name="corr_remitente">Empresa o remitente (Servientrega, Enel…)</string>
+    <string name="corr_nota">Nota (opcional): caja grande, sobre…</string>
+    <string name="corr_falta_apto">Escribe la torre y el apto</string>
+    <string name="corr_registrada_ok">Registrada. Se avisó a torre %1$s apto %2$s</string>
+    <string name="corr_guardar">Registrar y avisar</string>
+
+    <string name="corr_todos_titulo">Recibo para todos</string>
+    <string name="corr_todos_mensaje">Se registra un recibo para cada apartamento y a todos les llega el aviso.</string>
+    <string name="corr_empresa">Empresa (Enel, Vanti, Acueducto…)</string>
+    <string name="corr_mes">Nota (opcional): mes o periodo</string>
+    <string name="corr_falta_empresa">Escribe de qué empresa es el recibo</string>
+    <string name="corr_todos_ok">Se avisó a %1$d apartamentos</string>
+    <string name="corr_avisar_todos">Avisar a todos</string>
+
+    <string name="corr_boton_inicio">Correspondencia · %1$d por entregar</string>
+    <string name="corr_error">No se pudo completar. Intenta de nuevo</string>
+    <string name="cancelar_corr">Cancelar</string>
+
+    <string name="aviso_correspondencia_entregada">Correspondencia entregada</string>
+</resources>

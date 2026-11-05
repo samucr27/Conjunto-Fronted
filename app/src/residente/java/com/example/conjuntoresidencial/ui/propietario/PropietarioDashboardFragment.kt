@@ -65,6 +65,10 @@ class PropietarioDashboardFragment : Fragment() {
         binding.cardChat.configurar(R.drawable.ic_chat, R.string.chat_tarjeta, R.string.chat_tarjeta_sub) {
             findNavController().navigate(R.id.chatFragment)
         }
+        // P9 bloque 3: lo que llegó a la portería
+        binding.cardCorrespondencia.configurar(R.drawable.ic_package, R.string.corr_mia_titulo, R.string.corr_mia_tarjeta_sub) {
+            nav.navigate(R.id.miCorrespondenciaFragment)
+        }
         binding.cardArrendatario.configurar(R.drawable.ic_key, R.string.arrendatario_titulo, R.string.arrendatario_tarjeta_sub) {
             nav.navigate(R.id.arrendatarioFragment)
         }
@@ -90,7 +94,7 @@ class PropietarioDashboardFragment : Fragment() {
         val soloQuienVive = listOf(binding.cardMisVehiculos, binding.cardZonasPropietario, binding.cardMisReservas, binding.cardMiHogar)
         val soloPropietario = listOf(binding.cardMiCartera, binding.cardRegistrarObra, binding.cardMisObras, binding.cardArrendatario)
         val todas = listOf(binding.cardMisVehiculos, binding.cardZonasPropietario, binding.cardMisReservas, binding.cardMiCartera,
-            binding.cardRegistrarObra, binding.cardMisObras, binding.cardMiHogar, binding.cardChat, binding.cardArrendatario)
+            binding.cardRegistrarObra, binding.cardMisObras, binding.cardMiHogar, binding.cardChat, binding.cardCorrespondencia, binding.cardArrendatario)
         // Sin saber aún si está arrendado, lo de quien vive ahí espera (no aparece y desaparece)
         val ocultas = (if (propietario && arrendado != false) soloQuienVive else emptyList()) +
             (if (propietario) emptyList() else soloPropietario)

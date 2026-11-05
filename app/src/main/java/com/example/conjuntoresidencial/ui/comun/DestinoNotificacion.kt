@@ -34,6 +34,8 @@ data class DestinoNotificacion(
                 referenciaId?.let { bundleOf(com.example.conjuntoresidencial.ui.obras.ObraDetalleFragment.ARG_OBRA to it) })
             tipo == TIPO_PERSONAL_OBRA -> nav.navigate(R.id.controlObrasFragment)
             tipo.startsWith(TIPO_PERSONAL_OBRA) -> nav.navigate(R.id.misObrasFragment)
+            // P9 bloque 3: paquete, carta o recibo en la portería, o su entrega → Mi correspondencia
+            tipo.startsWith(TIPO_CORRESPONDENCIA) || tipo == TIPO_RECIBO -> nav.navigate(R.id.miCorrespondenciaFragment)
             // P5: lo que mandó el contador → la cartera de la administración
             tipo == TIPO_SOLICITUD_CONTABLE -> nav.navigate(R.id.carteraResumenFragment)
             // Nueva publicación → el feed de Inicio
@@ -84,6 +86,8 @@ data class DestinoNotificacion(
         const val TIPO_OBRA = "OBRA"
         const val TIPO_PERSONAL_OBRA = "PERSONAL_OBRA"
         const val TIPO_SOLICITUD_CONTABLE = "SOLICITUD_CONTABLE"
+        const val TIPO_CORRESPONDENCIA = "CORRESPONDENCIA"
+        const val TIPO_RECIBO = "RECIBO"
         private const val EXTRA_TIPO = "notificacion_tipo"
         private const val EXTRA_NOTIFICACION = "notificacion_id"
         private const val EXTRA_REFERENCIA = "notificacion_referencia"

@@ -65,6 +65,23 @@ interface ApiComun {
     @PATCH("api/porteria/visitas/{id}/respuesta")
     suspend fun responderVisita(@Path("id") id: Long, @Body respuesta: RespuestaVisita): Response<VisitaDTO>
 
+    // P9 bloque 3: correspondencia (portería y administración; "mia", los residentes)
+    @GET("api/porteria/correspondencia")
+    suspend fun correspondencia(@Query("estado") estado: String?, @Query("q") q: String?,
+                                @Query("dias") dias: Int?): Response<List<CorrespondenciaDTO>>
+
+    @POST("api/porteria/correspondencia")
+    suspend fun registrarCorrespondencia(@Body cuerpo: NuevaCorrespondencia): Response<CorrespondenciaDTO>
+
+    @POST("api/porteria/correspondencia/recibos")
+    suspend fun reciboParaTodos(@Body cuerpo: ReciboParaTodos): Response<LoteCorrespondencia>
+
+    @POST("api/porteria/correspondencia/{id}/entrega")
+    suspend fun entregarCorrespondencia(@Path("id") id: Long, @Body cuerpo: EntregaCorrespondencia): Response<CorrespondenciaDTO>
+
+    @GET("api/porteria/correspondencia/mia")
+    suspend fun miCorrespondencia(): Response<List<CorrespondenciaDTO>>
+
     // P9 bloque 2: el código del conjunto (residentes: para recibir el pase; administración y portería: el de hoy)
     @POST("api/conjuntos/{id}/codigo")
     suspend fun verificarCodigoConjunto(@Path("id") conjunto: Long, @Body cuerpo: CodigoConjuntoRequest): Response<PaseConjunto>

@@ -70,6 +70,7 @@ class RecepcionInicioFragment : Fragment() {
 
         mostrarCodigoDelDia(binding.codigoConjunto)
         binding.btnRegistrarVisita.setOnClickListener { irAPestana(R.id.porteriaFragment) }
+        binding.btnCorrespondencia.setOnClickListener { findNavController().navigate(R.id.correspondenciaFragment) }
         binding.btnVerMinuta.setOnClickListener { findNavController().navigate(R.id.minutaFragment) }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -111,6 +112,8 @@ class RecepcionInicioFragment : Fragment() {
         binding.cifraDentro.tvDetalle.text = getString(R.string.recepcion_vehiculos_dentro, r.vehiculosDentro)
         binding.cifraParqueaderos.tvValor.text = if (r.parqueaderosTotal == 0) getString(R.string.recepcion_sin_parqueaderos)
             else getString(R.string.recepcion_parqueaderos_valor, r.parqueaderosLibres, r.parqueaderosTotal)
+        binding.btnCorrespondencia.text = if (r.correspondenciaPendiente > 0)
+            getString(R.string.corr_boton_inicio, r.correspondenciaPendiente) else getString(R.string.corr_titulo)
         r.guardia?.let { binding.encabezado.ponerInfo(getString(R.string.porteria_turno_de, it)) }
     }
 

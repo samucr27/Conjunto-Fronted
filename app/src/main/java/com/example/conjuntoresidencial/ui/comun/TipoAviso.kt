@@ -63,7 +63,8 @@ data class TipoAviso(val categoria: CategoriaAviso, @StringRes val titulo: Int, 
             "PERSONAL_OBRA_APROBADO" to R.string.aviso_personal_aprobado,
             "PERSONAL_OBRA_RECHAZADO" to R.string.aviso_personal_rechazado,
             "CORRESPONDENCIA" to R.string.aviso_correspondencia,
-            "RECIBO" to R.string.aviso_recibo
+            "RECIBO" to R.string.aviso_recibo,
+            "CORRESPONDENCIA_ENTREGADA" to R.string.aviso_correspondencia_entregada
         )
 
         fun de(tipo: String?): TipoAviso {
@@ -77,7 +78,7 @@ data class TipoAviso(val categoria: CategoriaAviso, @StringRes val titulo: Int, 
                 t.startsWith("VISITA") -> CategoriaAviso.PORTERIA
                 t == "CHAT" -> CategoriaAviso.CHAT
                 t.startsWith("OBRA") || t.startsWith("PERSONAL_OBRA") -> CategoriaAviso.OBRAS
-                t == "CORRESPONDENCIA" || t == "RECIBO" -> CategoriaAviso.CORRESPONDENCIA
+                t.startsWith("CORRESPONDENCIA") || t == "RECIBO" -> CategoriaAviso.CORRESPONDENCIA
                 else -> CategoriaAviso.GENERAL
             }
             val estado = when {

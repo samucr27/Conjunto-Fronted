@@ -131,6 +131,14 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_margin="6dp" />
+                <!-- P9 bloque 3 -->
+                <include
+                    android:id="@+id/cardCorrespondencia"
+                    layout="@layout/item_tarjeta_menu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="6dp" />
                 <include
                     android:id="@+id/cardEquipo"
                     layout="@layout/item_tarjeta_menu"

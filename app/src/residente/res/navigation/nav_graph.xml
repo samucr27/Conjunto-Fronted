@@ -67,6 +67,13 @@
         android:name="com.example.conjuntoresidencial.ui.feed.PublicarFragment"
         tools:layout="@layout/fragment_publicar" />
 
+    <!-- P9 bloque 3: lo que llegó a la portería para el apartamento -->
+    <fragment
+        android:id="@+id/miCorrespondenciaFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.MiCorrespondenciaFragment"
+        android:label="Mi correspondencia"
+        tools:layout="@layout/fragment_mi_correspondencia" />
+
     <!-- Pestañas de la barra inferior (MainActivity navega a ellas por id) -->
     <fragment
         android:id="@+id/inicioFragment"
