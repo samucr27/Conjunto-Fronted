@@ -41,7 +41,7 @@ android {
         create("administracion") {
             dimension = "app"
             applicationIdSuffix = ".admin"
-            resValue("string", "app_name", "MiConjunto Admin")
+            resValue("string", "app_name", "Admin")
             resValue("bool", "app_admin", "true")
             buildConfigField("String", "TIPO_APP", "\"ADMIN\"")
         }
@@ -49,7 +49,7 @@ android {
         create("plataforma") {
             dimension = "app"
             applicationIdSuffix = ".plataforma"
-            resValue("string", "app_name", "MiConjunto Plataforma")
+            resValue("string", "app_name", "Plataforma")
             resValue("bool", "app_admin", "true")
             buildConfigField("String", "TIPO_APP", "\"PLATAFORMA\"")
         }
@@ -57,7 +57,7 @@ android {
         create("recepcion") {
             dimension = "app"
             applicationIdSuffix = ".recepcion"
-            resValue("string", "app_name", "MiConjunto Recepción")
+            resValue("string", "app_name", "Portería")
             resValue("bool", "app_admin", "true")
             buildConfigField("String", "TIPO_APP", "\"RECEPCION\"")
         }

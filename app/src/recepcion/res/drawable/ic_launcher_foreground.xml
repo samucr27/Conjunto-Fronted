@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generado por tools/iconos.py (no editar a mano). Símbolo del logo de la app de portería:
+     los edificios del logo original y su símbolo, blanco sobre el fondo del ícono. Caja de
+     108 dp reducida al 88 % para quedar dentro de la zona segura; también es el monocromo. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="50.5"
+        android:scaleX="0.88"
+        android:scaleY="0.88"
+        android:translateY="3.5">
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M49,36h3.6v3.6h-3.6z M56,36h3.6v3.6h-3.6z M49,44h3.6v3.6h-3.6z M56,44h3.6v3.6h-3.6z M49,52h3.6v3.6h-3.6z M56,52h3.6v3.6h-3.6z M37.5,53h3.6v3.6h-3.6z M37.5,61h3.6v3.6h-3.6z M67.5,59h3.6v3.6h-3.6z M67.5,66h3.6v3.6h-3.6z" />
+        <path
+            android:pathData="M31,76 L77,76"
+            android:strokeWidth="3.2"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M34,76 L34,47 L45,47"
+            android:strokeWidth="3.2"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M45,76 L45,31 L54.5,25 L64,31 L64,76"
+            android:strokeWidth="3.2"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M64,76 L64,53 L75,53 L75,76"
+            android:strokeWidth="3.2"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M67.5,39.5 a2.9,2.9 0 1,0 5.8,0 a2.9,2.9 0 1,0 -5.8,0 M73.3,39.5 L81.6,39.5 M78.8,39.5 L78.8,42.7 M81.6,39.5 L81.6,42.1"
+            android:strokeWidth="2.6"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M51.5,76 L51.5,67 L57.5,67 L57.5,76"
+            android:strokeWidth="2.6"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineJoin="round" />
+    </group>
+</vector>

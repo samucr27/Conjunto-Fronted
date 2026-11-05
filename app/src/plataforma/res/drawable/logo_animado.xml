@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generado por tools/iconos.py (no editar a mano). Logo animado de la carga inicial de la app
+     de plataforma: el símbolo del ícono se dibuja trazo a trazo, se encienden las ventanas y termina
+     con el símbolo de la app. Empieza vacío: sin start() no se ve nada. -->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="108dp"
+            android:height="108dp"
+            android:viewportWidth="108"
+            android:viewportHeight="108">
+            <group
+                android:name="logo"
+                android:pivotX="54"
+                android:pivotY="50.5"
+                android:scaleX="0.88"
+                android:scaleY="0.88"
+                android:translateY="3.5">
+                <path
+                    android:name="ventanas"
+                    android:fillAlpha="0"
+                    android:fillColor="#FFFFFFFF"
+                    android:pathData="M49,36h3.6v3.6h-3.6z M56,36h3.6v3.6h-3.6z M49,44h3.6v3.6h-3.6z M56,44h3.6v3.6h-3.6z M49,52h3.6v3.6h-3.6z M56,52h3.6v3.6h-3.6z M37.5,53h3.6v3.6h-3.6z M37.5,61h3.6v3.6h-3.6z M67.5,59h3.6v3.6h-3.6z M67.5,66h3.6v3.6h-3.6z" />
+                <path
+                    android:name="suelo"
+                    android:pathData="M31,76 L77,76"
+                    android:strokeWidth="3.2"
+                    android:strokeColor="#FFFFFFFF"
+                    android:strokeLineCap="round"
+                    android:strokeLineJoin="round"
+                    android:trimPathEnd="0" />
+                <path
+                    android:name="edificio_izq"
+                    android:pathData="M34,76 L34,47 L45,47"
+                    android:strokeWidth="3.2"
+                    android:strokeColor="#FFFFFFFF"
+                    android:strokeLineCap="round"
+                    android:strokeLineJoin="round"
+                    android:trimPathEnd="0" />
+                <path
+                    android:name="torre"
+                    android:pathData="M45,76 L45,31 L54.5,25 L64,31 L64,76"
+                    android:strokeWidth="3.2"
+                    android:strokeColor="#FFFFFFFF"
+                    android:strokeLineCap="round"
+                    android:strokeLineJoin="round"
+                    android:trimPathEnd="0" />
+                <path
+                    android:name="edificio_der"
+                    android:pathData="M64,76 L64,53 L75,53 L75,76"
+                    android:strokeWidth="3.2"
+                    android:strokeColor="#FFFFFFFF"
+                    android:strokeLineCap="round"
+                    android:strokeLineJoin="round"
+                    android:trimPathEnd="0" />
+                <path
+                    android:name="visto"
+                    android:pathData="M67.8,32.8 L72.4,32.8 L72.4,37.4 L67.8,37.4 L67.8,32.8 M67.8,39.6 L72.4,39.6 L72.4,44.2 L67.8,44.2 L67.8,39.6 M74.6,32.8 L79.2,32.8 L79.2,37.4 L74.6,37.4 L74.6,32.8 M74.6,39.6 L79.2,39.6 L79.2,44.2 L74.6,44.2 L74.6,39.6"
+                    android:strokeWidth="2.2"
+                    android:strokeColor="#FFFFFFFF"
+                    android:strokeLineCap="round"
+                    android:strokeLineJoin="round"
+                    android:trimPathEnd="0" />
+                <path
+                    android:name="puerta"
+                    android:pathData="M51.5,76 L51.5,67 L57.5,67 L57.5,76"
+                    android:strokeAlpha="0"
+                    android:strokeWidth="2.6"
+                    android:strokeColor="#FFFFFFFF"
+                    android:strokeLineJoin="round" />
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="suelo">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="260"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="trimPathEnd"
+                    android:startOffset="0"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="edificio_izq">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="300"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="trimPathEnd"
+                    android:startOffset="120"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="torre">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="380"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="trimPathEnd"
+                    android:startOffset="200"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="edificio_der">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="300"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="trimPathEnd"
+                    android:startOffset="320"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="visto">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="380"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="trimPathEnd"
+                    android:startOffset="620"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="puerta">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="200"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="strokeAlpha"
+                    android:startOffset="520"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="ventanas">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="260"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="fillAlpha"
+                    android:startOffset="560"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="logo">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="900"
+                    android:interpolator="@android:interpolator/overshoot"
+                    android:propertyName="scaleX"
+                    android:startOffset="0"
+                    android:valueFrom="0.792"
+                    android:valueTo="0.88"
+                    android:valueType="floatType" />
+                <objectAnimator
+                    android:duration="900"
+                    android:interpolator="@android:interpolator/overshoot"
+                    android:propertyName="scaleY"
+                    android:startOffset="0"
+                    android:valueFrom="0.792"
+                    android:valueTo="0.88"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>
