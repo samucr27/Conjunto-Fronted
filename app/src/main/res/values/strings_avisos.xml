@@ -40,7 +40,7 @@
     <string name="aviso_personal_aprobado">Trabajador aprobado</string>
     <string name="aviso_personal_rechazado">Trabajador rechazado</string>
     <string name="aviso_correspondencia">Llegó correspondencia</string>
-    <string name="aviso_recibo">Llegaron recibos</string>
+    <string name="aviso_recibo">Llegó un recibo</string>
     <string name="aviso_general">Aviso del conjunto</string>
 
     <!-- Estado que se muestra como etiqueta -->

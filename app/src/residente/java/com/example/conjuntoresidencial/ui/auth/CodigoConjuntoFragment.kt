@@ -73,8 +73,9 @@ class CodigoConjuntoFragment : Fragment() {
                     seguirPrimerosPasos()
                     return@launch
                 }
-                binding.tilCodigo.error = RetrofitClient.mensajeDeError(r, getString(R.string.codigo_error))
+                // Primero se borra (eso quita el error en doAfterTextChanged) y después se muestra
                 binding.etCodigo.setText("")
+                binding.tilCodigo.error = RetrofitClient.mensajeDeError(r, getString(R.string.codigo_error))
             } catch (e: Exception) {
                 if (_binding != null) binding.tilCodigo.error = RetrofitClient.mensajeDeExcepcion(e)
             }

@@ -18,7 +18,7 @@
     <string name="panel_ver_auditoria">Auditoría</string>
     <string name="panel_pendientes">Para revisar</string>
     <string name="panel_por_departamento">Por departamento</string>
-    <string name="panel_departamento_detalle">%1$d activos de %2$d</string>
+    <string name="panel_departamento_detalle">Activos: %1$d de %2$d</string>
     <string name="panel_actividad">Actividad reciente</string>
     <string name="panel_sin_actividad">Todavía no hay actividad.</string>
     <string name="panel_abrir">Abrir</string>

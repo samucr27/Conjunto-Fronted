@@ -154,7 +154,7 @@
     <string name="cupos_rango">Entre 0 y %1$d</string>
     <string name="cupos_guardados">Cupos guardados</string>
     <string name="cupos_error">No se pudieron cargar o guardar los cupos</string>
-    <string name="notificaciones_descripcion_residente">Respuestas de la administración a tus solicitudes</string>
+    <string name="notificaciones_descripcion_residente">Avisos de la portería y la administración</string>
     <string name="notificaciones_vacio_mensaje_residente">Aquí verás cuando la administración apruebe o rechace tus vehículos y reservas.</string>
     <string name="pestana_avisos">Avisos</string>
     <string name="vehiculo_error_guardar">No se pudo guardar el vehículo</string>
