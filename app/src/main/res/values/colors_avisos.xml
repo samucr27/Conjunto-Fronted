@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P9 bloque 1: un color por categoría de aviso (TipoAviso.kt). Ícono y etiqueta en este color,
+     su fondo en el mismo con transparencia. En modo oscuro, tonos más claros (values-night). -->
+<resources>
+    <color name="aviso_reserva">#1E66C9</color>
+    <color name="aviso_vehiculo">#00796B</color>
+    <color name="aviso_residente">#3949AB</color>
+    <color name="aviso_pago">#2E7D32</color>
+    <color name="aviso_publicacion">#E65100</color>
+    <color name="aviso_porteria">#C62828</color>
+    <color name="aviso_chat">#6A1B9A</color>
+    <color name="aviso_obra">#795548</color>
+    <color name="aviso_correspondencia">#AD1457</color>
+    <color name="aviso_general">#5E35B1</color>
+    <color name="aviso_aprobado">#2E7D32</color>
+    <color name="aviso_rechazado">#C62828</color>
+</resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P9 bloque 1: los colores de los avisos en modo oscuro (más claros para que se lean) -->
+<resources>
+    <color name="aviso_reserva">#8AB4F8</color>
+    <color name="aviso_vehiculo">#4DB6AC</color>
+    <color name="aviso_residente">#9FA8DA</color>
+    <color name="aviso_pago">#81C784</color>
+    <color name="aviso_publicacion">#FFB74D</color>
+    <color name="aviso_porteria">#EF9A9A</color>
+    <color name="aviso_chat">#CE93D8</color>
+    <color name="aviso_obra">#BCAAA4</color>
+    <color name="aviso_correspondencia">#F48FB1</color>
+    <color name="aviso_general">#B39DDB</color>
+    <color name="aviso_aprobado">#81C784</color>
+    <color name="aviso_rechazado">#EF9A9A</color>
+</resources>

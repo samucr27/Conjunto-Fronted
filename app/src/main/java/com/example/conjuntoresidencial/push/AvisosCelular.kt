@@ -17,7 +17,9 @@ import com.example.conjuntoresidencial.MainActivity
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.model.DispositivoRequest
+import com.example.conjuntoresidencial.ui.comun.CategoriaAviso
 import com.example.conjuntoresidencial.ui.comun.DestinoNotificacion
+import com.example.conjuntoresidencial.ui.comun.TipoAviso
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineScope
@@ -39,6 +41,9 @@ object AvisosCelular {
     private const val TAG = "AvisosCelular"
     private const val PREFS = "ajustes"
     private const val CLAVE_ACTIVADOS = "avisos_activados"
+    // P9 bloque 1: un grupo por categoría y el id de su resumen (no se cruza con los demás)
+    private const val GRUPO = "avisos_"
+    private const val BASE_RESUMEN = 0x3000_0000
     // Los registros no deben depender de la pantalla: siguen aunque se cierre
     private val alcance = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -113,17 +118,66 @@ object AvisosCelular {
         val alTocar = PendingIntent.getActivity(
             context, id, abrir, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+        // P9 bloque 1: ícono, color y categoría según el tipo; título corto y el detalle completo al desplegar
+        val tipo = TipoAviso.de(destino?.tipo)
+        val categoria = tipo.categoria
+        val tituloClaro = if (tipo.titulo != R.string.aviso_general) context.getString(tipo.titulo) else titulo
+        val detalle = TipoAviso.detalle(context, mensaje, tipo)
+        val color = ContextCompat.getColor(context, categoria.color)
+        val grupo = GRUPO + categoria.name
         val aviso = NotificationCompat.Builder(context, CANAL)
-            .setSmallIcon(R.drawable.ic_notifications)
-            .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
-            .setContentTitle(titulo)
-            .setContentText(mensaje)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(mensaje))
+            .setSmallIcon(categoria.icono)
+            .setColor(color)
+            .setContentTitle(tituloClaro)
+            .setContentText(detalle)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(detalle).setBigContentTitle(tituloClaro))
+            // Arriba, junto al nombre de la app: "MiConjunto · Reservas"
+            .setSubText(context.getString(categoria.nombre))
+            .setShowWhen(true)
+            .setWhen(System.currentTimeMillis())
+            .setGroup(grupo)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            .setCategory(if (categoria == CategoriaAviso.CHAT) NotificationCompat.CATEGORY_MESSAGE else NotificationCompat.CATEGORY_EVENT)
             .setAutoCancel(true)
             .setContentIntent(alTocar)
             .build()
-        NotificationManagerCompat.from(context).notify(id, aviso)
+        val gestor = NotificationManagerCompat.from(context)
+        gestor.notify(id, aviso)
+        resumirGrupo(context, categoria, grupo, color)
     }
+
+    /**
+     * Con dos o más avisos de la misma categoría, el celular los junta bajo uno solo
+     * ("3 avisos de Reservas") con la primera línea de cada uno; al desplegarlo se ven todos.
+     */
+    private fun resumirGrupo(context: Context, categoria: CategoriaAviso, grupo: String, color: Int) {
+        val activos = context.getSystemService(NotificationManager::class.java)?.activeNotifications.orEmpty()
+            .filter { it.notification.group == grupo && it.id != idResumen(categoria) }
+        if (activos.size < 2) return
+        val nombre = context.getString(categoria.nombre)
+        val estilo = NotificationCompat.InboxStyle()
+            .setSummaryText(context.resources.getQuantityString(R.plurals.aviso_grupo_resumen, activos.size, activos.size, nombre))
+        activos.sortedByDescending { it.postTime }.take(5).forEach { n ->
+            val extras = n.notification.extras
+            val linea = listOfNotNull(extras.getCharSequence(android.app.Notification.EXTRA_TITLE),
+                extras.getCharSequence(android.app.Notification.EXTRA_TEXT)).joinToString(" · ")
+            estilo.addLine(linea)
+        }
+        val resumen = NotificationCompat.Builder(context, CANAL)
+            .setSmallIcon(categoria.icono)
+            .setColor(color)
+            .setContentTitle(nombre)
+            .setContentText(context.resources.getQuantityString(R.plurals.aviso_grupo_resumen, activos.size, activos.size, nombre))
+            .setSubText(nombre)
+            .setStyle(estilo)
+            .setGroup(grupo)
+            .setGroupSummary(true)
+            // Suena una vez el aviso nuevo, no también el resumen
+            .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+            .setAutoCancel(true)
+            .build()
+        NotificationManagerCompat.from(context).notify(idResumen(categoria), resumen)
+    }
+
+    private fun idResumen(categoria: CategoriaAviso) = BASE_RESUMEN + categoria.ordinal
 }

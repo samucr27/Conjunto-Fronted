@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P9 bloque 1: la etiqueta Aprobado/Rechazado de un aviso (el color lo pone NotificacionAdapter) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <corners android:radius="8dp" />
+    <solid android:color="#FFFFFF" />
+</shape>

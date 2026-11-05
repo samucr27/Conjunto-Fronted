@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P9 bloque 1: categorías y títulos de los avisos (TipoAviso.kt), en el celular y en la app -->
+<resources>
+    <!-- Categorías (la etiqueta de color y el grupo en el celular) -->
+    <string name="aviso_cat_reservas">Reservas</string>
+    <string name="aviso_cat_vehiculos">Vehículos</string>
+    <string name="aviso_cat_residentes">Residentes</string>
+    <string name="aviso_cat_pagos">Pagos</string>
+    <string name="aviso_cat_publicaciones">Publicaciones</string>
+    <string name="aviso_cat_porteria">Portería</string>
+    <string name="aviso_cat_chat">Chat</string>
+    <string name="aviso_cat_obras">Obras</string>
+    <string name="aviso_cat_correspondencia">Correspondencia</string>
+    <string name="aviso_cat_general">Avisos</string>
+
+    <!-- Títulos por tipo -->
+    <string name="aviso_reserva">Nueva reserva</string>
+    <string name="aviso_reserva_aprobada">Tu reserva fue aprobada</string>
+    <string name="aviso_reserva_rechazada">Tu reserva fue rechazada</string>
+    <string name="aviso_vehiculo">Vehículo por aprobar</string>
+    <string name="aviso_vehiculo_aprobado">Tu vehículo fue aprobado</string>
+    <string name="aviso_vehiculo_rechazado">Tu vehículo fue rechazado</string>
+    <string name="aviso_residente">Arrendatario por aprobar</string>
+    <string name="aviso_residente_aprobado">Arrendatario aprobado</string>
+    <string name="aviso_residente_rechazado">Arrendatario rechazado</string>
+    <string name="aviso_registro">Registro por aprobar</string>
+    <string name="aviso_solicitud_arrendatario">Un arrendatario pidió registrarse</string>
+    <string name="aviso_cuota">Nueva cuota de administración</string>
+    <string name="aviso_cuota_pagada">Pago confirmado</string>
+    <string name="aviso_cuota_rechazada">Comprobante rechazado</string>
+    <string name="aviso_comprobante">Comprobante por revisar</string>
+    <string name="aviso_solicitud_contable">El contador mandó algo a aprobar</string>
+    <string name="aviso_publicacion">Nueva publicación</string>
+    <string name="aviso_visita">Visita en portería</string>
+    <string name="aviso_chat">Mensaje nuevo</string>
+    <string name="aviso_obra">Obra por aprobar</string>
+    <string name="aviso_obra_aprobada">Tu obra fue aprobada</string>
+    <string name="aviso_obra_rechazada">Tu obra fue rechazada</string>
+    <string name="aviso_personal">Trabajador por aprobar</string>
+    <string name="aviso_personal_aprobado">Trabajador aprobado</string>
+    <string name="aviso_personal_rechazado">Trabajador rechazado</string>
+    <string name="aviso_correspondencia">Llegó correspondencia</string>
+    <string name="aviso_recibo">Llegaron recibos</string>
+    <string name="aviso_general">Aviso del conjunto</string>
+
+    <!-- Estado que se muestra como etiqueta -->
+    <string name="aviso_estado_aprobado">Aprobado</string>
+    <string name="aviso_estado_rechazado">Rechazado</string>
+
+    <!-- Tiempo y días -->
+    <string name="aviso_ahora">Ahora</string>
+    <string name="aviso_hace_min">hace %1$d min</string>
+    <string name="aviso_hoy">Hoy</string>
+    <string name="aviso_ayer">Ayer</string>
+
+    <!-- Resumen del grupo en el celular -->
+    <plurals name="aviso_grupo_resumen">
+        <item quantity="one">%1$d aviso de %2$s</item>
+        <item quantity="other">%1$d avisos de %2$s</item>
+    </plurals>
+</resources>
