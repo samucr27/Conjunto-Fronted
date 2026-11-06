@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P10: barra inferior de la plataforma. Los id son los de las pantallas (nav_graph): MainActivity navega a ellos. -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/panelPlataformaFragment"
+        android:icon="@drawable/ic_home"
+        android:title="@string/pestana_panel" />
+    <item
+        android:id="@+id/conjuntosPlataformaFragment"
+        android:icon="@drawable/ic_apartment"
+        android:title="@string/pestana_conjuntos" />
+    <item
+        android:id="@+id/auditoriaPlataformaFragment"
+        android:icon="@drawable/ic_description"
+        android:title="@string/plataforma_auditoria" />
+</menu>

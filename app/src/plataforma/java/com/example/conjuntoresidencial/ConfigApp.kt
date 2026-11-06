@@ -21,5 +21,9 @@ object ConfigApp {
 
     const val pideRol = false
 
+    /** P10: barra inferior con el panel, los conjuntos y la auditoría siempre a mano. */
+    val barraPropia: Pair<Int, Set<Int>>? = R.menu.menu_barra_plataforma to
+        setOf(R.id.panelPlataformaFragment, R.id.conjuntosPlataformaFragment, R.id.auditoriaPlataformaFragment)
+
     const val tipoApp = "PLATAFORMA"
 }

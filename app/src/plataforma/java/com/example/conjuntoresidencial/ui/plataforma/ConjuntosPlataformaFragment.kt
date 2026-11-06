@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.api.instance
+import androidx.core.view.isVisible
 import com.example.conjuntoresidencial.databinding.FragmentConjuntosPlataformaBinding
+import com.example.conjuntoresidencial.databinding.ItemTextoConAccionBinding
 import com.example.conjuntoresidencial.model.ConjuntoPlataforma
 import com.example.conjuntoresidencial.ui.comun.DiffPorId
 import com.example.conjuntoresidencial.ui.comun.accionesDeLista
@@ -56,6 +58,14 @@ class ConjuntosPlataformaFragment : Fragment() {
         binding.swipe.setOnRefreshListener { cargar() }
         binding.etBuscar.doAfterTextChanged { filtrar() }
         binding.chipsEstado.setOnCheckedStateChangeListener { _, _ -> filtrar() }
+        // P10: desde las cifras del panel llega con el filtro puesto
+        if (savedInstanceState == null) {
+            when (arguments?.getString(ARG_FILTRO)) {
+                FILTRO_ACTIVOS -> binding.chipsEstado.check(R.id.chipActivos)
+                FILTRO_SUSPENDIDOS -> binding.chipsEstado.check(R.id.chipSuspendidos)
+            }
+            arguments?.getString(ARG_BUSQUEDA)?.let { binding.etBuscar.setText(it) }
+        }
         controlesFlotantes?.mostrarBotonFlotante(R.string.plataforma_nuevo, R.drawable.ic_add) { formularioConjunto(null) { cargar() } }
         cargar()
     }
@@ -110,24 +120,32 @@ class ConjuntosPlataformaFragment : Fragment() {
         _binding = null
     }
 
+    companion object {
+        const val ARG_FILTRO = "filtro"
+        const val ARG_BUSQUEDA = "busqueda"
+        const val FILTRO_ACTIVOS = "activos"
+        const val FILTRO_SUSPENDIDOS = "suspendidos"
+    }
+
+    /** P10: cada conjunto en una cápsula redondeada, separada de las demás. */
     private class ConjuntoAdapter(private val onTocar: (ConjuntoPlataforma) -> Unit) :
         ListAdapter<ConjuntoPlataforma, ConjuntoAdapter.VH>(DiffPorId { it.id }) {
-        class VH(v: View) : RecyclerView.ViewHolder(v) {
-            val nombre: TextView = v.findViewById(android.R.id.text1)
-            val detalle: TextView = v.findViewById(android.R.id.text2)
-        }
+        class VH(val b: ItemTextoConAccionBinding) : RecyclerView.ViewHolder(b.root)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            VH(LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_2, parent, false))
+            VH(ItemTextoConAccionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                .conIcono(R.drawable.ic_apartment, tocable = true))
 
         override fun onBindViewHolder(h: VH, position: Int) {
             val c = getItem(position)
             val contexto = h.itemView.context
-            h.nombre.text = if (c.activo) c.nombre else contexto.getString(R.string.plataforma_nombre_suspendido, c.nombre)
+            h.b.tvTitulo.text = c.nombre
+            h.b.tvEtiqueta.isVisible = !c.activo
+            h.b.tvEtiqueta.setText(R.string.plataforma_estado_suspendido)
             val apartamentos = contexto.resources.getQuantityString(R.plurals.plataforma_apartamentos, c.apartamentos.toInt(), c.apartamentos.toInt())
-            h.detalle.text = contexto.getString(R.string.plataforma_fila_detalle, c.municipio, c.departamento, apartamentos,
+            h.b.tvDetalle.text = contexto.getString(R.string.plataforma_fila_detalle, c.municipio, c.departamento, apartamentos,
                 c.principal ?: contexto.getString(R.string.plataforma_sin_principal))
-            h.itemView.alpha = if (c.activo) 1f else 0.6f
+            h.itemView.alpha = if (c.activo) 1f else 0.7f
             h.itemView.setOnClickListener { onTocar(c) }
         }
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- P7: la app de plataforma. Login, conjuntos (crear, editar, suspender, restablecer el
-     principal) y auditoría. No tiene barra inferior ni avisos del celular. -->
+     principal) y auditoría. P10: barra inferior con Panel, Conjuntos y Auditoría; sin avisos del celular. -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -52,4 +52,10 @@
             android:defaultValue=""
             app:argType="string" />
     </fragment>
+
+    <!-- P10: una operación de la auditoría con todo su detalle -->
+    <fragment
+        android:id="@+id/eventoPlataformaFragment"
+        android:name="com.example.conjuntoresidencial.ui.plataforma.EventoPlataformaFragment"
+        tools:layout="@layout/fragment_evento_plataforma" />
 </navigation>

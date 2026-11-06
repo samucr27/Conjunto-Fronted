@@ -30,22 +30,24 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
+                <!-- P10: seis cifras del mismo tamaño en tres filas; cada una abre su pantalla -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
                     android:orientation="horizontal">
                     <include
                         android:id="@+id/cifraConjuntos"
                         layout="@layout/item_cifra_plataforma"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="6dp"
                         android:layout_weight="1" />
                     <include
-                        android:id="@+id/cifraApartamentos"
+                        android:id="@+id/cifraSuspendidos"
                         layout="@layout/item_cifra_plataforma"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="6dp"
                         android:layout_weight="1" />
                 </LinearLayout>
@@ -54,54 +56,44 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:baselineAligned="false"
                     android:orientation="horizontal">
+                    <include
+                        android:id="@+id/cifraApartamentos"
+                        layout="@layout/item_cifra_plataforma"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1" />
                     <include
                         android:id="@+id/cifraResidentes"
                         layout="@layout/item_cifra_plataforma"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="6dp"
-                        android:layout_weight="1" />
-                    <include
-                        android:id="@+id/cifraCelulares"
-                        layout="@layout/item_cifra_plataforma"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="6dp"
                         android:layout_weight="1" />
                 </LinearLayout>
 
-                <include
-                    android:id="@+id/cifraVisitas"
-                    layout="@layout/item_cifra_plataforma"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="12dp"
+                    android:baselineAligned="false"
                     android:orientation="horizontal">
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnConjuntos"
+                    <include
+                        android:id="@+id/cifraCelulares"
+                        layout="@layout/item_cifra_plataforma"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="6dp"
-                        android:layout_weight="1"
-                        android:minHeight="52dp"
-                        android:text="@string/panel_ver_conjuntos"
-                        app:icon="@drawable/ic_apartment" />
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnAuditoria"
-                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_weight="1" />
+                    <include
+                        android:id="@+id/cifraVisitas"
+                        layout="@layout/item_cifra_plataforma"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="6dp"
-                        android:layout_weight="1"
-                        android:minHeight="52dp"
-                        android:text="@string/panel_ver_auditoria"
-                        app:icon="@drawable/ic_description" />
+                        android:layout_weight="1" />
                 </LinearLayout>
 
                 <LinearLayout

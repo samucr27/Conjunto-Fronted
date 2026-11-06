@@ -50,12 +50,18 @@ class PanelPlataformaFragment : Fragment() {
             }
         }
         binding.cifraConjuntos.poner(R.drawable.ic_apartment, R.string.panel_conjuntos_activos)
+        binding.cifraSuspendidos.poner(R.drawable.ic_lock, R.string.panel_conjuntos_suspendidos)
         binding.cifraApartamentos.poner(R.drawable.ic_home, R.string.panel_apartamentos)
         binding.cifraResidentes.poner(R.drawable.ic_people, R.string.panel_residentes)
         binding.cifraCelulares.poner(R.drawable.ic_smartphone, R.string.panel_celulares)
         binding.cifraVisitas.poner(R.drawable.ic_security, R.string.panel_visitas)
-        binding.btnConjuntos.setOnClickListener { findNavController().navigate(R.id.conjuntosPlataformaFragment) }
-        binding.btnAuditoria.setOnClickListener { findNavController().navigate(R.id.auditoriaPlataformaFragment) }
+        // P10: cada cifra lleva a su pantalla (los conjuntos con el filtro que corresponde)
+        binding.cifraConjuntos.alTocar { verConjuntos(ConjuntosPlataformaFragment.FILTRO_ACTIVOS) }
+        binding.cifraSuspendidos.alTocar { verConjuntos(ConjuntosPlataformaFragment.FILTRO_SUSPENDIDOS) }
+        binding.cifraApartamentos.alTocar { verConjuntos(null) }
+        binding.cifraResidentes.alTocar { verConjuntos(null) }
+        binding.cifraCelulares.alTocar { verConjuntos(null) }
+        binding.cifraVisitas.alTocar { verConjuntos(null) }
         binding.swipe.setOnRefreshListener { cargar() }
         controlesFlotantes?.mostrarBotonFlotante(R.string.plataforma_nuevo, R.drawable.ic_add) { formularioConjunto(null) { cargar() } }
         // Es la primera pantalla: "atrás" pregunta si cerrar la sesión
@@ -81,11 +87,10 @@ class PanelPlataformaFragment : Fragment() {
     private fun pintar(p: PanelPlataforma) {
         val total = p.conjuntosActivos + p.conjuntosSuspendidos
         binding.encabezado.ponerInfo(resources.getQuantityString(R.plurals.plataforma_resumen_conjuntos, total.toInt(), total.toInt()))
-        binding.cifraConjuntos.valor(p.conjuntosActivos, listOfNotNull(
-            getString(R.string.panel_suspendidos, p.conjuntosSuspendidos).takeIf { p.conjuntosSuspendidos > 0 },
-            getString(R.string.panel_nuevos_mes, p.conjuntosNuevosMes).takeIf { p.conjuntosNuevosMes > 0 }
-        ).joinToString(" · "))
-        binding.cifraApartamentos.valor(p.apartamentos)
+        binding.cifraConjuntos.valor(p.conjuntosActivos,
+            getString(R.string.panel_nuevos_mes, p.conjuntosNuevosMes).takeIf { p.conjuntosNuevosMes > 0 })
+        binding.cifraSuspendidos.valor(p.conjuntosSuspendidos, getString(R.string.panel_suspendidos_detalle))
+        binding.cifraApartamentos.valor(p.apartamentos, getString(R.string.panel_apartamentos_detalle))
         binding.cifraResidentes.valor(p.residentes, getString(R.string.panel_residentes_detalle))
         binding.cifraCelulares.valor(p.celularesConSesion, getString(R.string.panel_cuentas, p.cuentasAdministracion))
         binding.cifraVisitas.valor(p.visitasSemana, getString(R.string.panel_visitas_detalle))
@@ -94,6 +99,8 @@ class PanelPlataformaFragment : Fragment() {
         binding.listaPendientes.removeAllViews()
         p.pendientes.forEach { x ->
             val fila = ItemTextoConAccionBinding.inflate(layoutInflater, binding.listaPendientes, false)
+                .conIcono(R.drawable.ic_error_outline)
+            fila.root.setOnClickListener { abrirConjunto(x.conjuntoId) }
             fila.tvTitulo.text = x.nombre
             fila.tvDetalle.text = "${x.municipio} · ${x.motivo}"
             fila.btnAccion.isVisible = true
@@ -105,6 +112,8 @@ class PanelPlataformaFragment : Fragment() {
         binding.listaDepartamentos.removeAllViews()
         p.porDepartamento.forEach { d ->
             val fila = ItemTextoConAccionBinding.inflate(layoutInflater, binding.listaDepartamentos, false)
+                .conIcono(R.drawable.ic_place, tocable = true)
+            fila.root.setOnClickListener { verConjuntos(null, d.departamento) }
             fila.tvTitulo.text = d.departamento
             fila.tvDetalle.text = getString(R.string.panel_departamento_detalle, d.activos, d.conjuntos)
             binding.listaDepartamentos.addView(fila.root)
@@ -113,10 +122,14 @@ class PanelPlataformaFragment : Fragment() {
         binding.tvSinActividad.isVisible = p.ultimosEventos.isEmpty()
         binding.listaActividad.removeAllViews()
         p.ultimosEventos.forEach { e ->
-            val fila = filaEvento(binding.listaActividad, e, conConjunto = true)
-            e.conjuntoId?.let { id -> fila.setOnClickListener { abrirConjunto(id) } }
-            binding.listaActividad.addView(fila)
+            binding.listaActividad.addView(filaEvento(binding.listaActividad, e, conConjunto = true))
         }
+    }
+
+    /** P10: la pestaña de conjuntos con un filtro de estado o una búsqueda ya puestos. */
+    private fun verConjuntos(filtro: String?, busqueda: String? = null) {
+        findNavController().navigate(R.id.conjuntosPlataformaFragment, bundleOf(
+            ConjuntosPlataformaFragment.ARG_FILTRO to filtro, ConjuntosPlataformaFragment.ARG_BUSQUEDA to busqueda))
     }
 
     private fun abrirConjunto(id: Long) {

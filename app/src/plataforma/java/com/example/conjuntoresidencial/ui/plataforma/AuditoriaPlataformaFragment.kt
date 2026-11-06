@@ -105,13 +105,8 @@ class AuditoriaPlataformaFragment : Fragment() {
                 pagina = p
                 if (p == 0) binding.lista.removeAllViews()
                 resultado.eventos.forEach { e ->
-                    val fila = filaEvento(binding.lista, e, conConjunto = conjunto == null)
-                    if (conjunto == null) e.conjuntoId?.let { id ->
-                        fila.setOnClickListener {
-                            findNavController().navigate(R.id.conjuntoDetalleFragment, bundleOf(ConjuntoDetalleFragment.ARG_CONJUNTO to id))
-                        }
-                    }
-                    binding.lista.addView(fila)
+                    // P10: tocar cualquier evento abre la operación completa
+                    binding.lista.addView(filaEvento(binding.lista, e, conConjunto = conjunto == null))
                 }
                 binding.tvVacio.isVisible = binding.lista.childCount == 0
                 binding.btnCargarMas.isVisible = resultado.hayMas

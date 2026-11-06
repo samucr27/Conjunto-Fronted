@@ -288,11 +288,12 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
                         else -> R.menu.menu_barra_residente
                     }
                 }
-                else -> null
+                // P10: la app de plataforma tiene su propia barra
+                else -> ConfigApp.barraPropia?.takeIf { destino.id in it.second }?.first
             }
             mostrarBarra(menu)
             if (menu != null && navInferior.selectedItemId != destino.id) navInferior.selectedItemId = destino.id
-            if (menu != null) notificaciones.actualizarConteo()
+            if (menu != null && tienePestanaAvisos()) notificaciones.actualizarConteo()
             when (destino.id) {
                 R.id.inicioFragment -> {
                     prepararAvisos()
@@ -355,8 +356,10 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
         }
     }
 
+    private fun tienePestanaAvisos() = navInferior.menu.findItem(R.id.notificacionesFragment) != null
+
     private fun ponerInsignia() {
-        if (menuActual == null) return
+        if (menuActual == null || !tienePestanaAvisos()) return
         val noLeidas = notificaciones.noLeidas.value ?: 0
         navInferior.getOrCreateBadge(R.id.notificacionesFragment).apply {
             number = noLeidas

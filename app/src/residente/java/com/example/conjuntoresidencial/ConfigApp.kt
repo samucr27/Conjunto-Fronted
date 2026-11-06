@@ -21,5 +21,8 @@ object ConfigApp {
 
     const val pideRol = true
 
+    /** P10: barra inferior propia de la app (menú y pantallas que la muestran); null usa las de cada rol. */
+    val barraPropia: Pair<Int, Set<Int>>? = null
+
     const val tipoApp = "RESIDENTE"
 }

@@ -64,4 +64,21 @@
     <string name="auditoria_rango_todo">Siempre</string>
     <string name="auditoria_cargar_mas">Cargar más</string>
     <string name="auditoria_sin_resultados">Nada coincide con los filtros.</string>
+    <!-- P10: barra inferior, cifras que se tocan y detalle de cada operación de la auditoría -->
+    <string name="pestana_panel">Panel</string>
+    <string name="pestana_conjuntos">Conjuntos</string>
+    <string name="panel_conjuntos_suspendidos">Conjuntos suspendidos</string>
+    <string name="panel_suspendidos_detalle">sin acceso a la app</string>
+    <string name="panel_apartamentos_detalle">en todos los conjuntos</string>
+    <string name="plataforma_estado_suspendido">Suspendido</string>
+    <string name="evento_descripcion">Todo lo que quedó registrado de esta operación</string>
+    <string name="evento_accion">Acción</string>
+    <string name="evento_operador">Hecha por</string>
+    <string name="evento_fecha">Fecha y hora</string>
+    <string name="evento_conjunto">Conjunto</string>
+    <string name="evento_sin_conjunto">No es de un conjunto (operación de la plataforma)</string>
+    <string name="evento_conjunto_borrado">El conjunto %1$d ya no existe</string>
+    <string name="evento_detalle">Detalle</string>
+    <string name="evento_sin_detalle">Sin más detalles</string>
+    <string name="evento_registro">Número de registro</string>
 </resources>

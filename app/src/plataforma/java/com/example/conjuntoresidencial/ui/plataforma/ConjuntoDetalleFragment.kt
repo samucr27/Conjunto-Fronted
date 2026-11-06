@@ -148,7 +148,8 @@ class ConjuntoDetalleFragment : Fragment() {
             val c = ItemCifraPlataformaBinding.inflate(layoutInflater, fila, false)
             c.poner(icono, nombre)
             c.valor(valor)
-            c.root.layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply {
+            // P10: MATCH_PARENT: las tres de la fila quedan del alto de la más alta
+            c.root.layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f).apply {
                 if (i > 0) marginStart = separacion
                 if (i < cifras.size - 1) marginEnd = separacion
             }
