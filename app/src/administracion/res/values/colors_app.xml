@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Generado desde #283593 (app de Admin), esquema TonalSpot de Material 3, modo claro.
+         Sobrescribe la paleta de main/res para que toda la interfaz use el color de esta app. -->
+    <color name="md_primary">#283593</color>
+    <color name="md_on_primary">#FBF8FF</color>
+    <color name="md_primary_container">#C0C6FD</color>
+    <color name="md_on_primary_container">#383E6D</color>
+    <color name="md_secondary">#5C5E72</color>
+    <color name="md_on_secondary">#FBF8FF</color>
+    <color name="md_secondary_container">#E0E0F9</color>
+    <color name="md_on_secondary_container">#4F5065</color>
+    <color name="md_tertiary">#71557B</color>
+    <color name="md_on_tertiary">#FFF7FC</color>
+    <color name="md_tertiary_container">#ECC8F6</color>
+    <color name="md_on_tertiary_container">#5A3F64</color>
+    <color name="md_surface">#FBF8FE</color>
+    <color name="md_on_surface">#31323B</color>
+    <color name="md_surface_variant">#E3E1ED</color>
+    <color name="md_on_surface_variant">#5E5E68</color>
+    <color name="md_surface_container_lowest">#FFFFFF</color>
+    <color name="md_surface_container_low">#F5F2FB</color>
+    <color name="md_surface_container">#EFEDF6</color>
+    <color name="md_surface_container_high">#E9E7F1</color>
+    <color name="md_surface_container_highest">#E3E1ED</color>
+    <color name="md_outline">#7A7A84</color>
+    <color name="md_outline_variant">#B2B1BC</color>
+    <color name="md_inverse_surface">#0E0E12</color>
+    <color name="md_inverse_on_surface">#9E9CA2</color>
+    <color name="md_inverse_primary">#C0C6FD</color>
+    <!-- Encabezados, botones flotantes y difuminados con el color de la app -->
+    <color name="colorPrimary">#283593</color>
+    <color name="boton_flotante">#B3283593</color>
+    <color name="barra_subtitulo">#C0C6FD</color>
+    <color name="aviso_general">#283593</color>
+    <color name="velo_desenfoque">#66FBF8FE</color>
+    <color name="velo_barra">#99EFEDF6</color>
+    <color name="barra_translucida">#B3EFEDF6</color>
+    <color name="fondo_barra_respaldo">#F2EFEDF6</color>
+    <color name="franja_inicio">#F2FBF8FE</color>
+    <color name="franja_fin">#00FBF8FE</color>
+</resources>

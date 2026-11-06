@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Generado desde #283593 (app de Admin), esquema TonalSpot de Material 3, modo oscuro.
+         Sobrescribe la paleta de main/res para que toda la interfaz use el color de esta app. -->
+    <color name="md_primary">#C0C4EE</color>
+    <color name="md_on_primary">#393E61</color>
+    <color name="md_primary_container">#4C5074</color>
+    <color name="md_on_primary_container">#E0E1FF</color>
+    <color name="md_secondary">#C4C5DD</color>
+    <color name="md_on_secondary">#3D3F52</color>
+    <color name="md_secondary_container">#383A4D</color>
+    <color name="md_on_secondary_container">#BDBDD5</color>
+    <color name="md_tertiary">#F8D8FF</color>
+    <color name="md_on_tertiary">#63486D</color>
+    <color name="md_tertiary_container">#ECC8F6</color>
+    <color name="md_on_tertiary_container">#5A3F64</color>
+    <color name="md_surface">#0E0E12</color>
+    <color name="md_on_surface">#E6E4F0</color>
+    <color name="md_surface_variant">#25252E</color>
+    <color name="md_on_surface_variant">#ABAAB5</color>
+    <color name="md_surface_container_lowest">#000000</color>
+    <color name="md_surface_container_low">#131318</color>
+    <color name="md_surface_container">#191920</color>
+    <color name="md_surface_container_high">#1F1F26</color>
+    <color name="md_surface_container_highest">#25252E</color>
+    <color name="md_outline">#75747F</color>
+    <color name="md_outline_variant">#474750</color>
+    <color name="md_inverse_surface">#FBF8FE</color>
+    <color name="md_inverse_on_surface">#55545A</color>
+    <color name="md_inverse_primary">#283593</color>
+    <!-- Encabezados, botones flotantes y difuminados con el color de la app -->
+    <color name="colorPrimary">#283593</color>
+    <color name="boton_flotante">#B3283593</color>
+    <color name="barra_subtitulo">#C0C6FD</color>
+    <color name="aviso_general">#283593</color>
+    <color name="velo_desenfoque">#660E0E12</color>
+    <color name="velo_barra">#99191920</color>
+    <color name="barra_translucida">#B3191920</color>
+    <color name="fondo_barra_respaldo">#F2191920</color>
+    <color name="franja_inicio">#F20E0E12</color>
+    <color name="franja_fin">#000E0E12</color>
+    <color name="white">#55545A</color>
+</resources>
