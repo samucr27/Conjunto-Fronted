@@ -138,6 +138,66 @@
                             app:filaSubtitulo="@string/ajustes_avisos_sistema_sub" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+                <!-- P10: cómo avisa la visita (solo en la app de residentes) -->
+                <LinearLayout
+                    android:id="@+id/seccionVisitas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="8dp"
+                        android:accessibilityHeading="true"
+                        android:text="@string/ajustes_visitas_titulo"
+                        android:textAppearance="?attr/textAppearanceLabelLarge"
+                        android:textColor="?attr/colorPrimary" />
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.Material3.CardView.Filled"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp">
+                            <com.example.conjuntoresidencial.ui.comun.FilaOpcion
+                                android:id="@+id/filaVisitaModo"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:filaIcono="@drawable/ic_people"
+                                app:filaTipo="enlace"
+                                app:filaTitulo="@string/ajustes_visitas_modo" />
+                            <com.google.android.material.divider.MaterialDivider
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="72dp" />
+                            <com.example.conjuntoresidencial.ui.comun.FilaOpcion
+                                android:id="@+id/filaVisitaTono"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:filaIcono="@drawable/ic_notifications"
+                                app:filaTipo="enlace"
+                                app:filaTitulo="@string/ajustes_visitas_tono" />
+                            <com.google.android.material.divider.MaterialDivider
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="72dp" />
+                            <com.example.conjuntoresidencial.ui.comun.FilaOpcion
+                                android:id="@+id/filaPantallaCompleta"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:filaIcono="@drawable/ic_smartphone"
+                                app:filaTipo="enlace"
+                                app:filaTitulo="@string/ajustes_pantalla_completa" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.AudioAttributes
-import android.media.RingtoneManager
 import android.os.Build
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
@@ -33,7 +32,8 @@ import kotlinx.coroutines.withContext
  */
 object AlarmaVisita {
 
-    const val DURACION_MS = 60_000L
+    /** P10: lo que tiene el residente para responder (el servidor la vence a los 5 minutos). */
+    const val DURACION_MS = 5 * 60_000L
     const val EXTRA_VISITA = "visita_id"
     const val EXTRA_TITULO = "visita_titulo"
     const val EXTRA_MENSAJE = "visita_mensaje"
@@ -41,8 +41,9 @@ object AlarmaVisita {
     const val AUTORIZAR = "AUTORIZAR"
     const val RECHAZAR = "RECHAZAR"
 
-    // Canal propio: el sonido y la vibración de un canal no se pueden cambiar después de creado
-    private val CANAL = "alarma_visita_" + BuildConfig.TIPO_APP.lowercase()
+    // Canal propio: el sonido y la vibración de un canal no se pueden cambiar después de creado.
+    // P10: uno por combinación de tono y modo que elija el residente (PreferenciasAlarma)
+    private val BASE_CANAL = "alarma_visita_" + BuildConfig.TIPO_APP.lowercase()
     // Para que no se cruce con los ids de las demás notificaciones (el id de la notificación)
     private const val BASE_ID = 0x4000_0000
 
@@ -50,34 +51,37 @@ object AlarmaVisita {
 
     fun idNotificacion(visitaId: Long): Int = BASE_ID + (visitaId % 0x3FFF_FFFF).toInt()
 
-    fun crearCanal(context: Context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
-        val canal = NotificationChannel(CANAL, context.getString(R.string.canal_alarma_visita), NotificationManager.IMPORTANCE_HIGH).apply {
+    /** Crea (si hace falta) el canal con el tono y el modo elegidos y devuelve su id. */
+    fun crearCanal(context: Context): String {
+        val id = PreferenciasAlarma.idCanal(context, BASE_CANAL)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return id
+        val suena = PreferenciasAlarma.suena(context)
+        val vibra = PreferenciasAlarma.vibra(context)
+        val canal = NotificationChannel(id, context.getString(R.string.canal_alarma_visita), NotificationManager.IMPORTANCE_HIGH).apply {
             description = context.getString(R.string.canal_alarma_visita_descripcion)
-            setSound(sonido(), AudioAttributes.Builder()
+            if (suena) setSound(PreferenciasAlarma.tono(context), AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_ALARM)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build())
-            enableVibration(true)
-            vibrationPattern = VIBRACION
+            else setSound(null, null)
+            enableVibration(vibra)
+            if (vibra) vibrationPattern = VIBRACION
             lockscreenVisibility = NotificationCompat.VISIBILITY_PUBLIC
             setBypassDnd(true)
         }
         context.getSystemService(NotificationManager::class.java).createNotificationChannel(canal)
+        PreferenciasAlarma.limpiarCanales(context, BASE_CANAL, id)
+        return id
     }
 
     private val VIBRACION = longArrayOf(0, 800, 400, 800, 400, 800, 1200)
-
-    private fun sonido() = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
-        ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
     /** Hace sonar la alarma de la visita [visitaId]. */
     fun sonar(context: Context, visitaId: Long, titulo: String, mensaje: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) return
-        crearCanal(context)
+        val canal = crearCanal(context)
         val id = idNotificacion(visitaId)
 
         val pantalla = Intent(context, VisitaAlarmaActivity::class.java)
@@ -88,7 +92,7 @@ object AlarmaVisita {
         val abrirPantalla = PendingIntent.getActivity(context, id, pantalla,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
-        val aviso = NotificationCompat.Builder(context, CANAL)
+        val aviso = NotificationCompat.Builder(context, canal)
             .setSmallIcon(R.drawable.ic_people)
             .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
             .setContentTitle(titulo)
@@ -98,8 +102,10 @@ object AlarmaVisita {
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             // Antes de Android 8 el sonido y la vibración van en la notificación y no en el canal
-            .setSound(sonido(), android.media.AudioManager.STREAM_ALARM)
-            .setVibrate(VIBRACION)
+            .apply {
+                if (PreferenciasAlarma.suena(context)) setSound(PreferenciasAlarma.tono(context), android.media.AudioManager.STREAM_ALARM)
+                if (PreferenciasAlarma.vibra(context)) setVibrate(VIBRACION)
+            }
             .setOngoing(true)
             .setAutoCancel(false)
             .setTimeoutAfter(DURACION_MS)
@@ -120,6 +126,26 @@ object AlarmaVisita {
         // Un request code por visita y decisión: si no, los dos botones serían el mismo
         val codigo = idNotificacion(visitaId) xor (if (decision == AUTORIZAR) 1 else 2)
         return PendingIntent.getBroadcast(context, codigo, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+    }
+
+    /**
+     * P10: calla el sonido sin quitar la pantalla (para llamar a la portería): vuelve a publicar el
+     * aviso sin sonido ni vibración; Autorizar y Rechazar siguen funcionando.
+     */
+    fun silenciar(context: Context, visitaId: Long) {
+        val nm = NotificationManagerCompat.from(context)
+        val actual = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            context.getSystemService(NotificationManager::class.java).activeNotifications.firstOrNull { it.id == idNotificacion(visitaId) }
+        else null
+        nm.cancel(idNotificacion(visitaId))
+        val n = actual?.notification ?: return
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+        val silencio = NotificationChannel(BASE_CANAL + "_silencio", context.getString(R.string.canal_alarma_visita), NotificationManager.IMPORTANCE_LOW)
+        context.getSystemService(NotificationManager::class.java).createNotificationChannel(silencio)
+        val copia = android.app.Notification.Builder.recoverBuilder(context, n).setChannelId(silencio.id).build()
+        copia.flags = copia.flags and android.app.Notification.FLAG_INSISTENT.inv()
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED ||
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) nm.notify(idNotificacion(visitaId), copia)
     }
 
     /** Quita el aviso y calla la alarma (respondida aquí, en Inicio o en otro celular). */

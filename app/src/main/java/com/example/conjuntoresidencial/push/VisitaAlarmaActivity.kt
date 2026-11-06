@@ -45,6 +45,11 @@ class VisitaAlarmaActivity : AppCompatActivity() {
         binding.btnAutorizar.setOnClickListener { responder(AlarmaVisita.AUTORIZAR) }
         binding.btnRechazar.setOnClickListener { responder(AlarmaVisita.RECHAZAR) }
         binding.btnAbrirApp.setOnClickListener { abrirApp() }
+        binding.btnLlamarPorteria.setOnClickListener { llamarPorteria() }
+        com.example.conjuntoresidencial.util.ConjuntoElegido.actual(this)?.let {
+            binding.tvConjunto.text = it.nombre
+            binding.tvConjunto.isVisible = true
+        }
         // "Atrás" solo cierra la pantalla: la alarma sigue en el aviso hasta responder o vencer
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() = finish()
@@ -87,6 +92,32 @@ class VisitaAlarmaActivity : AppCompatActivity() {
         botones(true)
         empezarCuenta(AlarmaVisita.DURACION_MS)
         cargarDetalle()
+        cargarTelefono()
+    }
+
+    private var telefonoPorteria: String? = null
+
+    /** P10: si la administración puso el teléfono de la portería, se ofrece llamar para preguntar. */
+    private fun cargarTelefono() {
+        lifecycleScope.launch {
+            telefonoPorteria = try {
+                RetrofitClient.comun.telefonoPorteria().body()?.telefono?.takeIf { it.isNotBlank() }
+            } catch (_: Exception) {
+                null
+            }
+            binding.btnLlamarPorteria.isVisible = telefonoPorteria != null
+        }
+    }
+
+    /** Abre el marcador con el número de la portería (no llama solo). La alarma se calla para hablar. */
+    private fun llamarPorteria() {
+        val numero = telefonoPorteria ?: return
+        AlarmaVisita.silenciar(this, visitaId)
+        try {
+            startActivity(Intent(Intent.ACTION_DIAL, android.net.Uri.parse("tel:$numero")))
+        } catch (_: android.content.ActivityNotFoundException) {
+            android.widget.Toast.makeText(this, R.string.alarma_sin_marcador, android.widget.Toast.LENGTH_LONG).show()
+        }
     }
 
     /** Con sesión, trae la visita para mostrar el nombre, el documento, la placa y lo que falta. */
@@ -112,7 +143,9 @@ class VisitaAlarmaActivity : AppCompatActivity() {
         cuenta?.cancel()
         cuenta = object : CountDownTimer(ms, 1000) {
             override fun onTick(restante: Long) {
-                binding.tvTiempo.text = getString(R.string.alarma_tiempo, (restante / 1000).toInt())
+                val s = (restante / 1000).toInt()
+                binding.tvTiempo.text = getString(R.string.alarma_tiempo, s / 60, s % 60)
+                binding.anilloTiempo.setProgressCompat((restante * 1000 / ms).toInt(), true)
             }
             override fun onFinish() {
                 AlarmaVisita.detener(this@VisitaAlarmaActivity, visitaId)

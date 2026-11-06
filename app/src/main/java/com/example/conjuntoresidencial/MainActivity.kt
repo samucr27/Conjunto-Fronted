@@ -356,7 +356,28 @@ class MainActivity : AppCompatActivity(), ControlesFlotantes {
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
             pedirPermisoAvisos.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            ofrecerPantallaCompleta()
         }
+    }
+
+    /**
+     * P10: en Android 14+ la visita a pantalla completa (con el celular bloqueado o apagado)
+     * necesita un permiso que el residente da una vez. Se pregunta una sola vez; después queda en Ajustes.
+     */
+    private fun ofrecerPantallaCompleta() {
+        if (BuildConfig.TIPO_APP != "RESIDENTE" || com.example.conjuntoresidencial.push.PreferenciasAlarma.puedePantallaCompleta(this)) return
+        val prefs = getSharedPreferences("alarma_visita", MODE_PRIVATE)
+        if (prefs.getBoolean("pantalla_completa_preguntada", false)) return
+        prefs.edit().putBoolean("pantalla_completa_preguntada", true).apply()
+        com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.pantalla_completa_titulo)
+            .setMessage(R.string.pantalla_completa_mensaje)
+            .setPositiveButton(R.string.pantalla_completa_permitir) { _, _ ->
+                runCatching { startActivity(com.example.conjuntoresidencial.push.PreferenciasAlarma.intentPantallaCompleta(this)) }
+            }
+            .setNegativeButton(R.string.btn_cancelar, null)
+            .show()
     }
 
     private fun tienePestanaAvisos() = navInferior.menu.findItem(R.id.notificacionesFragment) != null

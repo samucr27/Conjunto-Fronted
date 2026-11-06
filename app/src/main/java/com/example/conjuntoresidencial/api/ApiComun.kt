@@ -89,6 +89,13 @@ interface ApiComun {
     @GET("api/codigo-conjunto")
     suspend fun codigoDelDia(): Response<CodigoDelDiaDTO>
 
+    // P10: teléfono de la portería (lo lee cualquiera con sesión; lo cambia la administración)
+    @GET("api/telefono-porteria")
+    suspend fun telefonoPorteria(): Response<TelefonoPorteriaDTO>
+
+    @PUT("api/telefono-porteria")
+    suspend fun cambiarTelefonoPorteria(@Body t: TelefonoPorteriaDTO): Response<TelefonoPorteriaDTO>
+
     // P8 bloque 4: parqueaderos de invitados y salida del visitante (portería y administración)
     @GET("api/porteria/parqueaderos")
     suspend fun getParqueaderosInvitados(): Response<List<ParqueaderoInvitadoDTO>>

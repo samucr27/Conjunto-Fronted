@@ -17,6 +17,7 @@ import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.DialogConfirmarContrasenaBinding
 import com.example.conjuntoresidencial.databinding.FragmentAjustesBinding
 import com.example.conjuntoresidencial.push.AvisosCelular
+import com.example.conjuntoresidencial.push.PreferenciasAlarma
 import com.example.conjuntoresidencial.seguridad.AccesoBiometrico
 import com.example.conjuntoresidencial.ui.auth.credenciales
 import com.example.conjuntoresidencial.ui.auth.iniciarSesion
@@ -50,6 +51,7 @@ class AjustesFragment : Fragment() {
         configurarEncabezado(binding.encabezado, R.string.cuenta_ajustes, R.string.ajustes_descripcion)
         configurarTema()
         configurarAvisos()
+        configurarVisitas()
         binding.filaHuella.alCambiar = { activar -> if (activar) activarHuella() else desactivarHuella() }
     }
 
@@ -57,6 +59,7 @@ class AjustesFragment : Fragment() {
         super.onResume()
         // Puede cambiar fuera de la app (huellas registradas en el celular)
         mostrarHuella()
+        if (binding.seccionVisitas.visibility == View.VISIBLE) mostrarVisitas()
     }
 
     private fun configurarTema() {
@@ -89,6 +92,69 @@ class AjustesFragment : Fragment() {
         binding.filaAvisos.activado = AvisosCelular.disponible(contexto) && AvisosCelular.activados(contexto)
         binding.filaAvisos.alCambiar = { activar -> AvisosCelular.cambiarActivados(contexto, activar) }
         binding.filaAvisosSistema.setOnClickListener { abrirAjustesDeNotificaciones() }
+    }
+
+    // P10: el tono y si suena o vibra cuando llega una visita (solo residentes, que son quienes la reciben)
+    private val elegirTono = registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()) { r ->
+        if (r.resultCode != android.app.Activity.RESULT_OK) return@registerForActivityResult
+        @Suppress("DEPRECATION")
+        val uri = r.data?.getParcelableExtra<android.net.Uri>(android.media.RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+        PreferenciasAlarma.ponerTono(requireContext(), uri)
+        mostrarVisitas()
+    }
+
+    private fun configurarVisitas() {
+        binding.seccionVisitas.visibility = if (com.example.conjuntoresidencial.BuildConfig.TIPO_APP == "RESIDENTE") View.VISIBLE else View.GONE
+        if (binding.seccionVisitas.visibility != View.VISIBLE) return
+        binding.filaVisitaModo.setOnClickListener {
+            val modos = PreferenciasAlarma.Modo.values()
+            val nombres = modos.map { getString(nombreModo(it)) }.toTypedArray()
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.ajustes_visitas_modo)
+                .setSingleChoiceItems(nombres, modos.indexOf(PreferenciasAlarma.modo(requireContext()))) { d, i ->
+                    PreferenciasAlarma.ponerModo(requireContext(), modos[i])
+                    mostrarVisitas()
+                    d.dismiss()
+                }
+                .setNegativeButton(R.string.btn_cancelar, null)
+                .show()
+        }
+        binding.filaVisitaTono.setOnClickListener {
+            val intent = Intent(android.media.RingtoneManager.ACTION_RINGTONE_PICKER)
+                .putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_TYPE, android.media.RingtoneManager.TYPE_ALARM or android.media.RingtoneManager.TYPE_RINGTONE)
+                .putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.ajustes_visitas_tono))
+                .putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
+                .putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
+                .putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, PreferenciasAlarma.tono(requireContext()))
+            try {
+                elegirTono.launch(intent)
+            } catch (_: android.content.ActivityNotFoundException) {
+                abrirAjustesDeNotificaciones()
+            }
+        }
+        binding.filaPantallaCompleta.setOnClickListener {
+            try {
+                startActivity(PreferenciasAlarma.intentPantallaCompleta(requireContext()))
+            } catch (_: android.content.ActivityNotFoundException) {
+                abrirAjustesDeNotificaciones()
+            }
+        }
+        mostrarVisitas()
+    }
+
+    private fun mostrarVisitas() {
+        val c = requireContext()
+        binding.filaVisitaModo.subtitulo = getString(nombreModo(PreferenciasAlarma.modo(c)))
+        binding.filaVisitaTono.subtitulo = PreferenciasAlarma.nombreTono(c) ?: getString(R.string.ajustes_visitas_tono_defecto)
+        binding.filaVisitaTono.isEnabled = PreferenciasAlarma.suena(c)
+        binding.filaPantallaCompleta.subtitulo = getString(
+            if (PreferenciasAlarma.puedePantallaCompleta(c)) R.string.ajustes_pantalla_completa_ok else R.string.ajustes_pantalla_completa_falta)
+    }
+
+    private fun nombreModo(m: PreferenciasAlarma.Modo) = when (m) {
+        PreferenciasAlarma.Modo.SONIDO_Y_VIBRACION -> R.string.ajustes_modo_sonido_vibracion
+        PreferenciasAlarma.Modo.SOLO_SONIDO -> R.string.ajustes_modo_sonido
+        PreferenciasAlarma.Modo.SOLO_VIBRACION -> R.string.ajustes_modo_vibracion
     }
 
     private fun abrirAjustesDeNotificaciones() {

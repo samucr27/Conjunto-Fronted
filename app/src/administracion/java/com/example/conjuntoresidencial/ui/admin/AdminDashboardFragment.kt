@@ -16,6 +16,12 @@ import com.example.conjuntoresidencial.ui.comun.configurar
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.ui.comun.ponerInfo
 import com.example.conjuntoresidencial.ui.comun.mostrarCodigoDelDia
+import com.example.conjuntoresidencial.ui.comun.aviso
+import com.example.conjuntoresidencial.api.RetrofitClient
+import com.example.conjuntoresidencial.model.TelefonoPorteriaDTO
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 
 class AdminDashboardFragment : Fragment() {
 
@@ -94,6 +100,10 @@ class AdminDashboardFragment : Fragment() {
         binding.cardGuardias.configurar(R.drawable.ic_key, R.string.menu_guardias, R.string.menu_guardias_sub) {
             nav.navigate(R.id.guardiasFragment)
         }
+        // P10: el teléfono al que llaman los residentes desde la alerta de una visita
+        binding.cardTelefonoPorteria.configurar(R.drawable.ic_telefono, R.string.porteria_telefono_titulo, R.string.porteria_telefono_ayuda) {
+            editarTelefonoPorteria()
+        }
         // P9 bloque 3: paquetes, cartas y recibos que llegan a la portería
         binding.cardCorrespondencia.configurar(R.drawable.ic_package, R.string.corr_titulo, R.string.corr_tarjeta_sub) {
             nav.navigate(R.id.correspondenciaFragment)
@@ -103,6 +113,7 @@ class AdminDashboardFragment : Fragment() {
             quitar(binding.cardPersonalConjunto.root)
             quitar(binding.cardGuardias.root)
             quitar(binding.cardCorrespondencia.root)
+            quitar(binding.cardTelefonoPorteria.root)
             listOf(binding.cardDirectorioAptos, binding.cardControlObras, binding.cardHistorialReservas, binding.cardZonasAdmin,
                 binding.cardPersonalObra, binding.cardVehiculosAdmin, binding.cardParqueaderos, binding.cardResidentesPendientes, binding.cardEquipo, binding.cardMensajes)
                 .forEach { quitar(it.root) }
@@ -114,6 +125,50 @@ class AdminDashboardFragment : Fragment() {
         binding.cardResidentesPendientes.configurar(R.drawable.ic_people, R.string.menu_residentes_pendientes,
             R.string.menu_residentes_pendientes_sub) {
             nav.navigate(R.id.residentesFragment, ResidentesFragment.pendientes())
+        }
+    }
+
+    /** P10: muestra el teléfono actual de la portería y permite cambiarlo (vacío lo quita). */
+    private fun editarTelefonoPorteria() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val actual = try {
+                RetrofitClient.comun.telefonoPorteria().body()?.telefono
+            } catch (_: Exception) {
+                null
+            }
+            if (_binding == null) return@launch
+            val campo = com.google.android.material.textfield.TextInputLayout(requireContext()).apply {
+                hint = getString(R.string.porteria_telefono_titulo)
+                helperText = getString(R.string.porteria_telefono_ayuda)
+                val et = com.google.android.material.textfield.TextInputEditText(context).apply {
+                    inputType = android.text.InputType.TYPE_CLASS_PHONE
+                    setText(actual)
+                }
+                addView(et)
+                val m = (20 * resources.displayMetrics.density).toInt()
+                setPadding(m, m / 2, m, 0)
+            }
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.porteria_telefono_titulo)
+                .setView(campo)
+                .setPositiveButton(R.string.btn_guardar) { _, _ ->
+                    guardarTelefono(campo.editText?.text?.toString()?.trim().orEmpty())
+                }
+                .setNegativeButton(R.string.btn_cancelar, null)
+                .show()
+        }
+    }
+
+    private fun guardarTelefono(telefono: String) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val texto = try {
+                val r = RetrofitClient.comun.cambiarTelefonoPorteria(TelefonoPorteriaDTO(telefono))
+                if (r.isSuccessful) getString(if (telefono.isEmpty()) R.string.porteria_telefono_sin else R.string.porteria_telefono_guardado)
+                else RetrofitClient.mensajeDeError(r, getString(R.string.porteria_error))
+            } catch (e: Exception) {
+                RetrofitClient.mensajeDeExcepcion(e)
+            }
+            if (_binding != null) aviso(texto).show()
         }
     }
 

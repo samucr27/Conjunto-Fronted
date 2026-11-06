@@ -6,7 +6,28 @@
     <string name="alarma_encabezado">Visita en portería</string>
     <string name="alarma_titulo_generico">Alguien te busca en portería</string>
     <string name="alarma_placa">Placa: %1$s</string>
-    <string name="alarma_tiempo">Responde en %1$d s</string>
+    <string name="alarma_tiempo">Responde en %1$d:%2$02d</string>
     <string name="alarma_abrir_app">Abrir la app</string>
     <string name="alarma_sin_sesion">Inicia sesión en la app para responder</string>
+    <!-- P10 -->
+    <string name="alarma_llamar_porteria">¿Tienes dudas? Llama a la portería</string>
+    <string name="alarma_sin_marcador">Este celular no puede hacer llamadas</string>
+    <string name="ajustes_visitas_titulo">Cuando llega una visita</string>
+    <string name="ajustes_visitas_modo">Cómo avisar</string>
+    <string name="ajustes_visitas_tono">Tono de la visita</string>
+    <string name="ajustes_visitas_tono_defecto">El de alarma del celular</string>
+    <string name="ajustes_visitas_probar">Probar</string>
+    <string name="ajustes_modo_sonido_vibracion">Sonar y vibrar</string>
+    <string name="ajustes_modo_sonido">Solo sonar</string>
+    <string name="ajustes_modo_vibracion">Solo vibrar</string>
+    <string name="ajustes_pantalla_completa">Mostrar la visita con el celular bloqueado</string>
+    <string name="ajustes_pantalla_completa_falta">Falta el permiso: toca para darlo</string>
+    <string name="ajustes_pantalla_completa_ok">Permitido</string>
+    <string name="pantalla_completa_titulo">Ver las visitas con el celular bloqueado</string>
+    <string name="pantalla_completa_mensaje">Para que la visita aparezca a pantalla completa aunque el celular esté bloqueado o con la pantalla apagada, Android pide que lo permitas una vez.</string>
+    <string name="pantalla_completa_permitir">Permitir</string>
+    <string name="porteria_telefono_titulo">Teléfono de la portería</string>
+    <string name="porteria_telefono_ayuda">Los residentes pueden llamar a este número desde la alerta de una visita</string>
+    <string name="porteria_telefono_sin">Sin teléfono: los residentes no pueden llamar desde la alerta</string>
+    <string name="porteria_telefono_guardado">Teléfono de la portería guardado</string>
 </resources>

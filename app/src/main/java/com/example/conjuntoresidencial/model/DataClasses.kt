@@ -290,6 +290,8 @@ data class RespuestaVisita(val decision: String)
 data class CodigoConjuntoRequest(val codigo: String)
 data class PaseConjunto(val conjuntoId: Long, val pase: String)
 data class CodigoDelDiaDTO(val codigo: String, val cambiaEn: String?)
+// P10: teléfono de la portería del conjunto (null si la administración no lo ha puesto)
+data class TelefonoPorteriaDTO(val telefono: String?)
 // P9 bloque 3: correspondencia, paquetes y recibos
 data class CorrespondenciaDTO(
     val id: Long, val apartamentoId: Long?, val torre: String, val apto: String, val tipo: String,
