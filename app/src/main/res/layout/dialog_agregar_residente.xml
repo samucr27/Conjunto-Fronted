@@ -40,6 +40,20 @@
             android:inputType="number"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- P10: correo del residente (solo lo edita la administración) -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilCorreoResidente"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:hint="@string/residente_correo_campo"
+        android:visibility="gone"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="12dp">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etCorreoResidente"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
     <!-- Lista cerrada: el backend solo acepta PROPIETARIO o ARRENDATARIO.
          El propietario solo agrega arrendatarios: ahí se oculta -->
     <com.google.android.material.textfield.TextInputLayout

@@ -244,29 +244,27 @@ class DetalleApartamentoFragment : Fragment() {
         }
     }
 
-    /** Tocar un residente: darle acceso con su documento (o cambiarlo), quitárselo o eliminarlo. */
+    /**
+     * Tocar un residente: editarlo (también el correo), restablecer la contraseña del titular o
+     * eliminarlo. P10: ya no se entra con el documento, así que no hay "dar/quitar acceso".
+     */
     private fun opcionesResidente(r: ResidenteDTO) {
-        val conAcceso = r.tieneAcceso == true
+        val titular = r.titular == true && r.tieneAcceso == true
         val opciones = listOfNotNull(
-            R.string.residente_dar_acceso.takeIf { !conAcceso },
-            R.string.residente_cambiar_contrasena.takeIf { conAcceso },
-            R.string.residente_quitar_acceso.takeIf { conAcceso },
             R.string.residente_editar,
+            R.string.residente_cambiar_contrasena.takeIf { titular },
             R.string.residente_eliminar
         )
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(r.nombreCompleto)
             .setItems(opciones.map { getString(it) }.toTypedArray()) { _, i ->
                 when (opciones[i]) {
-                    R.string.residente_dar_acceso, R.string.residente_cambiar_contrasena ->
+                    R.string.residente_cambiar_contrasena ->
                         pedirContrasena(getString(R.string.residente_acceso_titulo, r.nombreCompleto),
                             getString(R.string.residente_acceso_listo), getString(R.string.residente_error_accion)) { nueva ->
                             RetrofitClient.instance.cambiarAccesoResidente(r.id!!, AccesoResidente(nueva))
                         }
                     R.string.residente_editar -> mostrarDialogResidente(r)
-                    R.string.residente_quitar_acceso -> accionResidente {
-                        RetrofitClient.instance.cambiarAccesoResidente(r.id!!, AccesoResidente(""))
-                    }
                     else -> MaterialAlertDialogBuilder(requireContext())
                         .setTitle(getString(R.string.residente_eliminar_titulo, r.nombreCompleto))
                         .setPositiveButton(R.string.residente_eliminar_si) { _, _ ->
@@ -340,7 +338,11 @@ class DetalleApartamentoFragment : Fragment() {
             dialogView.findViewById<TextInputEditText>(R.id.etTelefonoResidente).setText(it.telefono)
             dialogView.findViewById<TextInputEditText>(R.id.etIdentificacionResidente).setText(it.identificacion)
             tipoView.setText(it.tipoHabitante, false)
+            // P10: la administración también corrige el correo
+            dialogView.findViewById<View>(R.id.tilCorreoResidente).visibility = View.VISIBLE
+            dialogView.findViewById<TextInputEditText>(R.id.etCorreoResidente).setText(it.correo)
         }
+        val tilCorreo = dialogView.findViewById<TextInputLayout>(R.id.tilCorreoResidente)
         val dialogo = MaterialAlertDialogBuilder(requireContext())
             .setTitle(if (editando == null) R.string.residente_nuevo else R.string.residente_editar)
             .setView(dialogView)
@@ -358,10 +360,16 @@ class DetalleApartamentoFragment : Fragment() {
             val telefono = dialogView.findViewById<TextInputEditText>(R.id.etTelefonoResidente).text.toString().trim()
             val identificacion = dialogView.findViewById<TextInputEditText>(R.id.etIdentificacionResidente).text.toString().trim()
             val tipo = tipoView.text.toString()
+            val correo = dialogView.findViewById<TextInputEditText>(R.id.etCorreoResidente).text.toString().trim()
+            if (editando != null && correo.isNotEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(correo).matches()) {
+                tilCorreo.error = getString(R.string.residente_correo_invalido)
+                return@setOnClickListener
+            }
             dialogo.dismiss()
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
-                    val datos = ResidenteDTO(editando?.id, nombre, telefono, identificacion, tipo, aptoId)
+                    val datos = ResidenteDTO(editando?.id, nombre, telefono, identificacion, tipo, aptoId,
+                        correo = if (editando != null) correo else null)
                     val response = if (editando == null) RetrofitClient.instance.createResidente(datos)
                         else RetrofitClient.instance.updateResidente(editando.id!!, datos)
                     if (response.isSuccessful) recargarResidentes()

@@ -51,5 +51,15 @@
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="?attr/colorOnPrimaryContainer" />
         </LinearLayout>
+
+        <!-- P10: el código está oculto hasta tocar el ojo (y se vuelve a ocultar solo) -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnVerCodigo"
+            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:contentDescription="@string/codigo_mostrar"
+            app:icon="@drawable/ic_visibility"
+            app:iconSize="26dp" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

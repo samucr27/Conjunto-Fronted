@@ -1,5 +1,6 @@
 package com.example.conjuntoresidencial.ui.plataforma
 
+import com.example.conjuntoresidencial.ui.comun.ponerCodigo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -92,8 +93,7 @@ class ConjuntoDetalleFragment : Fragment() {
         // P9 bloque 2: el código de hoy, por si un administrador lo pide
         binding.codigoConjunto.root.isVisible = d.codigoDelDia != null
         d.codigoDelDia?.let {
-            binding.codigoConjunto.tvCodigo.text = com.example.conjuntoresidencial.ui.comun.separarCodigo(it)
-            binding.codigoConjunto.tvCambia.setText(R.string.codigo_hoy_cambia)
+            binding.codigoConjunto.ponerCodigo(it)
         }
 
         val f = d.cifras
