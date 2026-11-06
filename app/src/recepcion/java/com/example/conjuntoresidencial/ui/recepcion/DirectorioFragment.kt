@@ -16,6 +16,7 @@ import com.example.conjuntoresidencial.databinding.ItemTextoConAccionBinding
 import com.example.conjuntoresidencial.model.ApartamentoDirectorio
 import com.example.conjuntoresidencial.ui.comun.aviso
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.FiltroTorreApto
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import java.text.Normalizer
@@ -31,6 +32,7 @@ class DirectorioFragment : Fragment() {
     private var _binding: FragmentDirectorioBinding? = null
     private val binding get() = _binding!!
     private var todos: List<ApartamentoDirectorio> = emptyList()
+    private lateinit var filtro: FiltroTorreApto
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDirectorioBinding.inflate(inflater, container, false)
@@ -40,7 +42,8 @@ class DirectorioFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         configurarEncabezado(binding.encabezado, R.string.directorio_titulo, R.string.directorio_descripcion, atras = false)
-        binding.etBuscar.doAfterTextChanged { pintar() }
+        filtro = FiltroTorreApto(binding.filtro) { _, _ -> pintar() }
+        filtro.ponerPista(R.string.directorio_buscar_apto)
         cargar()
     }
 
@@ -52,6 +55,7 @@ class DirectorioFragment : Fragment() {
                 if (_binding == null) return@launch
                 if (r.isSuccessful) {
                     todos = r.body().orEmpty()
+                    filtro.ponerTorres(todos.map { it.torre })
                     pintar()
                 } else {
                     aviso(RetrofitClient.mensajeDeError(r, getString(R.string.porteria_error))).show()
@@ -63,13 +67,32 @@ class DirectorioFragment : Fragment() {
         }
     }
 
+    /**
+     * P10: sin torre ni texto se ven las torres (tocar una la elige); con torre, sus apartamentos;
+     * el texto busca apartamento, nombre o placa dentro de la torre elegida (o en todas).
+     */
     private fun pintar() {
-        val q = normal(binding.etBuscar.text?.toString().orEmpty().trim())
-        val lista = if (q.isEmpty()) todos else todos.filter { coincide(it, q) }
-        binding.tvVacio.isVisible = lista.isEmpty() && todos.isNotEmpty()
+        val q = filtro.texto
+        val torre = filtro.torre
         binding.lista.removeAllViews()
+        if (torre == null && q.isEmpty()) {
+            binding.tvVacio.isVisible = false
+            todos.groupBy { it.torre }.toSortedMap(compareBy<String>({ it.toIntOrNull() ?: Int.MAX_VALUE }, { it }))
+                .forEach { (t, aptos) -> binding.lista.addView(filaTorre(t, aptos.size)) }
+            return
+        }
+        val lista = todos.filter { (torre == null || it.torre == torre) && (q.isEmpty() || coincide(it, q)) }
+        binding.tvVacio.isVisible = lista.isEmpty() && todos.isNotEmpty()
         // Muchos apartamentos: se muestran los primeros 100 y la búsqueda acota el resto
         lista.take(100).forEach { a -> binding.lista.addView(fila(a)) }
+    }
+
+    private fun filaTorre(torre: String, aptos: Int): View {
+        val fila = ItemTextoConAccionBinding.inflate(layoutInflater, binding.lista, false)
+        fila.tvTitulo.text = getString(R.string.filtro_torre_n, torre)
+        fila.tvDetalle.text = resources.getQuantityString(R.plurals.directorio_aptos_torre, aptos, aptos)
+        fila.root.setOnClickListener { filtro.elegirTorre(torre) }
+        return fila.root
     }
 
     private fun fila(a: ApartamentoDirectorio): View {
@@ -108,6 +131,7 @@ class DirectorioFragment : Fragment() {
     }
 
     private fun coincide(a: ApartamentoDirectorio, q: String): Boolean {
+        if (FiltroTorreApto.coincideApto(a.apto, q)) return true
         val sinEspacios = q.replace(" ", "")
         return normal("${a.torre}-${a.apto}").contains(q) || normal(a.apto) == q ||
             normal("torre ${a.torre} apto ${a.apto}").contains(q) ||

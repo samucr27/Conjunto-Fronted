@@ -21,6 +21,7 @@ import com.example.conjuntoresidencial.model.ReciboParaTodos
 import com.example.conjuntoresidencial.ui.comun.TIPOS_CORRESPONDENCIA
 import com.example.conjuntoresidencial.ui.comun.aviso
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
+import com.example.conjuntoresidencial.ui.comun.FiltroTorreApto
 import com.example.conjuntoresidencial.ui.comun.nombreTipoCorrespondencia
 import com.example.conjuntoresidencial.ui.comun.pintarCorrespondencia
 import com.google.android.material.chip.Chip
@@ -51,12 +52,14 @@ class CorrespondenciaFragment : Fragment() {
         binding.btnRegistrar.setOnClickListener { registrar() }
         binding.btnReciboTodos.setOnClickListener { reciboParaTodos() }
         binding.chipsEstado.setOnCheckedStateChangeListener { _, _ -> cargar() }
-        binding.etBuscar.doAfterTextChanged { pintar() }
+        filtro = FiltroTorreApto(binding.filtro) { _, _ -> pintar() }
+        filtro.ponerPista(R.string.corr_buscar_apto)
         binding.swipe.setOnRefreshListener { cargar() }
         cargar()
     }
 
     private val entregadas get() = binding.chipEntregadas.isChecked
+    private lateinit var filtro: FiltroTorreApto
 
     private fun cargar() {
         val estado = if (entregadas) "ENTREGADA" else "PENDIENTE"
@@ -66,6 +69,7 @@ class CorrespondenciaFragment : Fragment() {
                 if (_binding == null) return@launch
                 if (r.isSuccessful) {
                     todas = r.body().orEmpty()
+                    filtro.ponerTorres(todas.map { it.torre })
                     pintar()
                 } else {
                     aviso(RetrofitClient.mensajeDeError(r, getString(R.string.corr_error))).show()
@@ -77,12 +81,15 @@ class CorrespondenciaFragment : Fragment() {
         }
     }
 
-    /** La búsqueda filtra lo cargado: apartamento ("5-502", "502"), remitente o quién recogió. */
+    /** P10: filtra lo cargado por torre y después por apartamento ("50" = 501, 502...), remitente o quién recogió. */
     private fun pintar() {
-        val q = binding.etBuscar.text?.toString()?.trim()?.lowercase().orEmpty()
+        val q = filtro.texto
+        val torre = filtro.torre
         val lista = todas.filter { c ->
-            q.isEmpty() || "${c.torre}-${c.apto}".lowercase().contains(q) || c.apto.lowercase() == q ||
-                c.remitente.orEmpty().lowercase().contains(q) || c.entregadaA.orEmpty().lowercase().contains(q)
+            (torre == null || c.torre == torre) && (q.isEmpty() || FiltroTorreApto.coincideApto(c.apto, q) ||
+                FiltroTorreApto.normalizar("${c.torre}-${c.apto}").contains(q) ||
+                FiltroTorreApto.normalizar(c.remitente.orEmpty()).contains(q) ||
+                FiltroTorreApto.normalizar(c.entregadaA.orEmpty()).contains(q))
         }
         if (!entregadas) binding.chipPendientes.text = getString(R.string.corr_por_entregar_n, todas.size)
         binding.tvVacio.isVisible = lista.isEmpty()

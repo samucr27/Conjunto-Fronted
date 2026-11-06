@@ -37,7 +37,7 @@ class HistorialVisitasFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarEncabezado(binding.encabezado, R.string.historial_titulo, R.string.historial_descripcion, atras = false)
+        configurarEncabezado(binding.encabezado, R.string.historial_titulo, R.string.historial_descripcion)
         binding.etBuscar.doAfterTextChanged { buscar(esperar = true) }
         binding.chipsRango.setOnCheckedStateChangeListener { _, _ -> buscar(esperar = false) }
         binding.btnCargarMas.setOnClickListener { cargar(pagina + 1) }

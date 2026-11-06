@@ -36,19 +36,20 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:baselineAligned="false"
                 android:orientation="horizontal">
                 <include
                     android:id="@+id/cifraHoy"
                     layout="@layout/item_cifra_porteria"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="6dp"
                     android:layout_weight="1" />
                 <include
                     android:id="@+id/cifraEsperando"
                     layout="@layout/item_cifra_porteria"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="6dp"
                     android:layout_weight="1" />
             </LinearLayout>
@@ -57,19 +58,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:baselineAligned="false"
                 android:orientation="horizontal">
                 <include
                     android:id="@+id/cifraDentro"
                     layout="@layout/item_cifra_porteria"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="6dp"
                     android:layout_weight="1" />
                 <include
                     android:id="@+id/cifraParqueaderos"
                     layout="@layout/item_cifra_porteria"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="6dp"
                     android:layout_weight="1" />
             </LinearLayout>

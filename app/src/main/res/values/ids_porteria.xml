@@ -6,4 +6,6 @@
     <item name="historialVisitasFragment" type="id" />
     <item name="directorioFragment" type="id" />
     <item name="minutaFragment" type="id" />
+    <!-- P10: quién está dentro del conjunto, con búsqueda por torre y apartamento -->
+    <item name="dentroFragment" type="id" />
 </resources>

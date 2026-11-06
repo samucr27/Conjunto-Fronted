@@ -67,6 +67,11 @@ class RecepcionInicioFragment : Fragment() {
         cifra(binding.cifraEsperando, R.drawable.ic_notifications, R.string.recepcion_esperando)
         cifra(binding.cifraDentro, R.drawable.ic_home, R.string.recepcion_dentro)
         cifra(binding.cifraParqueaderos, R.drawable.ic_car, R.string.recepcion_parqueaderos)
+        // P10: cada cifra abre su pantalla
+        alTocar(binding.cifraHoy) { findNavController().navigate(R.id.historialVisitasFragment) }
+        alTocar(binding.cifraEsperando) { irAPestana(R.id.porteriaFragment) }
+        alTocar(binding.cifraDentro) { findNavController().navigate(R.id.dentroFragment) }
+        alTocar(binding.cifraParqueaderos) { irAPestana(R.id.porteriaFragment) }
 
         mostrarCodigoDelDia(binding.codigoConjunto)
         binding.btnRegistrarVisita.setOnClickListener { irAPestana(R.id.porteriaFragment) }
@@ -87,6 +92,11 @@ class RecepcionInicioFragment : Fragment() {
     private fun irAPestana(destino: Int) {
         findNavController().navigate(destino, null,
             NavOptions.Builder().setPopUpTo(R.id.recepcionInicioFragment, false).setLaunchSingleTop(true).build())
+    }
+
+    private fun alTocar(c: ItemCifraPorteriaBinding, accion: () -> Unit) {
+        c.imgIr.isVisible = true
+        c.root.setOnClickListener { accion() }
     }
 
     private fun cifra(c: ItemCifraPorteriaBinding, @DrawableRes icono: Int, @StringRes nombre: Int) {

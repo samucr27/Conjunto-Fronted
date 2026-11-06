@@ -34,6 +34,12 @@
         android:name="com.example.conjuntoresidencial.ui.recepcion.RecepcionInicioFragment"
         tools:layout="@layout/fragment_recepcion_inicio" />
 
+    <!-- P10: quién está dentro del conjunto (desde Visitas) -->
+    <fragment
+        android:id="@+id/dentroFragment"
+        android:name="com.example.conjuntoresidencial.ui.recepcion.DentroFragment"
+        tools:layout="@layout/fragment_dentro" />
+
     <fragment
         android:id="@+id/historialVisitasFragment"
         android:name="com.example.conjuntoresidencial.ui.recepcion.HistorialVisitasFragment"

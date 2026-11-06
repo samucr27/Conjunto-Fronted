@@ -11,10 +11,6 @@
         android:icon="@drawable/ic_people"
         android:title="@string/pestana_visitas_recepcion" />
     <item
-        android:id="@+id/historialVisitasFragment"
-        android:icon="@drawable/ic_description"
-        android:title="@string/pestana_historial" />
-    <item
         android:id="@+id/directorioFragment"
         android:icon="@drawable/ic_apartment"
         android:title="@string/pestana_directorio" />

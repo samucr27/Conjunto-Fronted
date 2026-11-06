@@ -24,20 +24,10 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/directorio_buscar"
-                app:endIconMode="clear_text"
-                app:startIconDrawable="@drawable/ic_search">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etBuscar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:maxLines="1" />
-            </com.google.android.material.textfield.TextInputLayout>
+            <!-- P10: primero la torre y después el apartamento -->
+            <include
+                android:id="@+id/filtro"
+                layout="@layout/filtro_torre_apto" />
 
             <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:id="@+id/progreso"

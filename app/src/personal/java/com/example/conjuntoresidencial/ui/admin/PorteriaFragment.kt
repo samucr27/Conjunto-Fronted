@@ -69,6 +69,15 @@ class PorteriaFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) { requireActivity().moveTaskToBack(true) }
         }
         binding.btnRegistrarVisita.setOnClickListener { registrar() }
+        // P10: la recepción tiene "Dentro del conjunto" e "Historial" aquí, no en la barra de abajo
+        val grafo = findNavController().graph
+        val hayDentro = grafo.findNode(R.id.dentroFragment) != null
+        val hayHistorial = grafo.findNode(R.id.historialVisitasFragment) != null
+        binding.accesosVisitas.isVisible = hayDentro || hayHistorial
+        binding.btnDentro.isVisible = hayDentro
+        binding.btnHistorial.isVisible = hayHistorial
+        binding.btnDentro.setOnClickListener { findNavController().navigate(R.id.dentroFragment) }
+        binding.btnHistorial.setOnClickListener { findNavController().navigate(R.id.historialVisitasFragment) }
         binding.grupoIngreso.addOnButtonCheckedListener { _, _, _ -> mostrarVehiculo() }
         mostrarVehiculo()
         // Consulta cada 7 segundos mientras la pantalla está a la vista
@@ -227,6 +236,9 @@ class PorteriaFragment : Fragment() {
     }
 
     private fun pintar(visitas: List<VisitaDTO>) {
+        // P10: cuántos siguen dentro (autorizadas sin salida), en el botón de arriba
+        val dentro = visitas.count { it.estado == "AUTORIZADA" && it.salidaEn == null }
+        binding.btnDentro.text = if (dentro > 0) getString(R.string.visitas_dentro_n, dentro) else getString(R.string.visitas_dentro)
         binding.tvSinVisitas.visibility = if (visitas.isEmpty()) View.VISIBLE else View.GONE
         binding.listaVisitas.removeAllViews()
         visitas.forEach { v ->

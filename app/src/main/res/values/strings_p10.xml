@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- P10: filtro de la portería, primero la torre y después el apartamento -->
+    <string name="filtro_torre">Torre</string>
+    <string name="filtro_todas">Todas</string>
+    <string name="filtro_torre_n">Torre %1$s</string>
+    <string name="filtro_apto">Apartamento</string>
+    <string name="directorio_buscar_apto">Apartamento, nombre o placa</string>
+    <plurals name="directorio_aptos_torre">
+        <item quantity="one">%1$d apartamento · toca para verlo</item>
+        <item quantity="other">%1$d apartamentos · toca para verlos</item>
+    </plurals>
+    <string name="corr_buscar_apto">Apartamento, remitente o quién recogió</string>
+
+    <!-- P10: Visitas con quién está dentro y el historial -->
+    <string name="visitas_dentro">Dentro del conjunto</string>
+    <string name="visitas_dentro_n">Dentro (%1$d)</string>
+    <string name="visitas_historial">Historial</string>
+    <string name="dentro_descripcion">Busca por torre y apartamento para darle salida</string>
+    <string name="dentro_buscar">Apartamento, nombre o placa</string>
+    <string name="dentro_vacio">No hay visitantes dentro del conjunto</string>
+    <string name="dentro_sin_resultados">Nadie dentro coincide con la búsqueda</string>
+    <plurals name="dentro_resumen">
+        <item quantity="one">%1$d visitante dentro</item>
+        <item quantity="other">%1$d visitantes dentro</item>
+    </plurals>
+</resources>

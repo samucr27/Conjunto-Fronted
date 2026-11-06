@@ -77,22 +77,13 @@
                         android:text="@string/corr_entregadas" />
                 </com.google.android.material.chip.ChipGroup>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilBuscar"
+                <!-- P10: primero la torre y después el apartamento (o remitente o quién recogió) -->
+                <include
+                    android:id="@+id/filtro"
+                    layout="@layout/filtro_torre_apto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:hint="@string/corr_buscar"
-                    app:endIconMode="clear_text"
-                    app:startIconDrawable="@drawable/ic_search">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etBuscar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:imeOptions="actionSearch"
-                        android:inputType="text"
-                        android:maxLines="1" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginTop="12dp" />
 
                 <TextView
                     android:id="@+id/tvVacio"
