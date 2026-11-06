@@ -108,7 +108,9 @@ class DirectorioFragment : Fragment() {
             val tipo = getString(if (r.tipo == "ARRENDATARIO") R.string.directorio_arrendatario else R.string.directorio_propietario)
             lineas += getString(R.string.directorio_residente, r.nombre, tipo)
         }
-        if (a.placas.isNotEmpty()) lineas += getString(R.string.directorio_placas, a.placas.joinToString(", "))
+        // P10: los vehículos sin placa (bicicletas) llegan como null y no se muestran
+        val placas = (a.placas as List<String?>).filterNot { it.isNullOrBlank() }.map { it!! }
+        if (placas.isNotEmpty()) lineas += getString(R.string.directorio_placas, placas.joinToString(", "))
         listOfNotNull(a.citofono1, a.citofono2).takeIf { it.isNotEmpty() }
             ?.let { lineas += getString(R.string.directorio_citofono, it.joinToString(" / ")) }
         fila.tvDetalle.text = lineas.joinToString("\n")
@@ -135,7 +137,7 @@ class DirectorioFragment : Fragment() {
         val sinEspacios = q.replace(" ", "")
         return normal("${a.torre}-${a.apto}").contains(q) || normal(a.apto) == q ||
             normal("torre ${a.torre} apto ${a.apto}").contains(q) ||
-            a.placas.any { normal(it).contains(sinEspacios) } ||
+            (a.placas as List<String?>).any { it != null && normal(it).contains(sinEspacios) } ||
             a.residentes.any { normal(it.nombre).contains(q) }
     }
 

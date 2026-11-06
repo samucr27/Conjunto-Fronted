@@ -50,7 +50,7 @@ class ConjuntosPlataformaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configurarEncabezado(binding.encabezado, R.string.plataforma_conjuntos_titulo, R.string.plataforma_conjuntos_descripcion,
+        configurarEncabezado(binding.encabezado, R.string.plataforma_conjuntos_titulo, R.string.plataforma_conjuntos_descripcion, atras = false,
             menu = R.menu.menu_lista, alElegir = accionesDeLista(binding.swipe) { cargar() })
         binding.lista.layoutManager = LinearLayoutManager(requireContext())
         binding.lista.adapter = adaptador

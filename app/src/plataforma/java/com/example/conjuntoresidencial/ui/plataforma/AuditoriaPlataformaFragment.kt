@@ -46,7 +46,8 @@ class AuditoriaPlataformaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val titulo = arguments?.getString(ARG_TITULO).orEmpty().ifBlank { getString(R.string.plataforma_auditoria) }
-        configurarEncabezado(binding.encabezado, titulo, R.string.plataforma_auditoria_descripcion)
+        // P10: como pestaña (sin conjunto) no lleva "volver"; desde un conjunto, sí
+        configurarEncabezado(binding.encabezado, titulo, R.string.plataforma_auditoria_descripcion, atras = conjunto != null)
 
         // "Todas" y una por acción
         val acciones = listOf<Pair<String?, Int>>(null to R.string.auditoria_todas) + ACCIONES_AUDITORIA
