@@ -138,7 +138,53 @@ class NotificacionesFragment : Fragment() {
                 if (posicion == RecyclerView.NO_POSITION) return
                 (adaptador.currentList[posicion] as? FilaAviso.Aviso)?.let { eliminar(it.n) }
             }
+
+            // P10: mientras se desliza, detrás de la tarjeta aparece "Eliminar" con la papelera
+            override fun onChildDraw(c: android.graphics.Canvas, rv: RecyclerView, vh: RecyclerView.ViewHolder,
+                                     dX: Float, dY: Float, estado: Int, activo: Boolean) {
+                if (estado == ItemTouchHelper.ACTION_STATE_SWIPE && dX != 0f) dibujarEliminar(c, vh.itemView, dX)
+                super.onChildDraw(c, rv, vh, dX, dY, estado, activo)
+            }
         }).attachToRecyclerView(binding.rvNotificaciones)
+    }
+
+    private val pinturaFondo by lazy {
+        android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+            color = com.google.android.material.color.MaterialColors.getColor(binding.root, androidx.appcompat.R.attr.colorError)
+        }
+    }
+    private val pinturaTexto by lazy {
+        android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+            color = com.google.android.material.color.MaterialColors.getColor(binding.root, com.google.android.material.R.attr.colorOnError)
+            textSize = 15 * resources.displayMetrics.scaledDensity
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
+        }
+    }
+    private val papelera by lazy {
+        androidx.core.content.ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete)!!.mutate().apply {
+            setTint(pinturaTexto.color)
+        }
+    }
+
+    /** Fondo rojo redondeado del lado que queda al descubierto, con la papelera y "Eliminar". */
+    private fun dibujarEliminar(c: android.graphics.Canvas, v: View, dX: Float) {
+        val d = resources.displayMetrics.density
+        val radio = 24 * d
+        val hacia = if (dX > 0) v.left.toFloat() else v.right + dX
+        val hasta = if (dX > 0) v.left + dX else v.right.toFloat()
+        c.drawRoundRect(hacia, v.top.toFloat(), hasta, v.bottom.toFloat(), radio, radio, pinturaFondo)
+        val texto = getString(R.string.eliminar)
+        val icono = (24 * d).toInt()
+        val margen = (20 * d).toInt()
+        val anchoTexto = pinturaTexto.measureText(texto)
+        val centroY = (v.top + v.bottom) / 2
+        val x = if (dX > 0) v.left + margen else (v.right - margen - icono - 8 * d - anchoTexto).toInt()
+        // Se dibuja solo cuando ya hay espacio para leerlo
+        if (kotlin.math.abs(dX) < margen + icono) return
+        papelera.setBounds(x, centroY - icono / 2, x + icono, centroY + icono / 2)
+        papelera.draw(c)
+        val base = centroY - (pinturaTexto.descent() + pinturaTexto.ascent()) / 2
+        c.drawText(texto, x + icono + 8 * d, base, pinturaTexto)
     }
 
     private fun confirmarLimpiar() {
