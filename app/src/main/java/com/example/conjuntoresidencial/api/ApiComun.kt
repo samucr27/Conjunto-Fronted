@@ -82,6 +82,13 @@ interface ApiComun {
     @GET("api/porteria/correspondencia/mia")
     suspend fun miCorrespondencia(): Response<List<CorrespondenciaDTO>>
 
+    // P11 bloque 2: quitar de la lista lo ya entregado (el residente la suya; la portería la de ella)
+    @DELETE("api/porteria/correspondencia/mia/{id}")
+    suspend fun quitarMiCorrespondencia(@Path("id") id: Long): Response<Unit>
+
+    @DELETE("api/porteria/correspondencia/{id}")
+    suspend fun quitarCorrespondencia(@Path("id") id: Long): Response<Unit>
+
     // P9 bloque 2: el código del conjunto (residentes: para recibir el pase; administración y portería: el de hoy)
     @POST("api/conjuntos/{id}/codigo")
     suspend fun verificarCodigoConjunto(@Path("id") conjunto: Long, @Body cuerpo: CodigoConjuntoRequest): Response<PaseConjunto>

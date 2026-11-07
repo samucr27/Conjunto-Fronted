@@ -212,6 +212,9 @@
     <string name="reserva_aprobar_titulo">Aprobar la reserva</string>
     <string name="reserva_rechazar_titulo">Rechazar la reserva</string>
     <string name="reserva_motivo_linea">Motivo: %1$s</string>
+    <string name="corr_quitada">Quitada de la lista</string>
+    <string name="corr_error_quitar">No se pudo quitar de la lista</string>
+    <string name="corr_deslizar_ayuda">Desliza a la izquierda lo ya entregado para quitarlo de la lista</string>
     <string name="deshacer">Deshacer</string>
     <string name="eliminar">Eliminar</string>
     <string name="canal_avisos">Avisos</string>

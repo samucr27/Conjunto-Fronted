@@ -14,6 +14,8 @@ import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.DialogoCorrespondenciaBinding
 import com.example.conjuntoresidencial.databinding.FragmentCorrespondenciaBinding
 import com.example.conjuntoresidencial.databinding.ItemCorrespondenciaBinding
+import com.example.conjuntoresidencial.ui.comun.FilaDeslizable
+import com.example.conjuntoresidencial.ui.comun.QuitarConDeshacer
 import com.example.conjuntoresidencial.model.CorrespondenciaDTO
 import com.example.conjuntoresidencial.model.EntregaCorrespondencia
 import com.example.conjuntoresidencial.model.NuevaCorrespondencia
@@ -70,6 +72,8 @@ class CorrespondenciaFragment : Fragment() {
 
     private val entregadas get() = binding.chipEntregadas.isChecked
     private lateinit var filtro: FiltroTorreApto
+    // P11: lo entregado se quita de la lista deslizando de derecha a izquierda
+    private val quitar = QuitarConDeshacer(this, { if (_binding != null) pintar() }) { RetrofitClient.comun.quitarCorrespondencia(it) }
 
     private fun cargar() {
         val estado = if (entregadas) "ENTREGADA" else "PENDIENTE"
@@ -96,7 +100,7 @@ class CorrespondenciaFragment : Fragment() {
         val q = filtro.texto
         val torre = filtro.torre
         val lista = todas.filter { c ->
-            (torre == null || c.torre == torre) && (q.isEmpty() || FiltroTorreApto.coincideApto(c.apto, q) ||
+            !quitar.escondida(c.id) && (torre == null || c.torre == torre) && (q.isEmpty() || FiltroTorreApto.coincideApto(c.apto, q) ||
                 FiltroTorreApto.normalizar("${c.torre}-${c.apto}").contains(q) ||
                 FiltroTorreApto.normalizar(c.remitente.orEmpty()).contains(q) ||
                 FiltroTorreApto.normalizar(c.entregadaA.orEmpty()).contains(q))
@@ -108,7 +112,8 @@ class CorrespondenciaFragment : Fragment() {
         lista.forEach { c ->
             val fila = ItemCorrespondenciaBinding.inflate(layoutInflater, binding.lista, false)
             pintarCorrespondencia(fila, c, conApartamento = true) { entregar(it) }
-            binding.lista.addView(fila.root)
+            binding.lista.addView(if (c.estado == "ENTREGADA") FilaDeslizable.envolver(fila.root, binding.swipe) { quitar.quitar(c.id) }
+                else fila.root)
         }
     }
 
