@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P11 bloque 8: personal y presupuesto del conjunto (una pantalla para cada parte) -->
+<resources>
+    <string name="pers_error">No se pudo completar</string>
+    <string name="pers_guardado">Guardado</string>
+    <string name="pers_borrado">Eliminado</string>
+    <string name="pers_valor_invalido">Escribe un valor válido</string>
+    <string name="pers_no_existe">Ese trabajador ya no existe</string>
+    <string name="pers_secciones">Secciones</string>
+    <string name="pers_ninguno">ninguno</string>
+    <string name="pers_todos">Todos</string>
+    <string name="pers_mes_anterior">Mes anterior</string>
+    <string name="pers_mes_siguiente">Mes siguiente</string>
+    <string name="pers_hoy">hoy</string>
+
+    <!-- Resumen -->
+    <string name="pers_activos_cifra">Trabajadores activos</string>
+    <string name="pers_turnos_esta_semana">Turnos esta semana</string>
+    <string name="pers_nomina_del_mes">Nómina del mes</string>
+    <string name="pers_presupuestado">Presupuestado</string>
+    <plurals name="pers_activos">
+        <item quantity="one">%d activo</item>
+        <item quantity="other">%d activos</item>
+    </plurals>
+
+    <!-- Trabajadores -->
+    <string name="pers_trabajadores">Trabajadores</string>
+    <string name="pers_trabajadores_sub">Vigilancia, aseo, jardinería y más</string>
+    <string name="pers_trabajador">Trabajador</string>
+    <string name="pers_buscar">Buscar por nombre o documento</string>
+    <string name="pers_todos_cargos">Todos los cargos</string>
+    <string name="pers_activos_chip">Activos</string>
+    <string name="pers_inactivos_chip">Inactivos</string>
+    <string name="pers_sin_trabajadores">No hay trabajadores con ese filtro.</string>
+    <string name="pers_activo">Activo</string>
+    <string name="pers_inactivo">Inactivo</string>
+    <string name="pers_directo">Contratación directa</string>
+    <string name="pers_por_empresa">Por una empresa</string>
+    <string name="pers_de_empresa">De %1$s</string>
+    <string name="pers_doc_salario">CC %1$s · salario %2$s</string>
+    <string name="pers_nuevo_trabajador">Nuevo trabajador</string>
+    <string name="pers_editar_trabajador">Editar los datos</string>
+    <string name="pers_nombre">Nombre completo</string>
+    <string name="pers_documento">Documento</string>
+    <string name="pers_telefono">Teléfono</string>
+    <string name="pers_cargo">Cargo</string>
+    <string name="pers_vinculo">Vínculo</string>
+    <string name="pers_empresa">Empresa</string>
+    <string name="pers_salario">Salario base (pesos)</string>
+    <string name="pers_ingreso">Fecha de ingreso</string>
+    <string name="pers_falta_nombre">Escribe el nombre</string>
+    <string name="pers_falta_documento">Escribe el documento</string>
+    <string name="pers_falta_empresa">Elige la empresa (o crea una en Empresas)</string>
+    <string name="pers_ficha">Trabajador</string>
+    <string name="pers_ficha_sub">Datos, turnos y nómina</string>
+    <string name="pers_datos">Datos</string>
+    <string name="pers_antiguedad">%1$d años y %2$d meses</string>
+    <string name="pers_activar">Activar</string>
+    <string name="pers_desactivar">Desactivar</string>
+    <string name="pers_proximos_turnos">Próximos turnos (dos semanas)</string>
+    <string name="pers_sin_turnos">No tiene turnos en las próximas dos semanas.</string>
+    <string name="pers_nomina_historial">Nómina mes a mes</string>
+    <string name="pers_sin_nomina">Todavía no tiene nómina.</string>
+    <string name="pers_zona_peligro">Si se registró por error</string>
+    <string name="pers_borrar">Eliminar trabajador</string>
+    <string name="pers_borrar_titulo">¿Eliminar a %1$s?</string>
+    <string name="pers_borrar_mensaje">Se borran también sus turnos. Si ya trabajó en el conjunto, mejor desactívalo.</string>
+
+    <!-- Empresas -->
+    <string name="pers_empresas">Empresas</string>
+    <string name="pers_empresas_sub">Las que prestan personal al conjunto</string>
+    <plurals name="pers_n_empresas">
+        <item quantity="one">%d empresa</item>
+        <item quantity="other">%d empresas</item>
+    </plurals>
+    <plurals name="pers_trabajadores_en">
+        <item quantity="one">%d trabajador activo en el conjunto</item>
+        <item quantity="other">%d trabajadores activos en el conjunto</item>
+    </plurals>
+    <string name="pers_sin_empresas">No hay empresas registradas.</string>
+    <string name="pers_activa">Activa</string>
+    <string name="pers_inactiva">Inactiva</string>
+    <string name="pers_nit_linea">NIT %1$s</string>
+    <string name="pers_nueva_empresa">Nueva empresa</string>
+    <string name="pers_editar_empresa">Editar la empresa</string>
+    <string name="pers_empresa_nombre">Nombre de la empresa</string>
+    <string name="pers_nit">NIT (opcional)</string>
+    <string name="pers_contacto">Persona de contacto (opcional)</string>
+    <string name="pers_llamar">Llamar</string>
+    <string name="pers_eliminar">Eliminar</string>
+    <string name="pers_eliminar_empresa_titulo">¿Eliminar %1$s?</string>
+    <string name="pers_eliminar_empresa_con">Tiene %1$d trabajadores activos en el conjunto: no se podrá si siguen vinculados.</string>
+
+    <!-- Turnos -->
+    <string name="pers_turnos">Turnos</string>
+    <string name="pers_turnos_sub">La semana día por día, sin cruces</string>
+    <plurals name="pers_turnos_semana">
+        <item quantity="one">%d turno esta semana</item>
+        <item quantity="other">%d turnos esta semana</item>
+    </plurals>
+    <string name="pers_sin_turnos_semana">Nadie tiene turno esta semana</string>
+    <string name="pers_horas">%1$s h</string>
+    <string name="pers_horario">%1$s a %2$s</string>
+    <string name="pers_semana_de">Semana del %1$s</string>
+    <string name="pers_semana_anterior">Semana anterior</string>
+    <string name="pers_semana_siguiente">Semana siguiente</string>
+    <string name="pers_nuevo_turno">Nuevo turno</string>
+    <string name="pers_editar_turno">Editar el turno</string>
+    <string name="pers_borrar_turno">Borrar el turno</string>
+    <string name="pers_copiar_semana">Copiar la semana anterior</string>
+    <string name="pers_copiar_semana_mensaje">Los turnos de la semana pasada se copian a esta. Los que se cruzarían con uno que ya existe se saltan.</string>
+    <string name="pers_copiar">Copiar</string>
+    <string name="pers_copiada">Semana copiada</string>
+    <string name="pers_sin_turnos_dia">Sin turnos</string>
+    <string name="pers_horas_por_trabajador">Horas de cada uno</string>
+    <string name="pers_esta_semana">Esta semana</string>
+    <string name="pers_fecha">Fecha</string>
+    <string name="pers_hora_inicio">Desde</string>
+    <string name="pers_hora_fin">Hasta</string>
+    <string name="pers_hora_formato">HH:MM, o toca el reloj</string>
+    <string name="pers_elegir_hora">Elegir la hora</string>
+    <string name="pers_hora_invalida">Hora no válida (HH:MM)</string>
+    <string name="pers_fin_antes">Debe terminar después de empezar</string>
+    <string name="pers_repetir">Repetir los días siguientes</string>
+    <string name="pers_repetir_ayuda">0 = solo ese día; 6 = toda la semana</string>
+    <string name="pers_repetir_invalido">Entre 0 y 30 días</string>
+    <string name="pers_falta_trabajador">Elige el trabajador</string>
+    <plurals name="pers_turnos_creados">
+        <item quantity="one">%d turno creado</item>
+        <item quantity="other">%d turnos creados</item>
+    </plurals>
+    <string name="pers_turnos_con_error">%1$d creados. Algunos no: %2$s</string>
+
+    <!-- Nómina -->
+    <string name="pers_nomina">Nómina</string>
+    <string name="pers_nomina_sub">Generar, ajustar y pagar la del mes</string>
+    <string name="pers_sin_generar">Sin generar este mes</string>
+    <string name="pers_sin_generar_corto">Sin generar</string>
+    <plurals name="pers_por_pagar_n">
+        <item quantity="one">%d por pagar</item>
+        <item quantity="other">%d por pagar</item>
+    </plurals>
+    <string name="pers_total_neto">Total a pagar</string>
+    <string name="pers_bonificaciones">Bonificaciones</string>
+    <string name="pers_descuentos">Descuentos</string>
+    <string name="pers_generar">Generar la nómina del mes</string>
+    <string name="pers_generar_faltantes">Agregar a los que faltan</string>
+    <string name="pers_generada">Nómina generada</string>
+    <string name="pers_pagar_todo">Marcar todo como pagado</string>
+    <string name="pers_pagar_todo_mensaje">%1$d pagos de %2$s quedan como pagados y ya no se pueden cambiar.</string>
+    <string name="pers_pagar">Marcar pagado</string>
+    <string name="pers_pagada_ok">Nómina pagada</string>
+    <string name="pers_nomina_vacia">Genera la nómina: queda una fila por trabajador activo con su salario.</string>
+    <string name="pers_por_trabajador">Por trabajador</string>
+    <string name="pers_neto">Neto %1$s</string>
+    <string name="pers_desglose">Base %1$s + bonificaciones %2$s − descuentos %3$s</string>
+    <string name="pers_pagada">Pagada</string>
+    <string name="pers_por_pagar">Por pagar</string>
+    <string name="pers_salario_base">Salario base: %1$s</string>
+    <string name="pers_marcar_pagada">Marcar como pagada</string>
+    <string name="pers_descuento_alto">Los descuentos no pueden pasar del salario</string>
+
+    <!-- Presupuesto -->
+    <string name="pers_presupuesto">Presupuesto</string>
+    <string name="pers_presupuesto_sub">Lo presupuestado por cargo frente a la nómina</string>
+    <string name="pers_en_nomina">En nómina</string>
+    <string name="pers_en_nomina_linea">En nómina este mes: %1$s</string>
+    <string name="pers_por_cargo">Por cargo</string>
+    <string name="pers_monto">Presupuesto del mes (pesos)</string>
+    <string name="pers_se_paso">Se pasó</string>
+    <string name="pers_dentro">Dentro</string>
+    <string name="pers_excedido">Excedido en %1$s</string>
+    <string name="pers_disponible">Quedan %1$s del presupuesto</string>
+    <string name="pers_sin_presupuesto">Sin presupuesto este mes</string>
+    <string name="pers_copiar_mes_anterior">Copiar el del mes anterior</string>
+    <string name="pers_sin_presupuesto_anterior">El mes anterior no tiene presupuesto</string>
+    <string name="pers_copiado_revisa">Copiado: revisa y guarda</string>
+</resources>

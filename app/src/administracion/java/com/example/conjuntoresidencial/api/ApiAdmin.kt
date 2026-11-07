@@ -214,6 +214,22 @@ interface ApiAdmin : ApiComun {
     @PUT("api/personal-conjunto/presupuesto")
     suspend fun fijarPresupuesto(@Query("periodo") periodo: String, @Body lineas: List<LineaPresupuesto>): Response<List<LineaPresupuesto>>
 
+    // P11 bloque 8: personal más completo
+    @DELETE("api/personal-conjunto/trabajadores/{id}")
+    suspend fun eliminarTrabajador(@Path("id") id: Long): Response<Void>
+
+    @GET("api/personal-conjunto/trabajadores/{id}/nomina")
+    suspend fun nominaDeTrabajador(@Path("id") id: Long): Response<List<NominaDTO>>
+
+    @PUT("api/personal-conjunto/turnos/{id}")
+    suspend fun actualizarTurno(@Path("id") id: Long, @Body turno: TurnoDTO): Response<TurnoDTO>
+
+    @POST("api/personal-conjunto/turnos/copiar-semana")
+    suspend fun copiarSemana(@Query("lunes") lunes: String): Response<List<TurnoDTO>>
+
+    @POST("api/personal-conjunto/nomina/pagar")
+    suspend fun pagarNomina(@Query("periodo") periodo: String): Response<List<NominaDTO>>
+
     @GET("api/personal-conjunto/presupuesto/resumen")
     suspend fun getResumenPresupuesto(@Query("periodo") periodo: String): Response<ResumenPresupuesto>
 

@@ -60,7 +60,33 @@
     <fragment
         android:id="@+id/personalConjuntoFragment"
         android:name="com.example.conjuntoresidencial.ui.admin.PersonalConjuntoFragment"
-        tools:layout="@layout/fragment_personal_conjunto" />
+        tools:layout="@layout/fragment_pantalla_contenido" />
+    <!-- P11 bloque 8: cada parte del personal en su pantalla -->
+    <fragment
+        android:id="@+id/trabajadoresFragment"
+        android:name="com.example.conjuntoresidencial.ui.personal.TrabajadoresFragment"
+        tools:layout="@layout/fragment_pantalla_contenido" />
+    <fragment
+        android:id="@+id/trabajadorDetalleFragment"
+        android:name="com.example.conjuntoresidencial.ui.personal.TrabajadorDetalleFragment"
+        tools:layout="@layout/fragment_pantalla_contenido" />
+    <fragment
+        android:id="@+id/empresasFragment"
+        android:name="com.example.conjuntoresidencial.ui.personal.EmpresasFragment"
+        tools:layout="@layout/fragment_pantalla_contenido" />
+    <fragment
+        android:id="@+id/turnosFragment"
+        android:name="com.example.conjuntoresidencial.ui.personal.TurnosFragment"
+        tools:layout="@layout/fragment_pantalla_contenido" />
+    <fragment
+        android:id="@+id/nominaFragment"
+        android:name="com.example.conjuntoresidencial.ui.personal.NominaFragment"
+        tools:layout="@layout/fragment_pantalla_contenido" />
+    <fragment
+        android:id="@+id/presupuestoFragment"
+        android:name="com.example.conjuntoresidencial.ui.personal.PresupuestoFragment"
+        tools:layout="@layout/fragment_pantalla_contenido" />
+
 
     <!-- P7 bloque 4: guardias de la recepción (nombre, documento y PIN) -->
     <fragment
