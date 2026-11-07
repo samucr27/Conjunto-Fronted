@@ -1104,6 +1104,11 @@
     <string name="parqueadero_eliminado">Parqueadero eliminado</string>
     <string name="parqueadero_asignar_titulo">Asignar %1$s a</string>
     <string name="parqueadero_asignado">Parqueadero %1$s asignado</string>
+    <string name="parqueadero_asignado_a">Parqueadero %1$s asignado a %2$s</string>
+    <string name="parqueadero_buscar_apto">Buscar torre o apartamento</string>
+    <string name="parqueadero_sin_vehiculo">Sin vehículo por ahora</string>
+    <string name="parqueadero_vincular_vehiculo">¿Qué vehículo de %1$s lo usará?</string>
+    <string name="parqueaderos_buscar">Apartamento, número o placa</string>
     <string name="parqueadero_asignado_vehiculo">Parqueadero asignado</string>
     <string name="parqueadero_al_aprobar">Parqueadero para %1$s</string>
     <string name="parqueadero_ninguno">Sin parqueadero</string>

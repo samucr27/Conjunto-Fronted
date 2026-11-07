@@ -119,6 +119,14 @@
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
+                <!-- P11: buscar por torre y después por apartamento, número o placa -->
+                <include
+                    android:id="@+id/filtro"
+                    layout="@layout/filtro_torre_apto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp" />
+
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

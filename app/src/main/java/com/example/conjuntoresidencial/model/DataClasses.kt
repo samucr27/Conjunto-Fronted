@@ -172,7 +172,8 @@ data class ParqueaderoDTO(
 )
 data class ResumenParqueaderos(val total: Int, val asignados: Int, val libres: Int, val invitados: Int)
 data class GenerarParqueaderos(val tipo: String, val cantidad: Int, val prefijo: String?)
-data class AsignacionParqueadero(val vehiculoId: Long?)
+// P11: a un apartamento (y, si se quiere, a uno de sus vehículos); los dos null = liberarlo
+data class AsignacionParqueadero(val vehiculoId: Long?, val apartamentoId: Long? = null)
 // Cupo propio de un apartamento; maximo null = vuelve al cupo general
 data class CupoApartamentoRequest(val tipo: String, val maximo: Int?)
 // P5: apartamentoId null = obra del conjunto. aprobacion (PENDIENTE, APROBADA o RECHAZADA), motivoRechazo,

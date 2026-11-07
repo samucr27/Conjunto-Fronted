@@ -42,6 +42,7 @@ class ParqueaderosFragment : Fragment() {
     private val adaptador = ParqueaderoAdapter { opciones(it) }
     private var filtro: String? = null // null = todos; LIBRE, ASIGNADO o un tipo
     private var todos: List<ParqueaderoDTO> = emptyList()
+    private lateinit var buscador: com.example.conjuntoresidencial.ui.comun.FiltroTorreApto
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentParqueaderosBinding.inflate(inflater, container, false)
@@ -53,6 +54,9 @@ class ParqueaderosFragment : Fragment() {
         configurarEncabezado(binding.encabezado, R.string.parqueaderos_titulo, R.string.parqueaderos_descripcion,
             menu = R.menu.menu_lista, alElegir = accionesDeLista(binding.swipe) { cargar() })
         binding.rvParqueaderos.layoutManager = LinearLayoutManager(requireContext())
+        // P11: buscador por torre y después por apartamento, número o placa
+        buscador = com.example.conjuntoresidencial.ui.comun.FiltroTorreApto(binding.filtro) { _, _ -> mostrar() }
+        buscador.ponerPista(R.string.parqueaderos_buscar)
         binding.rvParqueaderos.adapter = adaptador
         binding.estado.vincular(binding.rvParqueaderos)
         binding.swipe.setOnRefreshListener { cargar() }
@@ -79,6 +83,7 @@ class ParqueaderosFragment : Fragment() {
                     return@launch
                 }
                 todos = lista.body().orEmpty()
+                buscador.ponerTorres(todos.mapNotNull { it.torre })
                 resumen.body()?.let { r ->
                     binding.tvLibres.text = r.libres.toString()
                     binding.tvAsignados.text = r.asignados.toString()
@@ -111,7 +116,16 @@ class ParqueaderosFragment : Fragment() {
     }
 
     private fun mostrar() {
+        val q = buscador.texto
+        val torre = buscador.torre
         val lista = todos.filter { p -> filtro == null || p.estado == filtro || p.tipo == filtro }
+            .filter { p -> torre == null || p.torre == torre }
+            .filter { p ->
+                q.isEmpty() || com.example.conjuntoresidencial.ui.comun.FiltroTorreApto.normalizar(p.numero).contains(q) ||
+                    (p.apto != null && com.example.conjuntoresidencial.ui.comun.FiltroTorreApto.coincideApto(p.apto, q)) ||
+                    com.example.conjuntoresidencial.ui.comun.FiltroTorreApto.normalizar("${p.torre}-${p.apto}").contains(q) ||
+                    com.example.conjuntoresidencial.ui.comun.FiltroTorreApto.normalizar(p.placa.orEmpty()).contains(q)
+            }
         binding.estado.mostrarRecurso(Resource.Success(lista), binding.swipe, R.drawable.ic_car,
             getString(if (todos.isEmpty()) R.string.parqueaderos_vacio else R.string.parqueaderos_vacio_filtro),
             if (todos.isEmpty()) getString(R.string.parqueaderos_vacio_mensaje) else null, reintentar = { cargar() }) {
@@ -137,32 +151,91 @@ class ParqueaderosFragment : Fragment() {
         elegirOpcion("${p.numero} · ${p.tipo}", opciones)
     }
 
-    /** A otro apartamento: los vehículos aprobados de esa categoría que aún no tienen parqueadero. */
+    /**
+     * P11: a un apartamento (elegido con buscador). Si ese apartamento tiene vehículos aprobados de
+     * esa categoría sin parqueadero, se puede vincular uno; el vehículo es opcional.
+     */
     private fun reasignar(p: ParqueaderoDTO) {
         viewLifecycleOwner.lifecycleScope.launch {
+            val aptos = try {
+                RetrofitClient.instance.getApartamentos().takeIf { it.isSuccessful }?.body()
+            } catch (_: Exception) {
+                null
+            }
+            if (view == null) return@launch
+            if (aptos == null) { aviso(R.string.parqueaderos_error).show(); return@launch }
+            elegirApartamento(p, aptos.sortedWith(compareBy({ it.torre.padStart(4, '0') }, { it.apto.padStart(6, '0') })))
+        }
+    }
+
+    private fun elegirApartamento(p: ParqueaderoDTO, aptos: List<com.example.conjuntoresidencial.model.Apartamento>) {
+        val ctx = requireContext()
+        val d = resources.displayMetrics.density
+        val buscar = com.google.android.material.textfield.TextInputEditText(ctx).apply {
+            inputType = android.text.InputType.TYPE_CLASS_TEXT
+            maxLines = 1
+        }
+        val campo = com.google.android.material.textfield.TextInputLayout(ctx, null,
+            com.google.android.material.R.attr.textInputOutlinedStyle).apply {
+            hint = getString(R.string.parqueadero_buscar_apto)
+            setStartIconDrawable(R.drawable.ic_search)
+            addView(buscar)
+        }
+        var visibles = aptos
+        val adaptadorAptos = android.widget.ArrayAdapter<String>(ctx, android.R.layout.simple_list_item_1, mutableListOf())
+        fun filtrar() {
+            val q = com.example.conjuntoresidencial.ui.comun.FiltroTorreApto.normalizar(buscar.text?.toString().orEmpty().trim())
+            visibles = aptos.filter { a ->
+                q.isEmpty() || com.example.conjuntoresidencial.ui.comun.FiltroTorreApto.normalizar("${a.torre}-${a.apto}").contains(q) ||
+                    com.example.conjuntoresidencial.ui.comun.FiltroTorreApto.normalizar("${a.torre} ${a.apto}").contains(q) ||
+                    a.apto.startsWith(q)
+            }
+            adaptadorAptos.clear()
+            adaptadorAptos.addAll(visibles.map { getString(R.string.apto_item_titulo, it.torre, it.apto) })
+        }
+        val lista = android.widget.ListView(ctx).apply { adapter = adaptadorAptos }
+        val caja = android.widget.LinearLayout(ctx).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            setPadding((24 * d).toInt(), (8 * d).toInt(), (24 * d).toInt(), 0)
+            addView(campo)
+            addView(lista, android.widget.LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, (320 * d).toInt()))
+        }
+        filtrar()
+        buscar.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) = filtrar()
+        })
+        val dialogo = MaterialAlertDialogBuilder(ctx)
+            .setTitle(getString(R.string.parqueadero_asignar_titulo, p.numero))
+            .setView(caja)
+            .setNegativeButton(R.string.btn_cancelar, null)
+            .show()
+        lista.setOnItemClickListener { _, _, i, _ ->
+            dialogo.dismiss()
+            elegirVehiculo(p, visibles[i])
+        }
+    }
+
+    /** Con vehículos de esa categoría sin parqueadero, se elige uno o ninguno; si no hay, va directo al apartamento. */
+    private fun elegirVehiculo(p: ParqueaderoDTO, a: com.example.conjuntoresidencial.model.Apartamento) {
+        viewLifecycleOwner.lifecycleScope.launch {
             val candidatos = try {
-                RetrofitClient.instance.getVehiculosPorEstado("APROBADO").body().orEmpty()
-                    .filter { it.tipo == p.tipo && it.parqueaderoId == null }
+                RetrofitClient.comun.getVehiculosPorApartamento(a.id).body().orEmpty()
+                    .filter { it.estado == "APROBADO" && it.tipo == p.tipo && (it.parqueaderoId == null || it.parqueaderoId == p.id) }
             } catch (_: Exception) {
                 emptyList()
             }
             if (view == null) return@launch
-            if (candidatos.isEmpty()) {
-                aviso(getString(R.string.parqueadero_sin_candidatos, p.tipo.lowercase())).show()
-                return@launch
-            }
+            val destino = getString(R.string.apto_item_titulo, a.torre, a.apto)
+            fun asignar(vehiculoId: Long?) = ejecutarAccion(getString(R.string.parqueadero_asignado_a, p.numero, destino),
+                { RetrofitClient.instance.asignarParqueadero(p.id, AsignacionParqueadero(vehiculoId, a.id)) }) { cargar() }
+            if (candidatos.isEmpty()) { asignar(null); return@launch }
+            val opciones = candidatos.map { v -> listOfNotNull(v.placa, v.marca, v.color).joinToString(" · ").ifEmpty { v.tipo } } +
+                getString(R.string.parqueadero_sin_vehiculo)
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.parqueadero_asignar_titulo, p.numero))
-                .setItems(candidatos.map { v ->
-                    getString(R.string.apto_item_titulo, v.torre, v.apto) + " · " + (v.placa ?: v.marca ?: v.tipo)
-                }.toTypedArray()) { _, i ->
-                    val elegido = candidatos[i]
-                    ejecutarAccion(getString(R.string.parqueadero_asignado, p.numero), {
-                        // Si estaba ocupado, primero se libera
-                        if (p.estado == "ASIGNADO") RetrofitClient.instance.asignarParqueadero(p.id, AsignacionParqueadero(null))
-                        RetrofitClient.instance.asignarParqueadero(p.id, AsignacionParqueadero(elegido.id))
-                    }) { cargar() }
-                }
+                .setTitle(getString(R.string.parqueadero_vincular_vehiculo, destino))
+                .setItems(opciones.toTypedArray()) { _, i -> asignar(candidatos.getOrNull(i)?.id) }
                 .setNegativeButton(R.string.btn_cancelar, null)
                 .show()
         }
