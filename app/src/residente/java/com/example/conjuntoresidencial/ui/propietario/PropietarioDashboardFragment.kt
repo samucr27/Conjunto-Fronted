@@ -35,8 +35,16 @@ class PropietarioDashboardFragment : Fragment() {
         configurarEncabezado(
             binding.encabezado, R.string.pestana_herramientas,
             if (sesion.getRol() == "ARRENDATARIO") R.string.panel_arrendatario_subtitulo else R.string.panel_residente_subtitulo,
-            atras = false
-        )
+            atras = false, menu = R.menu.menu_herramientas
+        ) { id ->
+            // P11: cada quien ordena sus herramientas
+            if (id == R.id.accion_ordenar_herramientas) {
+                com.example.conjuntoresidencial.ui.comun.OrdenHerramientas.editar(this, binding.cardChat.root.parent as android.view.ViewGroup) {
+                    if (_binding != null) mostrarSegunRol(sesion.esPropietario(), sesion.getArrendado())
+                }
+                true
+            } else false
+        }
         binding.encabezado.ponerInfo(getString(R.string.panel_residente_titulo, sesion.getTorre(), sesion.getApto()))
 
         val nav = findNavController()
@@ -103,6 +111,9 @@ class PropietarioDashboardFragment : Fragment() {
         val grid = binding.cardChat.root.parent as android.view.ViewGroup
         todas.forEach { grid.removeView(it.root) }
         todas.filter { it !in ocultas }.forEachIndexed { i, tarjeta -> grid.addView(tarjeta.root, i) }
+        // P11: en el orden que eligió la persona (el de siempre es el de [todas])
+        grid.setTag(R.id.orden_por_defecto, todas.map { it.root })
+        com.example.conjuntoresidencial.ui.comun.OrdenHerramientas.aplicar(grid)
         binding.tvAvisoArrendado.visibility = if (propietario && arrendado == true) View.VISIBLE else View.GONE
     }
 

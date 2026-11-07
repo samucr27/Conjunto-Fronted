@@ -37,8 +37,17 @@ class AdminDashboardFragment : Fragment() {
         configurarEncabezado(
             binding.encabezado, R.string.pestana_herramientas,
             if (contador) R.string.panel_contador_subtitulo else R.string.herramientas_admin_subtitulo,
-            atras = false
-        )
+            atras = false, menu = R.menu.menu_herramientas
+        ) { id ->
+            // P11: cada quien ordena sus herramientas
+            if (id == R.id.accion_ordenar_herramientas) {
+                val grid = binding.cardCarteraAdmin.root.parent as ViewGroup
+                com.example.conjuntoresidencial.ui.comun.OrdenHerramientas.editar(this, grid) {
+                    if (_binding != null) com.example.conjuntoresidencial.ui.comun.OrdenHerramientas.aplicar(grid)
+                }
+                true
+            } else false
+        }
         // Las notificaciones están en la barra inferior; aquí, el resumen de las no leídas
         notificaciones.noLeidas.observe(viewLifecycleOwner) { noLeidas ->
             binding.encabezado.ponerInfo(
@@ -115,6 +124,8 @@ class AdminDashboardFragment : Fragment() {
             R.string.menu_residentes_pendientes_sub) {
             nav.navigate(R.id.residentesFragment, ResidentesFragment.pendientes())
         }
+        // P11: en el orden que eligió la persona
+        com.example.conjuntoresidencial.ui.comun.OrdenHerramientas.aplicar(binding.cardCarteraAdmin.root.parent as ViewGroup)
     }
 
     /** GridLayout deja vacía la celda de una tarjeta GONE: las que no aplican se quitan del todo. */
