@@ -32,7 +32,11 @@ internal fun Fragment.ingreso(v: VisitaDTO): String = when {
 }
 
 internal fun Fragment.estado(v: VisitaDTO): String {
-    val canal = getString(if (v.canal == "LLAMADA") R.string.porteria_por_llamada else R.string.porteria_por_app)
+    val canal = getString(when (v.canal) {
+        "LLAMADA" -> R.string.porteria_por_llamada
+        "FRECUENTE" -> R.string.porteria_por_frecuente
+        else -> R.string.porteria_por_app
+    })
     return when (v.estado) {
         "AUTORIZADA" -> getString(R.string.porteria_estado_autorizada, canal)
         "RECHAZADA" -> getString(R.string.porteria_estado_rechazada, canal)

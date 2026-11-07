@@ -1012,6 +1012,11 @@
     <string name="porteria_estado_expirada">Sin respuesta (expiró)</string>
     <string name="porteria_por_llamada">(por llamada)</string>
     <string name="porteria_por_app">(en la app)</string>
+    <string name="porteria_por_frecuente">(visitante frecuente)</string>
+    <string name="porteria_registrada_frecuente">Es un visitante frecuente: puede entrar. Se le avisó al apartamento.</string>
+    <string name="porteria_frecuentes">Visitantes frecuentes (entran sin preguntar)</string>
+    <string name="porteria_frecuente_elegir">Elegir a %1$s, visitante frecuente</string>
+    <string name="aviso_visita_frecuente">Entró un visitante frecuente</string>
     <string name="porteria_llamar">Llamar</string>
     <string name="porteria_respuesta_llamada">Respuesta por llamada</string>
     <string name="porteria_respuesta_llamada_titulo">¿Qué respondieron por teléfono sobre %1$s?</string>

@@ -231,6 +231,8 @@ data class HorarioSemanal(val semanal: List<DiaHorarioZona>)
 data class FranjaOcupadaDTO(val inicio: String, val fin: String, val estado: String, val propia: Boolean?)
 data class PagoDTO(val id: Long?, val saldoPendiente: Double, val estadoCuenta: String, val observaciones: String, val apartamentoId: Long)
 data class EstadoRequest(val estado: String)
+// P11: un visitante frecuente de un apartamento (la portería lo elige al registrar)
+data class FrecuenteDTO(val nombre: String, val documento: String?)
 // P11: aprobar o rechazar con un motivo opcional (reservas)
 data class EstadoConMotivo(val estado: String, val motivo: String? = null)
 // tipo: "RESERVA" o "VEHICULO"; fecha en formato ISO, hora de Colombia ("2026-10-20T20:15:00").

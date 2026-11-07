@@ -79,6 +79,14 @@ class PorteriaFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) { requireActivity().moveTaskToBack(true) }
         }
         binding.btnRegistrarVisita.setOnClickListener { registrar() }
+        // P11: al escribir torre y apto aparecen sus visitantes frecuentes (entran sin preguntar)
+        val alCambiarApto = object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) { buscarFrecuentes() }
+        }
+        binding.etTorreVisita.addTextChangedListener(alCambiarApto)
+        binding.etAptoVisita.addTextChangedListener(alCambiarApto)
         binding.btnFotoVisita.setOnClickListener { tomador.tomar() }
         binding.btnQuitarFotoVisita.setOnClickListener { foto = null; mostrarFoto() }
         binding.imgFotoVisita.setOnClickListener {
@@ -105,6 +113,43 @@ class PorteriaFragment : Fragment() {
                     delay(INTERVALO_MS)
                 }
             }
+        }
+    }
+
+    private var busquedaFrecuentes: kotlinx.coroutines.Job? = null
+
+    /** P11: espera a que se deje de escribir y trae los frecuentes de ese apartamento. */
+    private fun buscarFrecuentes() {
+        busquedaFrecuentes?.cancel()
+        val torre = binding.etTorreVisita.text?.toString()?.trim().orEmpty()
+        val apto = binding.etAptoVisita.text?.toString()?.trim().orEmpty()
+        if (torre.isEmpty() || apto.isEmpty()) { mostrarFrecuentes(emptyList()); return }
+        busquedaFrecuentes = viewLifecycleOwner.lifecycleScope.launch {
+            delay(400)
+            val lista = try {
+                RetrofitClient.comun.frecuentes(torre, apto).takeIf { it.isSuccessful }?.body().orEmpty()
+            } catch (_: Exception) {
+                emptyList()
+            }
+            if (_binding != null) mostrarFrecuentes(lista)
+        }
+    }
+
+    private fun mostrarFrecuentes(lista: List<com.example.conjuntoresidencial.model.FrecuenteDTO>) {
+        binding.tvFrecuentes.isVisible = lista.isNotEmpty()
+        binding.chipsFrecuentes.isVisible = lista.isNotEmpty()
+        binding.chipsFrecuentes.removeAllViews()
+        lista.forEach { f ->
+            binding.chipsFrecuentes.addView(com.google.android.material.chip.Chip(requireContext()).apply {
+                text = f.nombre
+                setChipIconResource(R.drawable.ic_people)
+                isChipIconVisible = true
+                contentDescription = getString(R.string.porteria_frecuente_elegir, f.nombre)
+                setOnClickListener {
+                    binding.etNombreVisita.setText(f.nombre)
+                    binding.etDocumentoVisita.setText(f.documento.orEmpty())
+                }
+            })
         }
     }
 
@@ -150,12 +195,13 @@ class PorteriaFragment : Fragment() {
                 ))
                 if (_binding == null) return@launch
                 if (r.isSuccessful) {
+                    val frecuente = r.body()?.canal == "FRECUENTE"
                     listOf(binding.etNombreVisita, binding.etDocumentoVisita, binding.etPlacaVisita, binding.etMotivoVisita)
                         .forEach { it.setText("") }
                     binding.grupoIngreso.check(R.id.btnIngresoPeatonal)
                     foto = null
                     mostrarFoto()
-                    aviso(R.string.porteria_registrada).show()
+                    aviso(if (frecuente) R.string.porteria_registrada_frecuente else R.string.porteria_registrada).show()
                     cargar()
                 } else {
                     aviso(RetrofitClient.mensajeDeError(r, getString(R.string.porteria_error))).show()
@@ -348,7 +394,11 @@ class PorteriaFragment : Fragment() {
         }
     }
 
-    private fun canal(v: VisitaDTO) = getString(if (v.canal == "LLAMADA") R.string.porteria_por_llamada else R.string.porteria_por_app)
+    private fun canal(v: VisitaDTO) = getString(when (v.canal) {
+        "LLAMADA" -> R.string.porteria_por_llamada
+        "FRECUENTE" -> R.string.porteria_por_frecuente
+        else -> R.string.porteria_por_app
+    })
 
     /** Abre el marcador con el teléfono del apartamento (no llama solo). */
     private fun llamar(telefono: String?) {

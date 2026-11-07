@@ -79,6 +79,11 @@ interface ApiComun {
     @POST("api/porteria/correspondencia/{id}/entrega")
     suspend fun entregarCorrespondencia(@Path("id") id: Long, @Body cuerpo: EntregaCorrespondencia): Response<CorrespondenciaDTO>
 
+    // P11 bloque 4: los visitantes frecuentes de un apartamento (entran sin preguntar)
+    @GET("api/porteria/frecuentes")
+    suspend fun frecuentes(@Query("torre") torre: String, @Query("apto") apto: String):
+        Response<List<com.example.conjuntoresidencial.model.FrecuenteDTO>>
+
     @GET("api/porteria/correspondencia/mia")
     suspend fun miCorrespondencia(): Response<List<CorrespondenciaDTO>>
 
