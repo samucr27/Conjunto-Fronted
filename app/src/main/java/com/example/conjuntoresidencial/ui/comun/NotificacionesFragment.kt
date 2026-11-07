@@ -125,9 +125,56 @@ class NotificacionesFragment : Fragment() {
             .show()
     }
 
-    /** Deslizar una tarjeta hacia cualquier lado la elimina (TalkBack: acción "Eliminar"). */
+    /**
+     * Deslizar una tarjeta de derecha a izquierda la elimina (TalkBack: acción "Eliminar").
+     * Mientras el dedo va más de lado que hacia abajo, la lista no deja que "jalar para
+     * actualizar" se lleve el gesto, y durante el deslizamiento ese jalar queda apagado.
+     */
     private fun deslizarParaEliminar(adaptador: NotificacionAdapter) {
-        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.START or ItemTouchHelper.END) {
+        binding.rvNotificaciones.addOnItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
+            private var x0 = 0f
+            private var y0 = 0f
+            private var deLado: Boolean? = null
+            private val umbral by lazy { android.view.ViewConfiguration.get(requireContext()).scaledTouchSlop / 2f }
+            private fun soltar() { deLado = null; _binding?.swipe?.isEnabled = true }
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: android.view.MotionEvent): Boolean {
+                when (e.actionMasked) {
+                    android.view.MotionEvent.ACTION_DOWN -> { x0 = e.x; y0 = e.y; deLado = null }
+                    android.view.MotionEvent.ACTION_MOVE -> {
+                        val dx = e.x - x0
+                        val dy = kotlin.math.abs(e.y - y0)
+                        // Se decide una vez, apenas el dedo se mueve: si va más de lado que
+                        // hacia abajo, "jalar para actualizar" queda apagado hasta soltar
+                        if (deLado == null && (kotlin.math.abs(dx) > umbral || dy > umbral)) {
+                            deLado = kotlin.math.abs(dx) > dy
+                            if (deLado == true) {
+                                // Si ya está cargando, apagarlo escondería el círculo de carga
+                                _binding?.swipe?.let { if (!it.isRefreshing) it.isEnabled = false }
+                                rv.parent.requestDisallowInterceptTouchEvent(true)
+                            }
+                        }
+                        // Hacia la derecha no hace nada: se queda con el gesto para que la
+                        // tarjeta no lo tome como un toque y abra la notificación
+                        if (deLado == true && dx > 0f) return true
+                    }
+                    android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL -> soltar()
+                }
+                return false
+            }
+            override fun onTouchEvent(rv: RecyclerView, e: android.view.MotionEvent) {
+                if (e.actionMasked == android.view.MotionEvent.ACTION_UP ||
+                    e.actionMasked == android.view.MotionEvent.ACTION_CANCEL) soltar()
+            }
+        })
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            override fun onSelectedChanged(vh: RecyclerView.ViewHolder?, estado: Int) {
+                super.onSelectedChanged(vh, estado)
+                if (estado == ItemTouchHelper.ACTION_STATE_SWIPE) _binding?.swipe?.let { if (!it.isRefreshing) it.isEnabled = false }
+            }
+            override fun clearView(rv: RecyclerView, vh: RecyclerView.ViewHolder) {
+                super.clearView(rv, vh)
+                _binding?.swipe?.isEnabled = true
+            }
             override fun onMove(rv: RecyclerView, vh: RecyclerView.ViewHolder, destino: RecyclerView.ViewHolder) = false
             // Los encabezados de día no se deslizan
             override fun getSwipeDirs(rv: RecyclerView, vh: RecyclerView.ViewHolder) =
