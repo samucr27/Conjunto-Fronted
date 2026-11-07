@@ -218,6 +218,32 @@
         android:name="com.example.conjuntoresidencial.ui.chat.ConversacionesFragment"
         tools:layout="@layout/fragment_equipo" />
 
+    <!-- P11 bloques 6 y 7: el contador (resumen, cartera por apartamento, facturación) y sus solicitudes -->
+    <fragment
+        android:id="@+id/panelContadorFragment"
+        android:name="com.example.conjuntoresidencial.ui.contabilidad.PanelContadorFragment"
+        tools:layout="@layout/fragment_pantalla_contenido" />
+    <fragment
+        android:id="@+id/carteraContadorFragment"
+        android:name="com.example.conjuntoresidencial.ui.contabilidad.CarteraContadorFragment"
+        tools:layout="@layout/fragment_pantalla_contenido" />
+    <fragment
+        android:id="@+id/carteraApartamentoFragment"
+        android:name="com.example.conjuntoresidencial.ui.contabilidad.CarteraApartamentoFragment"
+        tools:layout="@layout/fragment_pantalla_contenido" />
+    <fragment
+        android:id="@+id/facturacionContadorFragment"
+        android:name="com.example.conjuntoresidencial.ui.contabilidad.FacturacionContadorFragment"
+        tools:layout="@layout/fragment_pantalla_contenido" />
+    <fragment
+        android:id="@+id/solicitudesContablesFragment"
+        android:name="com.example.conjuntoresidencial.ui.contabilidad.SolicitudesContablesFragment"
+        tools:layout="@layout/fragment_pantalla_contenido" />
+    <fragment
+        android:id="@+id/solicitudDetalleFragment"
+        android:name="com.example.conjuntoresidencial.ui.contabilidad.SolicitudDetalleFragment"
+        tools:layout="@layout/fragment_pantalla_contenido" />
+
     <!-- P5: cartera de la administración (estadísticas y solicitudes del contador) -->
     <fragment
         android:id="@+id/carteraResumenFragment"

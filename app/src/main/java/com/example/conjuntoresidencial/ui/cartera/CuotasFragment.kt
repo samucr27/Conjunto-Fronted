@@ -120,6 +120,11 @@ class CuotasFragment : Fragment() {
     }
 
     private fun generar() {
+        // P11: el contador factura en su propia pantalla (vista previa, coeficiente, aprobación)
+        if (com.example.conjuntoresidencial.util.SessionManager(requireContext()).esContador()) {
+            androidx.navigation.fragment.NavHostFragment.findNavController(this).navigate(R.id.facturacionContadorFragment)
+            return
+        }
         val vista = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_generar_cuota, null)
         val periodos = listOf(0, 1, -1).map { Cuotas.periodo(it) }
         val mes = vista.findViewById<AutoCompleteTextView>(R.id.etMesCuota).apply { comoLista(periodos.map(Cuotas::nombreMes)) }

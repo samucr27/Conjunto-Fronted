@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P11 bloques 6 y 7: la cartera del contador, la facturación y las solicitudes al administrador -->
+<resources>
+    <string name="etiqueta_libre">%1$s</string>
+    <string name="aviso_solicitud_aprobada">Solicitud aprobada</string>
+    <string name="aviso_solicitud_devuelta">Solicitud devuelta para corregir</string>
+
+    <!-- Herramientas -->
+    <string name="menu_panel_contador">Resumen de cartera</string>
+    <string name="menu_panel_contador_sub">Recaudo, mora y tus solicitudes</string>
+    <string name="menu_solicitudes_contador">Mis solicitudes</string>
+    <string name="menu_solicitudes_contador_sub">Lo que mandaste al administrador</string>
+    <string name="menu_aprobaciones_contador">Aprobaciones del contador</string>
+    <string name="menu_aprobaciones_contador_sub">Historial de lo aprobado y devuelto</string>
+
+    <!-- Tipos, estados y pasos -->
+    <string name="cont_tipo_facturacion">Facturación del mes</string>
+    <string name="cont_tipo_cuota_nueva">Cuota nueva</string>
+    <string name="cont_tipo_cuota_cambio">Cambio de cuota</string>
+    <string name="cont_tipo_cuota_anular">Anular cuota</string>
+    <string name="cont_tipo_pago">Pago en la oficina</string>
+    <string name="cont_estado_aprobada">Aprobada</string>
+    <string name="cont_estado_devuelta">Devuelta</string>
+    <string name="cont_estado_edicion">Edición por aprobar</string>
+    <string name="cont_estado_pendiente">Por aprobar</string>
+    <string name="cont_paso_enviada">Enviada</string>
+    <string name="cont_paso_corregida">Corregida y reenviada</string>
+    <string name="cont_paso_editada">Editada después de aprobada</string>
+    <string name="cont_paso_aprobada">Aprobada</string>
+    <string name="cont_paso_devuelta">Devuelta</string>
+    <string name="cont_por">Por %1$s · %2$s</string>
+    <string name="cont_version">versión %1$d</string>
+    <string name="cont_motivo_linea">Motivo: %1$s</string>
+
+    <!-- Formularios -->
+    <string name="cont_aplicado">Listo: quedó aplicado</string>
+    <string name="cont_enviado">Enviado al administrador para su aprobación</string>
+    <string name="cont_error_enviar">No se pudo enviar</string>
+    <string name="cont_error_cargar">No se pudo cargar</string>
+    <string name="cont_falta_valor">Escribe el valor</string>
+    <string name="cont_valor_invalido">Escribe un valor mayor que cero</string>
+    <string name="cont_falta_fecha">Elige la fecha</string>
+    <string name="cont_fecha_invalida">Fecha no válida (AAAA-MM-DD)</string>
+    <string name="cont_mes_invalido">Escribe el mes como 2026-12</string>
+    <string name="cont_fecha_formato">AAAA-MM-DD, o toca el calendario</string>
+    <string name="cont_elegir_fecha">Elegir la fecha</string>
+    <string name="cont_concepto">Concepto</string>
+    <string name="cont_concepto_ayuda">Por ejemplo: Multa, Parqueadero, Cuota extraordinaria</string>
+    <string name="cont_concepto_fact_ayuda">Administración, o una cuota extraordinaria</string>
+    <string name="cont_concepto_admin">Administración</string>
+    <string name="cont_mes">Mes</string>
+    <string name="cont_mes_formato">Año y mes: 2026-12</string>
+    <string name="cont_valor">Valor (pesos)</string>
+    <string name="cont_fecha_limite">Fecha límite de pago</string>
+    <string name="cont_descripcion">Descripción (opcional)</string>
+    <string name="cont_descripcion_ayuda">La ve el residente en su cuota</string>
+    <string name="cont_nota_admin">Nota para el administrador (opcional)</string>
+    <string name="cont_nota_ayuda">Explica el porqué: la verá al revisarla</string>
+    <string name="cont_nueva_cuota">Nueva cuota</string>
+    <string name="cont_corregir">Corregir</string>
+    <string name="cont_falta_concepto">Escribe el concepto</string>
+    <string name="cont_cuota_actual">%1$s · %2$s · vence el %3$s</string>
+    <string name="cont_valor_nuevo">Valor nuevo</string>
+    <string name="cont_vacio_igual">Déjalo vacío para no cambiarlo</string>
+    <string name="cont_fecha_limite_nueva">Fecha límite nueva</string>
+    <string name="cont_concepto_nuevo">Concepto nuevo</string>
+    <string name="cont_modificar_cuota">Modificar la cuota</string>
+    <string name="cont_nada_que_cambiar">Cambia al menos un dato</string>
+    <string name="cont_motivo_anular">Por qué se anula</string>
+    <string name="cont_anular_cuota">Anular la cuota</string>
+    <string name="cont_falta_motivo">Escribe el motivo</string>
+    <string-array name="cont_medios_pago">
+        <item>Efectivo</item>
+        <item>Transferencia</item>
+        <item>Consignación</item>
+        <item>Cheque</item>
+        <item>Otro</item>
+    </string-array>
+    <string name="cont_medio">Medio de pago</string>
+    <string name="cont_fecha_pago">Fecha del pago</string>
+    <string name="cont_referencia">Referencia o soporte (opcional)</string>
+    <string name="cont_referencia_ayuda">Número de la transferencia, del recibo de caja…</string>
+    <string name="cont_nota_pago">Nota (opcional)</string>
+    <string name="cont_registrar_pago">Registrar un pago</string>
+    <string name="cont_enviar_aprobacion">Enviar a aprobación</string>
+    <string name="cont_reenviar_aprobacion">Reenviar a aprobación</string>
+
+    <!-- Solicitudes -->
+    <string name="cont_mis_solicitudes">Mis solicitudes</string>
+    <string name="cont_mis_solicitudes_sub">Lo que mandaste al administrador</string>
+    <string name="cont_aprobaciones">Aprobaciones del contador</string>
+    <string name="cont_aprobaciones_sub">Lo que manda el contador y lo que ya revisaste</string>
+    <plurals name="cont_esperando">
+        <item quantity="one">%d esperando aprobación</item>
+        <item quantity="other">%d esperando aprobación</item>
+    </plurals>
+    <string name="cont_filtro_pendientes">Por aprobar (%1$d)</string>
+    <string name="cont_filtro_devueltas">Devueltas (%1$d)</string>
+    <string name="cont_filtro_aprobadas">Aprobadas</string>
+    <string name="cont_filtro_todas">Todas</string>
+    <string name="cont_sin_solicitudes">No hay solicitudes aquí.</string>
+
+    <!-- Detalle -->
+    <string name="cont_detalle_titulo">Solicitud</string>
+    <string name="cont_detalle_sub">Todo lo que pide, su vista previa y su historial</string>
+    <string name="cont_es_edicion">Es una edición de algo ya aprobado: mientras tanto sigue valiendo lo aprobado.</string>
+    <string name="cont_revisada_por">Revisada por %1$s · %2$s</string>
+    <string name="cont_lo_que_pide">Lo que pide</string>
+    <string name="cont_lo_que_pide_ahora">Lo que pide ahora</string>
+    <string name="cont_nota_del_contador">Nota del contador</string>
+    <string name="cont_lo_aprobado_antes">Lo aprobado antes</string>
+    <string name="cont_version_aprobada">Versión aprobada</string>
+    <string name="cont_vista_previa">Vista previa</string>
+    <string name="cont_aptos">Apartamentos</string>
+    <string name="cont_total">Total</string>
+    <string name="cont_rango">Desde %1$s hasta %2$s por apartamento</string>
+    <string name="cont_por_apartamento">Por apartamento</string>
+    <string name="cont_torre_apto">Torre %1$s · Apto %2$s</string>
+    <string name="cont_y_mas">Y %1$d más</string>
+    <string name="cont_tu_decision">Tu decisión</string>
+    <string name="cont_aprobar">Aprobar</string>
+    <string name="cont_aprobar_titulo">¿Aprobar esta solicitud?</string>
+    <string name="cont_aprobar_mensaje">Se aplica de una vez: se crean o cambian las cuotas y se avisa a los apartamentos.</string>
+    <string name="cont_devolver">Devolver al contador</string>
+    <string name="cont_devolver_titulo">Devolver para corregir</string>
+    <string name="cont_motivo_devolver">Qué debe corregir</string>
+    <string name="cont_motivo_devolver_ayuda">El contador lo verá y podrá corregirla y reenviarla</string>
+    <string name="cont_que_hacer">Qué puedes hacer</string>
+    <string name="cont_editar_aprobada">Editar (vuelve a aprobación)</string>
+    <string name="cont_corregir_reenviar">Corregir y reenviar</string>
+    <string name="cont_editar_aprobada_ayuda">Si hubo un error en algo aprobado, edítalo: el cambio le llega al administrador y se aplica cuando lo apruebe. Las cuotas ya pagadas no cambian.</string>
+    <string name="cont_historial">Historial</string>
+    <string name="cont_aprobada_ok">Aprobada y aplicada</string>
+    <string name="cont_devuelta_ok">Devuelta al contador con el motivo</string>
+
+    <!-- Cartera -->
+    <string name="cont_cartera_titulo">Cartera por apartamento</string>
+    <string name="cont_cartera_sub">Primero la torre y después el apartamento</string>
+    <string name="cont_buscar_apto">Apartamento</string>
+    <string name="cont_solo_mora">Solo en mora</string>
+    <string name="cont_cartera_info">%1$d apartamentos · %2$d en mora · %3$s por cobrar</string>
+    <string name="cont_sin_aptos">No hay apartamentos con ese filtro.</string>
+    <string name="cont_en_mora">En mora</string>
+    <string name="cont_por_pagar">Por pagar</string>
+    <string name="cont_al_dia">Al día</string>
+    <string name="cont_coeficiente_linea">Coeficiente %1$s</string>
+    <string name="cont_saldo_linea">Debe %1$s · %2$d por pagar · %3$d vencidas</string>
+    <string name="cont_apto_titulo">Apartamento</string>
+    <string name="cont_apto_sub">Sus cuotas, pagos y solicitudes</string>
+    <string name="cont_saldo">Saldo</string>
+    <string name="cont_pendientes">Por pagar</string>
+    <string name="cont_vencidas">Vencidas</string>
+    <string name="cont_coeficiente">Coeficiente de copropiedad</string>
+    <string name="cont_sin_coeficiente">Sin definir</string>
+    <string name="cont_cambiar_coeficiente">Cambiar el coeficiente</string>
+    <string name="cont_coeficiente_ayuda">Por ejemplo 0,8 (vacío lo quita). Se usa al facturar por coeficiente.</string>
+    <string name="cont_coeficiente_invalido">Escribe un número entre 0 y 100</string>
+    <string name="cont_coeficiente_guardado">Coeficiente guardado</string>
+    <string name="cont_cuotas">Cuotas</string>
+    <string name="cont_sin_cuotas">Este apartamento no tiene cuotas.</string>
+    <string name="cont_pagada">Pagada</string>
+    <string name="cont_pago_por_aprobar">Pago por aprobar</string>
+    <string name="cont_en_revision">Comprobante en revisión</string>
+    <string name="cont_vencida">Vencida</string>
+    <string name="cont_ref_linea">Referencia de pago: %1$s</string>
+    <string name="cont_pagada_con">Pagada por %1$s %2$s</string>
+    <string name="cont_cuota_titulo">%1$s · %2$s</string>
+    <string name="cont_cuota_detalle">%1$s · vence el %2$s</string>
+    <string name="cont_solicitudes_apto">Solicitudes de este apartamento</string>
+
+    <!-- Facturación -->
+    <string name="cont_facturar_titulo">Facturar un mes</string>
+    <string name="cont_facturar_sub">Revisa la vista previa y mándala al administrador</string>
+    <string name="cont_que_se_cobra">Qué se cobra</string>
+    <string name="cont_como_se_cobra">Cómo se cobra</string>
+    <string name="cont_modo_fijo">Valor fijo</string>
+    <string name="cont_modo_coeficiente">Por coeficiente</string>
+    <string name="cont_valor_por_apto">Valor por apartamento (pesos)</string>
+    <string name="cont_total_repartir">Total a repartir (pesos)</string>
+    <string name="cont_total_ayuda">Se reparte según el coeficiente de cada apartamento</string>
+    <string name="cont_plazo">Plazo y mora</string>
+    <string name="cont_interes">Interés de mora (% mensual, opcional)</string>
+    <string name="cont_interes_ayuda">Hasta 10 %. Queda en la factura de cada apartamento</string>
+    <string name="cont_interes_invalido">Escribe un porcentaje entre 0 y 10</string>
+    <string name="cont_a_quien">A quién</string>
+    <string name="cont_todos_incluidos">Todos los apartamentos (toca para excluir)</string>
+    <plurals name="cont_excluidos">
+        <item quantity="one">%d apartamento excluido (toca para cambiar)</item>
+        <item quantity="other">%d apartamentos excluidos (toca para cambiar)</item>
+    </plurals>
+    <string name="cont_excluir_titulo">Apartamentos que no se cobran</string>
+    <string name="cont_para_el_admin">Para el administrador</string>
+    <string name="cont_ver_vista_previa">Ver la vista previa</string>
+    <string name="cont_ver_cuotas_mes">Ver las cuotas de cada mes</string>
+    <plurals name="cont_aptos_conjunto">
+        <item quantity="one">%d apartamento en el conjunto</item>
+        <item quantity="other">%d apartamentos en el conjunto</item>
+    </plurals>
+    <string name="cont_corrigiendo_version">Corrigiendo la versión %1$d</string>
+
+    <!-- Panel -->
+    <string name="cont_panel_titulo">Resumen de cartera</string>
+    <string name="cont_panel_sub">Cómo va el recaudo y qué te toca revisar</string>
+    <string name="cont_recaudo_mes">%1$s: %2$d %% recaudado</string>
+    <plurals name="cont_devueltas">
+        <item quantity="one">%d solicitud devuelta</item>
+        <item quantity="other">%d solicitudes devueltas</item>
+    </plurals>
+    <string name="cont_devueltas_ayuda">El administrador te pidió corregir algo. Toca para verlas.</string>
+    <string name="cont_este_mes">%1$s</string>
+    <string name="cont_facturado">Facturado</string>
+    <string name="cont_recaudado">Recaudado</string>
+    <string name="cont_por_cobrar">Por cobrar</string>
+    <string name="cont_recaudo">Recaudo</string>
+    <string name="cont_cartera_total">Cartera total</string>
+    <string name="cont_seis_meses">Últimos seis meses</string>
+    <string name="cont_recaudado_vs_facturado">Recaudado de lo facturado</string>
+    <string name="cont_recaudo_linea">%1$s de %2$s (%3$d %%)</string>
+    <string name="cont_sin_facturar">Sin facturar</string>
+    <string name="cont_acciones">Acciones</string>
+    <string name="cont_mas_deben">Los que más deben</string>
+</resources>

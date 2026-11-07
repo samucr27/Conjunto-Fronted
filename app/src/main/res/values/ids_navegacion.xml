@@ -24,6 +24,9 @@
     <item name="ayudaFragment" type="id" />
     <item name="carteraAdminFragment" type="id" />
     <item name="carteraResumenFragment" type="id" />
+    <item name="solicitudDetalleFragment" type="id" />
+    <item name="facturacionContadorFragment" type="id" />
+    <item name="solicitudesContablesFragment" type="id" />
     <item name="chatFragment" type="id" />
     <item name="controlObrasFragment" type="id" />
     <item name="conversacionesFragment" type="id" />

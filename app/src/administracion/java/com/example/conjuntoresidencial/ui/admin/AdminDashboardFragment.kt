@@ -79,7 +79,8 @@ class AdminDashboardFragment : Fragment() {
         // P5: la administración ve en la cartera estadísticas y lo que mandó el contador; el contador, cada apartamento
         binding.cardCarteraAdmin.configurar(R.drawable.ic_wallet, R.string.menu_cartera,
             if (contador) R.string.menu_cartera_sub else R.string.cartera_resumen_tarjeta_sub) {
-            if (contador) nav.navigate(R.id.action_adminDashboardFragment_to_carteraAdminFragment)
+            // P11: el contador ve la cartera por torre y apartamento
+            if (contador) nav.navigate(R.id.carteraContadorFragment)
             else nav.navigate(R.id.carteraResumenFragment)
         }
         binding.cardParqueaderos.configurar(R.drawable.ic_car, R.string.parqueaderos_titulo, R.string.parqueaderos_tarjeta_sub) {
@@ -88,8 +89,17 @@ class AdminDashboardFragment : Fragment() {
         binding.cardVehiculosAdmin.configurar(R.drawable.ic_car, R.string.menu_vehiculos_admin, R.string.menu_vehiculos_admin_sub) {
             nav.navigate(R.id.vehiculosAdminFragment)
         }
+        // P11: la facturación del contador tiene su propia pantalla (con vista previa y aprobación)
         binding.cardFacturacion.configurar(R.drawable.ic_receipt, R.string.menu_facturacion, R.string.menu_facturacion_sub) {
-            nav.navigate(R.id.cuotasFragment)
+            nav.navigate(R.id.facturacionContadorFragment)
+        }
+        binding.cardPanelContador.configurar(R.drawable.ic_wallet, R.string.menu_panel_contador, R.string.menu_panel_contador_sub) {
+            nav.navigate(R.id.panelContadorFragment)
+        }
+        binding.cardSolicitudesContables.configurar(R.drawable.ic_check_circle,
+            if (contador) R.string.menu_solicitudes_contador else R.string.menu_aprobaciones_contador,
+            if (contador) R.string.menu_solicitudes_contador_sub else R.string.menu_aprobaciones_contador_sub) {
+            nav.navigate(R.id.solicitudesContablesFragment)
         }
         binding.cardMensajes.configurar(R.drawable.ic_chat, R.string.chat_mensajes, R.string.chat_mensajes_sub) {
             nav.navigate(R.id.conversacionesFragment)
@@ -116,8 +126,9 @@ class AdminDashboardFragment : Fragment() {
                 binding.cardPersonalObra, binding.cardVehiculosAdmin, binding.cardParqueaderos, binding.cardResidentesPendientes, binding.cardEquipo, binding.cardMensajes)
                 .forEach { quitar(it.root) }
         } else {
-            // La facturación es del contador; el equipo, solo del administrador principal
+            // La facturación y el resumen son del contador; el equipo, solo del administrador principal
             quitar(binding.cardFacturacion.root)
+            quitar(binding.cardPanelContador.root)
             if (!sesion.esPrincipal()) quitar(binding.cardEquipo.root)
         }
         binding.cardResidentesPendientes.configurar(R.drawable.ic_people, R.string.menu_residentes_pendientes,

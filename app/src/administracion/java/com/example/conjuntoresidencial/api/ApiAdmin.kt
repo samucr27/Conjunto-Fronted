@@ -50,6 +50,37 @@ interface ApiAdmin : ApiComun {
     @PUT("api/cartera/solicitudes/{id}")
     suspend fun revisarSolicitudContable(@Path("id") id: Long, @Body revision: RevisionSolicitud): Response<SolicitudContable>
 
+    // P11 bloques 6 y 7: la cartera del contador y sus solicitudes con versiones e historial
+    @GET("api/cartera/panel")
+    suspend fun panelContador(): Response<PanelContadorDTO>
+
+    @GET("api/cartera/apartamentos")
+    suspend fun carteraPorApartamento(@Query("torre") torre: String?): Response<List<AptoCarteraDTO>>
+
+    @GET("api/cartera/apartamentos/{id}")
+    suspend fun carteraDeApartamento(@Path("id") id: Long): Response<CarteraApartamentoDTO>
+
+    @PUT("api/cartera/apartamentos/{id}/coeficiente")
+    suspend fun ponerCoeficiente(@Path("id") id: Long, @Body cuerpo: CoeficienteDTO): Response<AptoCarteraDTO>
+
+    @POST("api/cartera/facturacion/vista-previa")
+    suspend fun vistaPreviaFacturacion(@Body borrador: FacturacionBorrador): Response<VistaPreviaDTO>
+
+    @GET("api/cartera/solicitudes")
+    suspend fun solicitudesContables(@Query("estado") estado: String?): Response<List<SolicitudContableDTO>>
+
+    @GET("api/cartera/solicitudes/{id}")
+    suspend fun detalleSolicitud(@Path("id") id: Long): Response<DetalleSolicitudDTO>
+
+    @POST("api/cartera/solicitudes")
+    suspend fun enviarSolicitud(@Body envio: EnvioSolicitud): Response<SolicitudContableDTO>
+
+    @PUT("api/cartera/solicitudes/{id}/propuesta")
+    suspend fun proponerSolicitud(@Path("id") id: Long, @Body propuesta: PropuestaSolicitud): Response<SolicitudContableDTO>
+
+    @PUT("api/cartera/solicitudes/{id}")
+    suspend fun revisarSolicitud(@Path("id") id: Long, @Body revision: RevisionSolicitud): Response<SolicitudContableDTO>
+
     @GET("api/administradores/cupos")
     suspend fun getCuposEquipo(): Response<List<CupoEquipo>>
 

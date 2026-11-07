@@ -53,6 +53,8 @@ data class TipoAviso(val categoria: CategoriaAviso, @StringRes val titulo: Int, 
             "CUOTA_RECHAZADA" to R.string.aviso_cuota_rechazada,
             "COMPROBANTE" to R.string.aviso_comprobante,
             "SOLICITUD_CONTABLE" to R.string.aviso_solicitud_contable,
+            "SOLICITUD_CONTABLE_APROBADA" to R.string.aviso_solicitud_aprobada,
+            "SOLICITUD_CONTABLE_RECHAZADA" to R.string.aviso_solicitud_devuelta,
             "PUBLICACION" to R.string.aviso_publicacion,
             "VISITA_PORTERIA" to R.string.aviso_visita,
             "VISITA_FRECUENTE" to R.string.aviso_visita_frecuente,
@@ -74,7 +76,7 @@ data class TipoAviso(val categoria: CategoriaAviso, @StringRes val titulo: Int, 
                 t.startsWith("RESERVA") -> CategoriaAviso.RESERVAS
                 t.startsWith("VEHICULO") -> CategoriaAviso.VEHICULOS
                 t.startsWith("RESIDENTE") || t == "REGISTRO" || t == "SOLICITUD_ARRENDATARIO" -> CategoriaAviso.RESIDENTES
-                t.startsWith("CUOTA") || t == "COMPROBANTE" || t == "SOLICITUD_CONTABLE" -> CategoriaAviso.PAGOS
+                t.startsWith("CUOTA") || t == "COMPROBANTE" || t.startsWith("SOLICITUD_CONTABLE") -> CategoriaAviso.PAGOS
                 t == "PUBLICACION" -> CategoriaAviso.PUBLICACIONES
                 t.startsWith("VISITA") -> CategoriaAviso.PORTERIA
                 t == "CHAT" || t == "CHAT_VISITA" -> CategoriaAviso.CHAT

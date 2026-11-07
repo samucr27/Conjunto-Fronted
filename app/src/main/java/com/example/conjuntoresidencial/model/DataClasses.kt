@@ -115,7 +115,10 @@ data class CuotaDTO(
     val tieneComprobante: Boolean? = null, val comprobanteTipo: String? = null, val comprobanteSubidoEn: String? = null,
     val motivoRechazo: String? = null, val pagadaEn: String? = null,
     // P5: el contador registró el pago sin comprobante y espera al administrador
-    val pagoPorAprobar: Boolean? = null
+    val pagoPorAprobar: Boolean? = null,
+    // P11: concepto, referencia de pago (Wompi) y, si se pagó en la oficina, cómo
+    val concepto: String? = null, val descripcion: String? = null, val referenciaPago: String? = null,
+    val medioPago: String? = null, val pagoReferencia: String? = null, val pagoNota: String? = null
 )
 data class GenerarCuotasRequest(val periodo: String, val valor: Double, val fechaLimite: String?)
 // enAprobacion (P5): la mandó el contador y espera al administrador (creadas = 0)
@@ -124,7 +127,9 @@ data class CuotasGeneradas(val periodo: String, val creadas: Int, val existentes
 data class SolicitudContable(
     val id: Long, val tipo: String, val estado: String, val periodo: String?, val valor: Double?, val fechaLimite: String?,
     val cuotaId: Long?, val torre: String?, val apto: String?, val solicitadaPor: String, val creadaEn: String,
-    val revisadaEn: String?, val motivoRechazo: String?
+    val revisadaEn: String?, val motivoRechazo: String?,
+    // P11: el texto corto de lo que pide (sirve para todos los tipos)
+    val resumen: String? = null
 )
 data class RevisionSolicitud(val aprobada: Boolean, val motivo: String? = null)
 // P5: resumen de la cartera de un mes

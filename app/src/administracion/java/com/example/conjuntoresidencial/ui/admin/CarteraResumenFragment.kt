@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.lifecycle.lifecycleScope
 import com.example.conjuntoresidencial.R
 import com.example.conjuntoresidencial.api.RetrofitClient
@@ -122,13 +123,16 @@ class CarteraResumenFragment : Fragment() {
         }.resourceId
         lista.forEach { s ->
             val fila = ItemPersonalFilaBinding.inflate(layoutInflater, binding.contenedorSolicitudes, true)
-            fila.tvNombreFila.text = titulo(s)
+            fila.tvNombreFila.text = s.resumen ?: titulo(s)
             fila.tvCedulaFila.text = listOf(detalle(s), getString(R.string.cartera_solicitud_por, s.solicitadaPor)).joinToString("\n")
             fila.tvArlFila.mostrarEstado(EstadoVisual(R.string.estado_pendiente_aprobacion, TonoEstado.ADVERTENCIA))
             fila.root.setBackgroundResource(fondo)
             fila.root.isClickable = true
             fila.root.isFocusable = true
-            fila.root.setOnClickListener { revisar(s) }
+            // P11: abre todo el detalle (lo que pide, vista previa, historial) para aprobarla o devolverla
+            fila.root.setOnClickListener {
+                findNavController().navigate(R.id.solicitudDetalleFragment, androidx.core.os.bundleOf("solicitudId" to s.id))
+            }
         }
         binding.tvSinSolicitudes.isVisible = lista.isEmpty()
         binding.encabezado.ponerInfo(

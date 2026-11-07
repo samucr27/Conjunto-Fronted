@@ -37,7 +37,10 @@ data class DestinoNotificacion(
             // P9 bloque 3: paquete, carta o recibo en la portería, o su entrega → Mi correspondencia
             tipo.startsWith(TIPO_CORRESPONDENCIA) || tipo == TIPO_RECIBO -> nav.navigate(R.id.miCorrespondenciaFragment)
             // P5: lo que mandó el contador → la cartera de la administración
-            tipo == TIPO_SOLICITUD_CONTABLE -> nav.navigate(R.id.carteraResumenFragment)
+            // P11: la solicitud del contador (y la respuesta del administrador) abre su detalle
+            tipo.startsWith(TIPO_SOLICITUD_CONTABLE) -> if (referenciaId != null)
+                nav.navigate(R.id.solicitudDetalleFragment, bundleOf("solicitudId" to referenciaId))
+            else nav.navigate(R.id.solicitudesContablesFragment)
             // Nueva publicación → el feed de Inicio
             tipo == TIPO_PUBLICACION || tipo == TIPO_VISITA || tipo == TIPO_VISITA_FRECUENTE -> nav.navigate(R.id.inicioFragment)
             // Comprobante por revisar → Facturación; cuota nueva o revisada → Mi cartera
