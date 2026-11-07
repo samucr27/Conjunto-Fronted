@@ -30,8 +30,12 @@ data class Apartamento(
 // PATCH /api/apartamentos/{id}/ocupacion-y-banderas: lo que no se envía no cambia
 data class OcupacionYBanderas(
     val tipoOcupacion: String? = null, val arrendatarioVeCartera: Boolean? = null,
-    val arrendatarioPuedePagar: Boolean? = null, val arrendatarioVeObras: Boolean? = null
+    val arrendatarioPuedePagar: Boolean? = null, val arrendatarioVeObras: Boolean? = null,
+    // P11: al dejar de estar arrendado, DESACTIVAR o ELIMINAR al arrendatario (null = no tocarlo)
+    val arrendatario: String? = null
 )
+// P11: visitante frecuente de un apartamento (lo ve la administración en el directorio)
+data class VisitanteAptoDTO(val id: Long?, val nombreCompleto: String, val identificacion: String?, val telefono: String?)
 data class CitofonosRequest(val citofono1: String?, val citofono2: String?)
 // Feed de publicaciones (P5): cada url es un enlace firmado que vence en una hora
 data class AdjuntoPublicacion(val id: Long, val tipo: String, val nombre: String, val mime: String, val tamano: Long, val url: String?)

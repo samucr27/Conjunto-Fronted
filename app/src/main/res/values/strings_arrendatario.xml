@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P11 bloque 9: directorio de la administración, arrendatario y propietario por separado -->
+<resources>
+    <string name="arr_ver_propietario">Ver propietario</string>
+    <string name="arr_ver_arrendatario">Ver arrendatario</string>
+    <string name="arr_vive_arrendatario">Vive (arrendatario)</string>
+    <string name="arr_vive_propietario">Vive (propietario)</string>
+    <string name="arr_propietario">Propietario</string>
+    <string name="arr_sin_registrar">Sin registrar</string>
+    <string name="arr_titulo_arrendatario">Hogar del arrendatario</string>
+    <string name="arr_titulo_propietario">Propietario y su familia</string>
+    <string name="arr_aviso_arrendatario">Quien vive aquí. Los datos del propietario están en "Ver propietario".</string>
+    <string name="arr_aviso_propietario">El propietario no vive aquí mientras esté arrendado: no recibe los avisos del hogar.</string>
+    <string name="arr_nombre">Nombre</string>
+    <string name="arr_documento">Documento</string>
+    <string name="arr_telefono">Teléfono</string>
+    <string name="arr_correo">Correo</string>
+    <string name="arr_cuenta">Cuenta</string>
+    <string name="arr_cuenta_con_acceso">Con acceso a la app</string>
+    <string name="arr_cuenta_sin_acceso">Sin acceso a la app</string>
+    <string name="arr_cuenta_pendiente">Esperando aprobación</string>
+    <string name="arr_frecuentes">Visitantes frecuentes</string>
+    <string name="arr_frecuentes_arrendatario">Visitantes frecuentes del arrendatario</string>
+    <string name="arr_sin_frecuentes">No tiene visitantes frecuentes.</string>
+    <string name="arr_cc">CC %1$s</string>
+    <string name="arr_que_hacer_titulo">¿Qué pasa con %1$s?</string>
+    <string name="arr_desactivar_opcion">Desactivarlo (no entra a la app; se puede volver a activar)</string>
+    <string name="arr_eliminar_opcion">Eliminarlo con las personas de su hogar</string>
+    <string name="arr_eliminar_titulo">¿Eliminar a %1$s?</string>
+    <string name="arr_eliminar_mensaje">Se borran el arrendatario y las personas de su hogar, y se cierran sus sesiones. No se puede deshacer.</string>
+    <string name="arr_inactivo">Arrendatario desactivado: %1$s</string>
+    <string name="arr_activar">Activar</string>
+    <string name="arr_activar_titulo">¿Activar otra vez a %1$s?</string>
+    <string name="arr_activar_mensaje">Vuelve a entrar a la app con su contraseña y el apartamento queda como arrendado.</string>
+    <string name="arr_activado">Arrendatario activado</string>
+</resources>

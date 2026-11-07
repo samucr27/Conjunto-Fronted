@@ -1,6 +1,7 @@
 package com.example.conjuntoresidencial.ui.admin
 
 import com.example.conjuntoresidencial.ui.comun.ResidenteAdapter
+import com.example.conjuntoresidencial.ui.comun.Bloques
 
 import com.example.conjuntoresidencial.model.AsignacionParqueadero
 import com.example.conjuntoresidencial.model.CupoApartamentoRequest
@@ -80,6 +81,12 @@ class DetalleApartamentoFragment : Fragment() {
     private var totalResidentes = 0
     private var totalVehiculos = 0
 
+    // P11: todos los residentes del apartamento; si está arrendado se ve el hogar del arrendatario
+    // y, con "Ver propietario", el del propietario
+    private var todos: List<ResidenteDTO> = emptyList()
+    private var verPropietario = false
+    private var frecuentes: List<com.example.conjuntoresidencial.model.VisitanteAptoDTO> = emptyList()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDetalleApartamentoBinding.inflate(inflater, container, false)
         return binding.root
@@ -137,7 +144,12 @@ class DetalleApartamentoFragment : Fragment() {
                     val v = async { RetrofitClient.instance.getVehiculosPorApartamento(aptoId) }
                     // P5: sus obras en curso (si falla, la tarjeta queda vacía)
                     val o = async { runCatching { RetrofitClient.instance.getObrasPorApartamento(aptoId) }.getOrNull() }
-                    Triple(a.await(), r.await(), v.await()).also { obras = o.await()?.body().orEmpty() }
+                    // P11: sus visitantes frecuentes (si falla, la tarjeta queda vacía)
+                    val f = async { runCatching { RetrofitClient.instance.getVisitantesApto(aptoId) }.getOrNull() }
+                    Triple(a.await(), r.await(), v.await()).also {
+                        obras = o.await()?.body().orEmpty()
+                        frecuentes = f.await()?.body().orEmpty()
+                    }
                 }
                 val datos = apto.body()
                 if (!apto.isSuccessful || datos == null) {
@@ -151,6 +163,7 @@ class DetalleApartamentoFragment : Fragment() {
                 mostrarOcupacion(datos)
                 mostrarResidentes(if (residentes.isSuccessful) residentes.body().orEmpty() else emptyList())
                 mostrarVehiculos(if (vehiculos.isSuccessful) vehiculos.body().orEmpty() else emptyList())
+                mostrarFrecuentes()
                 mostrarObras()
                 binding.estado.mostrarContenido()
             } catch (e: Exception) {
@@ -165,9 +178,90 @@ class DetalleApartamentoFragment : Fragment() {
             ?: getString(R.string.ocupacion_propietario)
         binding.btnOcupacion.setOnClickListener {
             pedirOcupacion(a) { cambio ->
-                ejecutarAccion(getString(R.string.ocupacion_guardada),
-                    { RetrofitClient.instance.cambiarOcupacionYBanderas(a.id, cambio) }) { cargarTodo() }
+                val inquilino = arrendatariosActivos().let { l -> l.firstOrNull { it.titular == true } ?: l.firstOrNull() }
+                if (inquilino != null && cambio.tipoOcupacion != "ARRENDATARIO") {
+                    preguntarPorArrendatario(inquilino) { accion -> guardarOcupacion(a, cambio.copy(arrendatario = accion)) }
+                } else guardarOcupacion(a, cambio)
             }
+        }
+    }
+
+    private fun guardarOcupacion(a: Apartamento, cambio: com.example.conjuntoresidencial.model.OcupacionYBanderas) {
+        ejecutarAccion(getString(R.string.ocupacion_guardada),
+            { RetrofitClient.instance.cambiarOcupacionYBanderas(a.id, cambio) }) { verPropietario = false; cargarTodo() }
+    }
+
+    private fun estaArrendado(): Boolean =
+        apartamento?.arrendado == true || apartamento?.tipoOcupacion == "ARRENDATARIO"
+
+    private fun arrendatariosActivos() = todos.filter {
+        it.tipoHabitante == "ARRENDATARIO" && it.estado != "INACTIVO" && it.estado != "RECHAZADO"
+    }
+
+    /**
+     * P11: pasa a "vive el propietario" o "desocupado" con un arrendatario: desactivarlo (no entra,
+     * se puede volver a activar) o eliminarlo (con su hogar).
+     */
+    private fun preguntarPorArrendatario(r: ResidenteDTO, alElegir: (String) -> Unit) {
+        val opciones = arrayOf(getString(R.string.arr_desactivar_opcion), getString(R.string.arr_eliminar_opcion))
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.arr_que_hacer_titulo, r.nombreCompleto))
+            .setItems(opciones) { _, i ->
+                if (i == 0) alElegir("DESACTIVAR")
+                else confirmar(getString(R.string.arr_eliminar_titulo, r.nombreCompleto),
+                    getString(R.string.arr_eliminar_mensaje), R.string.residente_eliminar_si) { alElegir("ELIMINAR") }
+            }
+            .setNegativeButton(R.string.btn_cancelar, null)
+            .show()
+    }
+
+    /** Quién vive y quién es el propietario; "Ver propietario" y el arrendatario desactivado. */
+    private fun mostrarQuienes() {
+        val c = binding.contenedorQuienes
+        c.removeAllViews()
+        val activos = todos.filter { it.estado != "INACTIVO" && it.estado != "RECHAZADO" }
+        fun titularDe(tipo: String) = activos.filter { it.tipoHabitante == tipo }.let { l -> l.firstOrNull { it.titular == true } ?: l.firstOrNull() }
+        val dueno = titularDe("PROPIETARIO")
+        val inquilino = titularDe("ARRENDATARIO")
+        val arrendado = estaArrendado()
+        val sinDato = getString(R.string.arr_sin_registrar)
+        when {
+            arrendado -> {
+                Bloques.dato(c, getString(R.string.arr_vive_arrendatario), inquilino?.nombreCompleto ?: sinDato)
+                Bloques.dato(c, getString(R.string.arr_propietario), dueno?.nombreCompleto ?: sinDato)
+            }
+            apartamento?.tipoOcupacion == "DESOCUPADO" -> Bloques.dato(c, getString(R.string.arr_propietario), dueno?.nombreCompleto ?: sinDato)
+            else -> Bloques.dato(c, getString(R.string.arr_vive_propietario), dueno?.nombreCompleto ?: sinDato)
+        }
+        binding.btnVerPropietario.visibility = if (arrendado) View.VISIBLE else View.GONE
+        binding.btnVerPropietario.setText(if (verPropietario) R.string.arr_ver_arrendatario else R.string.arr_ver_propietario)
+        binding.btnVerPropietario.setOnClickListener {
+            verPropietario = !verPropietario
+            mostrarQuienes()
+            pintarResidentes()
+        }
+        val inactivos = todos.filter { it.tipoHabitante == "ARRENDATARIO" && it.estado == "INACTIVO" }
+        binding.filaArrendatarioInactivo.visibility = if (inactivos.isEmpty()) View.GONE else View.VISIBLE
+        val nombre = (inactivos.firstOrNull { it.titular == true } ?: inactivos.firstOrNull())?.nombreCompleto.orEmpty()
+        binding.tvArrendatarioInactivo.text = getString(R.string.arr_inactivo, nombre)
+        binding.btnActivarArrendatario.setOnClickListener {
+            confirmar(getString(R.string.arr_activar_titulo, nombre), getString(R.string.arr_activar_mensaje), R.string.arr_activar) {
+                ejecutarAccion(getString(R.string.arr_activado), { RetrofitClient.instance.activarArrendatario(aptoId) }) {
+                    verPropietario = false; cargarTodo()
+                }
+            }
+        }
+    }
+
+    /** P11: los visitantes frecuentes de quien vive en el apartamento. */
+    private fun mostrarFrecuentes() {
+        val c = binding.contenedorFrecuentesApto
+        c.removeAllViews()
+        binding.tvTituloFrecuentes.setText(if (estaArrendado()) R.string.arr_frecuentes_arrendatario else R.string.arr_frecuentes)
+        if (frecuentes.isEmpty()) { Bloques.parrafo(c, getString(R.string.arr_sin_frecuentes)); return }
+        frecuentes.forEach { f ->
+            Bloques.dato(c, f.nombreCompleto, listOfNotNull(f.identificacion?.let { getString(R.string.arr_cc, it) }, f.telefono)
+                .joinToString(" · ").ifEmpty { "—" })
         }
     }
 
@@ -199,6 +293,44 @@ class DetalleApartamentoFragment : Fragment() {
     }
 
     private fun mostrarResidentes(lista: List<ResidenteDTO>) {
+        todos = lista
+        mostrarQuienes()
+        pintarResidentes()
+    }
+
+    /**
+     * P11: si está arrendado, solo el hogar del arrendatario (o el del propietario con "Ver
+     * propietario"); si no, todos. Arriba, los datos completos del titular de lo que se ve.
+     */
+    private fun pintarResidentes() {
+        val activos = todos.filter { it.estado != "INACTIVO" }
+        val arrendado = estaArrendado()
+        val (lista, titulo, aviso) = when {
+            arrendado && verPropietario -> Triple(activos.filter { it.tipoHabitante == "PROPIETARIO" },
+                R.string.arr_titulo_propietario, R.string.arr_aviso_propietario)
+            arrendado -> Triple(activos.filter { it.tipoHabitante == "ARRENDATARIO" },
+                R.string.arr_titulo_arrendatario, R.string.arr_aviso_arrendatario)
+            else -> Triple(activos, R.string.detalle_residentes, null)
+        }
+        binding.tvTituloResidentes.setText(titulo)
+        binding.tvAvisoVista.visibility = if (aviso == null) View.GONE else View.VISIBLE
+        aviso?.let { binding.tvAvisoVista.setText(it) }
+
+        val c = binding.contenedorTitular
+        c.removeAllViews()
+        if (arrendado) {
+            (lista.firstOrNull { it.titular == true } ?: lista.firstOrNull())?.let { t ->
+                Bloques.dato(c, getString(R.string.arr_nombre), t.nombreCompleto)
+                Bloques.dato(c, getString(R.string.arr_documento), t.identificacion.ifBlank { "—" })
+                Bloques.dato(c, getString(R.string.arr_telefono), t.telefono?.ifBlank { null } ?: "—")
+                Bloques.dato(c, getString(R.string.arr_correo), t.correo?.ifBlank { null } ?: "—")
+                Bloques.dato(c, getString(R.string.arr_cuenta), getString(when {
+                    t.estado == "PENDIENTE" -> R.string.arr_cuenta_pendiente
+                    t.tieneAcceso == true -> R.string.arr_cuenta_con_acceso
+                    else -> R.string.arr_cuenta_sin_acceso
+                }))
+            }
+        }
         residentesAdapter.submitList(lista)
         binding.tvSinResidentes.visibility = if (lista.isEmpty()) View.VISIBLE else View.GONE
         totalResidentes = lista.size

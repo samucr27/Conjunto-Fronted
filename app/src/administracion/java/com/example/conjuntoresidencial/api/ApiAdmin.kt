@@ -21,6 +21,13 @@ interface ApiAdmin : ApiComun {
     @PATCH("api/apartamentos/{id}/ocupacion-y-banderas")
     suspend fun cambiarOcupacionYBanderas(@Path("id") id: Long, @Body cambio: OcupacionYBanderas): Response<Apartamento>
 
+    // P11: reactivar al arrendatario desactivado y ver los visitantes frecuentes del apartamento
+    @PUT("api/apartamentos/{id}/arrendatario/activar")
+    suspend fun activarArrendatario(@Path("id") id: Long): Response<Apartamento>
+
+    @GET("api/visitantes/apartamento/{id}")
+    suspend fun getVisitantesApto(@Path("id") id: Long): Response<List<com.example.conjuntoresidencial.model.VisitanteAptoDTO>>
+
     @GET("api/apartamentos")
     suspend fun getApartamentos(): Response<List<Apartamento>>
 
