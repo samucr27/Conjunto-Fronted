@@ -45,6 +45,10 @@ class ChatVisitaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityChatVisitaBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Íconos de la barra de estado oscuros sobre el fondo claro (claros en modo oscuro)
+        val noche = (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+            android.content.res.Configuration.UI_MODE_NIGHT_YES
+        androidx.core.view.WindowCompat.getInsetsController(window, binding.root).isAppearanceLightStatusBars = !noche
         // Bordes del sistema y teclado: la fila para escribir siempre queda a la vista
         ViewCompat.setOnApplyWindowInsetsListener(binding.raiz) { v, insets ->
             val barras = insets.getInsets(WindowInsetsCompat.Type.systemBars())

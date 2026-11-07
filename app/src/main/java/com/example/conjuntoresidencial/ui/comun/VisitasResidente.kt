@@ -53,13 +53,13 @@ private fun Fragment.mostrar(v: VisitaDTO, alCerrar: () -> Unit): AlertDialog {
     // P10 bloque 7: la foto de la cara que tomó la portería, grande, para saber quién es
     val foto = v.fotoUrl?.let { url ->
         val ctx = requireContext()
-        val alto = (240 * ctx.resources.displayMetrics.density).toInt()
+        val alto = (300 * ctx.resources.displayMetrics.density).toInt()
         val margen = (24 * ctx.resources.displayMetrics.density).toInt()
         android.widget.FrameLayout(ctx).apply {
             setPadding(margen, margen / 2, margen, 0)
             addView(com.google.android.material.imageview.ShapeableImageView(ctx).apply {
                 layoutParams = android.widget.FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, alto)
-                scaleType = android.widget.ImageView.ScaleType.CENTER_CROP
+                scaleType = android.widget.ImageView.ScaleType.FIT_CENTER
                 shapeAppearanceModel = shapeAppearanceModel.withCornerSize(18 * ctx.resources.displayMetrics.density)
                 contentDescription = getString(R.string.foto_del_visitante, v.visitante)
                 load(url) { crossfade(true); placeholder(R.drawable.fondo_imagen_cargando) }
