@@ -204,6 +204,8 @@
     <string name="notificaciones_marcar_leidas">Marcar todas como leídas</string>
     <string name="notificaciones_error_marcar">No se pudieron marcar como leídas</string>
     <string name="notificaciones_error_eliminar">No se pudo eliminar la notificación</string>
+    <string name="visita_no_pendiente_titulo">Esta visita ya no está pendiente</string>
+    <string name="visita_no_pendiente_mensaje">Se acabó el tiempo para autorizarla o rechazarla, o alguien de tu apartamento ya la respondió. Si la persona sigue en la portería, la portería puede volver a anunciarla.</string>
     <string name="deshacer">Deshacer</string>
     <string name="eliminar">Eliminar</string>
     <string name="canal_avisos">Avisos</string>

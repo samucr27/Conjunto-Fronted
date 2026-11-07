@@ -33,6 +33,9 @@ import com.example.conjuntoresidencial.util.SessionManager
 import com.example.conjuntoresidencial.ui.comun.aviso
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import com.example.conjuntoresidencial.api.RetrofitClient
 import com.google.android.material.snackbar.Snackbar
 
 /**
@@ -107,7 +110,35 @@ class NotificacionesFragment : Fragment() {
 
     private fun abrir(n: NotificacionDTO) {
         viewModel.marcarLeida(n.id)
-        DestinoNotificacion.de(n).abrir(findNavController())
+        if (n.tipo == DestinoNotificacion.TIPO_VISITA && n.referenciaId != null) abrirVisita(n)
+        else DestinoNotificacion.de(n).abrir(findNavController())
+    }
+
+    /**
+     * Una visita que todavía espera respuesta lleva a Inicio, donde sale para autorizarla o
+     * rechazarla. Si ya no está pendiente (se acabó el tiempo o alguien del apartamento ya la
+     * respondió), se avisa aquí en vez de llevar a Inicio sin nada que hacer.
+     */
+    private fun abrirVisita(n: NotificacionDTO) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val pendientes = try {
+                RetrofitClient.comun.getVisitasPendientes().takeIf { it.isSuccessful }?.body()
+            } catch (_: Exception) {
+                null
+            }
+            if (view == null) return@launch
+            // Sin respuesta del servidor no se sabe: se deja que Inicio lo resuelva
+            if (pendientes == null || pendientes.any { it.id == n.referenciaId }) {
+                DestinoNotificacion.de(n).abrir(findNavController())
+                return@launch
+            }
+            MaterialAlertDialogBuilder(requireContext())
+                .setIcon(R.drawable.ic_people)
+                .setTitle(R.string.visita_no_pendiente_titulo)
+                .setMessage(R.string.visita_no_pendiente_mensaje)
+                .setPositiveButton(R.string.btn_entendido, null)
+                .show()
+        }
     }
 
     private fun eliminar(n: NotificacionDTO) {
