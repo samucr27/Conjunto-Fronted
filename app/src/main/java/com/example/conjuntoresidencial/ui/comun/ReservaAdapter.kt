@@ -46,6 +46,8 @@ class ReservaAdapter(
             reserva.asistentes?.let { ctx.resources.getQuantityString(R.plurals.reserva_personas, it, it) }
         ).joinToString(" · ")
         holder.binding.tvEstadoReserva.mostrarEstado(Estados.reserva(reserva.estado))
+        holder.binding.tvMotivoReserva.visibility = if (reserva.motivo.isNullOrBlank()) View.GONE else View.VISIBLE
+        holder.binding.tvMotivoReserva.text = reserva.motivo?.let { ctx.getString(R.string.reserva_motivo_linea, it) }
         val item = getItem(position)
         onTocar?.let { tocar -> holder.binding.root.setOnClickListener { tocar(item) } }
         val esResaltada = resaltada != null && reserva.id == resaltada

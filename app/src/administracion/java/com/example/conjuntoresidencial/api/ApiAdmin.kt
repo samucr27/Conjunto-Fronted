@@ -105,7 +105,7 @@ interface ApiAdmin : ApiComun {
     suspend fun desbloquearFecha(@Path("id") id: Long, @Path("bloqueoId") bloqueoId: Long): Response<Void>
 
     @PUT("api/reservas/{id}/estado")
-    suspend fun updateEstadoReserva(@Path("id") id: Long, @Body estado: EstadoRequest): Response<ReservaDTO>
+    suspend fun updateEstadoReserva(@Path("id") id: Long, @Body estado: com.example.conjuntoresidencial.model.EstadoConMotivo): Response<ReservaDTO>
 
     // Cartera completa (solo admin): una petición en vez de una por apartamento
     @GET("api/pagos")

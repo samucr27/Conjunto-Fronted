@@ -52,14 +52,14 @@ class ReservasAdminFragment : Fragment() {
         val resaltada = arguments?.getLong(ARG_RESALTAR)?.takeIf { arguments?.containsKey(ARG_RESALTAR) == true }
         var desplazada = false
         val adaptador = ReservaAdapter(
-            onAprobar = { reserva -> viewModel.actualizarEstado(reserva.id!!, "APROBADA") },
-            onRechazar = { reserva -> viewModel.actualizarEstado(reserva.id!!, "RECHAZADA") },
+            onAprobar = { reserva -> responder(reserva, "APROBADA") },
+            onRechazar = { reserva -> responder(reserva, "RECHAZADA") },
             resaltada = resaltada,
             onTocar = { (reserva, zona) ->
                 val cuando = Formatos.horario(reserva.fecha, reserva.hora, reserva.horaFin)
                 elegirOpcion("$zona · $cuando", listOfNotNull<Pair<Int, () -> Unit>>(
-                    (R.string.reserva_aprobar to { viewModel.actualizarEstado(reserva.id!!, "APROBADA") }).takeIf { reserva.estado != "APROBADA" },
-                    (R.string.reserva_rechazar to { viewModel.actualizarEstado(reserva.id!!, "RECHAZADA") }).takeIf { reserva.estado != "RECHAZADA" },
+                    (R.string.reserva_aprobar to { responder(reserva, "APROBADA") }).takeIf { reserva.estado != "APROBADA" },
+                    (R.string.reserva_rechazar to { responder(reserva, "RECHAZADA") }).takeIf { reserva.estado != "RECHAZADA" },
                     R.string.residente_eliminar_si to {
                         confirmar(getString(R.string.reserva_eliminar_titulo), getString(R.string.reserva_cancelar_mensaje, zona, cuando),
                             R.string.residente_eliminar_si) {
@@ -133,6 +133,42 @@ class ReservasAdminFragment : Fragment() {
                 }
             })
         }
+    }
+
+    /**
+     * P11: al aprobar o rechazar se puede escribir el porqué (opcional). Le llega al residente
+     * en el aviso y lo ve en Mis reservas.
+     */
+    private fun responder(reserva: com.example.conjuntoresidencial.model.ReservaDTO, estado: String) {
+        val aprobar = estado == "APROBADA"
+        val ctx = requireContext()
+        val texto = com.google.android.material.textfield.TextInputEditText(ctx).apply {
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or
+                android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            maxLines = 4
+            filters = arrayOf(android.text.InputFilter.LengthFilter(300))
+        }
+        val campo = com.google.android.material.textfield.TextInputLayout(ctx, null,
+            com.google.android.material.R.attr.textInputOutlinedStyle).apply {
+            hint = getString(R.string.reserva_motivo)
+            helperText = getString(if (aprobar) R.string.reserva_motivo_ayuda_aprobar else R.string.reserva_motivo_ayuda_rechazar)
+            isCounterEnabled = true
+            counterMaxLength = 300
+            addView(texto)
+        }
+        val relleno = (24 * resources.displayMetrics.density).toInt()
+        val caja = android.widget.FrameLayout(ctx).apply {
+            setPadding(relleno, (8 * resources.displayMetrics.density).toInt(), relleno, 0)
+            addView(campo)
+        }
+        com.google.android.material.dialog.MaterialAlertDialogBuilder(ctx)
+            .setTitle(if (aprobar) R.string.reserva_aprobar_titulo else R.string.reserva_rechazar_titulo)
+            .setView(caja)
+            .setPositiveButton(if (aprobar) R.string.reserva_aprobar else R.string.reserva_rechazar) { _, _ ->
+                viewModel.actualizarEstado(reserva.id!!, estado, texto.text?.toString()?.trim()?.ifBlank { null })
+            }
+            .setNegativeButton(R.string.btn_cancelar, null)
+            .show()
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }

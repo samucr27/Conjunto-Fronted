@@ -206,6 +206,12 @@
     <string name="notificaciones_error_eliminar">No se pudo eliminar la notificación</string>
     <string name="visita_no_pendiente_titulo">Esta visita ya no está pendiente</string>
     <string name="visita_no_pendiente_mensaje">Se acabó el tiempo para autorizarla o rechazarla, o alguien de tu apartamento ya la respondió. Si la persona sigue en la portería, la portería puede volver a anunciarla.</string>
+    <string name="reserva_motivo">Motivo (opcional)</string>
+    <string name="reserva_motivo_ayuda_aprobar">Por ejemplo: recuerda dejar el salón limpio. Lo verá el residente.</string>
+    <string name="reserva_motivo_ayuda_rechazar">Por qué no se puede. Lo verá el residente.</string>
+    <string name="reserva_aprobar_titulo">Aprobar la reserva</string>
+    <string name="reserva_rechazar_titulo">Rechazar la reserva</string>
+    <string name="reserva_motivo_linea">Motivo: %1$s</string>
     <string name="deshacer">Deshacer</string>
     <string name="eliminar">Eliminar</string>
     <string name="canal_avisos">Avisos</string>
@@ -984,7 +990,7 @@
     <string name="porteria_placa">Placa</string>
     <string name="porteria_motivo">Motivo (opcional)</string>
     <string name="porteria_registrar">Avisar al apartamento</string>
-    <string name="porteria_registrada">Aviso enviado. El apartamento tiene 2 minutos para responder.</string>
+    <string name="porteria_registrada">Aviso enviado. El apartamento tiene 5 minutos para responder.</string>
     <string name="porteria_error">No se pudo completar la acción</string>
     <string name="porteria_falta_visitante">Escribe el nombre del visitante</string>
     <string name="porteria_recientes">Visitas de las últimas 24 horas</string>

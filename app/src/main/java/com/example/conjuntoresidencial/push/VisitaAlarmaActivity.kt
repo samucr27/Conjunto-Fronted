@@ -115,7 +115,7 @@ class VisitaAlarmaActivity : AppCompatActivity() {
         img.isClickable = url != null
         if (url == null) {
             img.imageTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE)
-            val p = (56 * resources.displayMetrics.density).toInt()
+            val p = (80 * resources.displayMetrics.density).toInt()
             img.setPadding(p, p, p, p)
             img.setImageResource(R.drawable.ic_people)
             return

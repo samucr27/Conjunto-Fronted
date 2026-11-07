@@ -17,7 +17,7 @@ import coil.load
 /**
  * P6 bloque 5: mientras Inicio está a la vista, el residente consulta cada 7 segundos si la
  * portería registró una visita para su apartamento y, si hay, la muestra para autorizarla o
- * rechazarla (el aviso del celular lleva a esta misma pantalla). Tiene 2 minutos.
+ * rechazarla (el aviso del celular lleva a esta misma pantalla). Tiene 5 minutos.
  */
 fun Fragment.vigilarVisitas() {
     var abierta: Pair<Long, AlertDialog>? = null

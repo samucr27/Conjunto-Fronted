@@ -210,7 +210,9 @@ data class ZonaComunDTO(
 // hora = inicio; horaFin y asistentes desde P4 (al leer, horaFin siempre viene)
 data class ReservaDTO(
     val id: Long?, val fecha: String, val hora: String, val estado: String, val zonaComunId: Long, val apartamentoId: Long,
-    val horaFin: String? = null, val asistentes: Int? = null
+    val horaFin: String? = null, val asistentes: Int? = null,
+    // P11: lo que escribió la administración al aprobarla o rechazarla
+    val motivo: String? = null
 )
 // Lo ocupado de una zona día por día (calendario de reservas); las de otros no dicen de quién son
 data class DisponibilidadDTO(
@@ -229,6 +231,8 @@ data class HorarioSemanal(val semanal: List<DiaHorarioZona>)
 data class FranjaOcupadaDTO(val inicio: String, val fin: String, val estado: String, val propia: Boolean?)
 data class PagoDTO(val id: Long?, val saldoPendiente: Double, val estadoCuenta: String, val observaciones: String, val apartamentoId: Long)
 data class EstadoRequest(val estado: String)
+// P11: aprobar o rechazar con un motivo opcional (reservas)
+data class EstadoConMotivo(val estado: String, val motivo: String? = null)
 // tipo: "RESERVA" o "VEHICULO"; fecha en formato ISO, hora de Colombia ("2026-10-20T20:15:00").
 // referenciaId (la reserva o el vehículo) y apartamentoId dicen a qué pantalla lleva; null en las viejas.
 data class NotificacionDTO(

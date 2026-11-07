@@ -65,6 +65,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp" />
 
+                <!-- P11: por qué la aprobaron o rechazaron -->
+                <TextView
+                    android:id="@+id/tvMotivoReserva"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="gone" />
+
             </LinearLayout>
         </LinearLayout>
 

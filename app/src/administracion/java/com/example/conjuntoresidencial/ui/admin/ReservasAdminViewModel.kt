@@ -53,10 +53,11 @@ class ReservasAdminViewModel : ViewModel() {
         }
     }
 
-    fun actualizarEstado(reservaId: Long, estado: String) {
+    fun actualizarEstado(reservaId: Long, estado: String, motivo: String? = null) {
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.instance.updateEstadoReserva(reservaId, EstadoRequest(estado))
+                val response = RetrofitClient.instance.updateEstadoReserva(reservaId,
+                    com.example.conjuntoresidencial.model.EstadoConMotivo(estado, motivo))
                 if (response.isSuccessful) {
                     fetchReservas()
                 } else {
