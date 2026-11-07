@@ -22,12 +22,20 @@ class ServicioMensajes : FirebaseMessagingService() {
             AlarmaVisita.sonar(this, visita, datos["titulo"] ?: getString(R.string.alarma_titulo_generico), datos["mensaje"].orEmpty())
             return
         }
+        // P10 bloque 7: mensaje del chat de una visita rechazada: al tocarlo se abre ese chat
+        val chat = if (datos["tipo"] == TIPO_CHAT_VISITA && visita != null)
+            com.example.conjuntoresidencial.ui.comun.ChatVisitaActivity.intent(this, visita) else null
         AvisosCelular.mostrar(
             this,
             datos["titulo"] ?: getString(R.string.app_name),
             datos["mensaje"].orEmpty(),
-            DestinoNotificacion.de(datos)
+            DestinoNotificacion.de(datos),
+            chat
         )
+    }
+
+    private companion object {
+        const val TIPO_CHAT_VISITA = "CHAT_VISITA"
     }
 
     override fun onNewToken(token: String) {

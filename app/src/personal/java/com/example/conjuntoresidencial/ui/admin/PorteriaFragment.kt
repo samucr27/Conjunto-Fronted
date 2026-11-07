@@ -36,6 +36,9 @@ import com.google.android.material.color.MaterialColors
 import com.example.conjuntoresidencial.ui.comun.elegirOpcion
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.example.conjuntoresidencial.ui.comun.ChatVisitaActivity
+import com.example.conjuntoresidencial.ui.comun.FotosPorteria
+import com.example.conjuntoresidencial.ui.comun.TomadorFoto
 
 /**
  * Pantalla de la portería (P6): registra una visita, al apartamento le llega un aviso con 2
@@ -47,6 +50,13 @@ import kotlinx.coroutines.launch
 class PorteriaFragment : Fragment() {
     private var _binding: FragmentPorteriaBinding? = null
     private val binding get() = _binding!!
+
+    // P10 bloque 7: la foto de la cara del visitante (se sube al registrar)
+    private var foto: ByteArray? = null
+    private val tomador = TomadorFoto(this) { datos ->
+        foto = datos
+        mostrarFoto()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPorteriaBinding.inflate(inflater, container, false)
@@ -69,6 +79,13 @@ class PorteriaFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) { requireActivity().moveTaskToBack(true) }
         }
         binding.btnRegistrarVisita.setOnClickListener { registrar() }
+        binding.btnFotoVisita.setOnClickListener { tomador.tomar() }
+        binding.btnQuitarFotoVisita.setOnClickListener { foto = null; mostrarFoto() }
+        binding.imgFotoVisita.setOnClickListener {
+            val datos = foto
+            if (datos != null) FotosPorteria.verGrande(requireContext(), datos, getString(R.string.foto_lista)) else tomador.tomar()
+        }
+        mostrarFoto()
         // P10: la recepción tiene "Dentro del conjunto" e "Historial" aquí, no en la barra de abajo
         val grafo = findNavController().graph
         val hayDentro = grafo.findNode(R.id.dentroFragment) != null
@@ -107,19 +124,37 @@ class PorteriaFragment : Fragment() {
         binding.btnRegistrarVisita.isEnabled = false
         viewLifecycleOwner.lifecycleScope.launch {
             try {
+                // P10 bloque 7: primero la foto; si no se pudo subir, no se registra para no perderla
+                val datos = foto
+                var fotoId: String? = null
+                if (datos != null) {
+                    binding.btnRegistrarVisita.setText(R.string.foto_subiendo)
+                    val (id, error) = FotosPorteria.subir(datos, getString(R.string.foto_error))
+                    if (_binding == null) return@launch
+                    binding.btnRegistrarVisita.setText(R.string.porteria_registrar)
+                    if (id == null) {
+                        aviso(error ?: getString(R.string.foto_error)).show()
+                        binding.btnRegistrarVisita.isEnabled = true
+                        return@launch
+                    }
+                    fotoId = id
+                }
                 val r = RetrofitClient.comun.registrarVisita(NuevaVisita(
                     torre, apto, nombre,
                     documento = binding.etDocumentoVisita.text?.toString()?.trim().orEmpty().ifEmpty { null },
                     placa = if (enVehiculo) placa else null,
                     motivo = binding.etMotivoVisita.text?.toString()?.trim().orEmpty().ifEmpty { null },
                     tipoIngreso = if (enVehiculo) "VEHICULO" else "PEATONAL",
-                    parqueaderoId = parqueaderoId
+                    parqueaderoId = parqueaderoId,
+                    fotoId = fotoId
                 ))
                 if (_binding == null) return@launch
                 if (r.isSuccessful) {
                     listOf(binding.etNombreVisita, binding.etDocumentoVisita, binding.etPlacaVisita, binding.etMotivoVisita)
                         .forEach { it.setText("") }
                     binding.grupoIngreso.check(R.id.btnIngresoPeatonal)
+                    foto = null
+                    mostrarFoto()
                     aviso(R.string.porteria_registrada).show()
                     cargar()
                 } else {
@@ -129,6 +164,26 @@ class PorteriaFragment : Fragment() {
                 if (_binding != null) aviso(RetrofitClient.mensajeDeExcepcion(e)).show()
             }
             if (_binding != null) binding.btnRegistrarVisita.isEnabled = true
+        }
+    }
+
+    /** P10 bloque 7: la miniatura de la foto tomada, o el ícono de la cámara. */
+    private fun mostrarFoto() {
+        val datos = foto
+        val img = binding.imgFotoVisita
+        binding.btnQuitarFotoVisita.isVisible = datos != null
+        binding.btnFotoVisita.setText(if (datos != null) R.string.foto_otra else R.string.foto_tomar_visitante)
+        binding.tvAyudaFotoVisita.setText(if (datos != null) R.string.foto_lista else R.string.foto_ayuda_visitante)
+        if (datos == null) {
+            val p = (18 * resources.displayMetrics.density).toInt()
+            img.setPadding(p, p, p, p)
+            img.imageTintList = android.content.res.ColorStateList.valueOf(
+                MaterialColors.getColor(img, com.google.android.material.R.attr.colorOnSecondaryContainer))
+            img.setImageResource(R.drawable.ic_camara)
+        } else {
+            img.setPadding(0, 0, 0, 0)
+            img.imageTintList = null
+            img.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(datos, 0, datos.size))
         }
     }
 
@@ -266,7 +321,30 @@ class PorteriaFragment : Fragment() {
             fila.btnLlamarApto.isEnabled = !v.telefono.isNullOrBlank()
             fila.btnLlamarApto.setOnClickListener { llamar(v.telefono) }
             fila.btnRespuestaLlamada.setOnClickListener { respuestaPorLlamada(v) }
+            // P10 bloque 7: la foto del visitante y, si la rechazaron, el chat con el residente
+            val conChat = v.chatHasta != null
+            fila.accionesExtra.isVisible = v.tieneFoto || conChat
+            fila.btnVerFotoVisita.isVisible = v.tieneFoto
+            fila.btnVerFotoVisita.setOnClickListener { verFoto(v) }
+            fila.btnChatVisita.isVisible = conChat
+            fila.btnChatVisita.text = if (v.mensajesResidente > 0) getString(R.string.chat_visita_abrir_porteria_n, v.mensajesResidente.toInt())
+                else getString(R.string.chat_visita_abrir_porteria)
+            fila.btnChatVisita.setOnClickListener { ChatVisitaActivity.abrir(requireContext(), v.id) }
             binding.listaVisitas.addView(fila.root)
+        }
+    }
+
+    private fun verFoto(v: VisitaDTO) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val r = RetrofitClient.comun.fotoVisita(v.id)
+                val url = r.body()?.url
+                if (_binding == null) return@launch
+                if (r.isSuccessful && url != null) FotosPorteria.verGrande(requireContext(), url, getString(R.string.foto_del_visitante, v.visitante))
+                else aviso(RetrofitClient.mensajeDeError(r, getString(R.string.foto_no_disponible))).show()
+            } catch (e: Exception) {
+                if (_binding != null) aviso(RetrofitClient.mensajeDeExcepcion(e)).show()
+            }
         }
     }
 

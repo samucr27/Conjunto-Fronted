@@ -28,6 +28,8 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import com.example.conjuntoresidencial.ui.comun.FotosPorteria
+import com.example.conjuntoresidencial.ui.comun.TomadorFoto
 
 /**
  * P9 bloque 3: la correspondencia en la portería (y en la administración). Se registra lo que
@@ -40,6 +42,14 @@ class CorrespondenciaFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var todas: List<CorrespondenciaDTO> = emptyList()
+
+    // P10 bloque 7: la foto del paquete del diálogo abierto
+    private var foto: ByteArray? = null
+    private var dialogoFoto: DialogoCorrespondenciaBinding? = null
+    private val tomador = TomadorFoto(this) { datos ->
+        foto = datos
+        dialogoFoto?.let { mostrarFoto(it) }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCorrespondenciaBinding.inflate(inflater, container, false)
@@ -113,6 +123,12 @@ class CorrespondenciaFragment : Fragment() {
                 isChecked = i == 0
             })
         }
+        foto = null
+        dialogoFoto = d
+        d.filaFoto.isVisible = true
+        d.btnFoto.setOnClickListener { tomador.tomar() }
+        d.imgFoto.setOnClickListener { foto?.let { FotosPorteria.verGrande(requireContext(), it, getString(R.string.foto_del_paquete)) } ?: tomador.tomar() }
+        mostrarFoto(d)
         dialogo(R.string.corr_nueva_titulo, d, R.string.corr_guardar) { cerrar ->
             val torre = d.etTorre.text?.toString()?.trim().orEmpty()
             val apto = d.etApto.text?.toString()?.trim().orEmpty()
@@ -120,10 +136,23 @@ class CorrespondenciaFragment : Fragment() {
             d.tilApto.error = if (falta) getString(R.string.corr_falta_apto) else null
             if (falta) return@dialogo
             val tipo = d.chipsTipo.findViewById<Chip>(d.chipsTipo.checkedChipId)?.tag as? String ?: "PAQUETE"
-            enviar({ RetrofitClient.comun.registrarCorrespondencia(
-                NuevaCorrespondencia(torre, apto, tipo, texto(d.etCampo1.text), texto(d.etCampo2.text))) }) {
-                cerrar()
-                aviso(getString(R.string.corr_registrada_ok, torre, apto)).show()
+            val datos = foto
+            viewLifecycleOwner.lifecycleScope.launch {
+                // P10 bloque 7: primero la foto (si se tomó); si falla, no se registra para no perderla
+                var fotoId: String? = null
+                if (datos != null) {
+                    val (id, error) = FotosPorteria.subir(datos, getString(R.string.foto_error))
+                    if (_binding == null) return@launch
+                    if (id == null) { aviso(error ?: getString(R.string.foto_error)).show(); return@launch }
+                    fotoId = id
+                }
+                enviar({ RetrofitClient.comun.registrarCorrespondencia(
+                    NuevaCorrespondencia(torre, apto, tipo, texto(d.etCampo1.text), texto(d.etCampo2.text), fotoId)) }) {
+                    foto = null
+                    dialogoFoto = null
+                    cerrar()
+                    aviso(getString(R.string.corr_registrada_ok, torre, apto)).show()
+                }
             }
         }
     }
@@ -164,6 +193,21 @@ class CorrespondenciaFragment : Fragment() {
                 cerrar()
                 aviso(getString(R.string.corr_entregada_ok, nombre)).show()
             }
+        }
+    }
+
+    private fun mostrarFoto(d: DialogoCorrespondenciaBinding) {
+        val datos = foto
+        d.btnFoto.setText(if (datos != null) R.string.foto_otra else R.string.foto_tomar_paquete)
+        d.tvAyudaFoto.setText(if (datos != null) R.string.foto_lista else R.string.foto_ayuda_paquete)
+        if (datos == null) {
+            val p = (16 * resources.displayMetrics.density).toInt()
+            d.imgFoto.setPadding(p, p, p, p)
+            d.imgFoto.setImageResource(R.drawable.ic_camara)
+        } else {
+            d.imgFoto.setPadding(0, 0, 0, 0)
+            d.imgFoto.imageTintList = null
+            d.imgFoto.setImageBitmap(android.graphics.BitmapFactory.decodeByteArray(datos, 0, datos.size))
         }
     }
 

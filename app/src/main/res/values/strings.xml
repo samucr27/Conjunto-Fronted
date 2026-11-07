@@ -1001,7 +1001,7 @@
     <string name="porteria_rechazar">Rechazar</string>
     <string name="porteria_sin_marcador">No hay una app de teléfono para llamar</string>
     <string name="porteria_residente_titulo">%1$s está en portería</string>
-    <string name="porteria_residente_mensaje">¿Lo autorizas a entrar? Tienes 2 minutos para responder.</string>
+    <string name="porteria_residente_mensaje">¿Lo autorizas a entrar? Tienes 5 minutos para responder.</string>
     <string name="porteria_doc_linea">Documento: %1$s</string>
     <string name="porteria_autorizada_ok">Visita autorizada</string>
     <string name="porteria_rechazada_ok">Visita rechazada</string>

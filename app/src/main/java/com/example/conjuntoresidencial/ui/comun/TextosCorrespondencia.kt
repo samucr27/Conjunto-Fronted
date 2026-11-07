@@ -1,5 +1,8 @@
 package com.example.conjuntoresidencial.ui.comun
 
+import androidx.lifecycle.lifecycleScope
+import com.example.conjuntoresidencial.api.RetrofitClient
+import kotlinx.coroutines.launch
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -83,4 +86,21 @@ internal fun Fragment.pintarCorrespondencia(
     }
     fila.btnEntregar.isVisible = !entregada && alEntregar != null
     fila.btnEntregar.setOnClickListener { alEntregar?.invoke(c) }
+    fila.btnFoto.isVisible = c.tieneFoto
+    fila.btnFoto.setOnClickListener { verFotoCorrespondencia(c) }
+}
+
+/** P10 bloque 7: pide el enlace firmado de la foto del paquete y la muestra grande. */
+private fun Fragment.verFotoCorrespondencia(c: CorrespondenciaDTO) {
+    viewLifecycleOwner.lifecycleScope.launch {
+        try {
+            val r = RetrofitClient.comun.fotoCorrespondencia(c.id)
+            val url = r.body()?.url
+            if (view == null) return@launch
+            if (r.isSuccessful && url != null) FotosPorteria.verGrande(requireContext(), url, getString(R.string.foto_del_paquete))
+            else aviso(RetrofitClient.mensajeDeError(r, getString(R.string.foto_no_disponible))).show()
+        } catch (e: Exception) {
+            if (view != null) aviso(RetrofitClient.mensajeDeExcepcion(e)).show()
+        }
+    }
 }

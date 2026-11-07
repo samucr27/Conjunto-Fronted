@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P10 bloque 7: foto del visitante y del paquete, y el chat temporal de una visita rechazada -->
+<resources>
+    <string name="foto_tomar_visitante">Tomar foto de la cara</string>
+    <string name="foto_tomar_paquete">Tomar foto del paquete</string>
+    <string name="foto_otra">Tomar otra</string>
+    <string name="foto_quitar">Quitar foto</string>
+    <string name="foto_ayuda_visitante">Así el residente ve quién es antes de autorizar</string>
+    <string name="foto_ayuda_paquete">El residente verá el paquete en su app</string>
+    <string name="foto_lista">Foto lista</string>
+    <string name="foto_error">No se pudo usar la foto; tómala otra vez</string>
+    <string name="foto_sin_camara">Este celular no tiene una app de cámara</string>
+    <string name="foto_subiendo">Subiendo la foto…</string>
+    <string name="foto_ver">Ver foto</string>
+    <string name="foto_del_visitante">Foto de %1$s</string>
+    <string name="foto_del_paquete">Foto del paquete</string>
+    <string name="foto_toca_ampliar">Toca la foto para verla grande</string>
+    <string name="foto_no_disponible">La foto ya no está disponible</string>
+
+    <string name="chat_visita_titulo">Chat con la portería</string>
+    <string name="chat_visita_titulo_porteria">Chat con Torre %1$s · Apto %2$s</string>
+    <string name="chat_visita_sobre">Sobre la visita de %1$s, que rechazaste</string>
+    <string name="chat_visita_sobre_porteria">Visita rechazada de %1$s</string>
+    <string name="chat_visita_cierra">El chat se cierra a las %1$s</string>
+    <string name="chat_visita_cerrado">Este chat ya se cerró</string>
+    <string name="chat_visita_vacio">Escribe a la portería si necesitas aclarar algo sobre esta visita</string>
+    <string name="chat_visita_vacio_porteria">Aún no hay mensajes</string>
+    <string name="chat_visita_escribir">Escribe un mensaje</string>
+    <string name="chat_visita_enviar">Enviar</string>
+    <string name="chat_visita_error">No se pudo enviar el mensaje</string>
+    <string name="chat_visita_abrir">Escribir a la portería</string>
+    <string name="chat_visita_abrir_porteria">Chat</string>
+    <string name="chat_visita_abrir_porteria_n">Chat (%1$d)</string>
+    <string name="chat_visita_rechazada">Rechazaste la visita. ¿Quieres escribirle a la portería?</string>
+    <string name="chat_visitas_abiertos">Chat con la portería: visita de %1$s</string>
+    <string name="aviso_chat_visita">Mensaje sobre una visita</string>
+    <string name="canal_chat_visita">Mensajes de la portería</string>
+</resources>

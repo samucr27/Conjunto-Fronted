@@ -20,6 +20,7 @@ import com.example.conjuntoresidencial.api.RetrofitClient
 import com.example.conjuntoresidencial.databinding.ActivityVisitaAlarmaBinding
 import com.example.conjuntoresidencial.ui.comun.DestinoNotificacion
 import kotlinx.coroutines.launch
+import coil.load
 
 /**
  * P8 bloque 3: la visita en portería a pantalla completa, encima de la pantalla de bloqueo.
@@ -45,7 +46,14 @@ class VisitaAlarmaActivity : AppCompatActivity() {
         binding.btnAutorizar.setOnClickListener { responder(AlarmaVisita.AUTORIZAR) }
         binding.btnRechazar.setOnClickListener { responder(AlarmaVisita.RECHAZAR) }
         binding.btnAbrirApp.setOnClickListener { abrirApp() }
-        binding.btnLlamarPorteria.setOnClickListener { llamarPorteria() }
+        // P10 bloque 7: tras rechazar, el residente puede escribirle a la portería (ya no se llama)
+        binding.btnChatPorteria.setOnClickListener {
+            com.example.conjuntoresidencial.ui.comun.ChatVisitaActivity.abrir(this, visitaId)
+            finish()
+        }
+        binding.imgVisitante.setOnClickListener {
+            com.example.conjuntoresidencial.ui.comun.FotosPorteria.verGrande(this, fotoUrl, binding.tvTitulo.text)
+        }
         com.example.conjuntoresidencial.util.ConjuntoElegido.actual(this)?.let {
             binding.tvConjunto.text = it.nombre
             binding.tvConjunto.isVisible = true
@@ -90,33 +98,33 @@ class VisitaAlarmaActivity : AppCompatActivity() {
         binding.tvDetalle.text = intent.getStringExtra(AlarmaVisita.EXTRA_MENSAJE).orEmpty()
         binding.tvEstado.isVisible = false
         botones(true)
+        binding.btnChatPorteria.isVisible = false
+        binding.grupoBotones.isVisible = true
+        mostrarFoto(null)
         empezarCuenta(AlarmaVisita.DURACION_MS)
         cargarDetalle()
-        cargarTelefono()
     }
 
-    private var telefonoPorteria: String? = null
+    private var fotoUrl: String? = null
 
-    /** P10: si la administración puso el teléfono de la portería, se ofrece llamar para preguntar. */
-    private fun cargarTelefono() {
-        lifecycleScope.launch {
-            telefonoPorteria = try {
-                RetrofitClient.comun.telefonoPorteria().body()?.telefono?.takeIf { it.isNotBlank() }
-            } catch (_: Exception) {
-                null
-            }
-            binding.btnLlamarPorteria.isVisible = telefonoPorteria != null
+    /** P10 bloque 7: la cara del visitante en el centro del anillo; sin foto, el ícono de persona. */
+    private fun mostrarFoto(url: String?) {
+        fotoUrl = url
+        val img = binding.imgVisitante
+        binding.tvAmpliarFoto.isVisible = url != null
+        img.isClickable = url != null
+        if (url == null) {
+            img.imageTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE)
+            val p = (56 * resources.displayMetrics.density).toInt()
+            img.setPadding(p, p, p, p)
+            img.setImageResource(R.drawable.ic_people)
+            return
         }
-    }
-
-    /** Abre el marcador con el número de la portería (no llama solo). La alarma se calla para hablar. */
-    private fun llamarPorteria() {
-        val numero = telefonoPorteria ?: return
-        AlarmaVisita.silenciar(this, visitaId)
-        try {
-            startActivity(Intent(Intent.ACTION_DIAL, android.net.Uri.parse("tel:$numero")))
-        } catch (_: android.content.ActivityNotFoundException) {
-            android.widget.Toast.makeText(this, R.string.alarma_sin_marcador, android.widget.Toast.LENGTH_LONG).show()
+        img.imageTintList = null
+        img.setPadding(0, 0, 0, 0)
+        img.load(url) {
+            crossfade(true)
+            listener(onError = { _, _ -> if (fotoUrl == url) mostrarFoto(null) })
         }
     }
 
@@ -131,6 +139,7 @@ class VisitaAlarmaActivity : AppCompatActivity() {
             } ?: return@launch
             if (id != visitaId) return@launch
             binding.tvTitulo.text = getString(R.string.porteria_residente_titulo, v.visitante)
+            if (v.fotoUrl != null) mostrarFoto(v.fotoUrl)
             binding.tvDetalle.text = listOfNotNull(
                 v.documento?.takeIf { it.isNotBlank() }?.let { getString(R.string.porteria_doc_linea, it) },
                 v.placa?.takeIf { it.isNotBlank() }?.let { getString(R.string.alarma_placa, it) },
@@ -160,7 +169,14 @@ class VisitaAlarmaActivity : AppCompatActivity() {
             if (isFinishing || isDestroyed) return@responder
             binding.tvEstado.text = texto
             binding.tvEstado.isVisible = true
-            if (ok) {
+            if (ok && decision == AlarmaVisita.RECHAZAR) {
+                // P10 bloque 7: rechazada: se ofrece el chat con la portería en vez de cerrarse sola
+                cuenta?.cancel()
+                binding.tvEstado.text = getString(R.string.chat_visita_rechazada)
+                binding.grupoBotones.isVisible = false
+                binding.btnChatPorteria.isVisible = true
+                binding.tvTiempo.isVisible = false
+            } else if (ok) {
                 cuenta?.cancel()
                 binding.root.postDelayed({ finish() }, 1500)
             } else {

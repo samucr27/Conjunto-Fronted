@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P10 bloque 7: foto redonda (visitante en la alerta) -->
+<resources>
+    <style name="FormaCirculo">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+</resources>

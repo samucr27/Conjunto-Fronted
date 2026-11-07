@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- P8 bloque 3: la visita en portería a pantalla completa, como una alarma.
      P10: diseño de llamada entrante: anillo con el tiempo que queda, tarjeta con el visitante,
-     botones redondos grandes para rechazar y aceptar, y llamar a la portería si hay dudas. -->
+     botones redondos grandes para rechazar y aceptar. P10 bloque 7: la foto del visitante en el centro. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -40,8 +40,8 @@
 
         <!-- El anillo se vacía mientras pasa el tiempo para responder -->
         <FrameLayout
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="230dp"
+            android:layout_height="230dp"
             android:layout_marginTop="28dp">
 
             <View
@@ -58,21 +58,35 @@
                 android:max="1000"
                 android:progress="1000"
                 app:indicatorColor="@android:color/white"
-                app:indicatorSize="150dp"
+                app:indicatorSize="210dp"
                 app:trackColor="#33FFFFFF"
                 app:trackCornerRadius="4dp"
                 app:trackThickness="6dp" />
 
-            <ImageView
-                android:layout_width="104dp"
-                android:layout_height="104dp"
+            <!-- P10 bloque 7: la foto de la cara que tomó la portería (o el ícono si no hay foto) -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imgVisitante"
+                android:layout_width="190dp"
+                android:layout_height="190dp"
                 android:layout_gravity="center"
                 android:background="@drawable/fondo_punto_bienvenida"
                 android:importantForAccessibility="no"
-                android:padding="26dp"
+                android:padding="56dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_people"
+                app:shapeAppearanceOverlay="@style/FormaCirculo"
                 app:tint="@android:color/white" />
         </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvAmpliarFoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/foto_toca_ampliar"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
+            android:textColor="#CCFFFFFF"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvTiempo"
@@ -190,15 +204,15 @@
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnLlamarPorteria"
+            android:id="@+id/btnChatPorteria"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="28dp"
-            android:text="@string/alarma_llamar_porteria"
+            android:text="@string/chat_visita_abrir"
             android:textColor="@color/colorPrimary"
             android:visibility="gone"
             app:backgroundTint="@android:color/white"
-            app:icon="@drawable/ic_telefono"
+            app:icon="@drawable/ic_chat"
             app:iconGravity="textStart"
             app:iconTint="@color/colorPrimary" />
 

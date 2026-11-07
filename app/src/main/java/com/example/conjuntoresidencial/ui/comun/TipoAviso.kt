@@ -76,7 +76,7 @@ data class TipoAviso(val categoria: CategoriaAviso, @StringRes val titulo: Int, 
                 t.startsWith("CUOTA") || t == "COMPROBANTE" || t == "SOLICITUD_CONTABLE" -> CategoriaAviso.PAGOS
                 t == "PUBLICACION" -> CategoriaAviso.PUBLICACIONES
                 t.startsWith("VISITA") -> CategoriaAviso.PORTERIA
-                t == "CHAT" -> CategoriaAviso.CHAT
+                t == "CHAT" || t == "CHAT_VISITA" -> CategoriaAviso.CHAT
                 t.startsWith("OBRA") || t.startsWith("PERSONAL_OBRA") -> CategoriaAviso.OBRAS
                 t.startsWith("CORRESPONDENCIA") || t == "RECIBO" -> CategoriaAviso.CORRESPONDENCIA
                 else -> CategoriaAviso.GENERAL

@@ -131,14 +131,6 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_margin="6dp" />
-                <!-- P10: teléfono de la portería (los residentes lo llaman desde la alerta de visita) -->
-                <include
-                    android:id="@+id/cardTelefonoPorteria"
-                    layout="@layout/item_tarjeta_menu"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="6dp" />
                 <!-- P9 bloque 3 -->
                 <include
                     android:id="@+id/cardCorrespondencia"

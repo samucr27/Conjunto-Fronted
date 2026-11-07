@@ -272,13 +272,17 @@ data class VisitaDTO(
     val guardia: String? = null,
     // P8 bloque 4: PEATONAL o VEHICULO, el parqueadero de invitados y la salida
     val tipoIngreso: String? = null, val parqueaderoId: Long? = null, val parqueadero: String? = null,
-    val salidaEn: String? = null
+    val salidaEn: String? = null,
+    // P10 bloque 7: foto del visitante (fotoUrl llega en las pendientes del residente), chat de la visita rechazada
+    val tieneFoto: Boolean = false, val fotoUrl: String? = null, val chatHasta: String? = null, val mensajesResidente: Long = 0
 )
 data class NuevaVisita(
     val torre: String, val apto: String, val visitante: String,
     val documento: String? = null, val placa: String? = null, val motivo: String? = null,
     // P8 bloque 4: sin parqueaderoId el backend asigna el primero libre
-    val tipoIngreso: String = "PEATONAL", val parqueaderoId: Long? = null
+    val tipoIngreso: String = "PEATONAL", val parqueaderoId: Long? = null,
+    // P10 bloque 7: la foto que se subió antes (POST api/porteria/fotos)
+    val fotoId: String? = null
 )
 /** P8 bloque 4: un parqueadero de invitados y, si está ocupado, la visita que lo ocupa. */
 data class ParqueaderoInvitadoDTO(
@@ -290,15 +294,22 @@ data class RespuestaVisita(val decision: String)
 data class CodigoConjuntoRequest(val codigo: String)
 data class PaseConjunto(val conjuntoId: Long, val pase: String)
 data class CodigoDelDiaDTO(val codigo: String, val cambiaEn: String?)
-// P10: teléfono de la portería del conjunto (null si la administración no lo ha puesto)
-data class TelefonoPorteriaDTO(val telefono: String?)
 // P9 bloque 3: correspondencia, paquetes y recibos
 data class CorrespondenciaDTO(
     val id: Long, val apartamentoId: Long?, val torre: String, val apto: String, val tipo: String,
     val remitente: String?, val nota: String?, val estado: String, val recibidaEn: String?, val guardia: String?,
-    val entregadaEn: String?, val entregadaA: String?, val entregadaPor: String?
+    val entregadaEn: String?, val entregadaA: String?, val entregadaPor: String?,
+    val tieneFoto: Boolean = false
 )
-data class NuevaCorrespondencia(val torre: String, val apto: String, val tipo: String, val remitente: String?, val nota: String?)
+data class NuevaCorrespondencia(val torre: String, val apto: String, val tipo: String, val remitente: String?, val nota: String?,
+                                val fotoId: String? = null)
+// P10 bloque 7: fotos de la portería y chat temporal de una visita rechazada
+data class FotoSubida(val fotoId: String)
+data class EnlaceFoto(val url: String?)
+data class MensajeVisitaDTO(val id: Long, val deResidente: Boolean, val autor: String?, val texto: String, val creadoEn: String)
+data class ChatVisitaDTO(val visitaId: Long, val visitante: String, val torre: String, val apto: String, val abierto: Boolean,
+                         val cierraEn: String?, val mensajes: List<MensajeVisitaDTO>)
+data class NuevoMensajeVisita(val texto: String)
 data class ReciboParaTodos(val remitente: String, val nota: String?)
 data class LoteCorrespondencia(val lote: String?, val creadas: Int)
 data class EntregaCorrespondencia(val recibidaPor: String)

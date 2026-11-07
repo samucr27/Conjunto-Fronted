@@ -202,6 +202,59 @@
                     android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- P10 bloque 7: la foto de la cara para que el residente vea quién es -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgFotoVisita"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="?attr/colorSecondaryContainer"
+                    android:contentDescription="@string/foto_ver"
+                    android:padding="18dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_camara"
+                    app:shapeAppearanceOverlay="@style/FormaCirculo"
+                    app:tint="?attr/colorOnSecondaryContainer" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnFotoVisita"
+                        style="@style/Widget.Material3.Button.TonalButton.Icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="@string/foto_tomar_visitante"
+                        app:icon="@drawable/ic_camara" />
+                    <TextView
+                        android:id="@+id/tvAyudaFotoVisita"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/foto_ayuda_visitante"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnQuitarFotoVisita"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/foto_quitar"
+                    android:visibility="gone"
+                    app:icon="@drawable/ic_close" />
+            </LinearLayout>
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnRegistrarVisita"
                 android:layout_width="match_parent"

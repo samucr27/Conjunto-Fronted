@@ -37,6 +37,33 @@
             android:textAppearance="?attr/textAppearanceLabelLarge"
             android:textColor="?attr/colorPrimary" />
 
+        <!-- P10 bloque 7: la foto del visitante y el chat si el residente la rechazó -->
+        <LinearLayout
+            android:id="@+id/accionesExtra"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVerFotoVisita"
+                style="@style/Widget.Material3.Button.TextButton.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/foto_ver"
+                android:visibility="gone"
+                app:icon="@drawable/ic_camara" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnChatVisita"
+                style="@style/Widget.Material3.Button.TonalButton.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chat_visita_abrir_porteria"
+                android:visibility="gone"
+                app:icon="@drawable/ic_chat" />
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/accionesVisita"
             android:layout_width="match_parent"

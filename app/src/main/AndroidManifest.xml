@@ -41,6 +41,24 @@
             android:taskAffinity=""
             android:turnScreenOn="true" />
 
+        <!-- P10 bloque 7: chat temporal de una visita rechazada (residente y portería) -->
+        <activity
+            android:name=".ui.comun.ChatVisitaActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- P10 bloque 7: la cámara guarda aquí la foto del visitante o del paquete (caché, se borra al subirla) -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.archivos"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/rutas_archivos" />
+        </provider>
+
         <receiver
             android:name=".push.RespuestaVisitaReceiver"
             android:exported="false" />

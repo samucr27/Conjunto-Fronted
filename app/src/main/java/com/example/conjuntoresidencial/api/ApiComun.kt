@@ -89,12 +89,26 @@ interface ApiComun {
     @GET("api/codigo-conjunto")
     suspend fun codigoDelDia(): Response<CodigoDelDiaDTO>
 
-    // P10: teléfono de la portería (lo lee cualquiera con sesión; lo cambia la administración)
-    @GET("api/telefono-porteria")
-    suspend fun telefonoPorteria(): Response<TelefonoPorteriaDTO>
+    // P10 bloque 7: la portería sube la foto (del visitante o del paquete) antes de registrar
+    @Multipart
+    @POST("api/porteria/fotos")
+    suspend fun subirFotoPorteria(@Part archivo: okhttp3.MultipartBody.Part): Response<FotoSubida>
 
-    @PUT("api/telefono-porteria")
-    suspend fun cambiarTelefonoPorteria(@Body t: TelefonoPorteriaDTO): Response<TelefonoPorteriaDTO>
+    @GET("api/porteria/visitas/{id}/foto")
+    suspend fun fotoVisita(@Path("id") id: Long): Response<EnlaceFoto>
+
+    @GET("api/porteria/correspondencia/{id}/foto")
+    suspend fun fotoCorrespondencia(@Path("id") id: Long): Response<EnlaceFoto>
+
+    // P10 bloque 7: chat temporal de una visita rechazada (residente del apartamento y portería)
+    @GET("api/porteria/visitas/chats")
+    suspend fun chatsDeVisitas(): Response<List<VisitaDTO>>
+
+    @GET("api/porteria/visitas/{id}/chat")
+    suspend fun chatVisita(@Path("id") id: Long): Response<ChatVisitaDTO>
+
+    @POST("api/porteria/visitas/{id}/chat")
+    suspend fun escribirChatVisita(@Path("id") id: Long, @Body m: NuevoMensajeVisita): Response<MensajeVisitaDTO>
 
     // P8 bloque 4: parqueaderos de invitados y salida del visitante (portería y administración)
     @GET("api/porteria/parqueaderos")

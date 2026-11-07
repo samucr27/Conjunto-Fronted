@@ -93,4 +93,47 @@
             android:maxLength="300"
             android:maxLines="2" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- P10 bloque 7: foto del paquete (solo al registrar) -->
+    <LinearLayout
+        android:id="@+id/filaFoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgFoto"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="12dp"
+            android:background="?attr/colorSecondaryContainer"
+            android:contentDescription="@string/foto_del_paquete"
+            android:padding="16dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_camara"
+            app:shapeAppearanceOverlay="@style/FormaCirculo"
+            app:tint="?attr/colorOnSecondaryContainer" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFoto"
+                style="@style/Widget.Material3.Button.TonalButton.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/foto_tomar_paquete"
+                app:icon="@drawable/ic_camara" />
+            <TextView
+                android:id="@+id/tvAyudaFoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/foto_ayuda_paquete"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

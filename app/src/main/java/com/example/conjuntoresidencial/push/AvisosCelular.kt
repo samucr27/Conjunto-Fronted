@@ -105,12 +105,12 @@ object AvisosCelular {
     }
 
     /** Muestra el aviso; al tocarlo, MainActivity abre la pantalla correspondiente. */
-    fun mostrar(context: Context, titulo: String, mensaje: String, destino: DestinoNotificacion?) {
+    fun mostrar(context: Context, titulo: String, mensaje: String, destino: DestinoNotificacion?, abrirEn: Intent? = null) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) return
 
-        val abrir = Intent(context, MainActivity::class.java)
+        val abrir = abrirEn?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) ?: Intent(context, MainActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         destino?.ponerEn(abrir)
         // Un id por notificación: cada aviso abre lo suyo y no se pisan entre sí

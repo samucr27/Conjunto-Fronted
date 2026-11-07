@@ -93,15 +93,30 @@
             </LinearLayout>
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnEntregar"
-            style="@style/Widget.Material3.Button.TonalButton"
+        <!-- P10 bloque 7: ver la foto del paquete (si la portería la tomó) y entregar -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginTop="6dp"
-            android:text="@string/corr_entregar"
-            android:visibility="gone"
-            app:icon="@drawable/ic_check_circle" />
+            android:orientation="horizontal">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFoto"
+                style="@style/Widget.Material3.Button.TextButton.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/foto_ver"
+                android:visibility="gone"
+                app:icon="@drawable/ic_camara" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEntregar"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/corr_entregar"
+                android:visibility="gone"
+                app:icon="@drawable/ic_check_circle" />
+        </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
