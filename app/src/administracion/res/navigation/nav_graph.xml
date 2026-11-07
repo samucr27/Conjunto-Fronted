@@ -17,6 +17,12 @@
         android:name="com.example.conjuntoresidencial.ui.auth.ElegirConjuntoFragment"
         android:label="Elegir conjunto" />
 
+    <!-- P11: el código del conjunto la primera vez (como en la app de residentes) -->
+    <fragment
+        android:id="@+id/codigoConjuntoFragment"
+        android:name="com.example.conjuntoresidencial.ui.auth.CodigoConjuntoFragment"
+        android:label="Código del conjunto" />
+
     <fragment
         android:id="@+id/chatFragment"
         android:name="com.example.conjuntoresidencial.ui.chat.ChatFragment"

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P11: en la app de portería el código lo da la administración -->
+<resources>
+    <string name="codigo_descripcion">Pídelo en la administración</string>
+    <string name="codigo_explicacion">Para que solo use esta app la portería del conjunto, la primera vez te pedimos su código. Cambia cada día: pídelo en la administración. Solo lo pones una vez en este celular.</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P11: en la app de administración el código lo da el equipo de MiConjunto o el administrador principal -->
+<resources>
+    <string name="codigo_descripcion">Te lo da el equipo de MiConjunto o el administrador principal</string>
+    <string name="codigo_explicacion">Para que solo entre la administración del conjunto, la primera vez te pedimos su código. Cambia cada día: pídelo al equipo de MiConjunto o a quien ya administra el conjunto. Solo lo pones una vez en este celular.</string>
+</resources>

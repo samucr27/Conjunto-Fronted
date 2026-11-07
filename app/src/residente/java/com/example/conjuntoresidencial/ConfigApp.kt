@@ -16,7 +16,7 @@ object ConfigApp {
     const val usaConjunto = true
 
     /** P8 bloque 2: la primera vez se elige si se entra como propietario o arrendatario. */
-    /** P9 bloque 2: después del conjunto se pide su código diario (solo la app de residentes). */
+    /** P9/P11: después del conjunto se pide su código diario (residentes, administración y portería). */
     const val pideCodigo = true
 
     const val pideRol = true

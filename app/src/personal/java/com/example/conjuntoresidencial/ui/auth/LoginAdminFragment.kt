@@ -79,6 +79,8 @@ class LoginAdminFragment : Fragment() {
                 is Resource.Error -> {
                     binding.progressAdmin.visibility = View.GONE
                     binding.btnIngresarAdmin.isEnabled = true
+                    // P11: si el servidor pidió el código del conjunto (428), se vuelve a pedir
+                    if (irAPasoPendiente()) return@observe
                     aviso(resource.message, Snackbar.LENGTH_LONG).show()
                 }
             }

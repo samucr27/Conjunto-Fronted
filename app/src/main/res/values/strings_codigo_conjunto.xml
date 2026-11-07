@@ -3,7 +3,7 @@
 <resources>
     <!-- Administración, portería y plataforma -->
     <string name="codigo_hoy_titulo">Código del conjunto hoy</string>
-    <string name="codigo_hoy_cambia">Cambia a medianoche. Dáselo en persona a quien viva aquí.</string>
+    <string name="codigo_hoy_cambia">Cambia a medianoche. Dáselo en persona a quien viva o trabaje aquí.</string>
     <string name="codigo_mostrar">Mostrar el código</string>
     <string name="codigo_ocultar">Ocultar el código</string>
     <string name="codigo_oculto">Código oculto. Toca el ojo para verlo.</string>
