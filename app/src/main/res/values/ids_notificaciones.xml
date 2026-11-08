@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P12: destino que solo existe en el grafo de la app de residentes (DestinoNotificacion lo comprueba) -->
+<resources>
+    <item name="visitantesActivosFragment" type="id" />
+</resources>

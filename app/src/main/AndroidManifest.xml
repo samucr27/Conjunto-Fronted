@@ -62,6 +62,9 @@
         <receiver
             android:name=".push.RespuestaVisitaReceiver"
             android:exported="false" />
+        <receiver
+            android:name=".push.SalidaVisitaReceiver"
+            android:exported="false" />
 
         <!-- Avisos de Firebase (push/ServicioMensajes) -->
         <service

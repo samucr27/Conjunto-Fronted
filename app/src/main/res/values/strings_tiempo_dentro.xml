@@ -4,4 +4,8 @@
     <string name="tiempo_dentro_min">%1$d min</string>
     <string name="tiempo_dentro_horas">%1$d h %2$02d min</string>
     <string name="aviso_visita_salida">Tu visitante salió</string>
+    <!-- Recordatorio cada pocas horas mientras el visitante siga adentro (push/SalidaVisitaReceiver) -->
+    <string name="aviso_visita_sigue_dentro">¿Tu visitante sigue adentro?</string>
+    <string name="aviso_visita_ya_salio">Ya salió</string>
+    <string name="aviso_visita_salida_ok">Listo, registramos la salida</string>
 </resources>

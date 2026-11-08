@@ -105,7 +105,8 @@ object AvisosCelular {
     }
 
     /** Muestra el aviso; al tocarlo, MainActivity abre la pantalla correspondiente. */
-    fun mostrar(context: Context, titulo: String, mensaje: String, destino: DestinoNotificacion?, abrirEn: Intent? = null) {
+    fun mostrar(context: Context, titulo: String, mensaje: String, destino: DestinoNotificacion?, abrirEn: Intent? = null,
+                acciones: (id: Int) -> List<NotificationCompat.Action> = { emptyList() }) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) return
@@ -140,6 +141,7 @@ object AvisosCelular {
             .setCategory(if (categoria == CategoriaAviso.CHAT) NotificationCompat.CATEGORY_MESSAGE else NotificationCompat.CATEGORY_EVENT)
             .setAutoCancel(true)
             .setContentIntent(alTocar)
+            .apply { acciones(id).forEach { addAction(it) } }
             .build()
         val gestor = NotificationManagerCompat.from(context)
         gestor.notify(id, aviso)

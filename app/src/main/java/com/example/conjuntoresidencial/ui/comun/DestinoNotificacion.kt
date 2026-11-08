@@ -41,6 +41,9 @@ data class DestinoNotificacion(
             tipo.startsWith(TIPO_SOLICITUD_CONTABLE) -> if (referenciaId != null)
                 nav.navigate(R.id.solicitudDetalleFragment, bundleOf("solicitudId" to referenciaId))
             else nav.navigate(R.id.solicitudesContablesFragment)
+            // P12: "¿sigue adentro?" → Visitantes activos (solo en la app de residentes; si no, Inicio)
+            tipo == TIPO_VISITA_SIGUE_DENTRO -> nav.navigate(
+                if (nav.graph.findNode(R.id.visitantesActivosFragment) != null) R.id.visitantesActivosFragment else R.id.inicioFragment)
             // Nueva publicación → el feed de Inicio
             tipo == TIPO_PUBLICACION || tipo == TIPO_VISITA || tipo == TIPO_VISITA_FRECUENTE || tipo == "VISITA_SALIDA" -> nav.navigate(R.id.inicioFragment)
             // Comprobante por revisar → Facturación; cuota nueva o revisada → Mi cartera
@@ -94,6 +97,8 @@ data class DestinoNotificacion(
         const val TIPO_RECIBO = "RECIBO"
         /** P12 bloque 3: autorizar la entrega de la correspondencia (suena como la visita). */
         const val TIPO_ENTREGA = "ENTREGA_CORRESPONDENCIA"
+        /** P12: recordatorio de que un visitante sigue adentro (con el botón Ya salió). */
+        const val TIPO_VISITA_SIGUE_DENTRO = "VISITA_SIGUE_DENTRO"
         private const val EXTRA_TIPO = "notificacion_tipo"
         private const val EXTRA_NOTIFICACION = "notificacion_id"
         private const val EXTRA_REFERENCIA = "notificacion_referencia"

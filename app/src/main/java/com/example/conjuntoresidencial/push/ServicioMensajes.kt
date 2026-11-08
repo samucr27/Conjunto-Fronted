@@ -41,7 +41,11 @@ class ServicioMensajes : FirebaseMessagingService() {
             datos["mensaje"].orEmpty(),
             DestinoNotificacion.de(datos),
             chat
-        )
+        ) { id ->
+            // P12: "¿tu visitante sigue adentro?" con el botón Ya salió
+            if (datos["tipo"] == DestinoNotificacion.TIPO_VISITA_SIGUE_DENTRO && visita != null)
+                listOf(SalidaVisitaReceiver.accion(this, visita, id)) else emptyList()
+        }
     }
 
     private companion object {
