@@ -68,6 +68,85 @@ object OrdenHerramientas {
         val ordenadas = ordenar(grid.context, porDefecto)
         actuales.forEach { grid.removeView(it) }
         lugares.zip(ordenadas).sortedBy { it.first }.forEach { (lugar, v) -> grid.addView(v, lugar) }
+        igualarAltos(grid)
+        permitirArrastrar(grid)
+    }
+
+    /**
+     * P12: todas las tarjetas del alto de la más alta (si no, cada fila mide distinto según si el
+     * texto ocupa una o dos líneas). Se recalcula cuando cambia el ancho (girar el celular).
+     */
+    fun igualarAltos(grid: ViewGroup) {
+        if (grid.getTag(R.id.orden_igualar) == null) {
+            grid.setTag(R.id.orden_igualar, true)
+            grid.addOnLayoutChangeListener { v, l, _, r, _, ol, _, or, _ ->
+                if (r - l != or - ol) (v as ViewGroup).post { medirYIgualar(v) }
+            }
+        }
+        grid.post { medirYIgualar(grid) }
+    }
+
+    private fun medirYIgualar(grid: ViewGroup) {
+        val lista = tarjetas(grid)
+        val ancho = lista.firstOrNull()?.width ?: 0
+        if (ancho <= 0) return
+        val alto = lista.maxOf {
+            it.measure(View.MeasureSpec.makeMeasureSpec(ancho, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+            it.measuredHeight
+        }
+        var cambio = false
+        lista.forEach { t ->
+            if (t.layoutParams.height != alto) { t.layoutParams.height = alto; cambio = true }
+        }
+        if (cambio) grid.requestLayout()
+    }
+
+    /**
+     * P12: mantener pulsada una tarjeta y arrastrarla a otro lugar de la cuadrícula. Las demás se
+     * corren mientras se arrastra y el orden se guarda al soltarla.
+     */
+    private fun permitirArrastrar(grid: ViewGroup) {
+        tarjetas(grid).forEach { tarjeta ->
+            tarjeta.setOnLongClickListener { v ->
+                v.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
+                val sombra = View.DragShadowBuilder(v)
+                val inicio = v.startDragAndDrop(null, sombra, v, 0)
+                if (inicio) v.alpha = 0.25f
+                inicio
+            }
+            tarjeta.setOnDragListener { destino, e ->
+                val arrastrada = e.localState as? View ?: return@setOnDragListener false
+                if (arrastrada.parent !== grid) return@setOnDragListener false
+                // Al entrar en otra tarjeta, la arrastrada toma su lugar (después del evento: no se
+                // cambian las vistas mientras se reparte)
+                if (e.action == android.view.DragEvent.ACTION_DRAG_ENTERED && destino !== arrastrada) {
+                    grid.post { if (destino.parent === grid && arrastrada.parent === grid) mover(grid, arrastrada, destino) }
+                }
+                true
+            }
+        }
+        // El final del arrastre lo atiende la cuadrícula (la tarjeta movida pudo salir y volver a entrar)
+        grid.setOnDragListener { _, e ->
+            val arrastrada = e.localState as? View ?: return@setOnDragListener false
+            if (e.action == android.view.DragEvent.ACTION_DRAG_ENDED && arrastrada.alpha < 1f) {
+                arrastrada.alpha = 1f
+                if (arrastrada.parent === grid) guardar(grid.context, tarjetas(grid).map { nombre(it) })
+            }
+            true
+        }
+    }
+
+    /** Pone [arrastrada] en el lugar de [destino]; las del medio se corren un puesto. */
+    private fun mover(grid: ViewGroup, arrastrada: View, destino: View) {
+        val lista = tarjetas(grid)
+        val lugares = lista.map { grid.indexOfChild(it) }
+        val nuevo = lista.toMutableList()
+        val hasta = nuevo.indexOf(destino)
+        nuevo.remove(arrastrada)
+        nuevo.add(hasta, arrastrada)
+        android.transition.TransitionManager.beginDelayedTransition(grid, android.transition.ChangeBounds().setDuration(150))
+        lista.forEach { grid.removeView(it) }
+        lugares.zip(nuevo).sortedBy { it.first }.forEach { (lugar, v) -> grid.addView(v, lugar) }
     }
 
     private fun guardar(ctx: Context, visibles: List<String>) {
@@ -117,6 +196,21 @@ object OrdenHerramientas {
                         setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge)
                         setPadding((16 * d).toInt(), 0, (16 * d).toInt(), 0)
                     }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+                    // P12: flechas para subir y bajar sin tener que arrastrar
+                    listOf(R.id.accion_subir to R.drawable.ic_arrow_upward, R.id.accion_bajar to R.drawable.ic_arrow_downward)
+                        .forEach { (accion, icono) ->
+                            addView(ImageView(ctx).apply {
+                                id = accion
+                                setImageResource(icono)
+                                contentDescription = ctx.getString(if (accion == R.id.accion_subir) R.string.herramientas_subir else R.string.herramientas_bajar)
+                                setPadding((12 * d).toInt(), (12 * d).toInt(), (12 * d).toInt(), (12 * d).toInt())
+                                isClickable = true
+                                isFocusable = true
+                                val fondo = android.util.TypedValue()
+                                ctx.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, fondo, true)
+                                setBackgroundResource(fondo.resourceId)
+                            }, LinearLayout.LayoutParams((44 * d).toInt(), (44 * d).toInt()))
+                        }
                     addView(ImageView(ctx).apply {
                         id = R.id.subtitulo
                         setImageResource(R.drawable.ic_drag_handle)
@@ -130,6 +224,10 @@ object OrdenHerramientas {
                         if (e.actionMasked == MotionEvent.ACTION_DOWN) arrastre.startDrag(vh)
                         false
                     }
+                    @Suppress("DEPRECATION")
+                    fila.findViewById<View>(R.id.accion_subir).setOnClickListener { mover(vh.adapterPosition, vh.adapterPosition - 1) }
+                    @Suppress("DEPRECATION")
+                    fila.findViewById<View>(R.id.accion_bajar).setOnClickListener { mover(vh.adapterPosition, vh.adapterPosition + 1) }
                 }
             }
 
@@ -138,6 +236,9 @@ object OrdenHerramientas {
                 val item = items[posicion]
                 vh.itemView.findViewById<ImageView>(R.id.icono).setImageDrawable(item.icono)
                 vh.itemView.findViewById<TextView>(R.id.titulo).text = item.titulo
+                // La primera no sube y la última no baja
+                vh.itemView.findViewById<View>(R.id.accion_subir).visibility = if (posicion > 0) View.VISIBLE else View.INVISIBLE
+                vh.itemView.findViewById<View>(R.id.accion_bajar).visibility = if (posicion < items.size - 1) View.VISIBLE else View.INVISIBLE
                 vh.itemView.contentDescription = ctx.getString(R.string.herramientas_posicion, item.titulo, posicion + 1, items.size)
                 ViewCompat.removeAccessibilityAction(vh.itemView, R.id.accion_subir)
                 ViewCompat.removeAccessibilityAction(vh.itemView, R.id.accion_bajar)

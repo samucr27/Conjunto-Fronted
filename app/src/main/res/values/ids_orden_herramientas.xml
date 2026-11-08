@@ -2,6 +2,7 @@
 <!-- P11: ordenar Herramientas (etiqueta con el orden de siempre y acciones de TalkBack) -->
 <resources>
     <item name="orden_por_defecto" type="id" />
+    <item name="orden_igualar" type="id" />
     <item name="accion_subir" type="id" />
     <item name="accion_bajar" type="id" />
 </resources>
