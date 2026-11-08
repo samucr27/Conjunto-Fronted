@@ -14,7 +14,8 @@ import com.example.conjuntoresidencial.ui.comun.DiffPorId
  * servidor aún no lo manda, se deduce de si hay arrendatario activo (null = sin dato).
  */
 fun textoOcupacion(contexto: android.content.Context, tipo: String?, arrendado: Boolean): String? = when {
-    tipo == "ARRENDATARIO" || (tipo == null && arrendado) -> contexto.getString(R.string.ocupacion_arrendado)
+    // P11: si hay un arrendatario activo manda eso, aunque la ocupación no se haya fijado (datos viejos)
+    tipo == "ARRENDATARIO" || arrendado -> contexto.getString(R.string.ocupacion_arrendado)
     tipo == "DESOCUPADO" -> contexto.getString(R.string.ocupacion_desocupado)
     tipo == "PROPIETARIO" -> contexto.getString(R.string.ocupacion_propietario)
     else -> null

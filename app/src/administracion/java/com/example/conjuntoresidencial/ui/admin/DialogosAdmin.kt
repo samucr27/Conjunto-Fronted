@@ -61,7 +61,7 @@ fun Fragment.pedirOcupacion(actual: Apartamento, alGuardar: (OcupacionYBanderas)
         RadioButton(contexto).apply {
             id = View.generateViewId()
             setText(texto)
-            isChecked = (actual.tipoOcupacion ?: "PROPIETARIO") == tipo
+            isChecked = (if (actual.arrendado == true) "ARRENDATARIO" else actual.tipoOcupacion ?: "PROPIETARIO") == tipo
             grupo.addView(this)
         }
     }

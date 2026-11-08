@@ -87,6 +87,8 @@ class LoginApartamentoFragment : Fragment() {
                 is Resource.Error -> {
                     binding.progressApto.visibility = View.GONE
                     binding.btnLoginApto.isEnabled = true
+                    // P11: si el servidor pidió el código del conjunto (428), se vuelve a pedir
+                    if (irAPasoPendiente()) return@observe
                     aviso(resource.message, Snackbar.LENGTH_LONG).show()
                 }
             }
