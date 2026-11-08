@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P12 bloque 3: el residente autoriza la entrega de su correspondencia (como la citofonía) -->
+<resources>
+    <string name="entrega_alarma_titulo">%1$s quiere recoger tu correspondencia</string>
+    <string name="entrega_autorizada_ok">Entrega autorizada</string>
+    <string name="entrega_rechazada_ok">Entrega rechazada</string>
+    <string name="entrega_rechazada_chat">Rechazaste la entrega. ¿Quieres escribirle a la portería?</string>
+    <string name="entrega_chat_sobre">Sobre la entrega de %1$s a %2$s, que rechazaste</string>
+    <string name="entrega_chat_sobre_porteria">Entrega rechazada: %1$s a %2$s</string>
+    <string name="entrega_chat_vacio">Escribe a la portería si necesitas aclarar algo sobre esta entrega</string>
+    <string name="aviso_entrega_correspondencia">Entrega de correspondencia</string>
+
+    <!-- Estado de la solicitud en las listas -->
+    <string name="entrega_estado_pendiente">Esperando que el apartamento autorice la entrega a %1$s</string>
+    <string name="entrega_estado_autorizada">El apartamento autorizó la entrega a %1$s (%2$s)</string>
+    <string name="entrega_estado_rechazada">El apartamento rechazó la entrega a %1$s (%2$s)</string>
+    <string name="entrega_estado_expirada">Nadie respondió a tiempo la entrega a %1$s</string>
+    <string name="entrega_por_app">desde la app</string>
+    <string name="entrega_por_llamada">por llamada</string>
+
+    <!-- Residente: lo que espera su respuesta -->
+    <string name="entrega_residente_espera">%1$s quiere recogerla</string>
+    <string name="entrega_autorizar">Autorizar</string>
+    <string name="entrega_rechazar">Rechazar</string>
+    <string name="corr_chat">Chat</string>
+    <string name="corr_chat_n">Chat (%1$d)</string>
+
+    <!-- Portería: los pasos para entregar -->
+    <string name="corr_pedir_autorizacion">Pedir autorización</string>
+    <string name="corr_respuesta_llamada">Respuesta por llamada</string>
+    <string name="corr_pedir_titulo">¿Quién la recoge?</string>
+    <string name="corr_pedir_mensaje">%1$s para Torre %2$s · Apto %3$s. Al apartamento le llega una alerta para que autorice la entrega.</string>
+    <string name="corr_documento_recoge">Documento (opcional)</string>
+    <string name="corr_pedir">Pedir autorización</string>
+    <string name="corr_pedida_ok">Se pidió la autorización al apartamento</string>
+    <string name="corr_llamada_titulo">Respuesta por llamada</string>
+    <string name="corr_llamada_mensaje">Si el apartamento contestó por teléfono, registra lo que dijo sobre la entrega a %1$s.</string>
+    <string name="corr_llamada_autorizo">Autorizó</string>
+    <string name="corr_llamada_rechazo">Rechazó</string>
+    <string name="corr_entregar_confirmar">¿Entregar a %1$s?</string>
+    <string name="corr_entregar_confirmar_detalle">El apartamento autorizó la entrega %1$s.</string>
+    <string name="foto_tomar_quien_recoge">Tomar foto de quien recoge</string>
+    <string name="foto_ayuda_quien_recoge">Opcional: el residente la ve en la alerta</string>
+    <string name="foto_de_quien_recoge">Quien recoge</string>
+</resources>

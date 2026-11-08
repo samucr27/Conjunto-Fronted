@@ -109,6 +109,24 @@
                 android:text="@string/foto_ver"
                 android:visibility="gone"
                 app:icon="@drawable/ic_camara" />
+            <!-- P12 bloque 3: chat si se rechazó la entrega; el residente también puede rechazarla aquí -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnChat"
+                style="@style/Widget.Material3.Button.TextButton.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/corr_chat"
+                android:visibility="gone"
+                app:icon="@drawable/ic_chat" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRechazar"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/entrega_rechazar"
+                android:visibility="gone" />
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEntregar"
                 style="@style/Widget.Material3.Button.TonalButton"

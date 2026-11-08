@@ -40,6 +40,11 @@ object AlarmaVisita {
     const val EXTRA_DECISION = "visita_decision"
     const val AUTORIZAR = "AUTORIZAR"
     const val RECHAZAR = "RECHAZAR"
+    /**
+     * P12 bloque 3: la misma alarma para autorizar la entrega de la correspondencia a quien la
+     * recoge; entonces el id es el de la correspondencia.
+     */
+    const val EXTRA_ENTREGA = "es_entrega"
 
     // Canal propio: el sonido y la vibración de un canal no se pueden cambiar después de creado.
     // P10: uno por combinación de tono y modo que elija el residente (PreferenciasAlarma)
@@ -49,7 +54,9 @@ object AlarmaVisita {
 
     private val alcance = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    fun idNotificacion(visitaId: Long): Int = BASE_ID + (visitaId % 0x3FFF_FFFF).toInt()
+    /** Las visitas y las entregas van en mitades distintas para que sus ids no choquen. */
+    fun idNotificacion(visitaId: Long, entrega: Boolean = false): Int =
+        BASE_ID + (if (entrega) 0x2000_0000 else 0) + (visitaId % 0x1FFF_FFFF).toInt()
 
     /** Crea (si hace falta) el canal con el tono y el modo elegidos y devuelve su id. */
     fun crearCanal(context: Context): String {
@@ -76,24 +83,25 @@ object AlarmaVisita {
 
     private val VIBRACION = longArrayOf(0, 800, 400, 800, 400, 800, 1200)
 
-    /** Hace sonar la alarma de la visita [visitaId]. */
-    fun sonar(context: Context, visitaId: Long, titulo: String, mensaje: String) {
+    /** Hace sonar la alarma de la visita [visitaId] (o, P12, de la entrega de la correspondencia [visitaId]). */
+    fun sonar(context: Context, visitaId: Long, titulo: String, mensaje: String, entrega: Boolean = false) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) return
         val canal = crearCanal(context)
-        val id = idNotificacion(visitaId)
+        val id = idNotificacion(visitaId, entrega)
 
         val pantalla = Intent(context, VisitaAlarmaActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
             .putExtra(EXTRA_VISITA, visitaId)
+            .putExtra(EXTRA_ENTREGA, entrega)
             .putExtra(EXTRA_TITULO, titulo)
             .putExtra(EXTRA_MENSAJE, mensaje)
         val abrirPantalla = PendingIntent.getActivity(context, id, pantalla,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
         val aviso = NotificationCompat.Builder(context, canal)
-            .setSmallIcon(R.drawable.ic_people)
+            .setSmallIcon(if (entrega) R.drawable.ic_package else R.drawable.ic_people)
             .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
             .setContentTitle(titulo)
             .setContentText(mensaje)
@@ -111,20 +119,21 @@ object AlarmaVisita {
             .setTimeoutAfter(DURACION_MS)
             .setContentIntent(abrirPantalla)
             .setFullScreenIntent(abrirPantalla, true)
-            .addAction(0, context.getString(R.string.porteria_rechazar), accion(context, visitaId, RECHAZAR))
-            .addAction(0, context.getString(R.string.porteria_autorizar), accion(context, visitaId, AUTORIZAR))
+            .addAction(0, context.getString(R.string.porteria_rechazar), accion(context, visitaId, RECHAZAR, entrega))
+            .addAction(0, context.getString(R.string.porteria_autorizar), accion(context, visitaId, AUTORIZAR, entrega))
             .build()
             // Repite el sonido hasta que se responda o se quite el aviso
             .apply { flags = flags or android.app.Notification.FLAG_INSISTENT }
         NotificationManagerCompat.from(context).notify(id, aviso)
     }
 
-    private fun accion(context: Context, visitaId: Long, decision: String): PendingIntent {
+    private fun accion(context: Context, visitaId: Long, decision: String, entrega: Boolean): PendingIntent {
         val intent = Intent(context, RespuestaVisitaReceiver::class.java)
             .putExtra(EXTRA_VISITA, visitaId)
+            .putExtra(EXTRA_ENTREGA, entrega)
             .putExtra(EXTRA_DECISION, decision)
         // Un request code por visita y decisión: si no, los dos botones serían el mismo
-        val codigo = idNotificacion(visitaId) xor (if (decision == AUTORIZAR) 1 else 2)
+        val codigo = idNotificacion(visitaId, entrega) xor (if (decision == AUTORIZAR) 1 else 2)
         return PendingIntent.getBroadcast(context, codigo, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     }
 
@@ -132,12 +141,13 @@ object AlarmaVisita {
      * P10: calla el sonido sin quitar la pantalla (para llamar a la portería): vuelve a publicar el
      * aviso sin sonido ni vibración; Autorizar y Rechazar siguen funcionando.
      */
-    fun silenciar(context: Context, visitaId: Long) {
+    fun silenciar(context: Context, visitaId: Long, entrega: Boolean = false) {
         val nm = NotificationManagerCompat.from(context)
+        val id = idNotificacion(visitaId, entrega)
         val actual = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            context.getSystemService(NotificationManager::class.java).activeNotifications.firstOrNull { it.id == idNotificacion(visitaId) }
+            context.getSystemService(NotificationManager::class.java).activeNotifications.firstOrNull { it.id == id }
         else null
-        nm.cancel(idNotificacion(visitaId))
+        nm.cancel(id)
         val n = actual?.notification ?: return
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val silencio = NotificationChannel(BASE_CANAL + "_silencio", context.getString(R.string.canal_alarma_visita), NotificationManager.IMPORTANCE_LOW)
@@ -145,25 +155,32 @@ object AlarmaVisita {
         val copia = android.app.Notification.Builder.recoverBuilder(context, n).setChannelId(silencio.id).build()
         copia.flags = copia.flags and android.app.Notification.FLAG_INSISTENT.inv()
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED ||
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) nm.notify(idNotificacion(visitaId), copia)
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) nm.notify(id, copia)
     }
 
     /** Quita el aviso y calla la alarma (respondida aquí, en Inicio o en otro celular). */
-    fun detener(context: Context, visitaId: Long) {
-        NotificationManagerCompat.from(context).cancel(idNotificacion(visitaId))
+    fun detener(context: Context, visitaId: Long, entrega: Boolean = false) {
+        NotificationManagerCompat.from(context).cancel(idNotificacion(visitaId, entrega))
     }
 
     /**
-     * Contesta la visita. [alTerminar] recibe el texto para mostrar (en el hilo principal).
-     * Sin sesión en el celular el backend responde 401 y se pide abrir la app.
+     * Contesta la visita (o, P12, la entrega). [alTerminar] recibe el texto para mostrar (en el
+     * hilo principal). Sin sesión en el celular el backend responde 401 y se pide abrir la app.
      */
-    fun responder(context: Context, visitaId: Long, decision: String, alTerminar: (ok: Boolean, texto: String) -> Unit) {
+    fun responder(context: Context, visitaId: Long, decision: String, entrega: Boolean = false,
+                  alTerminar: (ok: Boolean, texto: String) -> Unit) {
         val app = context.applicationContext
         alcance.launch {
             val (ok, texto) = try {
-                val r = RetrofitClient.comun.responderVisita(visitaId, RespuestaVisita(decision))
+                val r = if (entrega) RetrofitClient.comun.responderEntrega(visitaId, RespuestaVisita(decision))
+                        else RetrofitClient.comun.responderVisita(visitaId, RespuestaVisita(decision))
                 when {
-                    r.isSuccessful -> true to app.getString(if (decision == AUTORIZAR) R.string.porteria_autorizada_ok else R.string.porteria_rechazada_ok)
+                    r.isSuccessful -> true to app.getString(when {
+                        entrega && decision == AUTORIZAR -> R.string.entrega_autorizada_ok
+                        entrega -> R.string.entrega_rechazada_ok
+                        decision == AUTORIZAR -> R.string.porteria_autorizada_ok
+                        else -> R.string.porteria_rechazada_ok
+                    })
                     r.code() == 401 || r.code() == 403 -> false to app.getString(R.string.alarma_sin_sesion)
                     // 409: ya expiró o la respondió otra persona del apartamento
                     else -> true to RetrofitClient.mensajeDeError(r, app.getString(R.string.porteria_error))
@@ -171,7 +188,7 @@ object AlarmaVisita {
             } catch (e: Exception) {
                 false to RetrofitClient.mensajeDeExcepcion(e)
             }
-            if (ok) detener(app, visitaId)
+            if (ok) detener(app, visitaId, entrega)
             withContext(Dispatchers.Main) { alTerminar(ok, texto) }
         }
     }
@@ -182,9 +199,10 @@ class RespuestaVisitaReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val visita = intent.getLongExtra(AlarmaVisita.EXTRA_VISITA, -1)
         val decision = intent.getStringExtra(AlarmaVisita.EXTRA_DECISION) ?: return
+        val entrega = intent.getBooleanExtra(AlarmaVisita.EXTRA_ENTREGA, false)
         if (visita < 0) return
         val pendiente = goAsync()
-        AlarmaVisita.responder(context, visita, decision) { _, texto ->
+        AlarmaVisita.responder(context, visita, decision, entrega) { _, texto ->
             // Sin sesión o sin red la alarma sigue: al tocarla se abre la pantalla completa
             Toast.makeText(context.applicationContext, texto, Toast.LENGTH_LONG).show()
             pendiente.finish()

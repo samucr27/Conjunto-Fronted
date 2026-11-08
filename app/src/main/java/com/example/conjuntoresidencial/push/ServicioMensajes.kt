@@ -22,9 +22,19 @@ class ServicioMensajes : FirebaseMessagingService() {
             AlarmaVisita.sonar(this, visita, datos["titulo"] ?: getString(R.string.alarma_titulo_generico), datos["mensaje"].orEmpty())
             return
         }
-        // P10 bloque 7: mensaje del chat de una visita rechazada: al tocarlo se abre ese chat
-        val chat = if (datos["tipo"] == TIPO_CHAT_VISITA && visita != null)
-            com.example.conjuntoresidencial.ui.comun.ChatVisitaActivity.intent(this, visita) else null
+        // P12 bloque 3: alguien quiere recoger la correspondencia: la misma alarma
+        if (datos["tipo"] == DestinoNotificacion.TIPO_ENTREGA && visita != null) {
+            AlarmaVisita.sonar(this, visita, datos["titulo"] ?: getString(R.string.aviso_entrega_correspondencia),
+                datos["mensaje"].orEmpty(), entrega = true)
+            return
+        }
+        // P10 bloque 7: mensaje del chat de una visita rechazada (P12: o de una entrega): al tocarlo se abre ese chat
+        val chat = when {
+            visita == null -> null
+            datos["tipo"] == TIPO_CHAT_VISITA -> com.example.conjuntoresidencial.ui.comun.ChatVisitaActivity.intent(this, visita)
+            datos["tipo"] == TIPO_CHAT_ENTREGA -> com.example.conjuntoresidencial.ui.comun.ChatVisitaActivity.intent(this, visita, entrega = true)
+            else -> null
+        }
         AvisosCelular.mostrar(
             this,
             datos["titulo"] ?: getString(R.string.app_name),
@@ -36,6 +46,7 @@ class ServicioMensajes : FirebaseMessagingService() {
 
     private companion object {
         const val TIPO_CHAT_VISITA = "CHAT_VISITA"
+        const val TIPO_CHAT_ENTREGA = "CHAT_ENTREGA"
     }
 
     override fun onNewToken(token: String) {

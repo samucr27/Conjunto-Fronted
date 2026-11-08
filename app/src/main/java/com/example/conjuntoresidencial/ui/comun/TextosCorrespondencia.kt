@@ -56,7 +56,9 @@ internal fun Fragment.pintarCorrespondencia(
     fila: ItemCorrespondenciaBinding,
     c: CorrespondenciaDTO,
     conApartamento: Boolean,
-    alEntregar: ((CorrespondenciaDTO) -> Unit)?
+    alEntregar: ((CorrespondenciaDTO) -> Unit)?,
+    // P12 bloque 3: el residente autoriza o rechaza aquí la entrega que espera su respuesta
+    alResponder: ((CorrespondenciaDTO, String) -> Unit)? = null
 ) {
     val ctx = requireContext()
     val entregada = c.estado == "ENTREGADA"
@@ -84,8 +86,42 @@ internal fun Fragment.pintarCorrespondencia(
             c.guardia?.takeIf { conApartamento }?.let { getString(R.string.corr_recibio, it) }
         ).joinToString(" · ")
     }
-    fila.btnEntregar.isVisible = !entregada && alEntregar != null
-    fila.btnEntregar.setOnClickListener { alEntregar?.invoke(c) }
+    // P12 bloque 3: la autorización de la entrega: en qué va y qué se puede hacer
+    val s = c.solicitud
+    if (!entregada && s != null) {
+        val canal = getString(if (s.canal == "LLAMADA") R.string.entrega_por_llamada else R.string.entrega_por_app)
+        val linea = when (s.estado) {
+            "PENDIENTE" -> getString(R.string.entrega_estado_pendiente, s.recoge.orEmpty())
+            "AUTORIZADA" -> getString(R.string.entrega_estado_autorizada, s.recoge.orEmpty(), canal)
+            "RECHAZADA" -> getString(R.string.entrega_estado_rechazada, s.recoge.orEmpty(), canal)
+            else -> getString(R.string.entrega_estado_expirada, s.recoge.orEmpty())
+        }
+        fila.tvDetalle.text = listOf(fila.tvDetalle.text, linea).joinToString("\n")
+    }
+    val pendiente = !entregada && s?.estado == "PENDIENTE"
+    fila.btnEntregar.isVisible = !entregada && (alEntregar != null || (pendiente && alResponder != null))
+    if (alEntregar != null) {
+        // En la portería: pedir autorización → (esperando) respuesta por llamada → entregar
+        fila.btnEntregar.setText(when (s?.estado) {
+            "PENDIENTE" -> R.string.corr_respuesta_llamada
+            "AUTORIZADA" -> R.string.corr_entregar
+            else -> R.string.corr_pedir_autorizacion
+        })
+        fila.btnEntregar.setOnClickListener { alEntregar(c) }
+        fila.btnRechazar.isVisible = false
+    } else if (alResponder != null && pendiente) {
+        fila.btnEntregar.setText(R.string.entrega_autorizar)
+        fila.btnEntregar.setOnClickListener { alResponder(c, "AUTORIZAR") }
+        fila.btnRechazar.isVisible = true
+        fila.btnRechazar.setOnClickListener { alResponder(c, "RECHAZAR") }
+    } else {
+        fila.btnRechazar.isVisible = false
+    }
+    // El chat, mientras siga abierto tras rechazar la entrega
+    fila.btnChat.isVisible = !entregada && s?.estado == "RECHAZADA" && TiempoDentro.esFuturo(s.chatHasta)
+    fila.btnChat.text = if (conApartamento && (s?.mensajesResidente ?: 0) > 0) getString(R.string.corr_chat_n, s!!.mensajesResidente)
+        else getString(R.string.corr_chat)
+    fila.btnChat.setOnClickListener { ChatVisitaActivity.abrir(requireContext(), c.id, entrega = true) }
     fila.btnFoto.isVisible = c.tieneFoto
     fila.btnFoto.setOnClickListener { verFotoCorrespondencia(c) }
 }

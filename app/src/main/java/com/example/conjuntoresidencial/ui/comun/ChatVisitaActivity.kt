@@ -36,6 +36,9 @@ class ChatVisitaActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChatVisitaBinding
     private var visitaId = -1L
+    // P12 bloque 3: el mismo chat para la entrega rechazada de la correspondencia (visitaId es su id)
+    private var entrega = false
+    private var que = ""
     private var vistos = -1
     private var enviando = false
     private var abierto = true
@@ -57,6 +60,7 @@ class ChatVisitaActivity : AppCompatActivity() {
             insets
         }
         visitaId = intent.getLongExtra(EXTRA_VISITA, -1)
+        entrega = intent.getBooleanExtra(EXTRA_ENTREGA, false)
         if (visitaId < 0) { finish(); return }
         binding.barra.setNavigationOnClickListener { finish() }
         binding.barra.title = getString(R.string.chat_visita_titulo)
@@ -75,8 +79,10 @@ class ChatVisitaActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         val otra = intent.getLongExtra(EXTRA_VISITA, -1)
-        if (otra >= 0 && otra != visitaId) {
+        val otraEsEntrega = intent.getBooleanExtra(EXTRA_ENTREGA, false)
+        if (otra >= 0 && (otra != visitaId || otraEsEntrega != entrega)) {
             visitaId = otra
+            entrega = otraEsEntrega
             vistos = -1
             binding.listaMensajes.removeAllViews()
             lifecycleScope.launch { cargar() }
@@ -86,7 +92,14 @@ class ChatVisitaActivity : AppCompatActivity() {
     private suspend fun cargar() {
         val id = visitaId
         try {
-            val r = RetrofitClient.comun.chatVisita(id)
+            val r = if (entrega) RetrofitClient.comun.chatEntrega(id).let { e ->
+                val c = e.body()
+                if (c != null) que = c.que
+                // Se pinta igual que el de una visita: "visitante" es quien quería recogerla
+                if (e.isSuccessful && c != null) retrofit2.Response.success(ChatVisitaDTO(c.correspondenciaId, c.recoge.orEmpty(),
+                    c.torre, c.apto, c.abierto, c.cierraEn, c.mensajes)) else retrofit2.Response.error(e.code(), e.errorBody()
+                    ?: okhttp3.ResponseBody.create(null, ""))
+            } else RetrofitClient.comun.chatVisita(id)
             val chat = r.body()
             if (id != visitaId) return
             if (r.isSuccessful && chat != null) pintar(chat)
@@ -102,13 +115,19 @@ class ChatVisitaActivity : AppCompatActivity() {
     private fun pintar(c: ChatVisitaDTO) {
         binding.barra.title = if (soyResidente) getString(R.string.chat_visita_titulo)
         else getString(R.string.chat_visita_titulo_porteria, c.torre, c.apto)
-        binding.barra.subtitle = getString(if (soyResidente) R.string.chat_visita_sobre else R.string.chat_visita_sobre_porteria, c.visitante)
+        binding.barra.subtitle = if (entrega)
+            getString(if (soyResidente) R.string.entrega_chat_sobre else R.string.entrega_chat_sobre_porteria, que, c.visitante)
+        else getString(if (soyResidente) R.string.chat_visita_sobre else R.string.chat_visita_sobre_porteria, c.visitante)
         abierto = c.abierto
         binding.tvEstadoChat.text = if (c.abierto) getString(R.string.chat_visita_cierra, c.cierraEn?.substringAfter('T')?.take(5).orEmpty())
         else getString(R.string.chat_visita_cerrado)
         if (!c.abierto) cerrar()
         binding.tvVacio.isVisible = c.mensajes.isEmpty()
-        binding.tvVacio.setText(if (soyResidente) R.string.chat_visita_vacio else R.string.chat_visita_vacio_porteria)
+        binding.tvVacio.setText(when {
+            !soyResidente -> R.string.chat_visita_vacio_porteria
+            entrega -> R.string.entrega_chat_vacio
+            else -> R.string.chat_visita_vacio
+        })
         if (c.mensajes.size == vistos) return
         binding.listaMensajes.removeAllViews()
         c.mensajes.forEach { m ->
@@ -145,7 +164,8 @@ class ChatVisitaActivity : AppCompatActivity() {
         binding.btnEnviar.isEnabled = false
         lifecycleScope.launch {
             try {
-                val r = RetrofitClient.comun.escribirChatVisita(visitaId, NuevoMensajeVisita(texto))
+                val r = if (entrega) RetrofitClient.comun.escribirChatEntrega(visitaId, NuevoMensajeVisita(texto))
+                        else RetrofitClient.comun.escribirChatVisita(visitaId, NuevoMensajeVisita(texto))
                 if (r.isSuccessful) {
                     binding.etMensaje.setText("")
                     cargar()
@@ -165,12 +185,14 @@ class ChatVisitaActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_VISITA = "visitaId"
+        const val EXTRA_ENTREGA = "esEntrega"
         private const val INTERVALO_MS = 4_000L
 
-        fun intent(ctx: Context, visitaId: Long): Intent =
-            Intent(ctx, ChatVisitaActivity::class.java).putExtra(EXTRA_VISITA, visitaId)
+        /** [entrega]: P12 bloque 3, el chat de la entrega rechazada de la correspondencia [visitaId]. */
+        fun intent(ctx: Context, visitaId: Long, entrega: Boolean = false): Intent =
+            Intent(ctx, ChatVisitaActivity::class.java).putExtra(EXTRA_VISITA, visitaId).putExtra(EXTRA_ENTREGA, entrega)
                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
-        fun abrir(ctx: Context, visitaId: Long) = ctx.startActivity(intent(ctx, visitaId))
+        fun abrir(ctx: Context, visitaId: Long, entrega: Boolean = false) = ctx.startActivity(intent(ctx, visitaId, entrega))
     }
 }

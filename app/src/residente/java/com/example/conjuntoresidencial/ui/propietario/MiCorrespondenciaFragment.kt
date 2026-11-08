@@ -67,9 +67,18 @@ class MiCorrespondenciaFragment : Fragment() {
         binding.lista.removeAllViews()
         (pendientes + entregadas).forEach { c ->
             val fila = ItemCorrespondenciaBinding.inflate(layoutInflater, binding.lista, false)
-            pintarCorrespondencia(fila, c, conApartamento = false, alEntregar = null)
+            pintarCorrespondencia(fila, c, conApartamento = false, alEntregar = null) { item, decision -> responder(item, decision) }
             binding.lista.addView(if (c.estado == "ENTREGADA") FilaDeslizable.envolver(fila.root, binding.swipe) { quitar.quitar(c.id) }
                 else fila.root)
+        }
+    }
+
+    /** P12 bloque 3: autorizar o rechazar aquí la entrega (por si la alerta ya se cerró). */
+    private fun responder(c: CorrespondenciaDTO, decision: String) {
+        com.example.conjuntoresidencial.push.AlarmaVisita.responder(requireContext(), c.id, decision, entrega = true) { _, texto ->
+            if (_binding == null) return@responder
+            aviso(texto).show()
+            cargar()
         }
     }
 

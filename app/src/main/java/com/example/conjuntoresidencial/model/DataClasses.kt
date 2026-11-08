@@ -317,7 +317,9 @@ data class CorrespondenciaDTO(
     val id: Long, val apartamentoId: Long?, val torre: String, val apto: String, val tipo: String,
     val remitente: String?, val nota: String?, val estado: String, val recibidaEn: String?, val guardia: String?,
     val entregadaEn: String?, val entregadaA: String?, val entregadaPor: String?,
-    val tieneFoto: Boolean = false
+    val tieneFoto: Boolean = false,
+    // P12 bloque 3: la solicitud de entrega que autoriza el residente
+    val solicitud: SolicitudEntregaDTO? = null
 )
 data class NuevaCorrespondencia(val torre: String, val apto: String, val tipo: String, val remitente: String?, val nota: String?,
                                 val fotoId: String? = null)
@@ -330,7 +332,16 @@ data class ChatVisitaDTO(val visitaId: Long, val visitante: String, val torre: S
 data class NuevoMensajeVisita(val texto: String)
 data class ReciboParaTodos(val remitente: String, val nota: String?)
 data class LoteCorrespondencia(val lote: String?, val creadas: Int)
-data class EntregaCorrespondencia(val recibidaPor: String)
+data class EntregaCorrespondencia(val recibidaPor: String? = null)
+/** P12 bloque 3: estado: PENDIENTE, AUTORIZADA, RECHAZADA o EXPIRADA; canal: APP o LLAMADA. */
+data class SolicitudEntregaDTO(
+    val estado: String, val recoge: String?, val documento: String?, val tieneFoto: Boolean = false, val fotoUrl: String? = null,
+    val creadaEn: String?, val venceEn: String?, val respondidaEn: String?, val canal: String?,
+    val chatHasta: String? = null, val mensajesResidente: Long = 0
+)
+data class PedirEntrega(val recoge: String, val documento: String?, val fotoId: String?)
+data class ChatEntregaDTO(val correspondenciaId: Long, val recoge: String?, val torre: String, val apto: String, val que: String,
+                          val abierto: Boolean, val cierraEn: String?, val mensajes: List<MensajeVisitaDTO>)
 // P6: huella con credencial opaca por celular (nunca la contraseña)
 data class ActivarBiometria(val dispositivoId: String)
 data class BiometriaActivada(val credencial: String)

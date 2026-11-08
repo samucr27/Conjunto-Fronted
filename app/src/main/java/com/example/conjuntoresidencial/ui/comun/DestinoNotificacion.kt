@@ -35,7 +35,7 @@ data class DestinoNotificacion(
             tipo == TIPO_PERSONAL_OBRA -> nav.navigate(R.id.controlObrasFragment)
             tipo.startsWith(TIPO_PERSONAL_OBRA) -> nav.navigate(R.id.misObrasFragment)
             // P9 bloque 3: paquete, carta o recibo en la portería, o su entrega → Mi correspondencia
-            tipo.startsWith(TIPO_CORRESPONDENCIA) || tipo == TIPO_RECIBO -> nav.navigate(R.id.miCorrespondenciaFragment)
+            tipo.startsWith(TIPO_CORRESPONDENCIA) || tipo == TIPO_RECIBO || tipo == TIPO_ENTREGA -> nav.navigate(R.id.miCorrespondenciaFragment)
             // P5: lo que mandó el contador → la cartera de la administración
             // P11: la solicitud del contador (y la respuesta del administrador) abre su detalle
             tipo.startsWith(TIPO_SOLICITUD_CONTABLE) -> if (referenciaId != null)
@@ -92,6 +92,8 @@ data class DestinoNotificacion(
         const val TIPO_SOLICITUD_CONTABLE = "SOLICITUD_CONTABLE"
         const val TIPO_CORRESPONDENCIA = "CORRESPONDENCIA"
         const val TIPO_RECIBO = "RECIBO"
+        /** P12 bloque 3: autorizar la entrega de la correspondencia (suena como la visita). */
+        const val TIPO_ENTREGA = "ENTREGA_CORRESPONDENCIA"
         private const val EXTRA_TIPO = "notificacion_tipo"
         private const val EXTRA_NOTIFICACION = "notificacion_id"
         private const val EXTRA_REFERENCIA = "notificacion_referencia"

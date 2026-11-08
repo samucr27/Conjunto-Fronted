@@ -20,6 +20,11 @@ import com.example.conjuntoresidencial.model.CorrespondenciaDTO
 import com.example.conjuntoresidencial.model.EntregaCorrespondencia
 import com.example.conjuntoresidencial.model.NuevaCorrespondencia
 import com.example.conjuntoresidencial.model.ReciboParaTodos
+import com.example.conjuntoresidencial.model.PedirEntrega
+import com.example.conjuntoresidencial.model.RespuestaVisita
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.delay
 import com.example.conjuntoresidencial.ui.comun.TIPOS_CORRESPONDENCIA
 import com.example.conjuntoresidencial.ui.comun.aviso
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
@@ -68,6 +73,15 @@ class CorrespondenciaFragment : Fragment() {
         filtro.ponerPista(R.string.corr_buscar_apto)
         binding.swipe.setOnRefreshListener { cargar() }
         cargar()
+        // P12 bloque 3: mientras algo espera la respuesta del apartamento, se mira cada 7 segundos
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                while (true) {
+                    delay(7_000)
+                    if (!entregadas && todas.any { it.solicitud?.estado == "PENDIENTE" }) cargar()
+                }
+            }
+        }
     }
 
     private val entregadas get() = binding.chipEntregadas.isChecked
@@ -111,7 +125,7 @@ class CorrespondenciaFragment : Fragment() {
         binding.lista.removeAllViews()
         lista.forEach { c ->
             val fila = ItemCorrespondenciaBinding.inflate(layoutInflater, binding.lista, false)
-            pintarCorrespondencia(fila, c, conApartamento = true) { entregar(it) }
+            pintarCorrespondencia(fila, c, conApartamento = true, alEntregar = { entregar(it) })
             binding.lista.addView(if (c.estado == "ENTREGADA") FilaDeslizable.envolver(fila.root, binding.swipe) { quitar.quitar(c.id) }
                 else fila.root)
         }
@@ -129,6 +143,7 @@ class CorrespondenciaFragment : Fragment() {
             })
         }
         foto = null
+        fotoDeQuienRecoge = false
         dialogoFoto = d
         d.filaFoto.isVisible = true
         d.btnFoto.setOnClickListener { tomador.tomar() }
@@ -181,30 +196,95 @@ class CorrespondenciaFragment : Fragment() {
         }
     }
 
+    /**
+     * P12 bloque 3: entregar va en pasos, como una visita: se pide la autorización al apartamento
+     * (quién recoge, documento y foto); mientras espera se puede registrar lo que dijo por
+     * teléfono; ya autorizada, se entrega.
+     */
     private fun entregar(c: CorrespondenciaDTO) {
+        when (c.solicitud?.estado) {
+            "PENDIENTE" -> respuestaPorLlamada(c)
+            "AUTORIZADA" -> confirmarEntrega(c)
+            else -> pedirAutorizacion(c)
+        }
+    }
+
+    private fun pedirAutorizacion(c: CorrespondenciaDTO) {
         val d = DialogoCorrespondenciaBinding.inflate(layoutInflater)
         d.chipsTipo.isVisible = false
         d.filaApartamento.isVisible = false
-        d.tilCampo2.isVisible = false
         d.tvMensaje.isVisible = true
-        d.tvMensaje.text = getString(R.string.corr_entregar_mensaje,
+        d.tvMensaje.text = getString(R.string.corr_pedir_mensaje,
             listOfNotNull(getString(nombreTipoCorrespondencia(c.tipo)), c.remitente).joinToString(" · "), c.torre, c.apto)
         d.tilCampo1.setHint(R.string.corr_nombre_recoge)
-        dialogo(R.string.corr_entregar_titulo, d, R.string.corr_entregar) { cerrar ->
+        d.tilCampo2.setHint(R.string.corr_documento_recoge)
+        foto = null
+        fotoDeQuienRecoge = true
+        dialogoFoto = d
+        d.filaFoto.isVisible = true
+        d.btnFoto.setOnClickListener { tomador.tomar() }
+        d.imgFoto.setOnClickListener { foto?.let { FotosPorteria.verGrande(requireContext(), it, getString(R.string.foto_de_quien_recoge)) } ?: tomador.tomar() }
+        mostrarFoto(d)
+        dialogo(R.string.corr_pedir_titulo, d, R.string.corr_pedir) { cerrar ->
             val nombre = texto(d.etCampo1.text)
             d.tilCampo1.error = if (nombre == null) getString(R.string.corr_falta_nombre) else null
             if (nombre == null) return@dialogo
-            enviar({ RetrofitClient.comun.entregarCorrespondencia(c.id, EntregaCorrespondencia(nombre)) }) {
-                cerrar()
-                aviso(getString(R.string.corr_entregada_ok, nombre)).show()
+            val datos = foto
+            viewLifecycleOwner.lifecycleScope.launch {
+                var fotoId: String? = null
+                if (datos != null) {
+                    val (id, error) = FotosPorteria.subir(datos, getString(R.string.foto_error))
+                    if (_binding == null) return@launch
+                    if (id == null) { aviso(error ?: getString(R.string.foto_error)).show(); return@launch }
+                    fotoId = id
+                }
+                enviar({ RetrofitClient.comun.pedirEntrega(c.id, PedirEntrega(nombre, texto(d.etCampo2.text), fotoId)) }) {
+                    foto = null
+                    dialogoFoto = null
+                    cerrar()
+                    aviso(R.string.corr_pedida_ok).show()
+                }
             }
         }
     }
 
+    /** Si el apartamento contestó por teléfono, la portería registra lo que dijo. */
+    private fun respuestaPorLlamada(c: CorrespondenciaDTO) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.corr_llamada_titulo)
+            .setMessage(getString(R.string.corr_llamada_mensaje, c.solicitud?.recoge.orEmpty()))
+            .setPositiveButton(R.string.corr_llamada_autorizo) { _, _ ->
+                enviar({ RetrofitClient.comun.responderEntrega(c.id, RespuestaVisita("AUTORIZAR")) }) {}
+            }
+            .setNegativeButton(R.string.corr_llamada_rechazo) { _, _ ->
+                enviar({ RetrofitClient.comun.responderEntrega(c.id, RespuestaVisita("RECHAZAR")) }) {}
+            }
+            .setNeutralButton(R.string.cancelar_corr, null)
+            .show()
+    }
+
+    private fun confirmarEntrega(c: CorrespondenciaDTO) {
+        val s = c.solicitud ?: return
+        val canal = getString(if (s.canal == "LLAMADA") R.string.entrega_por_llamada else R.string.entrega_por_app)
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.corr_entregar_confirmar, s.recoge.orEmpty()))
+            .setMessage(getString(R.string.corr_entregar_confirmar_detalle, canal))
+            .setPositiveButton(R.string.corr_entregar) { _, _ ->
+                enviar({ RetrofitClient.comun.entregarCorrespondencia(c.id, EntregaCorrespondencia()) }) {
+                    aviso(getString(R.string.corr_entregada_ok, s.recoge.orEmpty())).show()
+                }
+            }
+            .setNegativeButton(R.string.cancelar_corr, null)
+            .show()
+    }
+
+    // P12 bloque 3: si la foto del diálogo es de quien recoge (no del paquete)
+    private var fotoDeQuienRecoge = false
+
     private fun mostrarFoto(d: DialogoCorrespondenciaBinding) {
         val datos = foto
-        d.btnFoto.setText(if (datos != null) R.string.foto_otra else R.string.foto_tomar_paquete)
-        d.tvAyudaFoto.setText(if (datos != null) R.string.foto_lista else R.string.foto_ayuda_paquete)
+        d.btnFoto.setText(if (datos != null) R.string.foto_otra else if (fotoDeQuienRecoge) R.string.foto_tomar_quien_recoge else R.string.foto_tomar_paquete)
+        d.tvAyudaFoto.setText(if (datos != null) R.string.foto_lista else if (fotoDeQuienRecoge) R.string.foto_ayuda_quien_recoge else R.string.foto_ayuda_paquete)
         if (datos == null) {
             val p = (16 * resources.displayMetrics.density).toInt()
             d.imgFoto.setPadding(p, p, p, p)

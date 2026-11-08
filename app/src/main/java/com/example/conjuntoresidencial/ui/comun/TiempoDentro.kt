@@ -21,13 +21,20 @@ object TiempoDentro {
 
     private val zona: TimeZone = TimeZone.getTimeZone("America/Bogota")
 
-    /** Minutos desde [iso] hasta ahora; null si no se entiende la fecha. */
-    fun minutos(iso: String?): Long? {
+    private fun milis(iso: String?): Long? {
         if (iso.isNullOrBlank() || iso.length < 16) return null
         val formato = SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US).apply { timeZone = zona }
-        val desde = runCatching { formato.parse(iso.take(16)) }.getOrNull() ?: return null
-        return ((System.currentTimeMillis() - desde.time) / 60_000L).coerceAtLeast(0)
+        return runCatching { formato.parse(iso.take(16))?.time }.getOrNull()
     }
+
+    /** Minutos desde [iso] hasta ahora; null si no se entiende la fecha. */
+    fun minutos(iso: String?): Long? {
+        val desde = milis(iso) ?: return null
+        return ((System.currentTimeMillis() - desde) / 60_000L).coerceAtLeast(0)
+    }
+
+    /** Si [iso] todavía no llega (por ejemplo, hasta cuándo sigue abierto un chat). */
+    fun esFuturo(iso: String?): Boolean = (milis(iso) ?: 0L) > System.currentTimeMillis()
 
     fun texto(ctx: Context, iso: String?): String {
         val m = minutos(iso) ?: return ""

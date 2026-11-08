@@ -59,6 +59,7 @@ data class TipoAviso(val categoria: CategoriaAviso, @StringRes val titulo: Int, 
             "VISITA_PORTERIA" to R.string.aviso_visita,
             "VISITA_FRECUENTE" to R.string.aviso_visita_frecuente,
             "VISITA_SALIDA" to R.string.aviso_visita_salida,
+            "ENTREGA_CORRESPONDENCIA" to R.string.aviso_entrega_correspondencia,
             "CHAT" to R.string.aviso_chat,
             "OBRA" to R.string.aviso_obra,
             "OBRA_APROBADA" to R.string.aviso_obra_aprobada,
@@ -80,9 +81,9 @@ data class TipoAviso(val categoria: CategoriaAviso, @StringRes val titulo: Int, 
                 t.startsWith("CUOTA") || t == "COMPROBANTE" || t.startsWith("SOLICITUD_CONTABLE") -> CategoriaAviso.PAGOS
                 t == "PUBLICACION" -> CategoriaAviso.PUBLICACIONES
                 t.startsWith("VISITA") -> CategoriaAviso.PORTERIA
-                t == "CHAT" || t == "CHAT_VISITA" -> CategoriaAviso.CHAT
+                t == "CHAT" || t == "CHAT_VISITA" || t == "CHAT_ENTREGA" -> CategoriaAviso.CHAT
                 t.startsWith("OBRA") || t.startsWith("PERSONAL_OBRA") -> CategoriaAviso.OBRAS
-                t.startsWith("CORRESPONDENCIA") || t == "RECIBO" -> CategoriaAviso.CORRESPONDENCIA
+                t.startsWith("CORRESPONDENCIA") || t == "RECIBO" || t == "ENTREGA_CORRESPONDENCIA" -> CategoriaAviso.CORRESPONDENCIA
                 else -> CategoriaAviso.GENERAL
             }
             val estado = when {

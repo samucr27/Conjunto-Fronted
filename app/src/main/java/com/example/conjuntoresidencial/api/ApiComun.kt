@@ -126,6 +126,25 @@ interface ApiComun {
     @GET("api/porteria/parqueaderos")
     suspend fun getParqueaderosInvitados(): Response<List<ParqueaderoInvitadoDTO>>
 
+    // P12 bloque 3: la entrega de la correspondencia la autoriza el residente (como una visita)
+    @POST("api/porteria/correspondencia/{id}/solicitud")
+    suspend fun pedirEntrega(@Path("id") id: Long, @Body cuerpo: com.example.conjuntoresidencial.model.PedirEntrega): Response<CorrespondenciaDTO>
+
+    @GET("api/porteria/correspondencia/solicitudes")
+    suspend fun solicitudesEntrega(): Response<List<CorrespondenciaDTO>>
+
+    @PATCH("api/porteria/correspondencia/{id}/solicitud/respuesta")
+    suspend fun responderEntrega(@Path("id") id: Long, @Body respuesta: RespuestaVisita): Response<CorrespondenciaDTO>
+
+    @GET("api/porteria/correspondencia/{id}/solicitud/foto")
+    suspend fun fotoDeQuienRecoge(@Path("id") id: Long): Response<com.example.conjuntoresidencial.model.EnlaceFoto>
+
+    @GET("api/porteria/correspondencia/{id}/chat")
+    suspend fun chatEntrega(@Path("id") id: Long): Response<com.example.conjuntoresidencial.model.ChatEntregaDTO>
+
+    @POST("api/porteria/correspondencia/{id}/chat")
+    suspend fun escribirChatEntrega(@Path("id") id: Long, @Body m: NuevoMensajeVisita): Response<com.example.conjuntoresidencial.model.MensajeVisitaDTO>
+
     // P12: los visitantes del apartamento que siguen dentro (residentes)
     @GET("api/porteria/visitas/activas")
     suspend fun visitasActivas(): Response<List<VisitaDTO>>

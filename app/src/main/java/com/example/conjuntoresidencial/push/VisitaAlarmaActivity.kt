@@ -33,6 +33,8 @@ class VisitaAlarmaActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityVisitaAlarmaBinding
     private var visitaId = -1L
+    // P12 bloque 3: la misma pantalla para autorizar la entrega de la correspondencia (visitaId es su id)
+    private var entrega = false
     private var cuenta: CountDownTimer? = null
     private var pulso: ValueAnimator? = null
 
@@ -48,7 +50,7 @@ class VisitaAlarmaActivity : AppCompatActivity() {
         binding.btnAbrirApp.setOnClickListener { abrirApp() }
         // P10 bloque 7: tras rechazar, el residente puede escribirle a la portería (ya no se llama)
         binding.btnChatPorteria.setOnClickListener {
-            com.example.conjuntoresidencial.ui.comun.ChatVisitaActivity.abrir(this, visitaId)
+            com.example.conjuntoresidencial.ui.comun.ChatVisitaActivity.abrir(this, visitaId, entrega)
             finish()
         }
         binding.imgVisitante.setOnClickListener {
@@ -93,6 +95,7 @@ class VisitaAlarmaActivity : AppCompatActivity() {
 
     private fun mostrar(intent: Intent) {
         visitaId = intent.getLongExtra(AlarmaVisita.EXTRA_VISITA, -1)
+        entrega = intent.getBooleanExtra(AlarmaVisita.EXTRA_ENTREGA, false)
         if (visitaId < 0) { finish(); return }
         binding.tvTitulo.text = intent.getStringExtra(AlarmaVisita.EXTRA_TITULO) ?: getString(R.string.alarma_titulo_generico)
         binding.tvDetalle.text = intent.getStringExtra(AlarmaVisita.EXTRA_MENSAJE).orEmpty()
@@ -131,6 +134,7 @@ class VisitaAlarmaActivity : AppCompatActivity() {
     /** Con sesión, trae la visita para mostrar el nombre, el documento, la placa y lo que falta. */
     private fun cargarDetalle() {
         val id = visitaId
+        if (entrega) { cargarEntrega(id); return }
         lifecycleScope.launch {
             val v = try {
                 RetrofitClient.comun.getVisitasPendientes().body()?.firstOrNull { it.id == id }
@@ -148,6 +152,32 @@ class VisitaAlarmaActivity : AppCompatActivity() {
         }
     }
 
+    /** P12 bloque 3: quién quiere recoger qué (con su foto y documento, si la portería los tomó). */
+    private fun cargarEntrega(id: Long) {
+        lifecycleScope.launch {
+            val c = try {
+                RetrofitClient.comun.solicitudesEntrega().body()?.firstOrNull { it.id == id }
+            } catch (_: Exception) {
+                null
+            } ?: return@launch
+            if (id != visitaId) return@launch
+            val s = c.solicitud ?: return@launch
+            binding.tvTitulo.text = getString(R.string.entrega_alarma_titulo, s.recoge.orEmpty())
+            if (s.fotoUrl != null) mostrarFoto(s.fotoUrl)
+            val que = getString(when (c.tipo) {
+                "CARTA" -> R.string.corr_tipo_carta
+                "DOCUMENTO" -> R.string.corr_tipo_documento
+                "RECIBO" -> R.string.corr_tipo_recibo
+                else -> R.string.corr_tipo_paquete
+            }) + (c.remitente?.takeIf { it.isNotBlank() }?.let { " · $it" } ?: "")
+            binding.tvDetalle.text = listOfNotNull(
+                que,
+                s.documento?.takeIf { it.isNotBlank() }?.let { getString(R.string.porteria_doc_linea, it) },
+                c.nota?.takeIf { it.isNotBlank() }
+            ).joinToString("\n")
+        }
+    }
+
     private fun empezarCuenta(ms: Long) {
         cuenta?.cancel()
         cuenta = object : CountDownTimer(ms, 1000) {
@@ -157,7 +187,7 @@ class VisitaAlarmaActivity : AppCompatActivity() {
                 binding.anilloTiempo.setProgressCompat((restante * 1000 / ms).toInt(), true)
             }
             override fun onFinish() {
-                AlarmaVisita.detener(this@VisitaAlarmaActivity, visitaId)
+                AlarmaVisita.detener(this@VisitaAlarmaActivity, visitaId, entrega)
                 finish()
             }
         }.start()
@@ -165,14 +195,14 @@ class VisitaAlarmaActivity : AppCompatActivity() {
 
     private fun responder(decision: String) {
         botones(false)
-        AlarmaVisita.responder(this, visitaId, decision) { ok, texto ->
+        AlarmaVisita.responder(this, visitaId, decision, entrega) { ok, texto ->
             if (isFinishing || isDestroyed) return@responder
             binding.tvEstado.text = texto
             binding.tvEstado.isVisible = true
             if (ok && decision == AlarmaVisita.RECHAZAR) {
                 // P10 bloque 7: rechazada: se ofrece el chat con la portería en vez de cerrarse sola
                 cuenta?.cancel()
-                binding.tvEstado.text = getString(R.string.chat_visita_rechazada)
+                binding.tvEstado.text = getString(if (entrega) R.string.entrega_rechazada_chat else R.string.chat_visita_rechazada)
                 binding.grupoBotones.isVisible = false
                 binding.btnChatPorteria.isVisible = true
                 binding.tvTiempo.isVisible = false
@@ -194,7 +224,7 @@ class VisitaAlarmaActivity : AppCompatActivity() {
     private fun abrirApp() {
         val teclado = getSystemService(KeyguardManager::class.java)
         val abrir = {
-            startActivity(DestinoNotificacion(null, DestinoNotificacion.TIPO_VISITA, visitaId, null)
+            startActivity(DestinoNotificacion(null, if (entrega) DestinoNotificacion.TIPO_ENTREGA else DestinoNotificacion.TIPO_VISITA, visitaId, null)
                 .ponerEn(Intent(this, MainActivity::class.java))
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP))
             finish()
