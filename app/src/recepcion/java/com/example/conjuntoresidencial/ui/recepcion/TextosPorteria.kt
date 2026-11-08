@@ -24,6 +24,13 @@ internal fun fechaCorta(iso: String?): String {
 
 internal fun horaCorta(iso: String?): String = iso?.substringAfter('T', "")?.take(5).orEmpty()
 
+/** P12: "Torre 5 Apto 502 · entró 07/11 14:05 · lleva 1 h 05 min". */
+internal fun Fragment.detalleDentro(v: VisitaDTO): String {
+    val base = getString(R.string.recepcion_dentro_detalle, v.torre, v.apto, fechaCorta(v.dentroDesde ?: v.creadaEn))
+    val tiempo = com.example.conjuntoresidencial.ui.comun.TiempoDentro.texto(requireContext(), v.dentroDesde ?: v.creadaEn)
+    return if (tiempo.isEmpty()) base else getString(R.string.recepcion_dentro_lleva, base, tiempo)
+}
+
 /** A pie, o la placa con su parqueadero. */
 internal fun Fragment.ingreso(v: VisitaDTO): String = when {
     v.tipoIngreso == "VEHICULO" && v.parqueadero != null -> getString(R.string.ingreso_en_vehiculo, v.placa.orEmpty(), v.parqueadero)

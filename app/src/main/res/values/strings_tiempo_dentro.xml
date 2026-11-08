@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P12: tiempo que lleva un visitante dentro del conjunto (ui/comun/TiempoDentro.kt) -->
+<resources>
+    <string name="tiempo_dentro_min">%1$d min</string>
+    <string name="tiempo_dentro_horas">%1$d h %2$02d min</string>
+    <string name="aviso_visita_salida">Tu visitante salió</string>
+</resources>

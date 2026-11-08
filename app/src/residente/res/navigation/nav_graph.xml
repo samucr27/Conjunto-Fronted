@@ -74,6 +74,13 @@
         android:label="Mi correspondencia"
         tools:layout="@layout/fragment_mi_correspondencia" />
 
+    <!-- P12: Herramientas → Visitantes activos -->
+    <fragment
+        android:id="@+id/visitantesActivosFragment"
+        android:name="com.example.conjuntoresidencial.ui.propietario.VisitantesActivosFragment"
+        android:label="Visitantes activos"
+        tools:layout="@layout/fragment_visitantes_activos" />
+
     <!-- Pestañas de la barra inferior (MainActivity navega a ellas por id) -->
     <fragment
         android:id="@+id/inicioFragment"

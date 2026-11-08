@@ -43,6 +43,7 @@ import kotlinx.coroutines.launch
 class RecepcionInicioFragment : Fragment() {
 
     private var _binding: FragmentRecepcionInicioBinding? = null
+    private lateinit var reloj: com.example.conjuntoresidencial.ui.comun.TiempoDentro.Reloj
     private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -52,6 +53,7 @@ class RecepcionInicioFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        reloj = com.example.conjuntoresidencial.ui.comun.TiempoDentro.Reloj(viewLifecycleOwner)
         val bloqueo = ConfigApp.destinoBloqueo
         configurarEncabezado(binding.encabezado, R.string.recepcion_inicio_titulo, R.string.recepcion_inicio_descripcion,
             atras = false, menu = if (bloqueo != null) R.menu.menu_porteria_recepcion else null) { id ->
@@ -130,12 +132,13 @@ class RecepcionInicioFragment : Fragment() {
     private fun pintarDentro(visitas: List<VisitaDTO>) {
         binding.tvDentroVacio.isVisible = visitas.isEmpty()
         binding.listaDentro.removeAllViews()
+        reloj.limpiar()
         visitas.forEach { v ->
             val fila = ItemTextoConAccionBinding.inflate(layoutInflater, binding.listaDentro, false)
             fila.tvEtiqueta.isVisible = true
             fila.tvEtiqueta.text = ingreso(v)
             fila.tvTitulo.text = v.visitante
-            fila.tvDetalle.text = getString(R.string.recepcion_dentro_detalle, v.torre, v.apto, fechaCorta(v.creadaEn))
+            reloj.agregar(fila.tvDetalle) { detalleDentro(v) }
             fila.btnAccion.isVisible = true
             fila.btnAccion.setText(R.string.recepcion_salida)
             fila.btnAccion.setOnClickListener {

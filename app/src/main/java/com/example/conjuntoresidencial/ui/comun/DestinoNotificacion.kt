@@ -42,7 +42,7 @@ data class DestinoNotificacion(
                 nav.navigate(R.id.solicitudDetalleFragment, bundleOf("solicitudId" to referenciaId))
             else nav.navigate(R.id.solicitudesContablesFragment)
             // Nueva publicación → el feed de Inicio
-            tipo == TIPO_PUBLICACION || tipo == TIPO_VISITA || tipo == TIPO_VISITA_FRECUENTE -> nav.navigate(R.id.inicioFragment)
+            tipo == TIPO_PUBLICACION || tipo == TIPO_VISITA || tipo == TIPO_VISITA_FRECUENTE || tipo == "VISITA_SALIDA" -> nav.navigate(R.id.inicioFragment)
             // Comprobante por revisar → Facturación; cuota nueva o revisada → Mi cartera
             tipo == TIPO_COMPROBANTE -> nav.navigate(R.id.cuotasFragment)
             tipo.startsWith(TIPO_CUOTA) -> nav.navigate(R.id.miCarteraFragment)

@@ -73,6 +73,10 @@ class PropietarioDashboardFragment : Fragment() {
         binding.cardChat.configurar(R.drawable.ic_chat, R.string.chat_tarjeta, R.string.chat_tarjeta_sub) {
             findNavController().navigate(R.id.chatFragment)
         }
+        // P12: quién sigue dentro visitando el apartamento
+        binding.cardVisitantesActivos.configurar(R.drawable.ic_schedule, R.string.activos_titulo, R.string.activos_tarjeta_sub) {
+            nav.navigate(R.id.visitantesActivosFragment)
+        }
         // P9 bloque 3: lo que llegó a la portería
         binding.cardCorrespondencia.configurar(R.drawable.ic_package, R.string.corr_mia_titulo, R.string.corr_mia_tarjeta_sub) {
             nav.navigate(R.id.miCorrespondenciaFragment)
@@ -99,10 +103,12 @@ class PropietarioDashboardFragment : Fragment() {
      * el propietario de un apartamento arrendado no ve lo de quien vive ahí.
      */
     private fun mostrarSegunRol(propietario: Boolean, arrendado: Boolean?) {
-        val soloQuienVive = listOf(binding.cardMisVehiculos, binding.cardZonasPropietario, binding.cardMisReservas, binding.cardMiHogar)
+        val soloQuienVive = listOf(binding.cardMisVehiculos, binding.cardZonasPropietario, binding.cardMisReservas, binding.cardMiHogar,
+            binding.cardVisitantesActivos)
         val soloPropietario = listOf(binding.cardMiCartera, binding.cardRegistrarObra, binding.cardMisObras, binding.cardArrendatario)
         val todas = listOf(binding.cardMisVehiculos, binding.cardZonasPropietario, binding.cardMisReservas, binding.cardMiCartera,
-            binding.cardRegistrarObra, binding.cardMisObras, binding.cardMiHogar, binding.cardChat, binding.cardCorrespondencia, binding.cardArrendatario)
+            binding.cardRegistrarObra, binding.cardMisObras, binding.cardMiHogar, binding.cardVisitantesActivos, binding.cardChat,
+            binding.cardCorrespondencia, binding.cardArrendatario)
         // Sin saber aún si está arrendado, lo de quien vive ahí espera (no aparece y desaparece)
         val ocultas = (if (propietario && arrendado != false) soloQuienVive else emptyList()) +
             (if (propietario) emptyList() else soloPropietario)

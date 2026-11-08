@@ -20,6 +20,7 @@
     <string name="recepcion_dentro_titulo">Dentro del conjunto</string>
     <string name="recepcion_dentro_vacio">No hay visitantes dentro.</string>
     <string name="recepcion_dentro_detalle">Torre %1$s Apto %2$s · entró %3$s</string>
+    <string name="recepcion_dentro_lleva">%1$s · lleva %2$s</string>
     <string name="recepcion_salida">Salida</string>
     <string name="recepcion_salida_confirmar">¿Registrar la salida de %1$s?</string>
     <string name="recepcion_salida_ok">Salida registrada</string>

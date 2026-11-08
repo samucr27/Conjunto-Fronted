@@ -290,7 +290,9 @@ data class VisitaDTO(
     val tipoIngreso: String? = null, val parqueaderoId: Long? = null, val parqueadero: String? = null,
     val salidaEn: String? = null,
     // P10 bloque 7: foto del visitante (fotoUrl llega en las pendientes del residente), chat de la visita rechazada
-    val tieneFoto: Boolean = false, val fotoUrl: String? = null, val chatHasta: String? = null, val mensajesResidente: Long = 0
+    val tieneFoto: Boolean = false, val fotoUrl: String? = null, val chatHasta: String? = null, val mensajesResidente: Long = 0,
+    // P12: desde cuándo está dentro (para contar el tiempo) y quién dio la salida (PORTERIA o RESIDENTE)
+    val dentroDesde: String? = null, val salidaPor: String? = null
 )
 data class NuevaVisita(
     val torre: String, val apto: String, val visitante: String,

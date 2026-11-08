@@ -14,6 +14,7 @@ import com.example.conjuntoresidencial.databinding.FragmentDentroBinding
 import com.example.conjuntoresidencial.databinding.ItemTextoConAccionBinding
 import com.example.conjuntoresidencial.model.VisitaDTO
 import com.example.conjuntoresidencial.ui.comun.FiltroTorreApto
+import com.example.conjuntoresidencial.ui.comun.TiempoDentro
 import com.example.conjuntoresidencial.ui.comun.aviso
 import com.example.conjuntoresidencial.ui.comun.configurarEncabezado
 import com.example.conjuntoresidencial.ui.comun.confirmar
@@ -31,6 +32,7 @@ class DentroFragment : Fragment() {
     private val binding get() = _binding!!
     private var todos: List<VisitaDTO> = emptyList()
     private lateinit var filtro: FiltroTorreApto
+    private lateinit var reloj: TiempoDentro.Reloj
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDentroBinding.inflate(inflater, container, false)
@@ -40,6 +42,7 @@ class DentroFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         configurarEncabezado(binding.encabezado, R.string.visitas_dentro, R.string.dentro_descripcion)
+        reloj = TiempoDentro.Reloj(viewLifecycleOwner)
         filtro = FiltroTorreApto(binding.filtro) { _, _ -> pintar() }
         filtro.ponerPista(R.string.dentro_buscar)
         binding.swipe.setOnRefreshListener { cargar() }
@@ -77,12 +80,14 @@ class DentroFragment : Fragment() {
         binding.tvVacio.isVisible = lista.isEmpty()
         binding.tvVacio.setText(if (todos.isEmpty()) R.string.dentro_vacio else R.string.dentro_sin_resultados)
         binding.lista.removeAllViews()
+        reloj.limpiar()
         lista.forEach { v ->
             val fila = ItemTextoConAccionBinding.inflate(layoutInflater, binding.lista, false)
             fila.tvEtiqueta.isVisible = true
             fila.tvEtiqueta.text = ingreso(v)
             fila.tvTitulo.text = v.visitante
-            fila.tvDetalle.text = getString(R.string.recepcion_dentro_detalle, v.torre, v.apto, fechaCorta(v.creadaEn))
+            // P12: el tiempo que lleva dentro, al día mientras la pantalla esté abierta
+            reloj.agregar(fila.tvDetalle) { detalleDentro(v) }
             fila.btnAccion.isVisible = true
             fila.btnAccion.setText(R.string.recepcion_salida)
             fila.btnAccion.setOnClickListener {

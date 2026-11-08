@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P12: Herramientas → Visitantes activos (VisitantesActivosFragment) -->
+<resources>
+    <string name="activos_titulo">Visitantes activos</string>
+    <string name="activos_descripcion">Quién está dentro del conjunto visitándote</string>
+    <string name="activos_tarjeta_sub">Quién sigue dentro y su salida</string>
+    <string name="activos_explicacion">Si tu visitante ya se fue y la portería no registró su salida, puedes darla tú. La portería recibe el aviso.</string>
+    <string name="activos_vacio">No tienes visitantes dentro del conjunto.</string>
+    <plurals name="activos_resumen">
+        <item quantity="one">%d visitante dentro</item>
+        <item quantity="other">%d visitantes dentro</item>
+    </plurals>
+    <string name="activos_a_pie">A pie</string>
+    <string name="activos_parqueadero">parqueadero %1$s</string>
+    <string name="activos_detalle">Entró a las %1$s · lleva %2$s</string>
+    <string name="activos_dar_salida">Dar salida</string>
+    <string name="activos_confirmar">¿%1$s ya salió del conjunto?</string>
+    <string name="activos_confirmar_detalle">Se registra su salida y la portería recibe el aviso.</string>
+    <string name="activos_salida_ok">Salida de %1$s registrada</string>
+    <string name="activos_error">No se pudieron cargar tus visitantes</string>
+</resources>

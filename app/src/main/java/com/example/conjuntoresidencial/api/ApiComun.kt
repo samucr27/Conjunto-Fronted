@@ -126,6 +126,11 @@ interface ApiComun {
     @GET("api/porteria/parqueaderos")
     suspend fun getParqueaderosInvitados(): Response<List<ParqueaderoInvitadoDTO>>
 
+    // P12: los visitantes del apartamento que siguen dentro (residentes)
+    @GET("api/porteria/visitas/activas")
+    suspend fun visitasActivas(): Response<List<VisitaDTO>>
+
+    // Portería y administración; P12: también el residente, a sus visitantes
     @POST("api/porteria/visitas/{id}/salida")
     suspend fun registrarSalidaVisita(@Path("id") id: Long): Response<VisitaDTO>
 
