@@ -40,6 +40,11 @@ class MiCorrespondenciaFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         configurarEncabezado(binding.encabezado, R.string.corr_mia_titulo, R.string.corr_mia_descripcion)
         binding.swipe.setOnRefreshListener { cargar() }
+    }
+
+    /** P12: al volver a la pantalla o a la app se recarga (la portería pudo entregar o registrar algo). */
+    override fun onResume() {
+        super.onResume()
         cargar()
     }
 

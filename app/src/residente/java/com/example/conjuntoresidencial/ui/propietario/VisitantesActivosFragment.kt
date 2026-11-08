@@ -41,6 +41,11 @@ class VisitantesActivosFragment : Fragment() {
         configurarEncabezado(binding.encabezado, R.string.activos_titulo, R.string.activos_descripcion)
         reloj = TiempoDentro.Reloj(viewLifecycleOwner)
         binding.swipe.setOnRefreshListener { cargar() }
+    }
+
+    /** P12: al volver a la pantalla o a la app se recarga (la portería pudo entregar o registrar algo). */
+    override fun onResume() {
+        super.onResume()
         cargar()
     }
 

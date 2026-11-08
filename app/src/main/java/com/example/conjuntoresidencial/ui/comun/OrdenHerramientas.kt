@@ -1,10 +1,8 @@
 package com.example.conjuntoresidencial.ui.comun
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.Gravity
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -163,14 +161,19 @@ object OrdenHerramientas {
     private class Item(val nombre: String, val titulo: CharSequence, val icono: Drawable?)
 
     /** La lista para arrastrar. [alCambiar] vuelve a armar la pantalla con el orden nuevo. */
-    @SuppressLint("ClickableViewAccessibility")
+
     fun editar(fragment: Fragment, grid: ViewGroup, alCambiar: () -> Unit) {
         val ctx = fragment.requireContext()
         val items = tarjetas(grid).map { v ->
             Item(nombre(v), v.findViewById<TextView>(R.id.titulo).text, v.findViewById<ImageView>(R.id.icono)?.drawable?.constantState?.newDrawable()?.mutate())
         }.toMutableList()
         val d = ctx.resources.displayMetrics.density
-        val lista = RecyclerView(ctx).apply {
+        // P12: con muchas herramientas la lista crecía y sacaba los botones del diálogo: hasta media pantalla y se desplaza
+        val maximo = (ctx.resources.displayMetrics.heightPixels * 0.5f).toInt()
+        val lista = object : RecyclerView(ctx) {
+            override fun onMeasure(ancho: Int, alto: Int) =
+                super.onMeasure(ancho, View.MeasureSpec.makeMeasureSpec(maximo, View.MeasureSpec.AT_MOST))
+        }.apply {
             layoutManager = LinearLayoutManager(ctx)
             setPadding(0, (8 * d).toInt(), 0, 0)
             clipToPadding = false
@@ -194,7 +197,10 @@ object OrdenHerramientas {
                     addView(TextView(ctx).apply {
                         id = R.id.titulo
                         setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge)
-                        setPadding((16 * d).toInt(), 0, (16 * d).toInt(), 0)
+                        setPadding((16 * d).toInt(), 0, (8 * d).toInt(), 0)
+                        // Si una palabra no cabe, se parte con guion y no letra por letra
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
+                            hyphenationFrequency = android.text.Layout.HYPHENATION_FREQUENCY_NORMAL
                     }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
                     // P12: flechas para subir y bajar sin tener que arrastrar
                     listOf(R.id.accion_subir to R.drawable.ic_arrow_upward, R.id.accion_bajar to R.drawable.ic_arrow_downward)
@@ -211,19 +217,9 @@ object OrdenHerramientas {
                                 setBackgroundResource(fondo.resourceId)
                             }, LinearLayout.LayoutParams((44 * d).toInt(), (44 * d).toInt()))
                         }
-                    addView(ImageView(ctx).apply {
-                        id = R.id.subtitulo
-                        setImageResource(R.drawable.ic_drag_handle)
-                        contentDescription = ctx.getString(R.string.herramientas_arrastrar)
-                        setPadding((12 * d).toInt(), (12 * d).toInt(), (12 * d).toInt(), (12 * d).toInt())
-                    }, LinearLayout.LayoutParams((48 * d).toInt(), (48 * d).toInt()))
                 }
+                // P12: se arrastra manteniendo pulsada la fila (sin agarradera: el nombre no cabía); con TalkBack, "Subir" y "Bajar"
                 return object : RecyclerView.ViewHolder(fila) {}.also { vh ->
-                    // Se arrastra desde la agarradera; con TalkBack, "Subir" y "Bajar"
-                    fila.findViewById<View>(R.id.subtitulo).setOnTouchListener { _, e ->
-                        if (e.actionMasked == MotionEvent.ACTION_DOWN) arrastre.startDrag(vh)
-                        false
-                    }
                     @Suppress("DEPRECATION")
                     fila.findViewById<View>(R.id.accion_subir).setOnClickListener { mover(vh.adapterPosition, vh.adapterPosition - 1) }
                     @Suppress("DEPRECATION")
@@ -261,7 +257,7 @@ object OrdenHerramientas {
             }
         }
         arrastre = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
-            // Solo desde la agarradera
+            // Manteniendo pulsada la fila
             override fun isLongPressDragEnabled() = true
             override fun onMove(rv: RecyclerView, vh: RecyclerView.ViewHolder, destino: RecyclerView.ViewHolder): Boolean {
                 @Suppress("DEPRECATION")
