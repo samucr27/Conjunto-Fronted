@@ -32,12 +32,13 @@
     <color name="colorPrimary">#283593</color>
     <color name="boton_flotante">#B3283593</color>
     <color name="barra_subtitulo">#C0C6FD</color>
-    <color name="aviso_general">#283593</color>
+    <color name="aviso_general">#C0C4EE</color>
     <color name="velo_desenfoque">#660E0E12</color>
     <color name="velo_barra">#99191920</color>
     <color name="barra_translucida">#B3191920</color>
     <color name="fondo_barra_respaldo">#F2191920</color>
     <color name="franja_inicio">#F20E0E12</color>
     <color name="franja_fin">#000E0E12</color>
-    <color name="white">#55545A</color>
+    <!-- Texto sobre los encabezados con el color de la app: blanco suave (antes gris, no se leía) -->
+    <color name="white">#F3F2FB</color>
 </resources>

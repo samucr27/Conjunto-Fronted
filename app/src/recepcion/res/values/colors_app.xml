@@ -31,7 +31,7 @@
     <!-- Encabezados, botones flotantes y difuminados con el color de la app -->
     <color name="colorPrimary">#E65100</color>
     <color name="boton_flotante">#B3E65100</color>
-    <color name="barra_subtitulo">#FCAE92</color>
+    <color name="barra_subtitulo">#FFEDE5</color>
     <color name="aviso_general">#E65100</color>
     <color name="velo_desenfoque">#66FFF8F6</color>
     <color name="velo_barra">#99FEEAE3</color>
