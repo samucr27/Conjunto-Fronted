@@ -5,4 +5,6 @@
     <item name="orden_igualar" type="id" />
     <item name="accion_subir" type="id" />
     <item name="accion_bajar" type="id" />
+    <item name="agarradera" type="id" />
+    <item name="orden_autodesplazar" type="id" />
 </resources>

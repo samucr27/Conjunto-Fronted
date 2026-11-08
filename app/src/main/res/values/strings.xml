@@ -216,10 +216,11 @@
     <string name="corr_error_quitar">No se pudo quitar de la lista</string>
     <string name="corr_deslizar_ayuda">Desliza a la izquierda lo ya entregado para quitarlo de la lista</string>
     <string name="herramientas_ordenar">Ordenar herramientas</string>
-    <string name="herramientas_ordenar_ayuda">Usa las flechas o mantén pulsada una herramienta y arrástrala, aquí o en la pantalla. El orden se guarda en este celular.</string>
+    <string name="herramientas_ordenar_ayuda">Arrastra cada herramienta desde las rayas de la derecha a donde la quieras. También puedes mantener pulsada una tarjeta en la pantalla y moverla. El orden se guarda en este celular.</string>
     <string name="herramientas_restablecer">Restablecer</string>
     <string name="herramientas_subir">Subir</string>
     <string name="herramientas_bajar">Bajar</string>
+    <string name="herramientas_arrastrar">Arrastrar para mover</string>
     <string name="herramientas_posicion">%1$s, posición %2$d de %3$d</string>
     <string name="deshacer">Deshacer</string>
     <string name="eliminar">Eliminar</string>

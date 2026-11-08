@@ -104,6 +104,8 @@ object OrdenHerramientas {
      * corren mientras se arrastra y el orden se guarda al soltarla.
      */
     private fun permitirArrastrar(grid: ViewGroup) {
+        val auto = (grid.getTag(R.id.orden_autodesplazar) as? Autodesplazar)
+            ?: Autodesplazar(grid).also { grid.setTag(R.id.orden_autodesplazar, it) }
         tarjetas(grid).forEach { tarjeta ->
             tarjeta.setOnLongClickListener { v ->
                 v.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
@@ -115,6 +117,7 @@ object OrdenHerramientas {
             tarjeta.setOnDragListener { destino, e ->
                 val arrastrada = e.localState as? View ?: return@setOnDragListener false
                 if (arrastrada.parent !== grid) return@setOnDragListener false
+                if (e.action == android.view.DragEvent.ACTION_DRAG_LOCATION) auto.dedo(destino, e.y)
                 // Al entrar en otra tarjeta, la arrastrada toma su lugar (después del evento: no se
                 // cambian las vistas mientras se reparte)
                 if (e.action == android.view.DragEvent.ACTION_DRAG_ENTERED && destino !== arrastrada) {
@@ -126,11 +129,75 @@ object OrdenHerramientas {
         // El final del arrastre lo atiende la cuadrícula (la tarjeta movida pudo salir y volver a entrar)
         grid.setOnDragListener { _, e ->
             val arrastrada = e.localState as? View ?: return@setOnDragListener false
+            when (e.action) {
+                android.view.DragEvent.ACTION_DRAG_STARTED -> auto.empezar()
+                android.view.DragEvent.ACTION_DRAG_LOCATION -> auto.dedo(grid, e.y)
+                android.view.DragEvent.ACTION_DRAG_ENDED -> auto.parar()
+            }
             if (e.action == android.view.DragEvent.ACTION_DRAG_ENDED && arrastrada.alpha < 1f) {
                 arrastrada.alpha = 1f
                 if (arrastrada.parent === grid) guardar(grid.context, tarjetas(grid).map { nombre(it) })
             }
             true
+        }
+    }
+
+    /**
+     * Mientras se arrastra una tarjeta, si el dedo está cerca del borde de arriba o de abajo de lo
+     * que se ve (abajo: encima de la barra flotante), la pantalla se desplaza sola; más rápido cuanto
+     * más cerca del borde.
+     */
+    private class Autodesplazar(private val grid: ViewGroup) : Runnable {
+        private var y = -1f
+        private var activo = false
+        private val d = grid.resources.displayMetrics.density
+
+        private fun desplazable(): View? {
+            var p = grid.parent
+            while (p is View) {
+                if (p is androidx.core.widget.NestedScrollView || p is android.widget.ScrollView) return p
+                p = p.parent
+            }
+            return null
+        }
+
+        fun empezar() {
+            y = -1f
+            if (!activo) { activo = true; grid.postOnAnimation(this) }
+        }
+
+        fun parar() { activo = false; y = -1f }
+
+        /** [enY] dentro de [vista] → en la pantalla. */
+        fun dedo(vista: View, enY: Float) {
+            val pos = IntArray(2)
+            vista.getLocationOnScreen(pos)
+            y = pos[1] + enY
+        }
+
+        override fun run() {
+            if (!activo) return
+            val scroll = desplazable() ?: return
+            if (y >= 0) {
+                val pos = IntArray(2)
+                scroll.getLocationOnScreen(pos)
+                val arriba = maxOf(pos[1], 0).toFloat()
+                var abajo = (pos[1] + scroll.height).toFloat()
+                grid.rootView?.findViewById<View>(R.id.barraInferior)?.takeIf { it.isShown }?.let { barra ->
+                        barra.getLocationOnScreen(pos)
+                        abajo = minOf(abajo, pos[1].toFloat())
+                    }
+                abajo = minOf(abajo, grid.resources.displayMetrics.heightPixels.toFloat())
+                val zona = 110 * d
+                val maxPaso = 22 * d
+                val paso = when {
+                    y < arriba + zona -> -maxPaso * ((arriba + zona - y) / zona).coerceIn(0.2f, 1f)
+                    y > abajo - zona -> maxPaso * ((y - (abajo - zona)) / zona).coerceIn(0.2f, 1f)
+                    else -> 0f
+                }
+                if (paso != 0f) scroll.scrollBy(0, paso.toInt())
+            }
+            grid.postOnAnimation(this)
         }
     }
 
@@ -160,23 +227,27 @@ object OrdenHerramientas {
 
     private class Item(val nombre: String, val titulo: CharSequence, val icono: Drawable?)
 
-    /** La lista para arrastrar. [alCambiar] vuelve a armar la pantalla con el orden nuevo. */
-
+    /**
+     * La lista para ordenar, en una hoja que sube desde abajo: el título y la ayuda arriba, la lista
+     * en el medio (se desplaza sola al arrastrar hacia un borde) y los botones siempre visibles abajo.
+     * Se arrastra desde las rayas de la derecha (sin esperar) o manteniendo pulsada la fila.
+     * [alCambiar] vuelve a armar la pantalla con el orden nuevo.
+     */
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
     fun editar(fragment: Fragment, grid: ViewGroup, alCambiar: () -> Unit) {
         val ctx = fragment.requireContext()
         val items = tarjetas(grid).map { v ->
             Item(nombre(v), v.findViewById<TextView>(R.id.titulo).text, v.findViewById<ImageView>(R.id.icono)?.drawable?.constantState?.newDrawable()?.mutate())
         }.toMutableList()
         val d = ctx.resources.displayMetrics.density
-        // P12: con muchas herramientas la lista crecía y sacaba los botones del diálogo: hasta media pantalla y se desplaza
-        val maximo = (ctx.resources.displayMetrics.heightPixels * 0.5f).toInt()
-        val lista = object : RecyclerView(ctx) {
-            override fun onMeasure(ancho: Int, alto: Int) =
-                super.onMeasure(ancho, View.MeasureSpec.makeMeasureSpec(maximo, View.MeasureSpec.AT_MOST))
-        }.apply {
+        fun dp(n: Int) = (n * d).toInt()
+        val dialogo = com.google.android.material.bottomsheet.BottomSheetDialog(ctx)
+
+        val lista = RecyclerView(ctx).apply {
             layoutManager = LinearLayoutManager(ctx)
-            setPadding(0, (8 * d).toInt(), 0, 0)
+            setPadding(0, dp(4), 0, dp(4))
             clipToPadding = false
+            overScrollMode = View.OVER_SCROLL_NEVER
         }
         lateinit var arrastre: ItemTouchHelper
         val adaptador = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -185,45 +256,37 @@ object OrdenHerramientas {
                 val fila = LinearLayout(ctx).apply {
                     orientation = LinearLayout.HORIZONTAL
                     gravity = Gravity.CENTER_VERTICAL
-                    minimumHeight = (56 * d).toInt()
-                    setPadding((24 * d).toInt(), 0, (16 * d).toInt(), 0)
+                    minimumHeight = dp(56)
+                    setPadding(dp(24), dp(4), dp(8), dp(4))
                     layoutParams = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    setBackgroundColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorSurfaceContainerLow))
                     addView(ImageView(ctx).apply {
                         id = R.id.icono
                         importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
                         imageTintList = android.content.res.ColorStateList.valueOf(
                             MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary))
-                    }, LinearLayout.LayoutParams((24 * d).toInt(), (24 * d).toInt()))
+                    }, LinearLayout.LayoutParams(dp(24), dp(24)))
                     addView(TextView(ctx).apply {
                         id = R.id.titulo
                         setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge)
-                        setPadding((16 * d).toInt(), 0, (8 * d).toInt(), 0)
-                        // Si una palabra no cabe, se parte con guion y no letra por letra
+                        setPadding(dp(16), 0, dp(8), 0)
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
                             hyphenationFrequency = android.text.Layout.HYPHENATION_FREQUENCY_NORMAL
                     }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-                    // P12: flechas para subir y bajar sin tener que arrastrar
-                    listOf(R.id.accion_subir to R.drawable.ic_arrow_upward, R.id.accion_bajar to R.drawable.ic_arrow_downward)
-                        .forEach { (accion, icono) ->
-                            addView(ImageView(ctx).apply {
-                                id = accion
-                                setImageResource(icono)
-                                contentDescription = ctx.getString(if (accion == R.id.accion_subir) R.string.herramientas_subir else R.string.herramientas_bajar)
-                                setPadding((12 * d).toInt(), (12 * d).toInt(), (12 * d).toInt(), (12 * d).toInt())
-                                isClickable = true
-                                isFocusable = true
-                                val fondo = android.util.TypedValue()
-                                ctx.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, fondo, true)
-                                setBackgroundResource(fondo.resourceId)
-                            }, LinearLayout.LayoutParams((44 * d).toInt(), (44 * d).toInt()))
-                        }
+                    // Agarradera: al tocarla empieza a arrastrar de una vez
+                    addView(ImageView(ctx).apply {
+                        id = R.id.agarradera
+                        setImageResource(R.drawable.ic_drag_handle)
+                        contentDescription = ctx.getString(R.string.herramientas_arrastrar)
+                        importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                        setPadding(dp(12), dp(12), dp(12), dp(12))
+                    }, LinearLayout.LayoutParams(dp(48), dp(48)))
                 }
-                // P12: se arrastra manteniendo pulsada la fila (sin agarradera: el nombre no cabía); con TalkBack, "Subir" y "Bajar"
                 return object : RecyclerView.ViewHolder(fila) {}.also { vh ->
-                    @Suppress("DEPRECATION")
-                    fila.findViewById<View>(R.id.accion_subir).setOnClickListener { mover(vh.adapterPosition, vh.adapterPosition - 1) }
-                    @Suppress("DEPRECATION")
-                    fila.findViewById<View>(R.id.accion_bajar).setOnClickListener { mover(vh.adapterPosition, vh.adapterPosition + 1) }
+                    fila.findViewById<View>(R.id.agarradera).setOnTouchListener { _, e ->
+                        if (e.actionMasked == android.view.MotionEvent.ACTION_DOWN) arrastre.startDrag(vh)
+                        false
+                    }
                 }
             }
 
@@ -232,9 +295,7 @@ object OrdenHerramientas {
                 val item = items[posicion]
                 vh.itemView.findViewById<ImageView>(R.id.icono).setImageDrawable(item.icono)
                 vh.itemView.findViewById<TextView>(R.id.titulo).text = item.titulo
-                // La primera no sube y la última no baja
-                vh.itemView.findViewById<View>(R.id.accion_subir).visibility = if (posicion > 0) View.VISIBLE else View.INVISIBLE
-                vh.itemView.findViewById<View>(R.id.accion_bajar).visibility = if (posicion < items.size - 1) View.VISIBLE else View.INVISIBLE
+                // Con TalkBack: la posición y las acciones "Subir" y "Bajar"
                 vh.itemView.contentDescription = ctx.getString(R.string.herramientas_posicion, item.titulo, posicion + 1, items.size)
                 ViewCompat.removeAccessibilityAction(vh.itemView, R.id.accion_subir)
                 ViewCompat.removeAccessibilityAction(vh.itemView, R.id.accion_bajar)
@@ -252,18 +313,17 @@ object OrdenHerramientas {
                 if (desde < 0 || hasta < 0 || desde >= items.size || hasta >= items.size) return
                 items.add(hasta, items.removeAt(desde))
                 notifyItemMoved(desde, hasta)
-                // Las acciones y la posición leída cambian en las dos filas
                 notifyItemRangeChanged(minOf(desde, hasta), kotlin.math.abs(desde - hasta) + 1, Unit)
             }
         }
         arrastre = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
-            // Manteniendo pulsada la fila
             override fun isLongPressDragEnabled() = true
             override fun onMove(rv: RecyclerView, vh: RecyclerView.ViewHolder, destino: RecyclerView.ViewHolder): Boolean {
                 @Suppress("DEPRECATION")
                 val desde = vh.adapterPosition
                 @Suppress("DEPRECATION")
                 val hasta = destino.adapterPosition
+                if (desde < 0 || hasta < 0) return false
                 items.add(hasta, items.removeAt(desde))
                 adaptador.notifyItemMoved(desde, hasta)
                 return true
@@ -271,24 +331,72 @@ object OrdenHerramientas {
             override fun onSwiped(vh: RecyclerView.ViewHolder, direccion: Int) {}
             override fun onSelectedChanged(vh: RecyclerView.ViewHolder?, estado: Int) {
                 super.onSelectedChanged(vh, estado)
-                if (estado == ItemTouchHelper.ACTION_STATE_DRAG) vh?.itemView?.apply { elevation = 8 * d; alpha = 0.95f }
+                if (estado == ItemTouchHelper.ACTION_STATE_DRAG) vh?.itemView?.apply {
+                    performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
+                    elevation = 8 * d
+                }
             }
             override fun clearView(rv: RecyclerView, vh: RecyclerView.ViewHolder) {
                 super.clearView(rv, vh)
-                vh.itemView.elevation = 0f; vh.itemView.alpha = 1f
+                vh.itemView.elevation = 0f
                 adaptador.notifyItemRangeChanged(0, items.size, Unit)
             }
         })
         lista.adapter = adaptador
         arrastre.attachToRecyclerView(lista)
 
-        MaterialAlertDialogBuilder(ctx)
-            .setTitle(R.string.herramientas_ordenar)
-            .setMessage(R.string.herramientas_ordenar_ayuda)
-            .setView(lista)
-            .setPositiveButton(R.string.btn_guardar) { _, _ -> guardar(ctx, items.map { it.nombre }); alCambiar() }
-            .setNeutralButton(R.string.herramientas_restablecer) { _, _ -> restablecer(ctx); alCambiar() }
-            .setNegativeButton(R.string.btn_cancelar, null)
-            .show()
+        val botones = LinearLayout(ctx).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(16), dp(8), dp(16), dp(16))
+            fun boton(texto: Int, estilo: Int, accion: () -> Unit) =
+                com.google.android.material.button.MaterialButton(ctx, null, estilo).apply {
+                    setText(texto)
+                    setOnClickListener { accion() }
+                }
+            addView(boton(R.string.herramientas_restablecer, com.google.android.material.R.attr.borderlessButtonStyle) {
+                restablecer(ctx); dialogo.dismiss(); alCambiar()
+            })
+            addView(View(ctx), LinearLayout.LayoutParams(0, 1, 1f))
+            addView(boton(R.string.btn_cancelar, com.google.android.material.R.attr.borderlessButtonStyle) { dialogo.dismiss() })
+            addView(boton(R.string.btn_guardar, com.google.android.material.R.attr.materialButtonStyle) {
+                guardar(ctx, items.map { it.nombre }); dialogo.dismiss(); alCambiar()
+            }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { marginStart = dp(8) })
+        }
+
+        // Hasta el 85 % de la pantalla: la lista toma lo que sobra y los botones quedan siempre abajo
+        val maximo = (ctx.resources.displayMetrics.heightPixels * 0.85f).toInt()
+        val contenido = object : LinearLayout(ctx) {
+            override fun onMeasure(ancho: Int, alto: Int) {
+                val disponible = View.MeasureSpec.getSize(alto).takeIf { View.MeasureSpec.getMode(alto) != View.MeasureSpec.UNSPECIFIED && it > 0 } ?: maximo
+                super.onMeasure(ancho, View.MeasureSpec.makeMeasureSpec(minOf(maximo, disponible), View.MeasureSpec.AT_MOST))
+            }
+        }.apply {
+            orientation = LinearLayout.VERTICAL
+            addView(TextView(ctx).apply {
+                setText(R.string.herramientas_ordenar)
+                setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_HeadlineSmall)
+                setPadding(dp(24), dp(8), dp(24), dp(8))
+            })
+            addView(TextView(ctx).apply {
+                setText(R.string.herramientas_ordenar_ayuda)
+                setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium)
+                setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurfaceVariant))
+                setPadding(dp(24), 0, dp(24), dp(8))
+            })
+            addView(lista, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
+            addView(botones)
+        }
+        // La lista mide su alto natural y, si no cabe, se encoge ella (no los botones)
+        lista.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+
+        dialogo.setContentView(contenido)
+        dialogo.behavior.apply {
+            // La hoja no se arrastra (si no, al arrastrar una herramienta hacia abajo se cerraba)
+            isDraggable = false
+            skipCollapsed = true
+            state = com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+        }
+        dialogo.show()
     }
 }
