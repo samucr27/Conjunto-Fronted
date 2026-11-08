@@ -1,29 +1,42 @@
-Última actualización: 23 de octubre de 2026.
+Versión 2 · Última actualización: 7 de noviembre de 2026.
 
-Estos términos regulan el uso de MiConjunto, la aplicación para administrar el conjunto residencial. Al iniciar sesión aceptas estas condiciones.
+Estos términos regulan el uso de MiConjunto, las aplicaciones para administrar el conjunto residencial: la de residentes, la de administración, la de portería y la de plataforma. Al iniciar sesión aceptas estas condiciones.
 
 # 1. Quién presta el servicio
-La aplicación la pone a disposición la administración del conjunto residencial, que es la responsable de las cuentas, de la información registrada y de responder las solicitudes de los residentes.
+La administración de cada conjunto pone la app a disposición de sus residentes y de su personal, y es la responsable de las cuentas, de la información registrada y de responder las solicitudes. El equipo de MiConjunto desarrolla y opera la plataforma.
 
-# 2. Cuentas y contraseñas
-- El administrador entra con su usuario; cada apartamento tiene una contraseña que comparten sus residentes.
-- Eres responsable de no compartir la contraseña con personas ajenas al apartamento y de cambiarla si crees que otra persona la conoce (Cuenta → Perfil).
+# 2. Acceso y cuentas
+- Para entrar por primera vez se pide el código del conjunto que entrega la administración.
+- Cada residente entra con la torre, el apartamento y su contraseña personal. La administración, el contador y la portería entran con su usuario; los guardias abren su turno con su PIN.
+- Eres responsable de no compartir tu contraseña o tu PIN y de cambiarlos si crees que otra persona los conoce.
 - Si activas la entrada con huella o rostro, cualquier persona cuya huella o rostro esté registrado en tu celular podrá entrar a tu cuenta.
 
 # 3. Uso permitido
-Puedes usar la app para consultar y registrar la información de tu apartamento: residentes, vehículos, obras y su personal, reservas de zonas comunes y estado de cuenta. No está permitido:
+Puedes usar la app para los asuntos de tu apartamento y del conjunto. No está permitido:
 - Registrar información falsa o de otras personas sin su autorización.
-- Intentar entrar a cuentas de otros apartamentos o a funciones de administración.
-- Usar la app para molestar a otros residentes o al personal del conjunto.
+- Intentar entrar a cuentas de otros apartamentos, de otros conjuntos o a funciones que no te corresponden.
+- Usar los chats o los avisos para molestar a otros residentes o al personal del conjunto.
+La administración puede suspender o desactivar las cuentas que hagan un uso indebido.
 
-# 4. Reservas, obras y vehículos
-Las reservas de zonas comunes quedan pendientes hasta que la administración las aprueba. Registrar una obra o un vehículo es un aviso a la administración y no reemplaza los permisos que exija el reglamento de propiedad horizontal del conjunto (Ley 675 de 2001).
+# 4. Visitas y portería
+- Cuando la portería anuncia una visita, tienes 5 minutos para autorizarla o rechazarla. Si no respondes, la portería puede llamarte y registrar tu respuesta.
+- Los visitantes frecuentes que registres entran sin preguntarte; te llega el aviso de su entrada.
+- La app muestra cuánto tiempo lleva dentro cada visitante. Si ya se fue y la portería no registró su salida, puedes darla desde Herramientas → Visitantes activos, y la portería recibe el aviso.
 
-# 5. Información de cartera
-Los saldos que muestra la app son informativos. En caso de diferencia, prima el estado de cuenta oficial que entregue la administración.
+# 5. Correspondencia
+La portería solo entrega tu correspondencia a quien tú autorices desde la app o por teléfono. Al autorizar la entrega aceptas que se entregue a esa persona. Si la rechazas, puedes escribir a la portería por el chat durante 30 minutos.
 
-# 6. Disponibilidad
-La administración procura que la app funcione siempre, pero puede haber interrupciones por mantenimiento o fallas de conexión. Ante una urgencia, comunícate directamente con la administración o la portería.
+# 6. Reservas, obras, vehículos y parqueaderos
+Las reservas, obras, vehículos y arrendatarios quedan pendientes hasta que la administración los aprueba. Registrar algo en la app no reemplaza los permisos que exija el reglamento de propiedad horizontal del conjunto (Ley 675 de 2001).
 
-# 7. Cambios a estos términos
-Estos términos pueden cambiar. Cuando ocurra, la nueva versión estará en Cuenta → Legal con su fecha de actualización.
+# 7. Cartera y pagos
+Los saldos que muestra la app son informativos; en caso de diferencia prima el estado de cuenta oficial de la administración. Los cambios del contador a la cartera los aprueba la administración. Los pagos en línea los procesa la pasarela de pagos con sus propias condiciones; un pago se refleja cuando la pasarela o la administración lo confirman.
+
+# 8. Disponibilidad
+Se procura que la app funcione siempre, pero puede haber interrupciones por mantenimiento o fallas de conexión. Ante una urgencia, comunícate directamente con la portería o la administración.
+
+# 9. Datos personales
+El tratamiento de tus datos se rige por la Política de tratamiento de datos personales, en Cuenta → Legal.
+
+# 10. Cambios a estos términos
+Estos términos pueden cambiar. Cuando ocurra, la app te mostrará la nueva versión para que la aceptes, y estará en Cuenta → Legal con su fecha de actualización.

@@ -52,7 +52,7 @@ fun Fragment.pedirConsentimientos() {
 }
 
 private fun Fragment.mostrarTextos(textos: List<TextoLegalDTO>, sesion: String) {
-    val cuerpo = textos.joinToString("<br><br>") { "<b>${it.titulo}</b> (v${it.version})<br>${it.contenido}" }
+    val cuerpo = textos.joinToString("<br><br>") { "<big><b>${it.titulo}</b></big> (v${it.version})<br>${aHtml(it.contenido)}" }
     val vista = TextView(requireContext()).apply {
         text = HtmlCompat.fromHtml(cuerpo, HtmlCompat.FROM_HTML_MODE_COMPACT)
         val m = (24 * resources.displayMetrics.density).toInt()
@@ -76,6 +76,19 @@ private fun Fragment.mostrarTextos(textos: List<TextoLegalDTO>, sesion: String) 
         }
         .setNegativeButton(R.string.consentimiento_no_acepto) { _, _ -> confirmarCerrarSesion() }
         .show()
+}
+
+/**
+ * P12 bloque 4: el texto legal viene como en res/raw ("# " título de sección, "- " viñeta, líneas
+ * vacías entre párrafos); en el diálogo se muestra con negrillas y saltos de línea.
+ */
+private fun aHtml(texto: String): String = texto.lines().joinToString("<br>") { linea ->
+    val l = android.text.TextUtils.htmlEncode(linea.trimEnd())
+    when {
+        l.startsWith("# ") -> "<br><b>${l.removePrefix("# ")}</b>"
+        l.startsWith("- ") -> "&#8226; ${l.removePrefix("- ")}"
+        else -> l
+    }
 }
 
 /** Cuenta → Legal → Mis datos personales: pedir consultarlos o borrarlos, y ver cómo van las solicitudes. */
